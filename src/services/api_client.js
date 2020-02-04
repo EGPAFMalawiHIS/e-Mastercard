@@ -1,0 +1,263 @@
+const ApiClient = (() => {
+  let config = {    // Load from config file
+    protocol: null,
+    host: null,
+    port: null,
+    apiVersion: 'v1',
+    username: null,
+    password: null,
+    router: null
+  }
+
+  function expandPath(resourcePath) {
+    return `${config.protocol}://${config.host}:${config.port}/api/${config.apiVersion}/${resourcePath}`
+  }
+
+  function headers() {
+    return {
+      'Authorization': sessionStorage.apiKey,
+      'Content-Type': 'application/json'
+    }
+  }
+
+  function getConfig() {
+    fetch('/config.json')
+    .then(
+      function(response) {
+        if (response.status !== 200) {
+          console.log('Looks like there was a problem. Status Code: ' +
+            response.status);
+          return;
+        }
+
+        // Examine the text in the response
+        response.json().then(function(data) {
+          sessionStorage.setItem("apiURL", data.apiURL);
+          config.host = data.apiURL;
+          sessionStorage.setItem("apiPort", data.apiPort);
+          config.port = data.apiPort;
+          sessionStorage.setItem("apiProtocol", data.apiProtocol);
+          config.protocol = data.apiProtocol;
+        });
+      }
+    )
+    .catch(function(err) {
+      console.log('Fetch Error :-S', err);
+    });
+  }
+
+  function getRouter() {
+    if (!config.router) {
+      throw new Exception('Router not configured')
+    }
+
+    return config.router
+  }
+
+  async function execFetch(uri, params, {noRedirectCodes = []}) {
+    try {
+      console.log(noRedirectCodes)
+      params = {...params, mode: 'cors'};
+
+      if (!('headers' in params)) {
+        params = {...params, headers: headers()}
+      }
+
+      const response = await fetch(expandPath(uri), params)
+
+      if (response.status === 401 && !noRedirectCodes.includes(response.status)) {
+        console.error('Not authorized')
+        getRouter().push('/login')
+      } else if (response.status >= 500 && !noRedirectCodes.includes(response.status)) {
+        console.error('Internal server error');
+        getRouter().push('/error')
+      }
+      return response
+    } catch(e) {
+      console.log(e)
+      getRouter().push('/error')
+    }
+  }
+
+  /**
+   * Perform a GET request on the API.
+   * 
+   * @param {string} uri Path to resource being accessed
+   */
+  const get = (uri, options = {}) => execFetch(uri, {method: 'GET'}, options)
+
+  /**
+   * Perform a POST request on the API
+   * 
+   * @param {string} uri Path to resource being accessed. 
+   * @param {Object} data Parameters to send to API.
+   * 
+   * Example:
+   *   const response = post('people', {given_name: 'Foo', family_name: 'Bar}).then((response) => console.log(response));
+   */
+  const post = (uri, data, options = {}) => execFetch(uri, {method: 'POST', body: JSON.stringify(data)}, options)
+
+  const setRouter = (router) => config.router = router
+  getConfig();
+  return {get, post, getRouter, setRouter, getConfig, config}
+})();
+
+export default ApiClient;
+
+ function GET(url, successCallback, failureCallback, useBasseURL = true) {
+    //add loading pop up here
+    if(useBasseURL == true) {
+      let baseURL = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1" ;
+      url = baseURL + url;
+    }else if(useBasseURL == false){
+      //using given url
+    }
+    
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 ) {
+        if ( (this.status == 201 || this.status == 200)) {
+          successCallback(JSON.parse(this.responseText), this.status);
+          // console.log(this.status);
+            // eval(returnToFunction)(obj);
+            //put success message here
+        }else if (this.status == 404 || this.status == 500) {
+          let message = `Error ${this.status}. An error has occured`;
+          if(failureCallback) {
+            failureCallback(JSON.parse(this.responseText), this.status);
+          }else {
+            genericError(message);
+          }
+        }else if (this.status == 401) {
+          var message = "Error " + this.status + ". You have been logged out ,Click yes to continue to patient dashboard or No to go to the main dashboard";
+          genericError(message);
+        }
+        }else {
+        }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp.setRequestHeader('Content-type', "application/json");
+    xhttp.send();
+  //example call for this function
+  //   GET('https://swapi.co/api/people/1', function(data) {
+  //     console.log(data);
+  //   },function(data) {
+  //     console.log(data);
+  //   });
+  // }
+}
+function POST(url, parameters, successCallback, failureCallback) {
+    //add loading pop up here
+    let baseUrl = sessionStorage.apiProtocol + "://" + sessionStorage.apiURL + ":" + sessionStorage.apiPort + "/api/v1" + url;
+    var parametersPassed = JSON.stringify(parameters);
+    
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 ) {
+        if(this.status == 201 || this.status == 200) {
+          var obj = JSON.parse(this.responseText);
+          successCallback(JSON.parse(this.responseText), this.status);
+            //put success message here
+            
+        }else if (this.status == 404 || this.status == 500) {
+          let message = `Error ${this.status}. An error has occured`;
+          genericError(message);
+        }else if (this.status == 401) {
+          var message = "Error " + this.status + ". You have been logged out ,Click yes to continue to patient dashboard or No to go to the main dashboard";
+          if(failureCallback) {
+            failureCallback(JSON.parse(this.responseText), this.status);
+          }else {
+            genericError(message);
+          }
+        }
+      }
+    };
+    xhttp.open("POST", baseUrl, true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp.setRequestHeader('Content-type', "application/json");
+    xhttp.send(parametersPassed);
+  }
+function fetchArgumentFromUrlString(argumentName) {
+    var url = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : location.href;
+  
+    var urlToSearch = new URL(url);
+    var argument = urlToSearch.searchParams.get(argumentName);
+    return argument;
+  }
+  
+  function buildParametersString(params) {
+    var paramsString = '';
+    Object.keys(params).forEach(function (key, index, array) {
+      paramsString += key + '=' + params[key];
+      if (index < array.length - 1) {
+        paramsString += '&';
+      }
+    });
+    return paramsString;
+  }
+  
+  function getExpected(element) {
+    let expected = ["value_group_id","value_boolean","value_coded","value_coded_name_id","value_drug","value_datetime","value_numeric","value_modifier","value_text"] ;
+    let key = "";
+    Object.keys(element).filter(function(elem) {
+      if(expected.includes(elem)){
+        key = elem;
+      }
+    } );
+    return key;
+  }
+  function submitParameters(parameters, url, returnToFunction) {
+    if(parameters["observations"]) {
+      parameters["observations"] = parameters["observations"].filter(function(element) { 
+          return (element[getExpected(element)] !== "" && element[getExpected(element)] !== undefined);
+      });
+    }
+    try {
+      buildWall();
+      showStatus();
+    } catch (e) {
+  
+    }
+    if (url === "/encounters") {
+      if (typeof providerID === 'undefined') {
+      
+    }else {
+      if(providerID != null) {
+        parameters.provider_id = providerID;
+      }
+      }
+    }
+    var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1" + url;
+    
+    parameters.program_id = sessionStorage.programID;
+    var parametersPassed = JSON.stringify(parameters);
+    
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 ) {
+        if ( (this.status == 201 || this.status == 200)) {
+          var obj = JSON.parse(this.responseText);
+            eval(returnToFunction)(obj);
+            try {    
+                    document.getElementById("innerPop").style.display = "none";
+            }catch(e) {
+          
+            }
+        }else if (this.status == 404 || this.status == 500) {
+          var message = "Error " + this.status + ". An error has occured,Click yes to continue to patient dashboard or No to go to the main dashboard";
+          genericError(message);
+        }else if (this.status == 401) {
+          var message = "Error " + this.status + ". You have been logged out ,Click yes to continue to patient dashboard or No to go to the main dashboard";
+          genericError(message);
+        }
+        }else {
+          // var message = "Error " + this.status + ". An error has occured,Click yes to continue to patient dashboard or No to go to the main dashboard";
+          // genericError(message);
+        }
+    };
+    xhttp.open("POST", path, true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp.setRequestHeader('Content-type', "application/json");
+    xhttp.send(parametersPassed);
+}
