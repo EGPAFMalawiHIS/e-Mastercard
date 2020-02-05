@@ -56,7 +56,6 @@ const ApiClient = (() => {
 
   async function execFetch(uri, params, {noRedirectCodes = []}) {
     try {
-      console.log(noRedirectCodes)
       params = {...params, mode: 'cors'};
 
       if (!('headers' in params)) {
