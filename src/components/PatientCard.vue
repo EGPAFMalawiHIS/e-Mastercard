@@ -8,7 +8,7 @@
                 <div class="card-body">
                     <h5 class="card-title">  {{full_name}}</h5>
                     <p class="card-text">{{formatted_age}}</p>
-                    <p class="card-text">ARV Number: {{ARV_number}}</p>
+                    <p class="card-text">ARV Number: {{arvNumber}}</p>
                 </div>
             </div>
         </div>
@@ -34,6 +34,10 @@ export default {
         },
         imageType() {
             return this.patient.person.gender === "M" ? require("../assets/man.png") : require("../assets/woman.png");
+        },
+        arvNumber() {
+            let identifier = this.patient.patient_identifiers.filter(function(entry) { return entry.type.name === "ARV Number"; });
+            return identifier.length > 0 ? identifier[0].identifier : "N/A";
         }
     }
 

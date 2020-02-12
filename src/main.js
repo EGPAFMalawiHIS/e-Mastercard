@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import moment from "moment";
-
+import ApiClient from "./services/api_client";
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 Vue.config.productionTip = false

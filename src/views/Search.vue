@@ -10,22 +10,33 @@
         <top-nav />
         <div class="container-fluid">
           <div class="input-group mb-3 rounded">
-            <input class="form-control border-primary" id="myInput" type="text" placeholder="Search for a patient.." v-model="search_text"/>
+            <input class="form-control border-primary" id="myInput" type="text" placeholder="Search for a patient.." v-model="searchText"/>
             <div class="input-group-append">
               <button class="btn btn-outline-secondary" type="button" @click="searchPatients">search</button>
             </div>
           </div> 
-          <button class="btn btn-primary" @click="toggleAdvanced"> advanced search </button>   
+          
 
           <div v-show="showAdvanced">
+            
+            <div class="row">
+              <div class="col">
+                <select name="gender" id="gender" class="form-control form-control-sm" v-model="gender">
+                  <option value="" selected disabled hidden >Choose here</option>
+                  <option value="M">Male</option>
+                  <option value="F"> Female</option>
+                </select>
+                
+              </div>
+              <div class="col">
+                <input type="checkbox" name="ARV number" id="arvNumber" value="ARV Number" v-model="arvNumber">
+                <label class="form-check-label" for="arvNumber">ARV Number</label>
 
-          
-          <select name="gender" id="gender">
-            <option value="male">male</option>
-            <option value="female"> female</option>
-          </select>
+              </div>
+            </div>
 
           </div>
+          <button class="btn btn-primary" @click="toggleAdvanced"> advanced search </button>   
           <br />
           <br />
           <div class="container-fluid">
@@ -60,14 +71,17 @@ export default {
   },
   data: function() {
       return {
-          search_text : null,
+          searchText : null,
           showAdvanced: false,
           results: [],
+          arvNumber: false,
+          gender: null,
+          sitePrefix: null,
       }
   }, methods: {
     searchPatients: async function(){
             
-            let personOBJ = this.search_text != null && this.search_text.length > 0 ? this.splitName(this.search_text) : null;
+            let personOBJ = this.searchText != null && this.searchText.length > 0 ? this.splitName(this.searchText) : null;
             if (personOBJ !== null) {
               var urlParams = Object.keys(personOBJ).map((key) => {
                   if((personOBJ[key] + "").length == 0 || personOBJ[key] ===undefined){
@@ -76,7 +90,8 @@ export default {
                       return encodeURIComponent(key) + '=' + encodeURIComponent(personOBJ[key])
                   }
               }).filter(key=> key.length > 0).join("&");
-              let response = await ApiClient.get("search/patients?"+urlParams);
+              console.log(urlParams);
+              let response = await ApiClient.get(personOBJ.URL+urlParams);
               this.results = (await response.json()) || [];
             }
                
@@ -91,13 +106,38 @@ export default {
       if (tempName.length > 0) {
         personOBJ.given_name = tempName[0];
         tempName[1] ? personOBJ.family_name = tempName[1] : null;
+        personOBJ.URL = "search/patients?";
         if (tempName[2]){
           personOBJ.middle_name = tempName[1];
           personOBJ.family_name = tempName[2];
         }
       }
+      //var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/search/patients/by_identifier?type_id=" + identifier_type + "&identifier="  + identfier_id;
+      if (this.showAdvanced) {
+        
+        if(this.gender) {
+          personOBJ.gender = this.gender;
+        }
+        if(this.arvNumber) {
+          
+          // personOBJ.identifier = tempName[0];
+          let f = this.getSitePrefix();
+          // console.log(f);
+          personOBJ = {};
+          personOBJ.identifier = this.sitePrefix + "-ARV-" + tempName[0];
+          personOBJ.URL = "/search/patients/by_identifier?type_id=4&&";
+          
+        }
+      }
       return personOBJ;
+    }, 
+    getSitePrefix: async function() {
+      let prefix = await ApiClient.get("global_properties?property=site_prefix");
+      let f = await prefix.json().then((result) => this.sitePrefix =result.site_prefix);
+      return;
     }
+  }, mounted() {
+    this.getSitePrefix();
   }
 };
 </script>
