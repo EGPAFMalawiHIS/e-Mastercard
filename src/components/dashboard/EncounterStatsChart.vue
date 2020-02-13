@@ -1,14 +1,14 @@
 
 <template>
   <div class="row">
-    <div class="col-sm">
+    <div class="col-sm-3">
       <div class="counter">
         <i class="fa fa-code fa-2x"></i>
         <p class="count-text">{{stats.name}}</p>
         <h2 class="timer count-title count-number" data-to="100" data-speed="1500">{{stats.total}}</h2>
       </div>
     </div>
-    <div class="col-sm">
+    <div class="col-sm-9">
       <canvas ref="myChart" height="190"></canvas>
     </div>
   </div>
@@ -98,18 +98,19 @@ export default {
 <style>
 .counter {
   background-color: #f0f0f0;
-  padding: 20px 0;
+  padding: 12px 0;
+  margin-top: 23px;
   border-radius: 5px;
 }
 .count-title {
-  font-size: 40px;
+  font-size: 10px;
   font-weight: bold;
   margin-top: 10px;
   margin-bottom: 0;
   text-align: center;
 }
 .count-text {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: bold;
   margin-top: 10px;
   margin-bottom: 0;
