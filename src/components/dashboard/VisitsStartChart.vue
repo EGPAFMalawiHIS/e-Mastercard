@@ -1,58 +1,51 @@
 
 <template>
   <div class="chart-wrapper">
-    <select
-      class="btn btn-default"
-      v-model="selected"
-      style="float:right; background-color: #ededed"
-    >
-      <option disabled value>Last 5 Months</option>
-      <option>Last Month</option>
-      <option>Last 3 Months</option>
-      <option>Last 6 Months</option>
-      <option>Last 9 Months</option>
-      <option>Last 12 Months</option>
-    </select>
     <canvas ref="myChart" width="1600" height="400"></canvas>
+    <p hidden class="count-text">{{stats}}</p>
   </div>
 </template> 
 
 <script>
-import Chart from "chart.js";
+import Chart from "chart.js"
 
 export default {
-  name: "MonthlyPatientRegistrationChart",
+  name: "VisitsStartChart",
+  props: ["stats"],
   data() {
     return {
       selected: ""
     };
   },
 
-  mounted() {
+  updated() {
     new Chart(this.$refs.myChart, {
       type: "line",
       data: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+        labels: this.stats.days,
         datasets: [
           {
             label: "Compete Visits",
             borderColor: "rgba(222, 187, 240, 0.9)",
             backgroundColor: "rgba(187, 130, 245, 0.1)",
-            data: [11, 3, 5, 7, 9]
+            data: this.stats.complete
           },
           {
             label: "Incomplete Visits",
             borderColor: "rgba(174, 225, 242, 0.9)",
             backgroundColor: "rgba(150, 229, 255, 0.1)",
-            data: [1, 7, 6, 2, 3]
+            data: this.stats.incomplete
           }
         ]
       },
       options: {
-        legend: { display: false },
+        legend: { 
+          display: true,
+          position: 'bottom' 
+          },
         title: {
           display: true,
-          text: `Total Visits`
+          text: this.stats.name
         },
         tooltips: {
           enabled: true
@@ -70,10 +63,10 @@ export default {
             ctx.textBaseline = "bottom";
 
             this.data.datasets.forEach(function(dataset, i) {
-              let meta = chartInstance.controller.getDatasetMeta(i);
+              let meta = chartInstance.controller.getDatasetMeta(i)
               meta.data.forEach(function(bar, index) {
                 let data = dataset.data[index];
-                ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                ctx.fillText(data, bar._model.x, bar._model.y - 5)
               });
             });
           }
@@ -83,10 +76,15 @@ export default {
             {
               scaleLabel: {
                 display: true,
-                labelString: "Number of Complete/Incomplete Visits"
+                labelString: "Complete/Incomplete Visits"
               },
               ticks: {
-                beginAtZero: true
+                beginAtZero: true,
+                userCallback: function(label, index, labels) {
+                  if (Math.floor(label) === label) {
+                    return label
+                  }
+                }
             }
             }
           ],
@@ -94,7 +92,7 @@ export default {
             {
               scaleLabel: {
                 display: true,
-                labelString: "Month(s)"
+                labelString: "Days"
               }
             }
           ]
