@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import EncounterStatsChart from "./EncounterStatsChart.vue"
-import VisitsStartChart from "./VisitsStartChart.vue"
-import moment from "moment"
+import EncounterStatsChart from "./EncounterStatsChart.vue";
+import VisitsStartChart from "./VisitsStartChart.vue";
+import moment from "moment";
 
 export default {
   name: "PatientDashboard",
@@ -108,18 +108,18 @@ export default {
         }
       )
         .then(response => {
-          return response.json()
+          return response.json();
         })
         .then(data => {
           Object.keys(data).map((key, index) => {
             this.encountersStats[this.ENCOUNTER_TYPES[key]] = data[key]
           });
-          this.totalEncounters()
-          this.maleEncounters()
-          this.femaleEncounters()
+          this.totalEncounters();
+          this.maleEncounters();
+          this.femaleEncounters();
         })
         .catch(err => {
-          console.log("Something went wrong!", err)
+          console.log("Something went wrong!", err);
         });
     },
 
@@ -131,7 +131,7 @@ export default {
         backgroundColor: "rgba(54, 162, 235, 0.2)",
         labels: Object.keys(this.encountersStats),
         data: Object.values(this.encountersStats).map(male => male.M + male.F)
-      }
+      };
     },
 
     maleEncounters() {
@@ -142,7 +142,7 @@ export default {
         backgroundColor: "rgba(143, 143, 201, 0.3)",
         labels: Object.keys(this.encountersStats),
         data: Object.values(this.encountersStats).map(male => male.M)
-      }
+      };
     },
 
     femaleEncounters() {
@@ -167,7 +167,7 @@ export default {
       )
         .then(response => {
           if (response.ok) {
-            return response.json()
+            return response.json();
           }
         })
         .then(data => {
@@ -175,17 +175,18 @@ export default {
             name: "Complete/Incomplete visits: last five days",
             complete: Object.values(data).map(d => d.complete + d.incomplete),
             incomplete: Object.values(data).map(d => d.incomplete),
-            days: Object.values(data).map(d => moment(d).format("ddd"))
-          };
+            days: Object.keys(data).map(d => moment(d).format("ddd"))
+          }
+
         })
         .catch(err => {
-          console.log("Something went wrong!", err)
-        });
+          console.log("Something went wrong!", err);
+        })
     }
   },
   created() {
-    this.fetchVisits()
-    this.fetchEncounterStats()
+    this.fetchVisits();
+    this.fetchEncounterStats();
   }
 };
 </script>
