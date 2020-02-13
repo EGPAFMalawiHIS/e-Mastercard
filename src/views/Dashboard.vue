@@ -23,7 +23,7 @@
 
 <script>
 // @ is an alias to /src
-import TopNav from '@/components/topNav.vue';
+import TopNav from '@/components/topNav.vue'
 import Sidebar from '@/components/SideBar.vue'
 import PatientDashboard from '@/components/dashboard/PatientDashboard.vue'
 
@@ -38,8 +38,5 @@ export default {
 </script>
 
 <style >
-  .red{
-    background-color: red;
-  }
-
+ 
 </style>
