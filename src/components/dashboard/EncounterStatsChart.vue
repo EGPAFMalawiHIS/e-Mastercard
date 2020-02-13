@@ -4,12 +4,8 @@
     <div class="col-sm">
       <div class="counter">
         <i class="fa fa-code fa-2x"></i>
-        <p class="count-text">Total Patients Seen</p>
-        <h2
-          class="timer count-title count-number"
-          data-to="100"
-          data-speed="1500"
-        >{{stats.Reception.M + stats.Reception.F}}</h2>
+        <p class="count-text">{{stats.name}}</p>
+        <h2 class="timer count-title count-number" data-to="100" data-speed="1500">{{stats.total}}</h2>
       </div>
     </div>
     <div class="col-sm">
@@ -22,23 +18,18 @@
 import Chart from "chart.js";
 
 export default {
-  name: "TotalPatientsChart",
+  name: "",
   props: ["stats"],
   updated() {
     new Chart(this.$refs.myChart, {
       type: "bar",
       data: {
-        labels: Object.keys(this.stats),
+        labels: this.stats.labels,
         datasets: [
           {
-            label: "Number of Patients",
-            backgroundColor: "rgba(54, 162, 235, 0.2)",
-            data: [
-              ...Object.values(this.stats).map(
-                patient => patient.M + patient.F
-              ),
-              0
-            ]
+            label: this.stats.label,
+            backgroundColor: this.stats.backgroundColor,
+            data: [...this.stats.data, 0]
           }
         ]
       },
@@ -93,7 +84,7 @@ export default {
                   }
                 },
                 suggestedMin: 0,
-                suggestedMax: (this.stats.Reception.M + this.stats.Reception.F) + 1
+                suggestedMax: this.stats.total + 1
               }
             }
           ]
@@ -110,7 +101,6 @@ export default {
   padding: 20px 0;
   border-radius: 5px;
 }
-
 .count-title {
   font-size: 40px;
   font-weight: bold;
@@ -118,7 +108,6 @@ export default {
   margin-bottom: 0;
   text-align: center;
 }
-
 .count-text {
   font-size: 13px;
   font-weight: bold;
@@ -126,7 +115,6 @@ export default {
   margin-bottom: 0;
   text-align: center;
 }
-
 .fa-2x {
   margin: 0 auto;
   float: none;

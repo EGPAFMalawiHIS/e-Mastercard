@@ -4,13 +4,13 @@
     <div class="user"></div>
     <div class="row bar-charts">
       <div class="charts col-sm shadow p-3 mb-5 bg-white rounded">
-        <TotalPatientsChart v-bind:stats="encountersStats" />
+        <EncounterStatsChart v-bind:stats="totalEncounterStats" />
       </div>
       <div class="charts col-sm shadow p-3 mb-5 bg-white rounded">
-        <MalePatientsChart v-bind:stats="encountersStats" />
+        <EncounterStatsChart v-bind:stats="maleEncounterStats" />
       </div>
       <div class="charts col-sm shadow p-3 mb-5 bg-white rounded">
-        <FemalePatientsChart v-bind:stats="encountersStats" />
+        <EncounterStatsChart v-bind:stats="femaleEncounterStats" />
       </div>
     </div>
     <div class="overview-chart shadow-lg p-3 mb-5 bg-white rounded">
@@ -20,16 +20,8 @@
 </template>
 
 <script>
-let end_date = moment()
-  .subtract(1, "days")
-  .format("YYYY-MM-DD");
-let start_date = moment()
-  .subtract(5, "days")
-  .format("YYYY-MM-DD");
 
-import TotalPatientsChart from "./TotalPatientsChart.vue";
-import FemalePatientsChart from "./FemalePatientsChart.vue";
-import MalePatientsChart from "./MalePatientsChart.vue";
+import EncounterStatsChart from "./EncounterStatsChart.vue";
 import MonthlyPatientRegistrationChart from "./MonthlyPatientRegistrationChart.vue";
 import moment from "moment";
 
@@ -59,13 +51,35 @@ export default {
         53: "Consultation",
         54: "Dispensing",
         68: "Adherence"
+      },
+      totalEncounterStats: {
+        total: "",
+        name: "",
+        backgroundColor: "",
+        label: "",
+        labels: "",
+        data: ""
+      },
+      maleEncounterStats: {
+        total: "",
+        name: "",
+        backgroundColor: "",
+        label: "",
+        labels: "",
+        data: ""
+      },
+      femaleEncounterStats: {
+        total: "",
+        name: "",
+        backgroundColor: "",
+        label: "",
+        labels: "",
+        data: ""
       }
     };
   },
   components: {
-    TotalPatientsChart,
-    FemalePatientsChart,
-    MalePatientsChart,
+    EncounterStatsChart,
     MonthlyPatientRegistrationChart
   },
   methods: {
@@ -75,7 +89,7 @@ export default {
         {
           method: "POST",
           headers: {
-            Authorization: "KR2QaTNVgaa5",
+            Authorization: "EwSzrbb1Rfl3",
             "Content-type": "application/json"
           },
           body: JSON.stringify({
@@ -90,10 +104,46 @@ export default {
           Object.keys(data).map((key, index) => {
             this.encountersStats[this.ENCOUNTER_TYPES[key]] = data[key];
           });
+          this.totalEncounters()
+          this.maleEncounters()
+          this.femaleEncounters()
         })
         .catch(err => {
           console.log("Something went wrong!", err);
         });
+    },
+
+    totalEncounters() {
+      this.totalEncounterStats = {
+        total: this.encountersStats.Reception.M,
+        name: "Total",
+        label: "Number of Patients",
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        labels: Object.keys(this.encountersStats),
+        data: Object.values(this.encountersStats).map(male => male.M + male.F)
+      }
+    },
+
+    maleEncounters() {
+      this.maleEncounterStats = {
+        total: this.encountersStats.Reception.M,
+        name: "Male",
+        label: "Number of Male",
+        backgroundColor: "rgba(143, 143, 201, 0.3)",
+        labels: Object.keys(this.encountersStats),
+        data: Object.values(this.encountersStats).map(male => male.M)
+      }
+    },
+
+    femaleEncounters() {
+      this.femaleEncounterStats = {
+        total: this.encountersStats.Reception.M,
+        name: "Female",
+        label: "Number of Females",
+        backgroundColor: "rgba(137, 232, 200, 0.3)",
+        labels: Object.keys(this.encountersStats),
+        data: Object.values(this.encountersStats).map(male => male.F)
+      }
     }
   },
   created() {
