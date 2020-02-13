@@ -103,7 +103,7 @@ export default {
   border-radius: 5px;
 }
 .count-title {
-  font-size: 10px;
+  font-size: 15px;
   font-weight: bold;
   margin-top: 10px;
   margin-bottom: 0;
