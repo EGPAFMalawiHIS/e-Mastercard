@@ -14,16 +14,15 @@
       </div>
     </div>
     <div class="overview-chart shadow-lg p-3 mb-5 bg-white rounded">
-      <MonthlyPatientRegistrationChart />
+      <VisitsStartChart v-bind:stats="completeIncompleteStats" />
     </div>
   </div>
 </template>
 
 <script>
-
-import EncounterStatsChart from "./EncounterStatsChart.vue";
-import MonthlyPatientRegistrationChart from "./MonthlyPatientRegistrationChart.vue";
-import moment from "moment";
+import EncounterStatsChart from "./EncounterStatsChart.vue"
+import VisitsStartChart from "./VisitsStartChart.vue"
+import moment from "moment"
 
 export default {
   name: "PatientDashboard",
@@ -75,12 +74,23 @@ export default {
         label: "",
         labels: "",
         data: ""
-      }
+      },
+      completeIncompleteStats: {
+        complete: [],
+        incomplete: [],
+        days: []
+      },
+      endDate: moment()
+        .subtract(1, "days")
+        .format("YYYY-MM-DD"),
+      startDate: moment()
+        .subtract(5, "days")
+        .format("YYYY-MM-DD")
     };
   },
   components: {
     EncounterStatsChart,
-    MonthlyPatientRegistrationChart
+    VisitsStartChart
   },
   methods: {
     fetchEncounterStats() {
@@ -98,18 +108,18 @@ export default {
         }
       )
         .then(response => {
-          return response.json();
+          return response.json()
         })
         .then(data => {
           Object.keys(data).map((key, index) => {
-            this.encountersStats[this.ENCOUNTER_TYPES[key]] = data[key];
+            this.encountersStats[this.ENCOUNTER_TYPES[key]] = data[key]
           });
           this.totalEncounters()
           this.maleEncounters()
           this.femaleEncounters()
         })
         .catch(err => {
-          console.log("Something went wrong!", err);
+          console.log("Something went wrong!", err)
         });
     },
 
@@ -143,11 +153,39 @@ export default {
         backgroundColor: "rgba(137, 232, 200, 0.3)",
         labels: Object.keys(this.encountersStats),
         data: Object.values(this.encountersStats).map(male => male.F)
-      }
+      };
+    },
+    fetchVisits() {
+      fetch(
+        `http://localhost:3001/api/v1/programs/1/reports/visits?name=visits&start_date=${this.startDate}&end_date=${this.endDate}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "EwSzrbb1Rfl3"
+          }
+        }
+      )
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          }
+        })
+        .then(data => {
+          this.completeIncompleteStats = {
+            name: "Complete/Incomplete visits: last five days",
+            complete: Object.values(data).map(d => d.complete + d.incomplete),
+            incomplete: Object.values(data).map(d => d.incomplete),
+            days: Object.values(data).map(d => moment(d).format("ddd"))
+          };
+        })
+        .catch(err => {
+          console.log("Something went wrong!", err)
+        });
     }
   },
   created() {
-    this.fetchEncounterStats();
+    this.fetchVisits()
+    this.fetchEncounterStats()
   }
 };
 </script>
