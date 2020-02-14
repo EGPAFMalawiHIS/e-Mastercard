@@ -1,8 +1,8 @@
 <template>
-  <div class="card mb-3" style="width: 100%;">
+  <div class="card mb-3 shadow-lg card-hover" style="width: 100%;" @click="toMastercard">
         <div class="row">
             <div class="col-md-4">
-                <img :src="imageType" class="card-img rounded-circle" alt="..."  style="margin: auto;">
+                <img :src="imageType" class="card-img rounded-circle" alt="..."  style="padding: 10%;">
             </div>
             <div class="col-md-8">
                 <div class="card-body">
@@ -39,11 +39,17 @@ export default {
             let identifier = this.patient.patient_identifiers.filter(function(entry) { return entry.type.name === "ARV Number"; });
             return identifier.length > 0 ? identifier[0].identifier : "N/A";
         }
+    }, methods: {
+        toMastercard: function() {
+            this.$router.push(`/patient/mastercard/${this.patient.patient_id}`);
+        }
     }
 
 }
 </script>
 
 <style>
-
+.card-hover:hover {
+    border-color: blue;
+}
 </style>

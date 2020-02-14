@@ -36,10 +36,7 @@
             aria-expanded="false"
           >{{username}}</a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Actin</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
+            <a class="dropdown-item" href="/login">Logout</a>
           </div>
         </li>
       </ul>
@@ -57,6 +54,10 @@ export default {
         username() {
             return (this.$store.user ? this.$store.user.username : sessionStorage.username);  
         }
+    }, mounted() {
+      if (!sessionStorage.apiKey) {
+          this.$router.push('/login');
+        } 
     }
 };
 
