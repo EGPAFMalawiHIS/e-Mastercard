@@ -31,17 +31,7 @@ export default {
   data() {
     return {
       encounterDate: moment(new Date()).format("YYYY-MM-DD"),
-      encountersStats: {
-        Vitals: "",
-        Appointment: "",
-        Registration: "",
-        Treatment: "",
-        Reception: "",
-        Staging: "",
-        Consultation: "",
-        Dispensing: "",
-        Adherence: ""
-      },
+      encountersStats: {},
       ENCOUNTER_TYPES: {
         6: "Vitals",
         7: "Appointment",
@@ -53,35 +43,10 @@ export default {
         54: "Dispensing",
         68: "Adherence"
       },
-      totalEncounterStats: {
-        total: "",
-        name: "",
-        backgroundColor: "",
-        label: "",
-        labels: [],
-        data: []
-      },
-      maleEncounterStats: {
-        total: "",
-        name: "",
-        backgroundColor: "",
-        label: "",
-        labels: [],
-        data: []
-      },
-      femaleEncounterStats: {
-        total: "",
-        name: "",
-        backgroundColor: "",
-        label: "",
-        labels: [],
-        data: []
-      },
-      completeIncompleteStats: {
-        complete: [],
-        incomplete: [],
-        days: []
-      },
+      totalEncounterStats: {},
+      maleEncounterStats: {},
+      femaleEncounterStats: {},
+      completeIncompleteStats: {},
       endDate: moment()
         .subtract(1, "days")
         .format("YYYY-MM-DD"),
@@ -93,7 +58,7 @@ export default {
       config: {
         api_base_url: `${Config.apiProtocol}://${Config.apiURL}:${Config.apiPort}/api/${ApiClient.config.apiVersion}`,
         token: sessionStorage.apiKey
-      },
+      }
     }
   },
   components: {
@@ -164,6 +129,7 @@ export default {
       }
     },
     fetchVisits() {
+      const name = "Complete/Incomplete visits: last five days"
       const URL = `${this.config.api_base_url}/programs/1/reports/visits?name=visits&start_date=${this.startDate}&end_date=${this.endDate}`
       fetch(URL, {
         method: "GET",
@@ -172,16 +138,21 @@ export default {
         }
       })
         .then(response => {
-          if (response.ok) {
-            return response.json()
-          }
-        })
-        .then(data => {
-          this.completeIncompleteStats = {
-            name: "Complete/Incomplete visits: last five days",
-            complete: Object.values(data).map(d => d.complete + d.incomplete),
-            incomplete: Object.values(data).map(d => d.incomplete),
-            days: Object.keys(data).map(d => moment(d).format("ddd"))
+          if (response.status === 200) {
+            return response.json().then(data => {
+              this.completeIncompleteStats = {
+                name,
+                complete: Object.values(data).map(
+                  d => d.complete + d.incomplete
+                ),
+                incomplete: Object.values(data).map(d => d.incomplete),
+                days: Object.keys(data).map(d => moment(d).format("ddd"))
+              }
+            })
+          } else if (response.status === 204) {
+            this.completeIncompleteStats = {
+              name
+            }
           }
         })
         .catch(err => {
