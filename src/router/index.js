@@ -42,6 +42,21 @@ const routes = [
     path: "/patient/mastercard/:id",
     name: "patient_mastercard",
     component: () => import("../views/Mastercard.vue")
+  },
+  {
+    path: "/reports",
+    name: "reports",
+    component: () => import("../views/Reports.vue")
+  },
+  {
+    path: "/moh",
+    name: "moh_reports",
+    component: () => import("../views/MoHreports.vue")
+  },
+  {
+    path: "/cohort",
+    name: "cohort",
+    component: () => import("../views/Cohort.vue")
   }
 ]
 
