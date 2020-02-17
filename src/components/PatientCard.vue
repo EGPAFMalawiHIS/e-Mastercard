@@ -33,7 +33,7 @@ export default {
             return ` ${moment(this.patient.person.birthdate).format('DD-MMM-YYYY')} (${moment().diff(this.patient.person.birthdate, 'years',false)} years old)`;
         },
         imageType() {
-            return this.patient.person.gender === "M" ? require("../assets/man.png") : require("../assets/woman.png");
+            return this.patient.person.gender === "M" ? require("../assets/male-1.png") : require("../assets/female-2.png");
         },
         arvNumber() {
             let identifier = this.patient.patient_identifiers.filter(function(entry) { return entry.type.name === "ARV Number"; });
