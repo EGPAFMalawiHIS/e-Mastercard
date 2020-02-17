@@ -135,7 +135,7 @@ export default {
         this.errors = [];
         this.$router.push("/");
       } else {
-        this.error = ("Invalid username or password");
+        this.errors.push("Invalid username or password");
         console.warn(`Response: ${response.status} - ${response.body}`);
         return;
       }
