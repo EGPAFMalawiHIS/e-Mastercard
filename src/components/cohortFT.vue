@@ -257,6 +257,149 @@
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
 
+    <tr>
+      <td class="numbers">40.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;border-bottom-style:none;
+        border-left-style: none;">&nbsp;</td>
+      <td style="border-left-style: none;border-right-style: none;
+        border-top-style: none;border-bottomt-style: none;"><b>PCR</b> Infants <12 mths PCR</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">41.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;">&nbsp;</td>
+      <td style="border-left-style: none;border-right-style: none;
+        border-top-style: none;border-bottomt-style: none;"><b>U5</b> Children 12-59mths</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">42.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;">&nbsp;</td>
+      <td style="border-left-style: none;"><b>Preg</b> Pregnant women</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">43.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;">&nbsp;</td>
+      <td style="border-left-style: none;"><b>BF</b> Breastfeeding mothers</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">44.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;">&nbsp;</td>
+      <td style="border-left-style: none;"><b>CD4</b> CD4 below threshol</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">45.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;">&nbsp;</td>
+      <td style="border-left-style: none;"><b>Asy</b> Asymptomatic / mild</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">46.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;">&nbsp;</td>
+      <td style="border-left-style: none;">WHO stage 3</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">47.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;">&nbsp;</td>
+      <td style="border-left-style: none;">WHO stage 4</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">48.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;"><b>Unk</b></td>
+      <td style="border-left-style: none;">Unknown / reason outside guidelines</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
