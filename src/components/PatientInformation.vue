@@ -210,7 +210,6 @@
 <script>
 import ApiClient from "../services/api_client";
 import moment from "moment";
-import func from '../../vue-temp/vue-editor-bridge';
 export default {
   data: function() {
     return {
