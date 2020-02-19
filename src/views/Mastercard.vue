@@ -12,7 +12,8 @@
 
     <top-nav/>
       <div class="container-fluid">
-       <p>mastercard</p>
+       <!-- <p>mastercard</p> -->
+       <patient-information/>
       </div>
     </div>
     <!-- /#page-content-wrapper -->
@@ -24,13 +25,15 @@
 <script>
 // @ is an alias to /src
 import TopNav from '@/components/topNav.vue';
-import Sidebar from '@/components/SideBar.vue'
+import Sidebar from '@/components/SideBar.vue';
+import PatientInformation from '@/components/PatientInformation.vue'
 
 export default {
   name: 'home',
   components: {
     "top-nav": TopNav,
-    "side-bar": Sidebar
+    "side-bar": Sidebar,
+    "patient-information": PatientInformation
   }
 }
 </script>

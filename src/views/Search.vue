@@ -22,7 +22,7 @@
             </div>
           </div>
 
-          <div v-show="showAdvanced" class="justify-content-center">
+          <div class="justify-content-center">
             <form class="form-inline">
               <div class="form-group">
                 <label for="gender">Gender:</label>
@@ -45,7 +45,6 @@
               </div>
             </form>
           </div>
-          <button class="btn btn-primary" @click="toggleAdvanced">advanced search</button>
           <br />
           <br />
           <div class="container-fluid">
@@ -132,7 +131,6 @@ export default {
         }
       }
       //var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/search/patients/by_identifier?type_id=" + identifier_type + "&identifier="  + identfier_id;
-      if (this.showAdvanced) {
         if (this.gender) {
           personOBJ.gender = this.gender;
         }
@@ -144,7 +142,6 @@ export default {
           personOBJ.identifier = this.sitePrefix + "-ARV-" + tempName[0];
           personOBJ.URL = "/search/patients/by_identifier?type_id=4&&";
         }
-      }
       return personOBJ;
     },
     getSitePrefix: async function() {
