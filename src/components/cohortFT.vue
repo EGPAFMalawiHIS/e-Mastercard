@@ -564,11 +564,289 @@
     <tr class="horisonatl-separator">
       <td class="numbers">&nbsp;</td>
       <td>&nbsp;</td>
-      <td colspan="6" style="text-align: center;">Check completeness of ‘Clinic own data’</td>
+      <td colspan="6" style="font-style: italic; text-align: center;">Check completeness of ‘Clinic own data’</td>
       <td><img src="../assets/sum-arrow.png" class="sum-arrows"/></td>
       <td><img src="../assets/sum-arrow.png" class="sum-arrows"/></td>
     </tr>
     
+    <tr class="horisonatl-separator">
+      <td class="numbers">62.</td>
+      <td colspan="2">&nbsp;</td>
+      <td colspan="5" style="text-align: center; border-style:dotted;
+       border-width:1px 1px 0px 1px; text-align: left; padding-left:10px;">Total adv. outcomes = Died total + Defaulted + Stopped + TO</td>
+      <td style="border-style:solid; border-width:1px;"><span class="postfixes">A</span></td>
+      <td style="border-style:solid; border-width:1px;"><span class="postfixes">B</span></td>
+    </tr>
+    
+    <tr class="horisonatl-separator">
+      <td class="numbers">63.</td>
+      <td colspan="2">&nbsp;</td>
+      <td colspan="5" style="text-align: center; border-style:dotted;
+       border-width:0px 0px 1px 1px; text-align: left; padding-left:10px;">Calculate completeness %&nbsp;&nbsp;
+       A / B x 100 (Use difference if greater than 100%)</td>
+      <td style="border-style:dotted; border-bottom-width:1px;">&nbsp;</td>
+      <td style="border-style:solid; border-width:1px;"><span style="left: 40px;" class="postfixes">%</span></td>
+    </tr>
+    
+    <tr class="horisonatl-separator">
+      <td class="numbers">&nbsp;</td>
+      <td colspan="7" style="text-align:left; font-weight: bold; padding-left: 10px;">Secondary outcomes of those alive on ART</td>
+      <td><b>P</b>aeds formul.</td>
+      <td><b>A</b>dults formul.</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">64.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px;
+       border-bottom-width: 0px; border-right-width: 0px;">ART Regimens</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px;" colspan="3">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">0</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">65.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:0px;">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;" colspan="3">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">2</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">66.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:0px;">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        text-align:left; border-left-width:0px; border-top-width:0px;" colspan="3">Count regimen for <u>all patients registered</u></td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">4</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">67.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:0px;">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        text-align:left; border-left-width:0px; border-top-width:0px;" colspan="3">at this site, including those who currently</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">5</td>
+      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">68.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px; border-style:dotted;
+       border-bottom-width: 1px; border-right-width: 0px; border-top-width:0px;">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 1px; border-style:dotted;
+        border-left-width:0px; border-top-width:0px; text-align:left;" colspan="3">get supplies from another site</td>
+      <td style="border-right-width:0px; border-bottom-width: 1px; border-style:dotted;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 1px; border-style: dotted;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">6</td>
+      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">69.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:0px;">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        text-align:left; border-left-width:0px; border-top-width:0px;" colspan="3">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">7</td>
+      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">70.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:0px;">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        text-align:left; border-left-width:0px; border-top-width:0px;" colspan="3">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">8</td>
+      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">71.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:0px;">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        text-align:left; border-left-width:0px; border-top-width:0px;" colspan="3">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">9</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">72.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:0px;">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        text-align:left; border-left-width:0px; border-top-width:0px;" colspan="3">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">10</td>
+      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">73.</td>
+      <td colspan="1" style="text-align:left; padding-left: 10px;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:1px;">&nbsp;</td>
+      <td style="border-right-width:1px; border-bottom-width: 0px;
+        text-align:left; border-left-width:0px; border-top-width:1px;" colspan="4">Specify ‘Other’ Regimens and number of patients on each</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">11</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">74.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px; border-top-style:dotted;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:1px;">&nbsp;</td>
+      <td style="border-right-width:1px; border-bottom-width: 0px; border-top-style:dotted;
+        text-align:left; border-left-width:0px; border-top-width:1px;" colspan="3">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">12</td>
+      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">75.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px; border-top-style:dotted;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:1px;">&nbsp;</td>
+      <td style="border-right-width:1px; border-bottom-width: 0px; border-top-style:dotted;
+        text-align:left; border-left-width:0px; border-top-width:1px;" colspan="3">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">13</td>
+      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">76.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px; border-top-style:dotted;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:1px;">&nbsp;</td>
+      <td style="border-right-width:1px; border-bottom-width: 0px; border-top-style:dotted;
+        text-align:left; border-left-width:0px; border-top-width:1px;" colspan="3">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">14</td>
+      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">77.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px; border-top-style:dotted;
+       border-bottom-width: 0px; border-right-width: 0px; border-top-width:1px;">&nbsp;</td>
+      <td style="border-right-width:1px; border-bottom-width: 0px; border-top-style:dotted;
+        text-align:left; border-left-width:0px; border-top-width:1px;" colspan="3">&nbsp;</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;">Regimen</td>
+      <td style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
+        font-weight:bold;">15</td>
+      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">78.</td>
+      <td colspan="2" style="text-align:left; padding-left: 10px; border-top-style:dotted;
+       border-bottom-width: 1px; border-right-width: 0px; border-top-width:1px;">&nbsp;</td>
+      <td style="border-right-width:1px; border-bottom-width: 1px; border-top-style:dotted;
+        text-align:left; border-left-width:0px; border-top-width:1px;" colspan="3">&nbsp;</td>
+      <td colspan="2" style="border-right-width:0px; border-bottom-width: 0px;
+        border-left-width:0px; border-top-width:0px;
+        text-align:left; padding-left:10px;">Other (paed./adult)</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -671,7 +949,20 @@ td {
 }
 
 .sum-arrows {
-  width: 30px;
-  height: 30px;
+  width: 75px;
+  height: 55px;
 }
+
+.postfixes {
+  font-size: x-small;
+  font-weight: bold;
+  position: relative;
+  top: -15px;
+  left: -40px;
+}
+
+
+
+
+
 </style>
