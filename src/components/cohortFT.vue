@@ -240,7 +240,7 @@
 
     <tr class="horisonatl-separator">
       <td>&nbsp;</td>
-      <td colspan="9">Reason for starting ART</td>
+      <td colspan="9" style="text-align: left;">Reason for starting ART</td>
     </tr>
 
     <tr>
@@ -347,7 +347,7 @@
     <tr>
       <td class="numbers">46.</td>
       <td style="font-weight: normal;padding-left: 10px;width: 15px;
-        border-right-style: none !important;">&nbsp;</td>
+        border-right-style: none !important;"><b>3</b></td>
       <td style="border-left-style: none;">WHO stage 3</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -361,7 +361,7 @@
     <tr>
       <td class="numbers">47.</td>
       <td style="font-weight: normal;padding-left: 10px;width: 15px;
-        border-right-style: none !important;">&nbsp;</td>
+        border-right-style: none !important;"><b>4</b></td>
       <td style="border-left-style: none;">WHO stage 4</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -385,6 +385,197 @@
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
+
+    <tr class="horisonatl-separator">
+      <td>&nbsp;</td>
+      <td colspan="9" style="text-align: left;">Stage defining conditions at ART initiation</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">49.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;"><b>Nev/>2yrs</b></td>
+      <td style="border-left-style: none;">Never TB / TB over 2 years ago</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">50.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;"><b>Last 2yrs</b></td>
+      <td style="border-left-style: none;">TB within the last 2 years</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">51.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;"><b>Curr</b></td>
+      <td style="border-left-style: none;">Current episode of TB</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr class="horisonatl-separator">
+      <td colspan="10" style="text-align: left;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">52.</td>
+      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+        border-right-style: none !important;"><b>KS</b></td>
+      <td style="border-left-style: none;">Kaposi’s Sarcoma</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td class="vertical-separator">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr class="horisonatl-separator">
+      <td class="numbers">&nbsp;</td>
+      <td colspan="6" style="text-align: left;"><b>Primary outcomes as of the end of the quarter evaluated</b></td>
+      <td colspan="3" style="text-align: center;"><b>Out of all patients ever registered</b></td>
+    </tr>
+
+    <tr class="horisonatl-separator">
+      <td class="numbers">&nbsp;</td>
+      <td colspan="6" style="text-align: left;">&nbsp;</td>
+      <td style="text-align: center;">E-Mastercard</td>
+      <td style="text-align: center;">Clinic own**</td>
+      <td style="text-align: center;">Checked data</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">53.</td>
+      <td style="text-align: left; padding-left: 10px;" colspan="6">Total alive and on ART</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr class="horisonatl-separator">
+      <td class="numbers">&nbsp;</td>
+      <td colspan="9" style="text-align: center;">&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td class="numbers">54.</td>
+      <td style="font-weight: bold; text-align: right;border-right-style: none;
+        border-bottom-style: none;border-left-style: none;" colspan="2">M1</td>
+      <td style="text-align: left; padding-left: 10px;
+        border-right-style: none;border-bottom-style: none; border-left-style: none;" 
+        colspan="4">Died within the 1st month after ART initiation</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">55.</td>
+      <td style="font-weight: bold; text-align:right; border-right-style: none;
+        border-top-style: none;border-left-style: none;
+        border-bottom-style: none;" colspan="2">M2</td>
+      <td style="text-align: left; padding-left: 10px;border-top-style: none;
+        border-right-style: none;border-bottom-style: none; border-left-style: none;" 
+        colspan="4">Died within the 2nd month after ART initiation</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">56.</td>
+      <td style="font-weight: bold; text-align: right; border-right-style:none;
+        border-bottom-style:none; border-left-style:none; border-top-style: none;" colspan="2">M3</td>
+      <td style="text-align: left; padding-left:10px; border-top-style: none;
+        border-right-style:none; border-bottom-style:none; border-left-style: none;" 
+        colspan="4">Died within the 3rd month after ART initiation</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">57.</td>
+      <td style="font-weight: bold; text-align:right; border-right-style: none;
+        border-left-style: none; border-top-style: none;" colspan="2">M4+</td>
+      <td style="text-align: left; padding-left: 10px;
+        border-right-style:none; border-left-style:none; border-top-style: none;" 
+        colspan="4">Died after the end of the 3rd month after ART initiation</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">58.</td>
+      <td style="text-align: left; padding-left: 10px; border-bottom-style:none;" colspan="6">Died total</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">59.</td>
+      <td style="text-align: left; padding-left: 10px;
+        border-top-style:none; border-bottom-style:none;" colspan="6">Defaulted (more than 2 months overdue after expected to have run out of ARVs)</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">60.</td>
+      <td style="text-align: left; padding-left: 10px;
+        border-top-style:none; border-bottom-style:none;" colspan="6">Stopped taking ARVs (clinician or patient own decision, last known alive)</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td class="numbers">61.</td>
+      <td style="text-align: left; padding-left: 10px;border-top-style:none;" colspan="6">Transferred Out</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">&nbsp;</td>
+    </tr>
+
+    <tr class="horisonatl-separator">
+      <td class="numbers">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td colspan="6" style="text-align: center;">Check completeness of ‘Clinic own data’</td>
+      <td><img src="../assets/sum-arrow.png" class="sum-arrows"/></td>
+      <td><img src="../assets/sum-arrow.png" class="sum-arrows"/></td>
+    </tr>
+    
+
+
+
+
+
+
+
 
 
 
@@ -479,4 +670,8 @@ td {
   border-style: dotted;
 }
 
+.sum-arrows {
+  width: 30px;
+  height: 30px;
+}
 </style>
