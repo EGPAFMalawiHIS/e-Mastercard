@@ -40,10 +40,11 @@
     <tr>
       <td class="numbers">26.</td>
       <td style="font-weight: normal; border-right-style: none !important; border-bottom-style: none !important;
-        padding-left: 10px;">
-        <b>FT</b>&nbsp;&nbsp;Patients<br /><span style="margin-left:28px;">initiated on <span style="margin-left: 28px;">ART</span></span>
+        padding-left: 10px; text-align:left; padding-left:5px;">
+        <b>FT</b>&nbsp;&nbsp;Patients initiated
       </td>
-      <td style="font-weight: normal; border-left-style: none !important; border-bottom-style: none !important;">Male</td>
+      <td style="font-weight: normal; border-left-style: none !important; 
+        text-align:left; border-bottom-style: none !important;">Male</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -55,10 +56,10 @@
 
     <tr>
       <td class="numbers">27.</td>
-      <td style="font-weight: normal; border-right-style: none !important; padding-left: 35px;
-         border-top-style: none !important; border-bottom-style: none !important;width:100px;">first time
+      <td style="font-weight: normal; border-right-style: none !important; padding-left: 10px; text-align: left;
+         border-top-style: none !important; border-bottom-style: none !important;width:100px;">on ART
       </td>
-      <td style="font-weight: normal; border-left-style: none !important;
+      <td style="font-weight: normal; border-left-style: none !important; text-align: left;
          border-top-style: none !important; border-bottom-style: none !important;">Female Non-pregnant</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -71,11 +72,11 @@
   
     <tr>
       <td class="numbers">28.</td>
-      <td style="font-weight: normal; border-right-style: none !important; padding-left: 28px;
-         border-top-style: none !important; border-bottom-style: none !important;">
-        &nbsp;
+      <td style="font-weight: normal; border-right-style: none !important; padding-left: 10px;
+         border-top-style: none !important; border-bottom-style: none !important; text-align:left;">
+        first time
       </td>
-      <td style="font-weight: normal; border-left-style: none !important;
+      <td style="font-weight: normal; border-left-style: none !important; text-align:left; 
          border-top-style: none !important; border-bottom-style: none !important;">Female pregnant</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -92,7 +93,7 @@
          border-top-style: none !important; border-bottom-style: none !important;">
         &nbsp;
       </td>
-      <td style="font-weight: normal; border-left-style: none !important;
+      <td style="font-weight: normal; border-left-style: none !important; text-align:left; 
          border-top-style: dotted !important; border-bottom-style: none !important">FT Init., Non-disagg.</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -109,7 +110,7 @@
          border-top-style: none !important;">
         &nbsp;
       </td>
-      <td style="font-weight: normal; border-left-style: none !important;
+      <td style="font-weight: normal; border-left-style: none !important; text-align:left; 
          border-top-style: dotted !important;">CHECK: Total FT</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -122,7 +123,8 @@
 
     <tr>
       <td class="numbers">31.</td>
-      <td style="border-bottom-style: none;font-weight: normal;padding-left: 10px;" colspan="2"><b>Re</b>&nbsp;&nbsp;Patients re-initiated on ART</td>
+      <td style="text-align: left;border-bottom-style: none;
+        font-weight: normal;padding-left: 10px;" colspan="2"><b>Re</b>&nbsp;&nbsp;Patients re-initiated on ART</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -134,7 +136,7 @@
 
     <tr>
       <td class="numbers">32.</td>
-      <td style="font-weight: normal;padding-left: 10px;" colspan="2">
+      <td style="text-align: left;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>TI</b>&nbsp;&nbsp;Patients transferred in on ART
       </td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -152,7 +154,7 @@
 
     <tr>
       <td class="numbers">33.</td>
-      <td style="font-weight: normal;padding-left: 10px;" colspan="2">
+      <td style="text-align: left;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>M</b>&nbsp;&nbsp;Males (all ages)
       </td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -166,7 +168,7 @@
 
     <tr>
       <td class="numbers">34.</td>
-      <td style="border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
+      <td style="text-align: left;border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>FNP</b>&nbsp;&nbsp;Non-pregnant Females (all ages)
       </td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -180,7 +182,7 @@
 
     <tr>
       <td class="numbers">35.</td>
-      <td style="border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
+      <td style="text-align: left;border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>FP</b>&nbsp;&nbsp;Pregnant Females (all ages)
       </td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -198,7 +200,7 @@
 
     <tr>
       <td class="numbers">36.</td>
-      <td style="font-weight: normal;padding-left: 10px;" colspan="2">
+      <td style="text-align: left;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>A</b>&nbsp;&nbsp;Children below 24 m at ART initiation
       </td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -212,7 +214,7 @@
 
     <tr>
       <td class="numbers">37.</td>
-      <td style="border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
+      <td style="text-align: left;border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>B</b>&nbsp;&nbsp;Children 24 m - 14 yrs at ART initiation
       </td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -226,7 +228,7 @@
 
     <tr>
       <td class="numbers">38.</td>
-      <td style="border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
+      <td style="text-align: left;border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>C</b>&nbsp;&nbsp;Adults 15 years+ at ART initiation
       </td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -246,9 +248,9 @@
     <tr>
       <td class="numbers">39.</td>
       <td style="font-weight: normal;padding-left: 10px;width: 15px;
-        border-right-style: none !important;
+        border-right-style: none !important; text-align: left;
         border-bottom-width:0px;"><b>PSHD</b></td>
-      <td style="border-left-style: none;
+      <td style="border-left-style: none; text-align: left; padding-left:10px;
         border-bottom-width:0px;">&nbsp;&nbsp;Pres. Sev. HIV disease age <12 m</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -266,7 +268,7 @@
         border-right-width: 0px !important; border-bottom-style:none;
         border-left-width:1px; border-top-width:0px;">&nbsp;</td>
       <td style="border-left-width:1px !important; border-right-width:1px !important;
-        border-bottom-width:0px !important; border-style: dotted;
+        border-bottom-width:0px !important; border-style: dotted; text-align: left; padding-left:10px;
         border-top-width:0px;"><b>PCR</b> Infants <12 mths PCR</td>
 
 
@@ -285,7 +287,7 @@
         border-right-style: none !important; 
         border-bottom-width:0px; border-top-width:0px;">&nbsp;</td>
       <td style="border-left-width: 1px;
-        border-top-width:0px; border-style:dotted;
+        border-top-width:0px; border-style:dotted; text-align: left; padding-left:10px;
         border-bottom-width:0px;"><b>U5</b> Children 12-59mths</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -302,7 +304,7 @@
         border-right-width:1px !important; border-bottom-width:0px;
         border-top-width:0px; border-style: dotted;">&nbsp;</td>
       <td style="border-left-style: none;
-        border-top-width:0px;
+        border-top-width:0px; text-align: left; padding-left:10px;
         border-bottom-width:0px;"><b>Preg</b> Pregnant women</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -320,7 +322,7 @@
         border-left-width:1px;
         border-top-width:0px; border-bottom-width:0px;">&nbsp;</td>
       <td style="border-left-style: none;
-        border-top-width:0px;
+        border-top-width:0px; text-align: left; padding-left:10px;
         border-bottom-width:0px;"><b>BF</b> Breastfeeding mothers</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -338,7 +340,7 @@
         border-left-width:1px;
         border-top-width:0px; border-bottom-width:0px;">&nbsp;</td>
       <td style="border-left-style: none;
-        border-top-width:0px;
+        border-top-width:0px; text-align: left; padding-left:10px;
         border-bottom-width:0px;"><b>CD4</b> CD4 below threshol</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -357,7 +359,7 @@
         border-left-width:1px;
         border-top-width:0px; border-bottom-width:0px;">&nbsp;</td>
       <td style="border-left-style: none;
-        border-top-width:0px;
+        border-top-width:0px; text-align: left; padding-left:10px;
         border-bottom-width:0px;"><b>Asy</b> Asymptomatic / mild</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -372,10 +374,10 @@
       <td class="numbers">46.</td>
       <td style="font-weight: normal;padding-left: 10px;width: 15px;
         border-right-style: none !important;
-        border-top-width:0px;
+        border-top-width:0px; text-align: left;
         border-bottom-width:0px;"><b>3</b></td>
       <td style="border-left-style: none;
-        border-bottom-width:0px;
+        border-bottom-width:0px; text-align: left; padding-left:10px;
         border-top-width:0px;">WHO stage 3</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -390,10 +392,10 @@
       <td class="numbers">47.</td>
       <td style="font-weight: normal;padding-left: 10px;width: 15px;
         border-right-style: none !important;
-        border-top-width:0px;
+        border-top-width:0px; text-align: left;
         border-bottom-width:0px;"><b>4</b></td>
       <td style="border-left-width:0px;
-        border-bottom-style:none;
+        border-bottom-style:none; text-align: left; padding-left:10px;
         border-top-width:0px;">WHO stage 4</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -407,9 +409,9 @@
     <tr>
       <td class="numbers">48.</td>
       <td style="font-weight: normal;padding-left: 10px;width: 15px;
-        border-right-style: none !important;
+        border-right-style: none !important; text-align: left;
         border-top-style:none;"><b>Unk</b></td>
-      <td style="border-left-style: none;
+      <td style="border-left-style: none; text-align: left; padding-left:10px;
         border-top-style:none;">Unknown / reason outside guidelines</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -427,9 +429,9 @@
 
     <tr>
       <td class="numbers">49.</td>
-      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+      <td style="font-weight: normal;padding-left: 10px;width: 15px; text-align: left; padding-left:10px;
         border-right-style: none !important;"><b>Nev/>2yrs</b></td>
-      <td style="border-left-style: none;">Never TB / TB over 2 years ago</td>
+      <td style="border-left-style: none; text-align: left; padding-left:10px;">Never TB / TB over 2 years ago</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -441,9 +443,9 @@
 
     <tr>
       <td class="numbers">50.</td>
-      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+      <td style="font-weight: normal;padding-left: 10px;width: 15px; text-align: left; padding-left:10px;
         border-right-style: none !important;"><b>Last 2yrs</b></td>
-      <td style="border-left-style: none;">TB within the last 2 years</td>
+      <td style=" text-align: left; padding-left:10px;border-left-style: none;">TB within the last 2 years</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -455,9 +457,9 @@
 
     <tr>
       <td class="numbers">51.</td>
-      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+      <td style="font-weight: normal;padding-left: 10px;width: 15px; text-align: left; padding-left:10px;
         border-right-style: none !important;"><b>Curr</b></td>
-      <td style="border-left-style: none;">Current episode of TB</td>
+      <td style="border-left-style: none; text-align: left; padding-left:10px;">Current episode of TB</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -473,9 +475,9 @@
 
     <tr>
       <td class="numbers">52.</td>
-      <td style="font-weight: normal;padding-left: 10px;width: 15px;
+      <td style="font-weight: normal;padding-left: 10px;width: 15px; text-align: left; padding-left:10px;
         border-right-style: none !important;"><b>KS</b></td>
-      <td style="border-left-style: none;">Kaposi’s Sarcoma</td>
+      <td style="border-left-style: none; text-align: left; padding-left:10px;">Kaposi’s Sarcoma</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
@@ -1286,9 +1288,6 @@ td {
   top: -15px;
   left: -40px;
 }
-
-
-
 
 
 </style>
