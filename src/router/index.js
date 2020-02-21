@@ -57,6 +57,11 @@ const routes = [
     path: "/cohort",
     name: "cohort",
     component: () => import("../views/Cohort.vue")
+  },
+  {
+    path: "/pepfar_disaggregated",
+    name: "pepfar_disaggregated",
+    component: () => import("../views/PepfarDisaggregated.vue")
   }
 ]
 
