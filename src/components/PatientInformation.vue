@@ -260,7 +260,52 @@ export default {
           variableName: "dateOfHIVTest",
           valueType: "value_datetime",
           secondType: "value_text"
-        }
+        },{
+          conceptID: 7754,
+          variableName: "ti",
+          valueType: "value_coded",
+          secondType: "value_text",
+          returnValue: "Yes",
+          default: "No",
+          pararms: "value_coded=1065",
+          backupConcept: {
+            conceptID: 7751,
+            variableName: "ti",
+            valueType: "value_datetime",
+            secondType: "value_text",
+            returnValue: "Yes",
+            default: "No",  
+          }
+        },{
+          conceptID: 2552,
+          variableName: "followUp",
+          valueType: "value_coded",
+          secondType: "value_text",
+          returnValue: "Yes",
+          default: "No",
+          pararms: "value_coded=1065",
+          backupConcept: {
+            conceptID: 9685,
+            variableName: "followUp",
+            valueType: "value_datetime",
+            secondType: "value_text",
+            returnValue: "Yes",
+            default: "No",  
+            backupConcept: {
+              conceptID: 9686,
+              variableName: "followUp",
+              valueType: "value_datetime",
+              secondType: "value_text",
+              returnValue: "Yes",
+              default: "No",  
+            }
+          }
+        },{
+          conceptID: 2516,
+          variableName: "startDate",
+          valueType: "value_datetime",
+          secondType: "value_text"
+        },
       ]
     };
   },
@@ -270,22 +315,50 @@ export default {
           let f = await ApiClient.get(`/patients/${this.patientID}`);
           return await f.json()
       },
-      getObs: async function(conceptID) {
-        let observations = await ApiClient.get(`/observations?person_id=${this.patientID}&&concept_id=${conceptID}`)
+      getObs: async function(conceptSet) {
+        let url = (`/observations?person_id=${this.patientID}&&concept_id=${conceptSet.conceptID}`);
+        url = (conceptSet.pararms ? (url + `&&` + conceptSet.params) : url);
+        let observations = await ApiClient.get(`/observations?person_id=${this.patientID}&&concept_id=${conceptSet.conceptID}`)
         return await observations.json();
     },
-    createOb: function(conceptID, variable, valueType, secondType, context) {
-      this.getObs(conceptID).then(res => {
+    createOb: function(conceptSet,context) {
+      this.getObs(conceptSet).then(res => {
         if (res.length > 0) {
-          context[variable] = (res[res.length-1][valueType] ? res[res.length -1][valueType] : res[res.length -1][secondType]);
+          if(conceptSet.returnValue) {
+            context[conceptSet.variableName] = conceptSet.returnValue
+          }else {
+            let val = (res[res.length-1][conceptSet.valueType] ? res[res.length -1][conceptSet.valueType] : res[res.length -1][conceptSet.secondType]);
+            context[conceptSet.variableName] = (conceptSet.valueType === "value_datetime" ? moment(val).format('DD-MMM-YYYY') : val);  
+          }
         }else {
-          context[variable] = "N/A";
+          if(conceptSet.backupConcept) {
+            this.createOb(conceptSet.backupConcept, context);  
+          }
+          if(conceptSet.default) {
+            context[conceptSet.variableName] = conceptSet.default;
+          }else {
+            context[conceptSet.variableName] = "N/A";
+          }
         }
       })
     },
-    obsFilter: function (observations) {
-
+    obsService: function (observations) {
+      switch (key) {
+        case value:
+          
+          break;
+      
+        default:
+          break;
+      }
+    }, 
+    getAtribute: function (patient, person_attribute_type_id) {
+     let attribute = patient.person.person_attributes.filter(attr =>  {
+              return attr.person_attribute_type_id == person_attribute_type_id;
+            });
+      return (attribute.length > 0 ? attribute[0].value : "");
     }
+
   },
   mounted() {
 
@@ -296,9 +369,12 @@ export default {
             let identifier = patient.patient_identifiers.filter(function(entry) { return entry.type.name === "ARV Number"; });
             this.arvNumber = identifier.length > 0 ? identifier[0].identifier : "N/A";
             this.sex = patient.person.gender;
+            this.location = patient.person.addresses[0].city_village;
+            this.landmark = this.getAtribute(patient, 19);
+            this.occupation = this.getAtribute(patient, 13);
       });
       this.obs.forEach(value => {
-        this.createOb(value.conceptID, value.variableName, value.valueType, value.secondType, this);
+        this.createOb(value, this);
       });
   }, computed: {
     
