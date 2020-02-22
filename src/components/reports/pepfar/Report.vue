@@ -1,7 +1,12 @@
 
 <template>
   <div class="content">
-    <div v-if="reportBuildComplete == false" class="loading" style="width: 100%; margin: auto; margin-top: 300px;">
+    <button v-on:click="buildReport()" style="margin:auto; background: blue;">Generate Report</button>
+    <div
+      v-if="reportBuildComplete == false && BuildReport"
+      class="loading"
+      style="margin-top: 300px;"
+    >
       <div class="loader">
         <svg class="circular" viewBox="25 25 50 50">
           <circle
@@ -15,7 +20,9 @@
           />
         </svg>
       </div>
-      <div style="margin-top:10px; font-size: 20px;">Generating report {{LoadingPercentage + "%"}} ...</div>
+      <div
+        style="margin-top:10px; font-size: 20px;"
+      >Generating report {{LoadingPercentage + "%"}} ...</div>
     </div>
 
     <div v-if="reportBuildComplete" class="row">
@@ -81,102 +88,204 @@ export default {
         "35-39 years",
         "40-44 years",
         "45-49 years",
-        "50 plus years"
+        "50 plus years",
+        "Breastfeeding",
+        "Pregnant"
       ],
       Index: 0,
       LoadingPercentage: 0,
-      InitializeReport: true
-    }
+      InitializeReport: true,
+      BuildReport: false,
+      RebuildReport: false,
+      allFemales: {}
+    };
   },
   components: {},
   methods: {
-    buildReportData(data, ageGroup) {
+    getPatients(report = []) {
+      return report.filter(data => {
+        return (
+          data.age_group != "Pregnant" && data.age_group != "Breastfeeding"
+        );
+      });
+    },
 
-      !this.InitializeReport ? this.reportObjects.push(data) : null
-      this.LoadingPercentage = Math.floor((this.Index/this.AGE_GROUPS.length) * 100)
+    getReport(report = {}) {
+      return report.reportObjects.map((value, index) => {
+        const objectKeys = Object.keys(value)[0];
+        const initial = report.initial;
+        if (objectKeys == undefined) {
+          return (this.reportObject = {
+            age_group: this.AGE_GROUPS[index],
+            sex: report.gender,
+            tx_new: 0,
+            tx_curr: 0,
+            tx_screened_for_tb: 0,
+            tx_given_ipt: 0
+          });
+        } else {
+          return (this.reportObject = {
+            age_group: objectKeys || this.AGE_GROUPS[index],
+            sex: report.gender,
+            tx_new:
+              value[objectKeys][initial] != undefined
+                ? value[objectKeys][initial].tx_new
+                : 0,
+            tx_curr:
+              value[objectKeys][initial] != undefined
+                ? value[objectKeys][initial].tx_curr
+                : 0,
+            tx_screened_for_tb:
+              value[objectKeys][initial] != undefined
+                ? value[objectKeys][initial].tx_screened_for_tb
+                : 0,
+            tx_given_ipt:
+              value[objectKeys][initial] != undefined
+                ? value[objectKeys][initial].tx_given_ipt
+                : 0
+          })
+        }
+      })
+    },
 
-      if (this.Index < this.AGE_GROUPS.length ) {
-        this.InitializeReport = false
-        this.fetchReport(this.AGE_GROUPS[this.Index])
+    getNumberOfPatients(patients = [], gender = "") {
+      const txNew = patients.reduce((acc, curr) => {
+        return (acc = acc + curr.tx_new)
+      }, 0)
+
+      const txCurrent = patients.reduce((acc, curr) => {
+        return (acc = acc + curr.tx_curr)
+      }, 0)
+
+      const txScreenTb = patients.reduce((acc, curr) => {
+        return (acc = acc + curr.tx_screened_for_tb);
+      }, 0)
+
+      const rxGivenIpt = patients.reduce((acc, curr) => {
+        return (acc = acc + curr.tx_given_ipt)
+      }, 0)
+
+      return [
+        {
+          age_group: "All",
+          sex: gender,
+          tx_new: txNew,
+          tx_curr: txCurrent,
+          tx_screened_for_tb: txScreenTb,
+          tx_given_ipt: rxGivenIpt
+        }
+      ];
+    },
+
+    getPregrantPatients(patients = []) {
+      let pregnant = patients.filter(data => {
+        return data.age_group == "Pregnant"
+      });
+
+      pregnant[0].age_group = "All"
+      pregnant[0].sex = "FP"
+
+      return pregnant;
+    },
+
+    getBreastFeedingPatients(patients = []) {
+      let breastFeeding = patients.filter(data => {
+        return data.age_group == "Breastfeeding"
+      });
+
+      breastFeeding[0].age_group = "All"
+      breastFeeding[0].sex = "FBf"
+
+      return breastFeeding;
+    },
+
+    getFemaleNonePregnant(filter = []) {
+      return [
+        {
+          age_group: "All",
+          sex: "FNP",
+          tx_new:
+            filter.totalNumberOfFemales[0].tx_new -
+            (filter.pregnant[0].tx_new + filter.breastFeeding[0].tx_new),
+          tx_curr:
+            filter.totalNumberOfFemales[0].tx_curr -
+            (filter.pregnant[0].tx_curr + filter.breastFeeding[0].tx_curr),
+          tx_screened_for_tb:
+            filter.totalNumberOfFemales[0].tx_screened_for_tb -
+            (filter.pregnant[0].tx_screened_for_tb +
+              filter.breastFeeding[0].tx_screened_for_tb),
+          tx_given_ipt:
+            filter.totalNumberOfFemales[0].tx_given_ipt -
+            (filter.pregnant[0].tx_given_ipt +
+              filter.breastFeeding[0].tx_given_ipt)
+        }
+      ];
+    },
+
+    buildReportData(data) {
+      !this.InitializeReport ? this.reportObjects.push(data) : null;
+
+      this.LoadingPercentage = Math.floor(
+        (this.Index / this.AGE_GROUPS.length) * 100
+      );
+
+      if (this.Index < this.AGE_GROUPS.length) {
+        this.InitializeReport = false;
+        this.fetchReport(this.AGE_GROUPS[this.Index]);
       } else {
-        const males = this.reportObjects.map((value, index) => {
+        // males
+        const malesFilters = {
+          gender: "Male",
+          initial: "M",
+          reportObjects: this.reportObjects
+        };
 
-          const objectKeys = Object.keys(value)[0]
+        const femaleFilters = {
+          gender: "Female",
+          initial: "F",
+          reportObjects: this.reportObjects
+        };
 
-          if (value[objectKeys] == undefined) {
-            return (this.reportObject = {
-              age_group: this.AGE_GROUPS[index],
-              sex: "Male",
-              tx_new: 0,
-              tx_curr: 0,
-              tx_screened_for_tb: 0,
-              tx_given_ipt: 0
-            })
-          } else {
-            return (this.reportObject = {
-              age_group: objectKeys,
-              sex: "Male",
-              tx_new:
-                value[objectKeys].M != undefined
-                  ? value[objectKeys].M.tx_new
-                  : 0,
-              tx_curr:
-                value[objectKeys].M != undefined
-                  ? value[objectKeys].M.tx_curr
-                  : 0,
-              tx_screened_for_tb:
-                value[objectKeys].M != undefined
-                  ? value[objectKeys].M.tx_screened_for_tb
-                  : 0,
-              tx_given_ipt:
-                value[objectKeys].M != undefined
-                  ? value[objectKeys].M.tx_given_ipt
-                  : 0
-            })
-          }
-        })
+        const males = this.getPatients(this.getReport(malesFilters))
+        const females = this.getPatients(this.getReport(femaleFilters))
 
-        const females = this.reportObjects.map((value, index) => {
-          const objectKeys = Object.keys(value)[0];
+        const totalNumberOfMales = this.getNumberOfPatients(
+          males,
+          malesFilters.gender
+        );
+        const totalNumberOfFemales = this.getNumberOfPatients(
+          females,
+          femaleFilters.gender
+        );
 
-          if (value[objectKeys] == undefined) {
-            return (this.reportObject = {
-              age_group: this.AGE_GROUPS[index],
-              sex: "Female",
-              tx_new: 0,
-              tx_curr: 0,
-              tx_screened_for_tb: 0,
-              tx_given_ipt: 0
-            });
-          } else {
-            return (this.reportObject = {
-              age_group: objectKeys,
-              sex: "Female",
-              tx_new:
-                value[objectKeys].F != undefined
-                  ? value[objectKeys].F.tx_new
-                  : 0,
-              tx_curr:
-                value[objectKeys].F != undefined
-                  ? value[objectKeys].F.tx_curr
-                  : 0,
-              tx_screened_for_tb:
-                value[objectKeys].F != undefined
-                  ? value[objectKeys].F.tx_screened_for_tb
-                  : 0,
-              tx_given_ipt:
-                value[objectKeys].F != undefined
-                  ? value[objectKeys].F.tx_given_ipt
-                  : 0
-            })
-          }
-        })
+        const pregnant = this.getPregrantPatients(
+          this.getReport(femaleFilters)
+        );
+        const breastFeeding = this.getBreastFeedingPatients(
+          this.getReport(femaleFilters)
+        );
 
-        this.reportObjects = []
-        this.reportObjects = [ ...females, ...males]
+        const fnpFilters = {
+          totalNumberOfFemales,
+          pregnant,
+          breastFeeding
+        };
+        
+        const femaleNonePregnant = this.getFemaleNonePregnant(fnpFilters);
+        console.log(femaleNonePregnant);
+
+        this.reportObjects = [];
+        this.reportObjects = [
+          ...females,
+          ...males,
+          ...totalNumberOfMales,
+          ...pregnant,
+          ...femaleNonePregnant,
+          ...breastFeeding
+        ];
+
       }
       this.Index = this.Index + 1
-      
     },
 
     initializeReportData() {
@@ -202,15 +311,15 @@ export default {
         })
         .catch(err => {
           console.log("Something went wrong!", err)
-        })
+        });
     },
 
     fetchReport(ageGroup) {
       const START_DATE = moment("2015-04-04").format("YYYY-MM-DD")
       const END_DATE = moment(new Date()).format("YYYY-MM-DD")
 
-      const PARAMS = `?date=${END_DATE}&quarter=pepfar&start_date=${START_DATE}&end_date=${END_DATE}&age_group=${ageGroup}&rebuild_outcome=true&initialize=false&program_id=1`
-
+      const PARAMS = `?date=${END_DATE}&quarter=pepfar&start_date=${START_DATE}&end_date=${END_DATE}&age_group=${ageGroup}&rebuild_outcome=${this.RebuildReport}&initialize=false&program_id=1`
+      this.RebuildReport = false
       fetch(`${this.config.api_base_url}/cohort_disaggregated${PARAMS}`, {
         method: "GET",
         headers: {
@@ -221,21 +330,27 @@ export default {
         .then(response => {
           if (response.status === 200) {
             return response.json().then(data => {
-              this.buildReportData(data, ageGroup)
+              this.buildReportData(data)
             })
           }
         })
         .catch(err => {
           console.log("Something went wrong!", err)
-        })
+        });
+    },
+    buildReport() {
+      this.initializeReportData()
+      this.RebuildReport = true
+      this.reportBuildComplete = false
+      this.BuildReport = true;
+      this.LoadingPercentage = 0
     }
   },
   created() {
-    this.initializeReportData()
   },
-  updated(){
-    if (this.LoadingPercentage == 100 || this.LoadingPercentage == 0){
-      this.reportBuildComplete = true
+  updated() {
+    if (this.LoadingPercentage == 100) {
+      this.reportBuildComplete = true;
     }
   }
 }
@@ -246,6 +361,13 @@ export default {
   color: black;
   height: 700px;
   overflow-y: scroll;
+}
+
+.table-column table tbody tr:nth-child(31), 
+.table-column table tbody tr:nth-child(32), 
+.table-column table tbody tr:nth-child(33), 
+.table-column table tbody tr:nth-child(34) {
+  background-color: rgba(255, 222, 140, 0.5)
 }
 
 .loader {
