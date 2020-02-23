@@ -369,10 +369,12 @@ export default {
     },
     buildReport() {
       this.submit = true
+      this.validateDate = true
       if (this.startDate != null && this.endDate != null) {
         const START_DATE = moment(this.startDate).format("YYYY-MM-DD");
         const END_DATE = moment(this.endDate).format("YYYY-MM-DD");
         START_DATE > END_DATE ? this.validateDate = false : this.dateError
+
         if(this.validateDate){
           this.initializeReportData();
           this.RebuildReport = true;
