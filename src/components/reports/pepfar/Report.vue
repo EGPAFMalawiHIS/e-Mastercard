@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="row">
-        <button v-on:click="buildReport()" style="margin:auto; height: 120px; font-size: 30px" class="btn btn-info">Generate Report</button>
+        <button v-on:click="buildReport()" style="margin:auto; height: 60px; font-size: 30px" class="btn btn-info">Generate</button>
       </div>
     </div>
     <div
@@ -93,7 +93,7 @@ export default {
       reportStartMessage: 'Select report start date',
       reportEndMessage: 'Select report end date',
       validateDate: true,
-      dateError: 'ERROR: rnd date CANNOT be smaller than start date',
+      dateError: 'ERROR: end date CANNOT be smaller than start date',
       reportObject: {},
       reportObjects: [],
       reportBuildComplete: false,
