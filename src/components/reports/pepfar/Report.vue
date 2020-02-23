@@ -1,7 +1,28 @@
 
 <template>
   <div class="content">
-    <button v-on:click="buildReport()" style="margin:auto; background: blue;">Generate Report</button>
+    <h4 style="font-weight:bold"> PEPFAR Disagreggated Report </h4>
+    <div v-if="!BuildReport" class="calender">
+      <div class="row" style="margin-top:10px">
+        <div class="col-sm-6 shadow p-5 mb-3 bg-grey rounded">
+          <h4 class="shadow p-5 mb-3 bg-grey rounded" style="float:right; margin-top: 80px; background: rgba(214, 208, 208, 0.5); font-weight:bold"> Start Date </h4>
+          <datepicker v-model="startDate" :inline="true"></datepicker>
+          
+          <p v-if="!submit || startDate != null" style="display: block; float:left; color: rgba(73, 161, 179, 1); font-size:20px; margin-top:15px; font-weight:bold">{{reportStartMessage}}</p>
+          
+          <p v-if="submit && startDate == null" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">Report start data CANNOT be empty</p>
+        </div>
+        <div class="col-sm-6 shadow p-5 mb-3 bg-white rounded">
+          <h4 class="shadow p-5 mb-3 bg-grey rounded" style="float:right; margin-top: 80px; background: rgba(214, 208, 208, 0.5); font-weight:bold "> Start Date </h4>
+          <datepicker v-model="endDate" :inline="true"></datepicker>
+          <p v-if="!submit || endDate != null" style="display: block; float:left; color: rgba(73, 161, 179, 1); font-size:20px; margin-top:15px; font-weight:bold">{{reportEndMessage}}</p>
+          <p v-if="submit && endDate == null" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">Report end data CANNOT be empty</p>
+        </div>
+      </div>
+      <div class="row">
+        <button v-on:click="buildReport()" style="margin:auto; height: 120px; font-size: 30px" class="btn btn-info">Generate Report</button>
+      </div>
+    </div>
     <div
       v-if="reportBuildComplete == false && BuildReport"
       class="loading"
@@ -57,15 +78,20 @@
 </template>
 
 <script>
-import Config from "../../../../public/config.json"
-import ApiClient from "../../../services/api_client"
-import moment from "moment"
-import loadme from "loadme"
+import Config from "../../../../public/config.json";
+import ApiClient from "../../../services/api_client";
+import moment from "moment";
+import Datepicker from "vuejs-datepicker";
 
 export default {
   name: "PepfarReport",
   data() {
     return {
+      startDate: null,
+      endDate: null,
+      submit: false,
+      reportStartMessage: 'Select report start date',
+      reportEndMessage: 'Select report end date',
       reportObject: {},
       reportObjects: [],
       reportBuildComplete: false,
@@ -100,7 +126,9 @@ export default {
       allFemales: {}
     };
   },
-  components: {},
+  components: {
+    Datepicker
+  },
   methods: {
     getPatients(report = []) {
       return report.filter(data => {
@@ -143,27 +171,27 @@ export default {
               value[objectKeys][initial] != undefined
                 ? value[objectKeys][initial].tx_given_ipt
                 : 0
-          })
+          });
         }
-      })
+      });
     },
 
     getNumberOfPatients(patients = [], gender = "") {
       const txNew = patients.reduce((acc, curr) => {
-        return (acc = acc + curr.tx_new)
-      }, 0)
+        return (acc = acc + curr.tx_new);
+      }, 0);
 
       const txCurrent = patients.reduce((acc, curr) => {
-        return (acc = acc + curr.tx_curr)
-      }, 0)
+        return (acc = acc + curr.tx_curr);
+      }, 0);
 
       const txScreenTb = patients.reduce((acc, curr) => {
         return (acc = acc + curr.tx_screened_for_tb);
-      }, 0)
+      }, 0);
 
       const rxGivenIpt = patients.reduce((acc, curr) => {
-        return (acc = acc + curr.tx_given_ipt)
-      }, 0)
+        return (acc = acc + curr.tx_given_ipt);
+      }, 0);
 
       return [
         {
@@ -179,22 +207,22 @@ export default {
 
     getPregrantPatients(patients = []) {
       let pregnant = patients.filter(data => {
-        return data.age_group == "Pregnant"
+        return data.age_group == "Pregnant";
       });
 
-      pregnant[0].age_group = "All"
-      pregnant[0].sex = "FP"
+      pregnant[0].age_group = "All";
+      pregnant[0].sex = "FP";
 
       return pregnant;
     },
 
     getBreastFeedingPatients(patients = []) {
       let breastFeeding = patients.filter(data => {
-        return data.age_group == "Breastfeeding"
+        return data.age_group == "Breastfeeding";
       });
 
-      breastFeeding[0].age_group = "All"
-      breastFeeding[0].sex = "FBf"
+      breastFeeding[0].age_group = "All";
+      breastFeeding[0].sex = "FBf";
 
       return breastFeeding;
     },
@@ -246,8 +274,8 @@ export default {
           reportObjects: this.reportObjects
         };
 
-        const males = this.getPatients(this.getReport(malesFilters))
-        const females = this.getPatients(this.getReport(femaleFilters))
+        const males = this.getPatients(this.getReport(malesFilters));
+        const females = this.getPatients(this.getReport(femaleFilters));
 
         const totalNumberOfMales = this.getNumberOfPatients(
           males,
@@ -270,9 +298,8 @@ export default {
           pregnant,
           breastFeeding
         };
-        
+
         const femaleNonePregnant = this.getFemaleNonePregnant(fnpFilters);
-        console.log(femaleNonePregnant);
 
         this.reportObjects = [];
         this.reportObjects = [
@@ -283,17 +310,17 @@ export default {
           ...femaleNonePregnant,
           ...breastFeeding
         ];
-
       }
-      this.Index = this.Index + 1
+      this.Index = this.Index + 1;
     },
 
     initializeReportData() {
-      const START_DATE = moment("2015-04-04").format("YYYY-MM-DD")
-      const END_DATE = moment(new Date()).format("YYYY-MM-DD")
-      this.InitializeReport = true
+      const START_DATE = moment(this.startDate).format("YYYY-MM-DD");
+      const END_DATE = moment(this.endDate).format("YYYY-MM-DD");
 
-      const PARAMS = `?date=${END_DATE}&quarter=pepfar&start_date=${START_DATE}&end_date=${END_DATE}&age_group=${this.AGE_GROUPS[0]}&rebuild_outcome=false&initialize=true&program_id=1`
+      this.InitializeReport = true;
+
+      const PARAMS = `?date=${END_DATE}&quarter=pepfar&start_date=${START_DATE}&end_date=${END_DATE}&age_group=${this.AGE_GROUPS[0]}&rebuild_outcome=false&initialize=true&program_id=1`;
 
       fetch(`${this.config.api_base_url}/cohort_disaggregated${PARAMS}`, {
         method: "GET",
@@ -305,21 +332,21 @@ export default {
         .then(response => {
           if (response.status === 200) {
             return response.json().then(data => {
-              this.fetchReport(this.AGE_GROUPS[0])
-            })
+              this.fetchReport(this.AGE_GROUPS[0]);
+            });
           }
         })
         .catch(err => {
-          console.log("Something went wrong!", err)
+          console.log("Something went wrong!", err);
         });
     },
 
     fetchReport(ageGroup) {
-      const START_DATE = moment("2015-04-04").format("YYYY-MM-DD")
-      const END_DATE = moment(new Date()).format("YYYY-MM-DD")
+      const START_DATE = moment(this.startDate).format("YYYY-MM-DD");
+      const END_DATE = moment(this.endDate).format("YYYY-MM-DD");
 
-      const PARAMS = `?date=${END_DATE}&quarter=pepfar&start_date=${START_DATE}&end_date=${END_DATE}&age_group=${ageGroup}&rebuild_outcome=${this.RebuildReport}&initialize=false&program_id=1`
-      this.RebuildReport = false
+      const PARAMS = `?date=${END_DATE}&quarter=pepfar&start_date=${START_DATE}&end_date=${END_DATE}&age_group=${ageGroup}&rebuild_outcome=${this.RebuildReport}&initialize=false&program_id=1`;
+      this.RebuildReport = false;
       fetch(`${this.config.api_base_url}/cohort_disaggregated${PARAMS}`, {
         method: "GET",
         headers: {
@@ -330,30 +357,36 @@ export default {
         .then(response => {
           if (response.status === 200) {
             return response.json().then(data => {
-              this.buildReportData(data)
-            })
+              this.buildReportData(data);
+            });
           }
         })
         .catch(err => {
-          console.log("Something went wrong!", err)
+          console.log("Something went wrong!", err);
         });
     },
     buildReport() {
-      this.initializeReportData()
-      this.RebuildReport = true
-      this.reportBuildComplete = false
-      this.BuildReport = true;
-      this.LoadingPercentage = 0
+      this.submit = true
+      if (this.startDate != null && this.endDate != null) {
+        this.initializeReportData();
+        this.RebuildReport = true;
+        this.reportBuildComplete = false;
+        this.BuildReport = true;
+        this.LoadingPercentage = 0;
+        this.submit = false
+      }
+    },
+    beginDateSelected() {
+      console.log("Selected");
     }
   },
-  created() {
-  },
+  created() {},
   updated() {
     if (this.LoadingPercentage == 100) {
       this.reportBuildComplete = true;
     }
   }
-}
+};
 </script>
 
 <style>
@@ -363,11 +396,11 @@ export default {
   overflow-y: scroll;
 }
 
-.table-column table tbody tr:nth-child(31), 
-.table-column table tbody tr:nth-child(32), 
-.table-column table tbody tr:nth-child(33), 
+.table-column table tbody tr:nth-child(31),
+.table-column table tbody tr:nth-child(32),
+.table-column table tbody tr:nth-child(33),
 .table-column table tbody tr:nth-child(34) {
-  background-color: rgba(255, 222, 140, 0.5)
+  background-color: rgba(255, 222, 140, 0.5);
 }
 
 .loader {
