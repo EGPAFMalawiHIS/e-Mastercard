@@ -47,7 +47,7 @@
     </div>
 
     <div v-if="reportBuildComplete" class="row">
-      <div class="col-12">
+      <div class="col-12 table-col">
         <table class="table table-striped report">
           <thead>
             <tr>
@@ -405,10 +405,10 @@ export default {
   overflow-y: scroll;
 }
 
-.table-column table tbody tr:nth-child(31),
-.table-column table tbody tr:nth-child(32),
-.table-column table tbody tr:nth-child(33),
-.table-column table tbody tr:nth-child(34) {
+.table-col table tbody tr:nth-child(31),
+.table-col table tbody tr:nth-child(32),
+.table-col table tbody tr:nth-child(33),
+.table-col table tbody tr:nth-child(34) {
   background-color: rgba(255, 222, 140, 0.5);
 }
 
