@@ -6,17 +6,17 @@
       <div class="row" style="margin-top:10px">
         <div class="col-sm-6 shadow p-5 mb-3 bg-grey rounded">
           <h4 class="shadow p-5 mb-3 bg-grey rounded" style="float:right; margin-top: 80px; background: rgba(214, 208, 208, 0.5); font-weight:bold"> Start Date </h4>
-          <datepicker v-model="startDate" :inline="true"></datepicker>
-          
-          <p v-if="!submit || startDate != null" style="display: block; float:left; color: rgba(73, 161, 179, 1); font-size:20px; margin-top:15px; font-weight:bold">{{reportStartMessage}}</p>
-          
-          <p v-if="submit && startDate == null" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">Report start data CANNOT be empty</p>
+          <datepicker v-model="startDate" :inline="true"></datepicker> 
+          <p v-if="!submit || (startDate != null && validateDate)" style="display: block; float:left; color: rgba(73, 161, 179, 1); font-size:20px; margin-top:15px; font-weight:bold">{{reportStartMessage}}</p> 
+          <p v-if="submit && startDate == null" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">ERROR: report start data CANNOT be empty</p>
+          <p v-if="!validateDate" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">{{dateError}}</p>
         </div>
         <div class="col-sm-6 shadow p-5 mb-3 bg-white rounded">
-          <h4 class="shadow p-5 mb-3 bg-grey rounded" style="float:right; margin-top: 80px; background: rgba(214, 208, 208, 0.5); font-weight:bold "> Start Date </h4>
+          <h4 class="shadow p-5 mb-3 bg-grey rounded" style="float:right; margin-top: 80px; background: rgba(214, 208, 208, 0.5); font-weight:bold "> Start End </h4>
           <datepicker v-model="endDate" :inline="true"></datepicker>
-          <p v-if="!submit || endDate != null" style="display: block; float:left; color: rgba(73, 161, 179, 1); font-size:20px; margin-top:15px; font-weight:bold">{{reportEndMessage}}</p>
-          <p v-if="submit && endDate == null" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">Report end data CANNOT be empty</p>
+          <p v-if="!submit || (endDate != null && validateDate)" style="display: block; float:left; color: rgba(73, 161, 179, 1); font-size:20px; margin-top:15px; font-weight:bold">{{reportEndMessage}}</p>
+          <p v-if="submit && endDate == null" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">ERROR: report end data CANNOT be empty</p>
+          <p v-if="!validateDate" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">{{dateError}}</p>
         </div>
       </div>
       <div class="row">
@@ -92,6 +92,8 @@ export default {
       submit: false,
       reportStartMessage: 'Select report start date',
       reportEndMessage: 'Select report end date',
+      validateDate: true,
+      dateError: 'ERROR: rnd date CANNOT be smaller than start date',
       reportObject: {},
       reportObjects: [],
       reportBuildComplete: false,
@@ -368,12 +370,17 @@ export default {
     buildReport() {
       this.submit = true
       if (this.startDate != null && this.endDate != null) {
-        this.initializeReportData();
-        this.RebuildReport = true;
-        this.reportBuildComplete = false;
-        this.BuildReport = true;
-        this.LoadingPercentage = 0;
-        this.submit = false
+        const START_DATE = moment(this.startDate).format("YYYY-MM-DD");
+        const END_DATE = moment(this.endDate).format("YYYY-MM-DD");
+        START_DATE > END_DATE ? this.validateDate = false : this.dateError
+        if(this.validateDate){
+          this.initializeReportData();
+          this.RebuildReport = true;
+          this.reportBuildComplete = false;
+          this.BuildReport = true;
+          this.LoadingPercentage = 0;
+          this.submit = false
+        }
       }
     },
     beginDateSelected() {
