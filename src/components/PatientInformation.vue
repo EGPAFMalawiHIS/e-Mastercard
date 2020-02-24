@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="container-fluid">
-      <div class="row table table-bordered">
+      <table class="row">
         <div class="col-md-3">
           <div class="row">
             <div class="col-md-6">
@@ -125,7 +125,7 @@
         <div class="col-md-3">
           <div class="row">
             <div class="col-md-6">
-              <p>Date and Place of HIV TEST</p>
+              <p>Date and Place of HIV Test</p>
             </div>
             <div class="col-md-6 information">
               <p>{{dateOfHIVTest}} {{placeOfHIVTest}}</p>
@@ -188,7 +188,7 @@
               <p>Kaposi's Sarcoma</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{karposisSarcoma}}</p>
+              <p>{{kaposisSarcoma}}</p>
             </div>
           </div>
         </div>
@@ -202,7 +202,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </table>
     </div>
   </div>
 </template>
@@ -232,7 +232,7 @@ export default {
       startReason: null,
       EPTB: null,
       PTB: null,
-      karposisSarcoma: null,
+      kaposisSarcoma: null,
       tbLastTwoYears: null,
       patientID: null,
       obs: [
@@ -267,7 +267,7 @@ export default {
           secondType: "value_text",
           returnValue: "Yes",
           default: "No",
-          pararms: "value_coded=1065",
+          params: "value_coded=1065",
           backupConcept: {
             conceptID: 7751,
             variableName: "ti",
@@ -283,7 +283,7 @@ export default {
           secondType: "value_text",
           returnValue: "Yes",
           default: "No",
-          pararms: "value_coded=1065",
+          params: "value_coded=1065",
           backupConcept: {
             conceptID: 9685,
             variableName: "followUp",
@@ -305,6 +305,31 @@ export default {
           variableName: "startDate",
           valueType: "value_datetime",
           secondType: "value_text"
+        },{
+          conceptID: 7563,
+          variableName: "startReason",
+          valueType: "value_coded",
+          secondType: "value_text"
+        },{
+          conceptID: 2743,
+          subConcepts: {
+            507: {
+              variableName: "kaposisSarcoma",
+              returnValue: "Yes"
+            },
+            1547: {
+              variableName: "EPTB",
+              returnValue: "Yes"
+            },
+            7539: {
+              variableName: "tbLastTwoYears",
+              returnValue: "Yes"
+            },
+            8206: {
+              variableName: "PTB",
+              returnValue: "Yes"
+            }
+          }
         },
       ]
     };
@@ -314,21 +339,51 @@ export default {
       getPatient: async function() {
           let f = await ApiClient.get(`/patients/${this.patientID}`);
           return await f.json()
+      },getGuardian: async function() {
+          let guardian = await ApiClient.get(`/people/${this.patientID}/relationships`).then(res => {
+             res.json().then(ret => {
+               if(ret.length > 0) {
+                let person_name = ret[0]["relation"]["names"][0];
+                let relationship_type = (ret[0]["type"]["b_is_to_a"]);
+                this.nameOfGuardian = person_name["given_name"] + " " + person_name["family_name"] + " (" + relationship_type + ")";
+               }
+             })
+          })
       },
       getObs: async function(conceptSet) {
         let url = (`/observations?person_id=${this.patientID}&&concept_id=${conceptSet.conceptID}`);
-        url = (conceptSet.pararms ? (url + `&&` + conceptSet.params) : url);
-        let observations = await ApiClient.get(`/observations?person_id=${this.patientID}&&concept_id=${conceptSet.conceptID}`)
+        url = (conceptSet.params ? (url + `&&` + conceptSet.params) : url);
+        let observations = await ApiClient.get(url);
         return await observations.json();
+    },
+    getConcept: async function(conceptSet, results, context) {
+      await ApiClient.get(`/concepts/${results}`).then(res => {
+        res.json().then(f => {
+          context[conceptSet.variableName] = f.concept_names[0].name;
+        })
+      });
     },
     createOb: function(conceptSet,context) {
       this.getObs(conceptSet).then(res => {
         if (res.length > 0) {
           if(conceptSet.returnValue) {
             context[conceptSet.variableName] = conceptSet.returnValue
-          }else {
+          }else if(conceptSet.subConcepts) {
+            res.forEach(ret => {
+              try {
+                
+                context[conceptSet.subConcepts[ret.value_coded].variableName] = conceptSet.subConcepts[ret.value_coded].returnValue;
+              } catch (error) {
+                
+              }
+            })
+          }
+          else {
             let val = (res[res.length-1][conceptSet.valueType] ? res[res.length -1][conceptSet.valueType] : res[res.length -1][conceptSet.secondType]);
             context[conceptSet.variableName] = (conceptSet.valueType === "value_datetime" ? moment(val).format('DD-MMM-YYYY') : val);  
+            if (conceptSet.valueType === "value_coded") {
+              this.getConcept(conceptSet, val, context);
+            } 
           }
         }else {
           if(conceptSet.backupConcept) {
@@ -376,6 +431,7 @@ export default {
       this.obs.forEach(value => {
         this.createOb(value, this);
       });
+      this.getGuardian();
   }, computed: {
     
   }
@@ -384,6 +440,19 @@ export default {
 
 <style scoped>
 .information {
-  color: blue;
+  /* color: blue; */
+  mix-blend-mode: difference;
+}
+.col-md-3 {
+  border: 0.5px black solid;
+  border-radius: 2px;
+  line-height: 20px;
+  font-size: 15px;
+  background-color: #f6f6f6;
+  text-align: center;
+  padding: 3px;
+  /* margin: auto; */
+  /* font-family: 'Avenir', Helvetica, Arial, sans-serif; */
+  /* padding: 10px; */
 }
 </style>
