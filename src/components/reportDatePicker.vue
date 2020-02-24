@@ -7,20 +7,27 @@
         {{quarter}}
       </option>
     </select>
-    <button class="btn btn-primary">Submit</button>
+    <button class="btn btn-primary" @click="selectQuarter" id="submit-btn" ref="myid">Submit</button>
 
   </div>
 </template>
 
 <script>
+import ApiClient from "../services/api_client";
+import cohortFT from "../components/cohortFT";
 
 export default {
   data: function() {
     return {
-      quarters : [], 
+      quarters : [],
+      cohort_data: [] 
     }
   },
-methods: {
+  props: ["onSubmit"],
+  methods: {
+    selectQuarter: function() {
+      this.onSubmit(quarters.value);
+  },
   loadQuarters() {
     var qtrs = [];
     var current_qtr = "";

@@ -12,9 +12,9 @@
         
 
         <div class="cohort">
-          <report-date-picker/>
+          <report-date-picker :onSubmit="fetchData"></report-date-picker>
           <cohortheader/>
-          <cohort-ft/>
+          <cohort-ft  :params="cohortData"/>
         </div>
 
 
@@ -45,6 +45,7 @@ import reportDatePicker from '@/components/reportDatePicker.vue';
 import cohortHeader from '@/components/cohortHeader.vue';
 import cohortFT from '@/components/cohortFT.vue';
 
+import ApiClient from "../services/api_client";
 
 
 export default {
@@ -58,11 +59,30 @@ export default {
   }, methods: {
     redirect: function () {
       this.$router.push('/moh');
+    },
+    fetchData: async function(qtr) {
+      //this.$refs.myid.disabled=true;
+      let prefix = await ApiClient.get(
+        "programs/1/reports/cohort?name=" + qtr
+      );
+      let f = await prefix
+      .json();
+      this.checkResult(f.values);
+      return;
+    },
+    checkResult(data){
+      if(data.length > 0) {
+        //this.$refs.myid.disabled=false;
+        this.cohortData = data;
+      }else{
+        setTimeout(this.fetchData, 10000);
+      }
     }
   },
   data () {
     return {
-      msg: 'MoH cohort report version 24'
+      msg: 'MoH cohort report version 24',
+      cohortData: []
     }
   }
 }
