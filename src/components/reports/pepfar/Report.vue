@@ -2,75 +2,23 @@
 <template>
   <div class="content">
     <h4 style="font-weight:bold; float:left;">PEPFAR Disagreggated Report</h4>
-    <div class="row" style="float: right; margin-top:2  0px">
-      <div class="dates col-md-12">
-        <div class="date-selectors" style="margin: auto">
-          <label
-            v-if="(!submit || (startDate != null && endDate != null)) && validateDate"
-            style="margin: auto; font-size: 15px; margin-bottom: 5px; font-weight: bold;"
-            class="info-message"
-          >Select report start and end date</label>
-          <label
-            v-if="!validateDate"
-            style="margin: auto; font-size: 15px; margin-bottom: 5px; font-weight: bold"
-            class="error-message"
-          >{{dateError}}</label>
-          <p
-            v-if="submit && (startDate == null || endDate == null)"
-            style="margin: auto; font-size: 15px; margin-bottom: 5px; font-weight: bold"
-            class="error-message"
-          >ERROR: both dates MUST be selected</p>
-        </div>
-        <div class="clearfix"></div>
-        <div class="date-inputs">
-          <input
-          v-model="startDate"
-          type="date"
-          class="btn btn-default"
-          style="background: rgba(181, 182, 186, 0.3);"
-        />
-        <input
-          v-model="endDate"
-          type="date"
-          class="btn btn-default"
-          style="margin-left:10px; background: rgba(181, 182, 186, 0.3)"
-        />
-        <button
-          v-on:click="buildReport()"
-          style="margin-left: 10px; "
-          class="btn btn-primary"
-        >Submit</button>
-        </div>
-      </div>
-    </div>
+
+    <!-- DateItem Component -->
+    <DateItem v-on:date-item="dateItem"/>
+    
     <div class="clearfix"></div>
     <div v-if="!BuildReport" class="no-content" style="margin: auto; margin-top: 50px; font-size: 30px;">
       Select reporting period
     </div>
     <div class="clearfix"></div>
-    <div
-      v-if="reportBuildComplete == false && BuildReport"
-      class="loading"
-      style="margin-top: 250px;"
-    >
-      <div class="loader">
-        <svg class="circular" viewBox="25 25 50 50">
-          <circle
-            class="path"
-            cx="50"
-            cy="50"
-            r="20"
-            fill="none"
-            stroke-width="2"
-            stroke-miterlimit="10"
-          />
-        </svg>
-      </div>
-      <div
+
+    <!-- Loading Item Component -->
+    <LoadingItem v-if="reportBuildComplete == false && BuildReport" />
+
+    <div v-if="reportBuildComplete == false && BuildReport"
         style="margin-top:10px; font-size: 20px;"
       >Generating report {{LoadingPercentage + "%"}} ...</div>
-    </div>
-
+  
     <div v-if="reportBuildComplete" class="row">
       <div class="col-md-12">
         <h5
@@ -111,9 +59,15 @@
 import Config from "../../../../public/config.json";
 import ApiClient from "../../../services/api_client";
 import moment from "moment";
+import DateItem from "./DateItem.vue"
+import LoadingItem from "./LoadingItem"
 
 export default {
   name: "PepfarReport",
+  components: {
+    DateItem,
+    LoadingItem
+  },
   data() {
     return {
       isActive: true,
@@ -155,12 +109,20 @@ export default {
       InitializeReport: true,
       BuildReport: false,
       RebuildReport: false,
-      allFemales: {}
     };
   },
-  components: {
-  },
   methods: {
+
+    dateItem(item){
+      this.startDate = item.start_date 
+      this.endDate = item.end_date 
+      this.RebuildReport = item.rebuild_report
+      this.reportBuildComplete = item.reportbuild_complete
+      this.BuildReport = item.build_report 
+      this.LoadingPercentage = item.loading_percentage
+      this.buildReport()
+    },
+
     getPatients(report = []) {
       return report.filter(data => {
         return (
@@ -422,7 +384,9 @@ export default {
       console.log("Selected");
     }
   },
-  created() {},
+  created() {
+
+  },
   updated() {
     if (this.LoadingPercentage == 100) {
       this.reportBuildComplete = true;
@@ -471,120 +435,5 @@ export default {
   margin-top: 80px;
   background: rgba(214, 208, 208, 0.5);
   font-weight: bold;
-}
-
-.loader {
-  position: relative;
-  margin: 0px auto;
-  width: 100px;
-}
-
-.loader:before {
-  content: "";
-  display: block;
-  padding-top: 100%;
-}
-
-.circular {
-  -webkit-animation: rotate 2s linear infinite;
-  animation: rotate 2s linear infinite;
-  height: 100%;
-  -webkit-transform-origin: center center;
-  -ms-transform-origin: center center;
-  transform-origin: center center;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-}
-
-.path {
-  stroke-dasharray: 1, 200;
-  stroke-dashoffset: 0;
-  -webkit-animation: dash 1.5s ease-in-out infinite,
-    color 6s ease-in-out infinite;
-  animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
-  stroke-linecap: round;
-}
-
-@-webkit-keyframes rotate {
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes rotate {
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
-@-webkit-keyframes dash {
-  0% {
-    stroke-dasharray: 1, 200;
-    stroke-dashoffset: 0;
-  }
-  50% {
-    stroke-dasharray: 89, 200;
-    stroke-dashoffset: -35;
-  }
-  100% {
-    stroke-dasharray: 89, 200;
-    stroke-dashoffset: -124;
-  }
-}
-
-@keyframes dash {
-  0% {
-    stroke-dasharray: 1, 200;
-    stroke-dashoffset: 0;
-  }
-  50% {
-    stroke-dasharray: 89, 200;
-    stroke-dashoffset: -35;
-  }
-  100% {
-    stroke-dasharray: 89, 200;
-    stroke-dashoffset: -124;
-  }
-}
-
-@-webkit-keyframes color {
-  100%,
-  0% {
-    stroke: #d62d20;
-  }
-  40% {
-    stroke: #0057e7;
-  }
-  66% {
-    stroke: #008744;
-  }
-  80%,
-  90% {
-    stroke: #ffa700;
-  }
-}
-
-@keyframes color {
-  100%,
-  0% {
-    stroke: #d62d20;
-  }
-  40% {
-    stroke: #0057e7;
-  }
-  66% {
-    stroke: #008744;
-  }
-  80%,
-  90% {
-    stroke: #ffa700;
-  }
 }
 </style>
