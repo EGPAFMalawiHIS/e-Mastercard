@@ -45,11 +45,11 @@
       </td>
       <td style="font-weight: normal; border-left-style: none !important; 
         text-align:left; border-bottom-style: none !important;">Male</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{males_initiated_on_art_first_time}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{cum_males_initiated_on_art_first_time}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -61,11 +61,11 @@
       </td>
       <td style="font-weight: normal; border-left-style: none !important; text-align: left;
          border-top-style: none !important; border-bottom-style: none !important;">Female Non-pregnant</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{initial_non_pregnant_females_all_ages}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{cum_initial_non_pregnant_females_all_ages}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -78,11 +78,11 @@
       </td>
       <td style="font-weight: normal; border-left-style: none !important; text-align:left; 
          border-top-style: none !important; border-bottom-style: none !important;">Female pregnant</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{initial_pregnant_females_all_ages}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{cum_initial_pregnant_females_all_ages}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -125,11 +125,11 @@
       <td class="numbers">31.</td>
       <td style="text-align: left;border-bottom-style: none;
         font-weight: normal;padding-left: 10px;" colspan="2"><b>Re</b>&nbsp;&nbsp;Patients re-initiated on ART</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{re_initiated_on_art}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{cum_re_initiated_on_art}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -139,11 +139,11 @@
       <td style="text-align: left;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>TI</b>&nbsp;&nbsp;Patients transferred in on ART
       </td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{transfer_in}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{cum_transfer_in}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -1236,6 +1236,10 @@ export default {
   data: function(){
     return {
       items: [3,4,5,6,7,8,9],
+
+      re_initiated_on_art: 0,
+      cum_re_initiated_on_art: 0,
+
       newly_registered_quarterly: 0,
       newly_registered_cum: 0,
       quarterly_all_males: 0,
@@ -1319,7 +1323,15 @@ export default {
       total_patients_on_arvs_and_cpt: 0,
       total_patients_on_arvs_and_ipt: 0,
       total_patients_on_family_planning: 0,
-      total_patients_with_screened_bp: 0
+      total_patients_with_screened_bp: 0,
+      transfer_in: 0,
+      cum_transfer_in: 0,
+      males_initiated_on_art_first_time: 0,
+      cum_males_initiated_on_art_first_time: 0,
+      initial_pregnant_females_all_ages: 0,
+      cum_initial_pregnant_females_all_ages: 0,
+      initial_non_pregnant_females_all_ages: 0,
+      cum_initial_non_pregnant_females_all_ages: 0
     }
   },
   props: ["params"],
@@ -1327,6 +1339,23 @@ export default {
    renderResults() {
     for(var i = 0; i < this.params.length; i++){
       console.log(this.params[i].name);
+      if(this.params[i].name == 're_initiated_on_art')
+        this.re_initiated_on_art = this.params[i].contents;
+     
+      if(this.params[i].name == 'cum_re_initiated_on_art')
+        this.cum_re_initiated_on_art = this.params[i].contents;
+     
+      if(this.params[i].name == 'transfer_in')
+        this.transfer_in = this.params[i].contents;
+     
+      if(this.params[i].name == 'cum_transfer_in')
+        this.cum_transfer_in = this.params[i].contents;
+     
+     
+
+
+
+
       if(this.params[i].name == 'total_registered')
         this.newly_registered_quarterly = this.params[i].contents;
       
@@ -1597,6 +1626,25 @@ export default {
       if(this.params[i].name == 'total_patients_with_screened_bp')
         this.total_patients_with_screened_bp = this.params[i].contents;
 
+      if(this.params[i].name == 'males_initiated_on_art_first_time')
+        this.males_initiated_on_art_first_time = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_males_initiated_on_art_first_time')
+        this.cum_males_initiated_on_art_first_time = this.params[i].contents;
+
+      if(this.params[i].name == 'initial_pregnant_females_all_ages')
+        this.initial_pregnant_females_all_ages = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_initial_pregnant_females_all_ages')
+        this.cum_initial_pregnant_females_all_ages = this.params[i].contents;
+
+      if(this.params[i].name == 'initial_non_pregnant_females_all_ages')
+        this.initial_non_pregnant_females_all_ages = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_initial_non_pregnant_females_all_ages')
+        this.cum_initial_non_pregnant_females_all_ages = this.params[i].contents;
+
+
 
 
 
@@ -1604,9 +1652,6 @@ export default {
    
     } 
   
-  
-
-
 
 
 

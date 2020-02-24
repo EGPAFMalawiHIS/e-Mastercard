@@ -13,20 +13,24 @@
 </template>
 
 <script>
-import ApiClient from "../services/api_client";
-import cohortFT from "../components/cohortFT";
+
 
 export default {
   data: function() {
     return {
-      quarters : [],
-      cohort_data: [] 
+      quarters : []
     }
   },
   props: ["onSubmit"],
   methods: {
     selectQuarter: function() {
-      this.onSubmit(quarters.value);
+      //this.$refs.myid.disabled=true;
+      if(quarters.value != 'Select cohort quarter')
+        this.onSubmit(quarters.value);
+
+  },
+  enableBTN: function() {
+    this.$refs.myid.disabled=false;
   },
   loadQuarters() {
     var qtrs = [];

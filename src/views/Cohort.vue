@@ -61,7 +61,6 @@ export default {
       this.$router.push('/moh');
     },
     fetchData: async function(qtr) {
-      //this.$refs.myid.disabled=true;
       let prefix = await ApiClient.get(
         "programs/1/reports/cohort?name=" + qtr
       );
@@ -72,7 +71,6 @@ export default {
     },
     checkResult(data){
       if(data.length > 0) {
-        //this.$refs.myid.disabled=false;
         this.cohortData = data;
       }else{
         setTimeout(this.fetchData, 10000);
