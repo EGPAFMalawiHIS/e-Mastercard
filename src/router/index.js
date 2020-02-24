@@ -62,6 +62,11 @@ const routes = [
     path: "/pepfar_disaggregated",
     name: "pepfar_disaggregated",
     component: () => import("../views/PepfarDisaggregated.vue")
+  },
+  {
+    path: "/pepfar",
+    name: "pepfar",
+    component: () => import("../views/PepfarReports.vue")
   }
 ]
 

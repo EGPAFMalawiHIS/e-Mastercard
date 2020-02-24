@@ -4,72 +4,46 @@
       <!-- Sidebar -->
       <side-bar />
       <!-- /#sidebar-wrapper -->
-
       <!-- Page Content -->
       <div id="page-content-wrapper">
         <top-nav />
         <!-- Page Content -->
-        
-
         <div class="container" id="btn-container">
           <div class="row">
-            
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/moh')">
+              <div class="btn-container" @click="redirect('/pepfar_disaggregated')">
                 <div class="card">
-                  <img src="../assets/mw.png" class="btn-icon"/>
-                  <p>MoH reports</p>
+                  <img src="../assets/report-icons/cohort.png" class="btn-icon" />
+                  <p>PEPFAR Disagreggated Report</p>
                 </div>
               </div>
             </div>
-
-            <div class="col-sm">
-              <div class="btn-container">
-                <div class="card">
-                  <img src="../assets/clinic.png" class="btn-icon"/>
-                  <p>Clinic reports</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm">
-              <div class="btn-container" @click="redirect('/pepfar')">
-                <div class="card">
-                  <img src="../assets/PEPFAR.png" class="btn-icon"/>
-                  <p>PEPFAR reports</p>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
-
-
-
         <!-- Page Content end -->
       </div>
     </div>
-
   </div>
 </template>
 
 <style scope>
-
 #btn-container {
   margin-top: 10px;
 }
 
 .card {
   /* Add shadows to create the "card" effect */
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
   text-align: center;
   cursor: pointer;
+  width: 250px;
+  height: 150px;
 }
 
 /* On mouse-over, add a deeper shadow */
 .card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* Add some padding inside the card container */
@@ -91,6 +65,9 @@
   font-weight: bold;
 }
 
+.row {
+  padding-bottom: 20px;
+}
 </style>
 
 
@@ -106,14 +83,11 @@ export default {
   components: {
     "top-nav": TopNav,
     "side-bar": Sidebar
-  }, methods: {
+  },
+  methods: {
     redirect: function(url) {
       this.$router.push(url);
     }
   }
-  
-}
-
-
-
+};
 </script>
