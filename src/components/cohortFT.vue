@@ -747,8 +747,8 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">9</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>{{nine_p}}</td>
+      <td>{{nine_a}}</td>
     </tr>
     
     <tr>
@@ -763,7 +763,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">10</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>{{ten_a}}</td>
     </tr>
     
     <tr>
@@ -777,8 +777,8 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">11</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>{{eleven_p}}</td>
+      <td>{{eleven_a}}</td>
     </tr>
     
     <tr>
@@ -793,7 +793,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">12</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>{{twelve_a}}</td>
     </tr>
     
     <tr>
@@ -808,7 +808,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">13</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>{{thirteen_a}}</td>
     </tr>
     
     <tr>
@@ -823,7 +823,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">14</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>{{fourteen_a}}</td>
     </tr>
     
     <tr>
@@ -838,7 +838,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">15</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>{{fifteen_a}}</td>
     </tr>
     
     <tr>
@@ -853,7 +853,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">16</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>{{sixteen_a}}</td>
     </tr>
     
     <tr>
@@ -868,7 +868,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">17</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>{{seventeen_a}}</td>
     </tr>
     
     <tr>
@@ -881,7 +881,7 @@
         border-left-width:0px; border-top-width:0px;
         text-align:left; padding-left:10px;">Other (paed./adult)</td>
       <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td>{{unknown_regimen}}</td>
     </tr>
     
     <tr class="horisonatl-separator">
@@ -897,7 +897,7 @@
       border-bottom-width: 0px;" colspan="4">(as of the last visit before end of quarter)</td>
       <td style="font-weight: normal; border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">Pregnant</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{total_pregnant_women}}</td>
     </tr>
 
     <tr>
@@ -909,7 +909,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">Breastfeeding</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{total_breastfeeding_women}}</td>
     </tr>
 
     <tr>
@@ -921,7 +921,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;" colspan="2">All others (not circled)</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{total_other_patients}}</td>
     </tr>
 
     <tr class="horisonatl-separator">
@@ -937,7 +937,7 @@
       border-bottom-width: 0px;" colspan="3">(as of the last visit before end of quarter)</td>
       <td style="font-weight: normal; border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">TB not suspected</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{tb_not_suspected}}</td>
     </tr>
 
     <tr>
@@ -949,7 +949,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">TB suspected</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{tb_suspected}}</td>
     </tr>
 
     <tr>
@@ -961,7 +961,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">TB conf., <b>not</b> on Rx</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{tb_confirmed_currently_not_yet_on_tb_treatment}}</td>
     </tr>
 
     <tr>
@@ -973,7 +973,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">TB conf., <b>on</b> TB Rx</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{tb_confirmed_on_tb_treatment}}</td>
     </tr>
 
     <tr>
@@ -985,7 +985,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;" colspan="2">Unknown (not circled)</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{unknown_tb_status}}</td>
     </tr>
 
     <tr class="horisonatl-separator">
@@ -1001,7 +1001,7 @@
       border-bottom-width: 0px;" colspan="4">(as of the last visit before end of quarter)</td>
       <td style="font-weight: normal; border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">None</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{total_patients_without_side_effects}}</td>
     </tr>
 
     <tr>
@@ -1013,7 +1013,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">Any side effects</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{total_patients_with_side_effects}}</td>
     </tr>
 
     <tr>
@@ -1025,7 +1025,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;" colspan="2">Unknown (not circled)</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{unknown_side_effects}}</td>
     </tr>
 
     <tr class="horisonatl-separator">
@@ -1041,7 +1041,7 @@
       border-bottom-width: 0px;" colspan="4">(as of the last visit before end of quarter)</td>
       <td style="font-weight: normal; border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">0 – 3 doses missed</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{patients_with_0_6_doses_missed_at_their_last_visit}}</td>
     </tr>
 
     <tr>
@@ -1053,7 +1053,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">4+ doses missed</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{patients_with_7_plus_doses_missed_at_their_last_visit}}</td>
     </tr>
 
     <tr>
@@ -1065,7 +1065,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;" colspan="2">Unknown (not circled)</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;">{{patients_with_unknown_adhrence}}</td>
     </tr>
 
     <tr class="horisonatl-separator">
@@ -1075,19 +1075,19 @@
     
     <tr>
       <td class="numbers">95.</td>
-      <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
+      <td style="text-align:left; padding-left: 10px; border-bottom-width:1px;
         border-top-width: 1px; border-right-width:0px; font-weight: bold;">CPT / IPT</td>
       <td colspan="4" style="font-weight: normal; border-top-width:1px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;">Approx. % of patients retained in ART who are currently on CPT / IPT</td>
-      <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
-        border-top-width: 1px; border-right-width:0px;">&nbsp;</td>
-      <td style="font-weight:bold; order-top-width:1px;
-        border-left-width:0px; border-bottom-width:1px;">CPT%</td>
-      <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
-        border-top-width: 1px; border-right-width:0px;">&nbsp;</td>
-      <td style="font-weight:bold; order-top-width:1px;
-        border-left-width:0px; border-bottom-width:1px;">IPT%</td>
+      <td style="text-align:right; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px;">{{total_patients_on_arvs_and_cpt}}</td>
+      <td style="font-weight:bold; order-top-width:1px; text-align:right;
+        border-left-width:0px; border-bottom-width:1px; padding-right:5px;">CPT%</td>
+      <td style="text-align:right; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px;">{{total_patients_on_arvs_and_ipt}}</td>
+      <td style="font-weight:bold; order-top-width:1px; text-align: right;
+        border-left-width:0px; border-bottom-width:1px; padding-right:5px;">IPT%</td>
     </tr>
     
     <tr class="horisonatl-separator">
@@ -1102,10 +1102,10 @@
       <td colspan="4" style="font-weight: normal; border-top-width:1px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;">Approx. % of women who received Depo at ART in the last quarter</td>
-      <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
-        border-top-width: 1px; border-right-width:0px;">&nbsp;</td>
-      <td colspan="3" style="text-align: right; padding-right:10px; order-top-width:1px;
-        border-left-width:0px; border-bottom-width:1px;">%</td>
+      <!--td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px;">{{total_patients_on_family_planning}}</td-->
+      <td colspan="4" style="text-align: right; padding-right:10px; order-top-width:1px;
+        border-left-width:0px; border-bottom-width:1px;"><span>{{total_patients_on_family_planning}}</span>&nbsp;%</td>
     </tr>
     
     <tr class="horisonatl-separator">
@@ -1120,10 +1120,10 @@
       <td colspan="4" style="font-weight: normal; border-top-width:1px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;">Approx. % of adult ART patients with BP recorded at least once this year</td>
-      <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
-        border-top-width: 1px; border-right-width:0px;">&nbsp;</td>
-      <td colspan="3" style="text-align: right; padding-right:10px; order-top-width:1px;
-        border-left-width:0px; border-bottom-width:1px;">%</td>
+      <!--td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px;">{{total_patients_with_screened_bp}}</td-->
+      <td colspan="4" style="text-align: right; padding-right:10px; order-top-width:1px;
+        border-left-width:0px; border-bottom-width:1px;"><span>{{total_patients_with_screened_bp}}</span>&nbsp;%</td>
     </tr>
 
     <tr class="horisonatl-separator">
@@ -1289,7 +1289,37 @@ export default {
       five_a: 0,
       six_a: 0,
       seven_a: 0,
-      eight_a: 0
+      eight_a: 0,
+      nine_p: 0,
+      nine_a: 0,
+      ten_a: 0,
+      eleven_p: 0,
+      eleven_a: 0,
+      twelve_a: 0,
+      thirteen_a: 0,
+      fourteen_a:  0,
+      fifteen_a: 0,
+      sixteen_a: 0,
+      seventeen_a: 0,
+      unknown_regimen: 0,
+      total_pregnant_women: 0,
+      total_breastfeeding_women: 0,
+      total_other_patients: 0,
+      tb_not_suspected: 0,
+      tb_suspected: 0,
+      tb_confirmed_currently_not_yet_on_tb_treatment: 0,
+      tb_confirmed_on_tb_treatment: 0,
+      unknown_tb_status: 0,
+      total_patients_without_side_effects: 0,
+      total_patients_with_side_effects: 0,
+      unknown_side_effects: 0,
+      patients_with_0_6_doses_missed_at_their_last_visit: 0,
+      patients_with_7_plus_doses_missed_at_their_last_visit: 0,
+      patients_with_unknown_adhrence: 0,
+      total_patients_on_arvs_and_cpt: 0,
+      total_patients_on_arvs_and_ipt: 0,
+      total_patients_on_family_planning: 0,
+      total_patients_with_screened_bp: 0
     }
   },
   props: ["params"],
@@ -1480,15 +1510,106 @@ export default {
       if(this.params[i].name == 'eight_a')
         this.eight_a = this.params[i].contents;
 
+      if(this.params[i].name == 'nine_p')
+        this.nine_p = this.params[i].contents;
+
+      if(this.params[i].name == 'nine_a')
+        this.nine_a = this.params[i].contents;
+
+      if(this.params[i].name == 'ten_a')
+        this.ten_a = this.params[i].contents;
+
+      if(this.params[i].name == 'eleven_p')
+        this.eleven_p = this.params[i].contents;
+
+      if(this.params[i].name == 'eleven_a')
+        this.eleven_a = this.params[i].contents;
+
+      if(this.params[i].name == 'thirteen_a')
+        this.thirteen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'fourteen_a')
+        this.fourteen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'fifteen_a')
+        this.fifteen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'sixteen_a')
+        this.sixteen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'seventeen_a')
+        this.seventeen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'unknown_regimen')
+        this.unknown_regimen = this.params[i].contents;
+    
+      if(this.params[i].name == 'total_pregnant_women')
+        this.total_pregnant_women = this.params[i].contents;
+
+      if(this.params[i].name == 'total_breastfeeding_women')
+        this.total_breastfeeding_women = this.params[i].contents;
+
+      if(this.params[i].name == 'total_other_patients')
+        this.total_other_patients = this.params[i].contents;
+
+      if(this.params[i].name == 'tb_not_suspected')
+        this.tb_not_suspected = this.params[i].contents;
+   
+      if(this.params[i].name == 'tb_not_suspected')
+        this.tb_not_suspected = this.params[i].contents;
+   
+      if(this.params[i].name == 'tb_confirmed_currently_not_yet_on_tb_treatment')
+        this.tb_confirmed_currently_not_yet_on_tb_treatment = this.params[i].contents;
+   
+      if(this.params[i].name == 'tb_confirmed_on_tb_treatment')
+        this.tb_confirmed_on_tb_treatment = this.params[i].contents;
+   
+      if(this.params[i].name == 'unknown_tb_status')
+        this.unknown_tb_status = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_without_side_effects')
+        this.total_patients_without_side_effects = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_with_side_effects')
+        this.total_patients_with_side_effects = this.params[i].contents;
+
+      if(this.params[i].name == 'unknown_side_effects')
+        this.unknown_side_effects = this.params[i].contents;
+
+      if(this.params[i].name == 'patients_with_0_6_doses_missed_at_their_last_visit')
+        this.patients_with_0_6_doses_missed_at_their_last_visit = this.params[i].contents;
+
+      if(this.params[i].name == 'patients_with_7_plus_doses_missed_at_their_last_visit')
+        this.patients_with_7_plus_doses_missed_at_their_last_visit = this.params[i].contents;
+
+      if(this.params[i].name == 'patients_with_unknown_adhrence')
+        this.patients_with_unknown_adhrence = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_on_arvs_and_cpt')
+        this.total_patients_on_arvs_and_cpt = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_on_arvs_and_ipt')
+        this.total_patients_on_arvs_and_ipt = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_on_family_planning')
+        this.total_patients_on_family_planning = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_with_screened_bp')
+        this.total_patients_with_screened_bp = this.params[i].contents;
 
 
 
-      
 
 
-      
+   
+    } 
+  
+  
 
-    }
+
+
+
+
    } 
   },
   watch: {
