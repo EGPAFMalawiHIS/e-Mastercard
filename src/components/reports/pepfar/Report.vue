@@ -5,18 +5,18 @@
     <div v-if="!BuildReport" class="calender">
       <div class="row" style="margin-top:10px">
         <div class="col-sm-6 shadow p-5 mb-3 bg-grey rounded">
-          <h4 class="shadow p-5 mb-3 bg-grey rounded" style="float:right; margin-top: 80px; background: rgba(214, 208, 208, 0.5); font-weight:bold"> Start Date </h4>
+          <h4 class="shadow p-5 mb-3 bg-grey rounded start-end-date" style="float:right;"> Start Date </h4>
           <datepicker v-model="startDate" :inline="true"></datepicker> 
-          <p v-if="!submit || (startDate != null && validateDate)" style="display: block; float:left; color: rgba(73, 161, 179, 1); font-size:20px; margin-top:15px; font-weight:bold">{{reportStartMessage}}</p> 
-          <p v-if="submit && startDate == null" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">ERROR: report start data CANNOT be empty</p>
-          <p v-if="!validateDate" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">{{dateError}}</p>
+          <p v-if="!submit || (startDate != null && validateDate)" class="info-message">{{reportStartMessage}}</p> 
+          <p v-if="submit && startDate == null" class="error-message">ERROR: report start data CANNOT be empty</p>
+          <p v-if="!validateDate" class="error-message">{{dateError}}</p>
         </div>
         <div class="col-sm-6 shadow p-5 mb-3 bg-white rounded">
-          <h4 class="shadow p-5 mb-3 bg-grey rounded" style="float:right; margin-top: 80px; background: rgba(214, 208, 208, 0.5); font-weight:bold "> Start End </h4>
+          <h4 class="shadow p-5 mb-3 bg-grey rounded start-end-date" style="float:right;"> Start End </h4>
           <datepicker v-model="endDate" :inline="true"></datepicker>
-          <p v-if="!submit || (endDate != null && validateDate)" style="display: block; float:left; color: rgba(73, 161, 179, 1); font-size:20px; margin-top:15px; font-weight:bold">{{reportEndMessage}}</p>
-          <p v-if="submit && endDate == null" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">ERROR: report end data CANNOT be empty</p>
-          <p v-if="!validateDate" style="display: block; float:left; color: rgba(186, 0, 0, 1); font-size:20px; margin-top:15px; font-weight:bold">{{dateError}}</p>
+          <p v-if="!submit || (endDate != null && validateDate)" class="info-message">{{reportEndMessage}}</p>
+          <p v-if="submit && endDate == null" class="error-message">ERROR: report end data CANNOT be empty</p>
+          <p v-if="!validateDate" class="error-message">{{dateError}}</p>
         </div>
       </div>
       <div class="row">
@@ -47,6 +47,7 @@
     </div>
 
     <div v-if="reportBuildComplete" class="row">
+      <h5 style="margin: auto"> Report period between: {{moment(this.startDate).format("LL")}} - {{moment(this.endDate).format("LL")}} </h5>
       <div class="col-12 table-col">
         <table class="table table-striped report">
           <thead>
@@ -371,9 +372,9 @@ export default {
       this.submit = true
       this.validateDate = true
       if (this.startDate != null && this.endDate != null) {
-        const START_DATE = moment(this.startDate).format("YYYY-MM-DD");
-        const END_DATE = moment(this.endDate).format("YYYY-MM-DD");
-        START_DATE > END_DATE ? this.validateDate = false : this.dateError
+        this.startDate = moment(this.startDate).format("YYYY-MM-DD");
+        this.endDate = moment(this.endDate).format("YYYY-MM-DD");
+        this.startDate > this.endDate ? this.validateDate = false : this.dateError
 
         if(this.validateDate){
           this.initializeReportData();
@@ -410,6 +411,30 @@ export default {
 .table-col table tbody tr:nth-child(33),
 .table-col table tbody tr:nth-child(34) {
   background-color: rgba(255, 222, 140, 0.5);
+}
+
+.error-message {
+  display: block; 
+  float:left; 
+  color: rgba(186, 0, 0, 1); 
+  font-size:20px; 
+  margin-top:15px; 
+  font-weight:bold
+}
+
+.info-message {
+  display: block; 
+  float:left; 
+  color: rgba(73, 161, 179, 1); 
+  font-size:20px; 
+  margin-top:15px; 
+  font-weight:bold
+}
+
+.start-end-date {
+  margin-top: 80px; 
+  background: rgba(214, 208, 208, 0.5); 
+  font-weight:bold
 }
 
 .loader {
