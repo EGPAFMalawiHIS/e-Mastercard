@@ -1,32 +1,57 @@
 
 <template>
   <div class="content">
-    <h4 style="font-weight:bold"> PEPFAR Disagreggated Report </h4>
-    <div v-if="!BuildReport" class="calender">
-      <div class="row" style="margin-top:10px">
-        <div class="col-sm-6 shadow p-5 mb-3 bg-grey rounded">
-          <h4 class="shadow p-5 mb-3 bg-grey rounded start-end-date" style="float:right;"> Start Date </h4>
-          <datepicker v-model="startDate" :inline="true"></datepicker> 
-          <p v-if="!submit || (startDate != null && validateDate)" class="info-message">{{reportStartMessage}}</p> 
-          <p v-if="submit && startDate == null" class="error-message">ERROR: report start data CANNOT be empty</p>
-          <p v-if="!validateDate" class="error-message">{{dateError}}</p>
+    <h4 style="font-weight:bold; float:left;">PEPFAR Disagreggated Report</h4>
+    <div class="row" style="float: right; margin-top:2  0px">
+      <div class="dates col-md-12">
+        <div class="date-selectors" style="margin: auto">
+          <label
+            v-if="(!submit || (startDate != null && endDate != null)) && validateDate"
+            style="margin: auto; font-size: 15px; margin-bottom: 5px; font-weight: bold;"
+            class="info-message"
+          >Select report start and end date</label>
+          <label
+            v-if="!validateDate"
+            style="margin: auto; font-size: 15px; margin-bottom: 5px; font-weight: bold"
+            class="error-message"
+          >{{dateError}}</label>
+          <p
+            v-if="submit && (startDate == null || endDate == null)"
+            style="margin: auto; font-size: 15px; margin-bottom: 5px; font-weight: bold"
+            class="error-message"
+          >ERROR: both dates MUST be selected</p>
         </div>
-        <div class="col-sm-6 shadow p-5 mb-3 bg-white rounded">
-          <h4 class="shadow p-5 mb-3 bg-grey rounded start-end-date" style="float:right;"> Start End </h4>
-          <datepicker v-model="endDate" :inline="true"></datepicker>
-          <p v-if="!submit || (endDate != null && validateDate)" class="info-message">{{reportEndMessage}}</p>
-          <p v-if="submit && endDate == null" class="error-message">ERROR: report end data CANNOT be empty</p>
-          <p v-if="!validateDate" class="error-message">{{dateError}}</p>
+        <div class="clearfix"></div>
+        <div class="date-inputs">
+          <input
+          v-model="startDate"
+          type="date"
+          class="btn btn-default"
+          style="background: rgba(181, 182, 186, 0.3);"
+        />
+        <input
+          v-model="endDate"
+          type="date"
+          class="btn btn-default"
+          style="margin-left:10px; background: rgba(181, 182, 186, 0.3)"
+        />
+        <button
+          v-on:click="buildReport()"
+          style="margin-left: 10px; "
+          class="btn btn-primary"
+        >Submit</button>
         </div>
-      </div>
-      <div class="row">
-        <button v-on:click="buildReport()" style="margin:auto; height: 60px; font-size: 30px" class="btn btn-info">Generate</button>
       </div>
     </div>
+    <div class="clearfix"></div>
+    <div v-if="!BuildReport" class="no-content" style="margin: auto; margin-top: 50px; font-size: 30px;">
+      Select reporting period
+    </div>
+    <div class="clearfix"></div>
     <div
       v-if="reportBuildComplete == false && BuildReport"
       class="loading"
-      style="margin-top: 300px;"
+      style="margin-top: 250px;"
     >
       <div class="loader">
         <svg class="circular" viewBox="25 25 50 50">
@@ -47,32 +72,36 @@
     </div>
 
     <div v-if="reportBuildComplete" class="row">
-      <h5 style="margin: auto"> Report period between: {{moment(this.startDate).format("LL")}} - {{moment(this.endDate).format("LL")}} </h5>
-      <div class="col-12 table-col">
-        <table class="table table-striped report">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Age group</th>
-              <th scope="col">Gender</th>
-              <th scope="col">Tx new (new on ART)</th>
-              <th scope="col">Tx curr (receiving ART)</th>
-              <th scope="col">Tx curr (recieved IPT)</th>
-              <th scope="col">Tx curr (screened for TB)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in reportObjects" :key="index">
-              <th scope="row">{{index + 1}}</th>
-              <td v-if="item != undefined">{{item.age_group}}</td>
-              <td v-if="item != undefined">{{item.sex}}</td>
-              <td v-if="item != undefined">{{item.tx_new}}</td>
-              <td v-if="item != undefined">{{item.tx_curr}}</td>
-              <td v-if="item != undefined">{{item.tx_screened_for_tb}}</td>
-              <td v-if="item != undefined">{{item.tx_given_ipt}}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="col-md-12">
+        <h5
+          style="margin: auto"
+        >Report period between: {{moment(this.startDate).format("LL")}} - {{moment(this.endDate).format("LL")}}</h5>
+        <div class="col-12 table-col">
+          <table class="table table-striped report">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Age group</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Tx new (new on ART)</th>
+                <th scope="col">Tx curr (receiving ART)</th>
+                <th scope="col">Tx curr (recieved IPT)</th>
+                <th scope="col">Tx curr (screened for TB)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in reportObjects" :key="index">
+                <th scope="row">{{index + 1}}</th>
+                <td v-if="item != undefined">{{item.age_group}}</td>
+                <td v-if="item != undefined">{{item.sex}}</td>
+                <td v-if="item != undefined">{{item.tx_new}}</td>
+                <td v-if="item != undefined">{{item.tx_curr}}</td>
+                <td v-if="item != undefined">{{item.tx_screened_for_tb}}</td>
+                <td v-if="item != undefined">{{item.tx_given_ipt}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -82,19 +111,19 @@
 import Config from "../../../../public/config.json";
 import ApiClient from "../../../services/api_client";
 import moment from "moment";
-import Datepicker from "vuejs-datepicker";
 
 export default {
   name: "PepfarReport",
   data() {
     return {
+      isActive: true,
       startDate: null,
       endDate: null,
       submit: false,
-      reportStartMessage: 'Select report start date',
-      reportEndMessage: 'Select report end date',
+      reportStartMessage: "Select report start date",
+      reportEndMessage: "Select report end date",
       validateDate: true,
-      dateError: 'ERROR: end date CANNOT be smaller than start date',
+      dateError: "ERROR: end date CANNOT be smaller than start date",
       reportObject: {},
       reportObjects: [],
       reportBuildComplete: false,
@@ -130,7 +159,6 @@ export default {
     };
   },
   components: {
-    Datepicker
   },
   methods: {
     getPatients(report = []) {
@@ -369,20 +397,24 @@ export default {
         });
     },
     buildReport() {
-      this.submit = true
-      this.validateDate = true
+      this.submit = true;
+      this.validateDate = true;
       if (this.startDate != null && this.endDate != null) {
         this.startDate = moment(this.startDate).format("YYYY-MM-DD");
         this.endDate = moment(this.endDate).format("YYYY-MM-DD");
-        this.startDate > this.endDate ? this.validateDate = false : this.dateError
+        this.startDate > this.endDate
+          ? (this.validateDate = false)
+          : this.dateError;
 
-        if(this.validateDate){
+        console.log(this.startDate > this.endDate);
+
+        if (this.validateDate) {
           this.initializeReportData();
           this.RebuildReport = true;
           this.reportBuildComplete = false;
           this.BuildReport = true;
           this.LoadingPercentage = 0;
-          this.submit = false
+          this.submit = false;
         }
       }
     },
@@ -414,27 +446,31 @@ export default {
 }
 
 .error-message {
-  display: block; 
-  float:left; 
-  color: rgba(186, 0, 0, 1); 
-  font-size:20px; 
-  margin-top:15px; 
-  font-weight:bold
+  display: block;
+  float: left;
+  color: rgba(186, 0, 0, 1);
+  font-size: 20px;
+  margin-top: 15px;
+  font-weight: bold;
 }
 
 .info-message {
-  display: block; 
-  float:left; 
-  color: rgba(73, 161, 179, 1); 
-  font-size:20px; 
-  margin-top:15px; 
-  font-weight:bold
+  display: block;
+  float: left;
+  color: rgba(0, 114, 255, 1);
+  font-size: 20px;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.start {
+  color: red;
 }
 
 .start-end-date {
-  margin-top: 80px; 
-  background: rgba(214, 208, 208, 0.5); 
-  font-weight:bold
+  margin-top: 80px;
+  background: rgba(214, 208, 208, 0.5);
+  font-weight: bold;
 }
 
 .loader {
