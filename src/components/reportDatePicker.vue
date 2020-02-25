@@ -81,8 +81,9 @@ export default {
 
 <style scope>
   .control-container {
-    float: right;
+    text-align: right;
     margin: 10px  0px 10px 0px;
+    width: 100%;
   }
 
   select {

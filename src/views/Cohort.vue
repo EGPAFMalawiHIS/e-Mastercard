@@ -13,8 +13,9 @@
 
         <div class="cohort">
           <report-date-picker :onSubmit="fetchData"></report-date-picker>
-          <cohortheader/>
-          <cohort-ft  :params="cohortData"/>
+          <cohortvalidation :dataparams="validationData"/>
+          <cohortheader></cohortheader>
+          <cohort-ft :params="cohortData"/>
         </div>
 
 
@@ -42,10 +43,12 @@ import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 
 import reportDatePicker from '@/components/reportDatePicker.vue';
+import cohortValidation from '@/components/cohortReportValidation.vue';
 import cohortHeader from '@/components/cohortHeader.vue';
 import cohortFT from '@/components/cohortFT.vue';
 
 import ApiClient from "../services/api_client";
+import cohortFTVue from '../components/cohortFT.vue';
 
 
 export default {
@@ -55,7 +58,8 @@ export default {
     "side-bar": Sidebar,
     'report-date-picker': reportDatePicker,
     'cohortheader': cohortHeader,
-    'cohort-ft': cohortFT
+    'cohort-ft': cohortFT,
+    'cohortvalidation': cohortValidation
   }, methods: {
     redirect: function () {
       this.$router.push('/moh');
@@ -72,6 +76,7 @@ export default {
     checkResult(data){
       if(data.length > 0) {
         this.cohortData = data;
+        this.validationData = data;
       }else{
         setTimeout(this.fetchData, 10000);
       }
@@ -80,7 +85,8 @@ export default {
   data () {
     return {
       msg: 'MoH cohort report version 24',
-      cohortData: []
+      cohortData: [],
+      validationData: []
     }
   }
 }

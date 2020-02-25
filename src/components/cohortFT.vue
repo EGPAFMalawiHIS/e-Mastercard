@@ -95,11 +95,11 @@
       </td>
       <td style="font-weight: normal; border-left-style: none !important; text-align:left; 
          border-top-style: dotted !important; border-bottom-style: none !important">FT Init., Non-disagg.</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{unknown_gender}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{cum_unknown_gender}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -112,11 +112,11 @@
       </td>
       <td style="font-weight: normal; border-left-style: none !important; text-align:left; 
          border-top-style: dotted !important;">CHECK: Total FT</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{initiated_on_art_first_time}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;">{{cum_initiated_on_art_first_time}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -293,7 +293,7 @@
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">{{cum_quarterly_children_12_59_months}}</td>
+      <td style="font-weight: normal;">{{cum_children_12_59_months}}</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -1254,7 +1254,7 @@ export default {
       confirmed_hiv_infection_in_infants_pcr: 0,
       cum_confirmed_hiv_infection_in_infants_pcr: 0,
       quarterly_children_12_59_months: 0,
-      cum_quarterly_children_12_59_months: 0,
+      cum_children_12_59_months: 0,
       breastfeeding_mothers: 0,
       cum_breastfeeding_mothers: 0,
       who_stage_two: 0,
@@ -1331,14 +1331,19 @@ export default {
       initial_pregnant_females_all_ages: 0,
       cum_initial_pregnant_females_all_ages: 0,
       initial_non_pregnant_females_all_ages: 0,
-      cum_initial_non_pregnant_females_all_ages: 0
+      cum_initial_non_pregnant_females_all_ages: 0,
+      unknown_gender: 0,
+      cum_unknown_gender: 0,
+      initiated_on_art_first_time: 0,
+      cum_initiated_on_art_first_time: 0
     }
   },
   props: ["params"],
   methods: {
    renderResults() {
     for(var i = 0; i < this.params.length; i++){
-      console.log(this.params[i].name);
+      //console.log(this.params[i].name);
+
       if(this.params[i].name == 're_initiated_on_art')
         this.re_initiated_on_art = this.params[i].contents;
      
@@ -1350,11 +1355,6 @@ export default {
      
       if(this.params[i].name == 'cum_transfer_in')
         this.cum_transfer_in = this.params[i].contents;
-     
-     
-
-
-
 
       if(this.params[i].name == 'total_registered')
         this.newly_registered_quarterly = this.params[i].contents;
@@ -1413,8 +1413,8 @@ export default {
       if(this.params[i].name == 'quarterly_children_12_59_months')
         this.quarterly_children_12_59_months = this.params[i].contents;
 
-      if(this.params[i].name == 'cum_quarterly_children_12_59_months')
-        this.cum_quarterly_children_12_59_months = this.params[i].contents;
+      if(this.params[i].name == 'cum_children_12_59_months')
+        this.cum_children_12_59_months = this.params[i].contents;
 
       if(this.params[i].name == 'pregnant_women')
         this.pregnant_women = this.params[i].contents;
@@ -1500,7 +1500,7 @@ export default {
       if(this.params[i].name == 'died_total')
         this.died_total = this.params[i].contents;
 
-      if(this.params[i].name == '')
+      if(this.params[i].name == 'defaulted')
         this.defaulted = this.params[i].contents;
 
       if(this.params[i].name == 'stopped_art')
@@ -1583,7 +1583,10 @@ export default {
 
       if(this.params[i].name == 'tb_not_suspected')
         this.tb_not_suspected = this.params[i].contents;
-   
+      
+      if(this.params[i].name == 'tb_suspected')
+         this.tb_suspected = this.params[i].contents;
+
       if(this.params[i].name == 'tb_not_suspected')
         this.tb_not_suspected = this.params[i].contents;
    
@@ -1644,18 +1647,20 @@ export default {
       if(this.params[i].name == 'cum_initial_non_pregnant_females_all_ages')
         this.cum_initial_non_pregnant_females_all_ages = this.params[i].contents;
 
+      if(this.params[i].name == 'unknown_gender')
+        this.unknown_gender = this.params[i].contents;
 
+      if(this.params[i].name == 'cum_unknown_gender')
+        this.cum_unknown_gender = this.params[i].contents;
 
+      if(this.params[i].name == 'initiated_on_art_first_time')
+        this.initiated_on_art_first_time = this.params[i].contents;
 
-
-
+      if(this.params[i].name == 'cum_initiated_on_art_first_time')
+        this.cum_initiated_on_art_first_time = this.params[i].contents;
    
-    } 
-  
-
-
-
-   } 
+    }
+   }
   },
   watch: {
     params: {
