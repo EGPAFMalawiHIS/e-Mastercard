@@ -439,6 +439,9 @@ export default {
       }  
     },
     validateReport(){
+        if(this.newly_registered_cum < 1)
+           return;
+
         /*############Section one: 26 -- 32 Has to equal to Total registered */
         let html_string = '';
         this.report_consistency_string = [];

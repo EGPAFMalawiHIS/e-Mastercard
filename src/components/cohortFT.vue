@@ -1335,7 +1335,16 @@ export default {
       unknown_gender: 0,
       cum_unknown_gender: 0,
       initiated_on_art_first_time: 0,
-      cum_initiated_on_art_first_time: 0
+      cum_initiated_on_art_first_time: 0,
+
+      cum_children_24_months_14_years_at_art_initiation: 0,
+      adults_at_art_initiation: 0,
+      cum_adults_at_art_initiation: 0,
+      presumed_severe_hiv_disease_in_infants: 0,
+      cum_presumed_severe_hiv_disease_in_infants: 0,
+      pregnant_women: 0,
+      cum_pregnant_women: 0,
+      children_24_months_14_years_at_art_initiation: 0
     }
   },
   props: ["params"],

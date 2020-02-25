@@ -18,16 +18,15 @@
 export default {
   data: function() {
     return {
-      quarters : []
+      quarters: []
     }
   },
   props: ["onSubmit"],
   methods: {
     selectQuarter: function() {
       //this.$refs.myid.disabled=true;
-      if(quarters.value != 'Select cohort quarter')
-        this.onSubmit(quarters.value);
-
+      let qtr = (quarters.value ? quarters.value : null);
+      this.onSubmit(qtr);
   },
   enableBTN: function() {
     this.$refs.myid.disabled=false;

@@ -14,7 +14,7 @@
         <div class="cohort">
           <report-date-picker :onSubmit="fetchData"></report-date-picker>
           <cohortvalidation :dataparams="validationData"/>
-          <cohortheader></cohortheader>
+          <cohortheader :reportparams="reportData"/>
           <cohort-ft :params="cohortData"/>
         </div>
 
@@ -65,32 +65,36 @@ export default {
       this.$router.push('/moh');
     },
     fetchData: async function(qtr) {
-      let prefix = await ApiClient.get(
-        "programs/1/reports/cohort?name=" + qtr
-      );
-      let f = await prefix
-      .json();
-      this.checkResult(f.values);
-      return;
+      if(!qtr)
+        return;
+
+      if(qtr == 'Select cohort quarter')
+        return;
+
+      const response = await ApiClient.get("programs/1/reports/cohort?name=" + qtr, {}, {});
+
+      if (response.status === 200) {
+        //response.json.then(function(data) { this.checkResult(data.values) });
+        this.reportData = qtr;
+        response.json().then((data) => this.checkResult(data.values) );
+      }else{
+        console.log("We here ......" + response.status);
+        setTimeout(() => this.fetchData(qtr), 10000);
+      }
     },
     checkResult(data){
-      if(data.length > 0) {
-        this.cohortData = data;
-        this.validationData = data;
-      }else{
-        setTimeout(this.fetchData, 10000);
-      }
+      this.cohortData = data;
+      this.validationData = data;
     }
   },
   data () {
     return {
       msg: 'MoH cohort report version 24',
       cohortData: [],
-      validationData: []
+      validationData: [],
+      reportData: null
     }
   }
 }
-
-
 
 </script>
