@@ -440,8 +440,8 @@ export default {
 
 <style scoped>
 .information {
-  /* color: blue; */
-  mix-blend-mode: difference;
+  color: #537fb5;
+  /* mix-blend-mode: difference; */
 }
 .col-md-3 {
   border: 0.5px black solid;
