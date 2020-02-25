@@ -109,7 +109,6 @@ export default {
       visits.forEach(element => {
         let tempob = {...this.mockOBJ};
         tempob.visitDate = element.visitDate;
-        tempob.givenTo = element.visitDate;
         this.obs.forEach(innerElement => {
         this.getObs(innerElement, element).then(res => {
           if (res.length > 0) {
