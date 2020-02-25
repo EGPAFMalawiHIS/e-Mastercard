@@ -24,8 +24,6 @@
 
 <script>
 
-import Report from './Report'
-
 export default {
   name: "LoadingComponent",
   
