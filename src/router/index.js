@@ -67,7 +67,12 @@ const routes = [
     path: "/pepfar",
     name: "pepfar",
     component: () => import("../views/PepfarReports.vue")
-  }
+  },
+  {
+    path: "/moh_art_disaggregated",
+    name: "moh_art_disaggregated",
+    component: () => import("../views/MohDisaggregated.vue")
+  },
 ]
 
 const router = new VueRouter({
