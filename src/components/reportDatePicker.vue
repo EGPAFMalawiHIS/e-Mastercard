@@ -7,20 +7,30 @@
         {{quarter}}
       </option>
     </select>
-    <button class="btn btn-primary">Submit</button>
+    <button class="btn btn-primary" @click="selectQuarter" id="submit-btn" ref="myid">Submit</button>
 
   </div>
 </template>
 
 <script>
 
+
 export default {
   data: function() {
     return {
-      quarters : [], 
+      quarters: []
     }
   },
-methods: {
+  props: ["onSubmit"],
+  methods: {
+    selectQuarter: function() {
+      //this.$refs.myid.disabled=true;
+      let qtr = (quarters.value ? quarters.value : null);
+      this.onSubmit(qtr);
+  },
+  enableBTN: function() {
+    this.$refs.myid.disabled=false;
+  },
   loadQuarters() {
     var qtrs = [];
     var current_qtr = "";
@@ -70,8 +80,9 @@ methods: {
 
 <style scope>
   .control-container {
-    float: right;
+    text-align: right;
     margin: 10px  0px 10px 0px;
+    width: 100%;
   }
 
   select {

@@ -12,9 +12,10 @@
         
 
         <div class="cohort">
-          <report-date-picker/>
-          <cohortheader/>
-          <cohort-ft/>
+          <report-date-picker :onSubmit="fetchData"></report-date-picker>
+          <cohortvalidation :dataparams="validationData"/>
+          <cohortheader :reportparams="reportData"/>
+          <cohort-ft :params="cohortData" :reportid="reportID"/>
         </div>
 
 
@@ -42,9 +43,12 @@ import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 
 import reportDatePicker from '@/components/reportDatePicker.vue';
+import cohortValidation from '@/components/cohortReportValidation.vue';
 import cohortHeader from '@/components/cohortHeader.vue';
 import cohortFT from '@/components/cohortFT.vue';
 
+import ApiClient from "../services/api_client";
+import cohortFTVue from '../components/cohortFT.vue';
 
 
 export default {
@@ -54,19 +58,46 @@ export default {
     "side-bar": Sidebar,
     'report-date-picker': reportDatePicker,
     'cohortheader': cohortHeader,
-    'cohort-ft': cohortFT
+    'cohort-ft': cohortFT,
+    'cohortvalidation': cohortValidation
   }, methods: {
     redirect: function () {
       this.$router.push('/moh');
+    },
+    fetchData: async function(qtr) {
+      if(!qtr)
+        return;
+
+      if(qtr == 'Select cohort quarter')
+        return;
+
+      const response = await ApiClient.get("programs/1/reports/cohort?name=" + qtr, {}, {});
+
+      if (response.status === 200) {
+        //response.json.then(function(data) { this.checkResult(data.values) });
+        this.reportData = qtr;
+        response.json().then((data) => this.checkResult(data) );
+      }else{
+        console.log("We here ......" + response.status);
+        setTimeout(() => this.fetchData(qtr), 10000);
+      }
+    },
+    checkResult(cohort_data){
+      let data  = cohort_data.values;
+      this.reportID = cohort_data.id;
+      this.cohortData = data;
+      this.validationData = data;
     }
   },
   data () {
     return {
-      msg: 'MoH cohort report version 24'
+      msg: 'MoH cohort report version 24',
+      cohortData: [],
+      validationData: [],
+      reportData: null,
+      reportID: null
     }
   }
 }
-
-
 
 </script>

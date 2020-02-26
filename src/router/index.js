@@ -57,6 +57,26 @@ const routes = [
     path: "/cohort",
     name: "cohort",
     component: () => import("../views/Cohort.vue")
+  },
+  {
+    path: "/pepfar_disaggregated",
+    name: "pepfar_disaggregated",
+    component: () => import("../views/PepfarDisaggregated.vue")
+  },
+  {
+    path: "/pepfar",
+    name: "pepfar",
+    component: () => import("../views/PepfarReports.vue")
+  },
+  {
+    path: "/moh_art_disaggregated",
+    name: "moh_art_disaggregated",
+    component: () => import("../views/MohDisaggregated.vue")
+  },
+  {
+    path: "/drill_down/:indicator/:id",
+    name: "cohort_driller",
+    component: () => import("../views/CohortDriller.vue")
   }
 ]
 
