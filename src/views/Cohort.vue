@@ -15,7 +15,7 @@
           <report-date-picker :onSubmit="fetchData"></report-date-picker>
           <cohortvalidation :dataparams="validationData"/>
           <cohortheader :reportparams="reportData"/>
-          <cohort-ft :params="cohortData"/>
+          <cohort-ft :params="cohortData" :reportid="reportID"/>
         </div>
 
 
@@ -76,13 +76,15 @@ export default {
       if (response.status === 200) {
         //response.json.then(function(data) { this.checkResult(data.values) });
         this.reportData = qtr;
-        response.json().then((data) => this.checkResult(data.values) );
+        response.json().then((data) => this.checkResult(data) );
       }else{
         console.log("We here ......" + response.status);
         setTimeout(() => this.fetchData(qtr), 10000);
       }
     },
-    checkResult(data){
+    checkResult(cohort_data){
+      let data  = cohort_data.values;
+      this.reportID = cohort_data.id;
       this.cohortData = data;
       this.validationData = data;
     }
@@ -92,7 +94,8 @@ export default {
       msg: 'MoH cohort report version 24',
       cohortData: [],
       validationData: [],
-      reportData: null
+      reportData: null,
+      reportID: null
     }
   }
 }

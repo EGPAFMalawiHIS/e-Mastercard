@@ -1144,90 +1144,8 @@
         border-left-width:0px; border-bottom-width:1px;">&nbsp;</td>
     </tr>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   </table>
 
-  </table>
 </template>
 
 <script>
@@ -1347,7 +1265,7 @@ export default {
       children_24_months_14_years_at_art_initiation: 0
     }
   },
-  props: ["params"],
+  props: ["params", "reportid"],
   methods: {
    renderResults() {
     for(var i = 0; i < this.params.length; i++){
@@ -1670,8 +1588,11 @@ export default {
    
     }
    },
-   drillDown(e){
-     console.log(e);
+   drillDown(indicator_name){
+     if(!this.reportid)
+      return;
+
+     document.location = "/drill_down/" + indicator_name + "/" + this.reportid;
    }
   },
   watch: {

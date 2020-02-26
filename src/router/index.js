@@ -57,6 +57,11 @@ const routes = [
     path: "/cohort",
     name: "cohort",
     component: () => import("../views/Cohort.vue")
+  },
+  {
+    path: "/drill_down/:indicator/:id",
+    name: "cohort_driller",
+    component: () => import("../views/CohortDriller.vue")
   }
 ]
 
