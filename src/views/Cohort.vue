@@ -64,14 +64,16 @@ export default {
     redirect: function () {
       this.$router.push('/moh');
     },
-    fetchData: async function(qtr) {
-      if(!qtr)
+    fetchData: async function(report_parameters) {
+      if(!report_parameters)
         return;
 
+      let qtr = report_parameters[0];
+      let regenerate = report_parameters[1];
       if(qtr == 'Select cohort quarter')
         return;
 
-      const response = await ApiClient.get("programs/1/reports/cohort?name=" + qtr, {}, {});
+      const response = await ApiClient.get("programs/1/reports/cohort?name=" + qtr + "&regenerate=" + regenerate, {}, {});
 
       if (response.status === 200) {
         //response.json.then(function(data) { this.checkResult(data.values) });
@@ -79,7 +81,7 @@ export default {
         response.json().then((data) => this.checkResult(data) );
       }else{
         console.log("We here ......" + response.status);
-        setTimeout(() => this.fetchData(qtr), 10000);
+        setTimeout(() => this.fetchData([qtr, false]), 10000);
       }
     },
     checkResult(cohort_data){

@@ -7,7 +7,8 @@
         {{quarter}}
       </option>
     </select>
-    <button class="btn btn-primary" @click="selectQuarter" id="submit-btn" ref="myid">Submit</button>
+    <button class="btn btn-primary" @click="selectQuarter(false)" id="submit-btn" ref="myid">Submit</button>
+    <button class="btn btn-danger" @click="selectQuarter(true)" id="generate-btn" ref="myid">Hard-generate</button>
 
   </div>
 </template>
@@ -23,9 +24,11 @@ export default {
   },
   props: ["onSubmit"],
   methods: {
-    selectQuarter: function() {
+    selectQuarter: function(e) {
+      console.log(e);
       //this.$refs.myid.disabled=true;
-      let qtr = (quarters.value ? quarters.value : null);
+      let qtr = (quarters.value ? [quarters.value, e] : []);
+      //let qtr = (quarters.value ? quarters.value : null);
       this.onSubmit(qtr);
   },
   enableBTN: function() {
@@ -97,4 +100,7 @@ export default {
     vertical-align: top;
   }
 
+  .btn-danger {
+    margin-left: 15px;
+  }
 </style>
