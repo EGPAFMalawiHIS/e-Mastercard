@@ -73,6 +73,11 @@ const routes = [
     name: "moh_art_disaggregated",
     component: () => import("../views/MohDisaggregated.vue")
   },
+  {
+    path: "/art_refill_periods",
+    name: "art_refill_periods",
+    component: () => import("../views/ArtRefillPeriods.vue")
+  },
 ]
 
 const router = new VueRouter({
