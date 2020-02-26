@@ -22,7 +22,7 @@
                 <td>{{record.given_name}}</td>
                 <td>{{record.family_name}}</td>
                 <td class="center-text">{{record.gender}}</td>
-                <td class="center-text">{{record.birthdate}}</td>
+                <td class="center-text">{{moment(record.birthdate).format('DD/MMM/YYYY')}}</td>
               </tr>
             </tbody>
           </table>
@@ -37,6 +37,8 @@
 import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
+import moment from 'moment';
+
 
 export default {
   name: "reports",
