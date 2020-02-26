@@ -24,11 +24,11 @@
     <tr>
       <td class="numbers">25.</td>
       <td style="font-weight: normal;text-align:left;padding-left:5px;" colspan="2">Total registered</td>
-      <td style="font-weight: normal;"><a href="#" @click="drillDown('newly_registered_quarterly');">{{newly_registered_quarterly}}</a></td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('total_registered');">{{total_registered}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;"><a href="#" @click="drillDown('newly_registered_cum');">{{newly_registered_cum}}</a></td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_total_registered');">{{cum_total_registered}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -1158,8 +1158,8 @@ export default {
       re_initiated_on_art: 0,
       cum_re_initiated_on_art: 0,
 
-      newly_registered_quarterly: 0,
-      newly_registered_cum: 0,
+      total_registered: 0,
+      cum_total_registered: 0,
       quarterly_all_males: 0,
       cummulative_all_males: 0,
 
@@ -1284,10 +1284,10 @@ export default {
         this.cum_transfer_in = this.params[i].contents;
 
       if(this.params[i].name == 'total_registered')
-        this.newly_registered_quarterly = this.params[i].contents;
+        this.total_registered = this.params[i].contents;
       
       if(this.params[i].name == 'cum_total_registered')
-        this.newly_registered_cum = this.params[i].contents;
+        this.cum_total_registered = this.params[i].contents;
       
       if(this.params[i].name == 'cum_all_males')
         this.cummulative_all_males = this.params[i].contents;
@@ -1592,7 +1592,14 @@ export default {
      if(!this.reportid)
       return;
 
-     document.location = "/drill_down/" + indicator_name + "/" + this.reportid;
+     let indicator_id;
+
+     for(let i = 0; i < this.params.length;  i++){
+       if(this.params[i].name === indicator_name){
+          indicator_id = this.params[i].id;
+       }
+     } 
+     document.location = "/drill_down/" + indicator_name + "/" + indicator_id;
    }
   },
   watch: {
