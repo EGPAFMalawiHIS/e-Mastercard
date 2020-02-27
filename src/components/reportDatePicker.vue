@@ -25,7 +25,6 @@ export default {
   props: ["onSubmit"],
   methods: {
     selectQuarter: function(e) {
-      console.log(e);
       //this.$refs.myid.disabled=true;
       let qtr = (quarters.value ? [quarters.value, e] : []);
       //let qtr = (quarters.value ? quarters.value : null);

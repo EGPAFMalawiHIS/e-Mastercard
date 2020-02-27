@@ -76,9 +76,13 @@ export default {
       eleven_a: 0,
       twelve_a: 0,
       thirteen_a: 0,
+      fourteen_p:  0,
       fourteen_a:  0,
+      fifteen_p: 0,
       fifteen_a: 0,
+      sixteen_p: 0,
       sixteen_a: 0,
+      seventeen_p: 0,
       seventeen_a: 0,
       unknown_regimen: 0,
       total_pregnant_women: 0,
@@ -334,14 +338,26 @@ export default {
         if(this.dataparams[i].name == 'thirteen_a')
             this.thirteen_a = parseInt(this.dataparams[i].contents);
 
+        if(this.dataparams[i].name == 'fourteen_p')
+            this.fourteen_p = parseInt(this.dataparams[i].contents);
+
         if(this.dataparams[i].name == 'fourteen_a')
             this.fourteen_a = parseInt(this.dataparams[i].contents);
+
+        if(this.dataparams[i].name == 'fifteen_p')
+            this.fifteen_p = parseInt(this.dataparams[i].contents);
 
         if(this.dataparams[i].name == 'fifteen_a')
             this.fifteen_a = parseInt(this.dataparams[i].contents);
 
+        if(this.dataparams[i].name == 'sixteen_p')
+            this.sixteen_p = parseInt(this.dataparams[i].contents);
+
         if(this.dataparams[i].name == 'sixteen_a')
             this.sixteen_a = parseInt(this.dataparams[i].contents);
+
+        if(this.dataparams[i].name == 'seventeen_p')
+            this.seventeen_p = parseInt(this.dataparams[i].contents);
 
         if(this.dataparams[i].name == 'seventeen_a')
             this.seventeen_a = parseInt(this.dataparams[i].contents);
@@ -614,6 +630,7 @@ export default {
         total_64_80 += (this.five_a + this.six_a + this.seven_a + this.eight_a + this.nine_p + this.nine_a);
         total_64_80 += (this.ten_a + this.eleven_p + this.eleven_a + this.twelve_a + this.unknown_regimen);
         total_64_80 += (this.thirteen_a + this.fourteen_a + this.fifteen_a + this.sixteen_a + this.seventeen_a);
+        total_64_80 += (this.fourteen_p + this.fifteen_p + this.sixteen_p + this.seventeen_p);
 
         if(this.total_alive_and_on_art != total_64_80){
           html_string = "Section 64 - 80: Total alive and on ART is not equal to ";

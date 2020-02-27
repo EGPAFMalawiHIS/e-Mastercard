@@ -822,7 +822,7 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">14</td>
-      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td><a href="#" @click="drillDown('fourteen_p');">{{fourteen_p}}</a></td>
       <td><a href="#" @click="drillDown('fourteen_a');">{{fourteen_a}}</a></td>
     </tr>
     
@@ -837,7 +837,7 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">15</td>
-      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td><a href="#" @click="drillDown('fifteen_p');">{{fifteen_p}}</a></td>
       <td><a href="#" @click="drillDown('fifteen_a');">{{fifteen_a}}</a></td>
     </tr>
     
@@ -852,7 +852,7 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">16</td>
-      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td><a href="#" @click="drillDown('sixteen_p');">{{sixteen_p}}</a></td>
       <td><a href="#" @click="drillDown('sixteen_a');">{{sixteen_a}}</a></td>
     </tr>
     
@@ -867,7 +867,7 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">17</td>
-      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td><a href="#" @click="drillDown('seventeen_p');">{{seventeen_p}}</a></td>
       <td><a href="#" @click="drillDown('seventeen_a');">{{seventeen_a}}</a></td>
     </tr>
     
@@ -1219,9 +1219,13 @@ export default {
       eleven_a: 0,
       twelve_a: 0,
       thirteen_a: 0,
+      fourteen_p:  0,
       fourteen_a:  0,
+      fifteen_p: 0,
       fifteen_a: 0,
+      sixteen_p: 0,
       sixteen_a: 0,
+      seventeen_p: 0,
       seventeen_a: 0,
       unknown_regimen: 0,
       total_pregnant_women: 0,
@@ -1484,8 +1488,14 @@ export default {
       if(this.params[i].name == 'thirteen_a')
         this.thirteen_a = this.params[i].contents;
 
+      if(this.params[i].name == 'fourteen_p')
+        this.fourteen_p = this.params[i].contents;
+
       if(this.params[i].name == 'fourteen_a')
         this.fourteen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'fifteen_p')
+        this.fifteen_p = this.params[i].contents;
 
       if(this.params[i].name == 'fifteen_a')
         this.fifteen_a = this.params[i].contents;
@@ -1493,8 +1503,14 @@ export default {
       if(this.params[i].name == 'sixteen_a')
         this.sixteen_a = this.params[i].contents;
 
+      if(this.params[i].name == 'sixteen_p')
+        this.sixteen_p = this.params[i].contents;
+
       if(this.params[i].name == 'seventeen_a')
         this.seventeen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'seventeen_p')
+        this.seventeen_p = this.params[i].contents;
 
       if(this.params[i].name == 'unknown_regimen')
         this.unknown_regimen = this.params[i].contents;
