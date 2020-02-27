@@ -14,6 +14,7 @@
                 <th scope="col">Last name</th>
                 <th class="center-text" scope="col">Gender</th>
                 <th class="center-text" scope="col">DOB</th>
+                <th class="center-text" scope="col">&nbsp;</th>
               </tr>
             </thead>
           </table>
@@ -72,13 +73,35 @@ export default {
       }
     },
     initDataTable(){
+      let indicator_name =  this.$route.params.indicator.split('_');
+      this.report_title = indicator_name.join(" ").toUpperCase();
+
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: true,
         data: this.formatedData,
         dom: 'Bfrtip',
         buttons: [
-          'copy', 'csv', 'excel', 'pdf', 'print'
+          {
+            extend: 'copy',
+            title:  this.report_title
+          },
+          {
+            extend: 'csv',
+            title:  this.report_title
+          },
+          {
+            extend: 'pdf',
+            title:  this.report_title
+          },
+          {
+            extend: 'print',
+            title:  this.report_title
+          }
+        ],
+        columnDefs: [
+          {"className": "center-text", "targets": 3},
+          {"className": "center-text", "targets": 4}
         ]
       });
     },
@@ -94,12 +117,28 @@ export default {
         /*this.dTable.fnAddData( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
           data[i].gender, data[i].birthdate] );*/
+        let birthdate;
+        try {
+          birthdate = moment(data[i].birthdate).format('DD/MMM/YYYY');
+        }catch(e) {
+          birthdate = 'N/A';
+        }
+        
         this.formatedData.push( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
-          data[i].gender, data[i].birthdate] );
+          data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
       }
       this.dTable.api().destroy();
       this.initDataTable();
+    },
+    createdShowBTN(person_id){
+      var span = document.createElement('span');
+      var button  = document.createElement('button');
+      button.setAttribute("onclick", 'javascript:location="/patient/mastercard/' + person_id + '"');
+      button.innerHTML = "Show";
+      button.setAttribute('class','btn-warning show-btn');
+      span.appendChild(button);
+      return span.innerHTML;
     }
   },
   mounted() {
@@ -139,7 +178,15 @@ table {
     margin-left: 5px;
     padding-top: 10px;
 }
+</style>
+
+
+<style>
 .center-text {
     text-align: center;
+}
+
+.show-btn {
+  font-size: 14px;
 }
 </style>
