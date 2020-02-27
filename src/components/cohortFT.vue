@@ -23,12 +23,12 @@
 
     <tr>
       <td class="numbers">25.</td>
-      <td style="font-weight: normal;" colspan="2">Total registered</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;text-align:left;padding-left:5px;" colspan="2">Total registered</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('total_registered');">{{total_registered}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_total_registered');">{{cum_total_registered}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -45,11 +45,11 @@
       </td>
       <td style="font-weight: normal; border-left-style: none !important; 
         text-align:left; border-bottom-style: none !important;">Male</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('males_initiated_on_art_first_time');">{{males_initiated_on_art_first_time}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_males_initiated_on_art_first_time');">{{cum_males_initiated_on_art_first_time}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -61,11 +61,11 @@
       </td>
       <td style="font-weight: normal; border-left-style: none !important; text-align: left;
          border-top-style: none !important; border-bottom-style: none !important;">Female Non-pregnant</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('initial_non_pregnant_females_all_ages');">{{initial_non_pregnant_females_all_ages}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_initial_non_pregnant_females_all_ages');">{{cum_initial_non_pregnant_females_all_ages}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -78,11 +78,11 @@
       </td>
       <td style="font-weight: normal; border-left-style: none !important; text-align:left; 
          border-top-style: none !important; border-bottom-style: none !important;">Female pregnant</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('initial_pregnant_females_all_ages');">{{initial_pregnant_females_all_ages}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_initial_pregnant_females_all_ages');">{{cum_initial_pregnant_females_all_ages}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -95,11 +95,11 @@
       </td>
       <td style="font-weight: normal; border-left-style: none !important; text-align:left; 
          border-top-style: dotted !important; border-bottom-style: none !important">FT Init., Non-disagg.</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('unknown_gender');">{{unknown_gender}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_unknown_gender');">{{cum_unknown_gender}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -112,11 +112,11 @@
       </td>
       <td style="font-weight: normal; border-left-style: none !important; text-align:left; 
          border-top-style: dotted !important;">CHECK: Total FT</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('initiated_on_art_first_time');">{{initiated_on_art_first_time}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_initiated_on_art_first_time');">{{cum_initiated_on_art_first_time}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -125,11 +125,11 @@
       <td class="numbers">31.</td>
       <td style="text-align: left;border-bottom-style: none;
         font-weight: normal;padding-left: 10px;" colspan="2"><b>Re</b>&nbsp;&nbsp;Patients re-initiated on ART</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('re_initiated_on_art');">{{re_initiated_on_art}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_re_initiated_on_art');">{{cum_re_initiated_on_art}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -139,11 +139,11 @@
       <td style="text-align: left;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>TI</b>&nbsp;&nbsp;Patients transferred in on ART
       </td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('transfer_in');">{{transfer_in}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_transfer_in');">{{cum_transfer_in}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -157,11 +157,11 @@
       <td style="text-align: left;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>M</b>&nbsp;&nbsp;Males (all ages)
       </td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('quarterly_all_males');">{{quarterly_all_males}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cummulative_all_males');">{{cummulative_all_males}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -171,11 +171,11 @@
       <td style="text-align: left;border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>FNP</b>&nbsp;&nbsp;Non-pregnant Females (all ages)
       </td>
-      <td style="font-weight: normal;">&nbsp;</td>
+    <td style="font-weight: normal;"><a href="#" @click="drillDown('non_pregnant_females');">{{non_pregnant_females}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_non_pregnant_females');">{{cum_non_pregnant_females}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -185,11 +185,11 @@
       <td style="text-align: left;border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>FP</b>&nbsp;&nbsp;Pregnant Females (all ages)
       </td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('pregnant_females_all_ages');">{{pregnant_females_all_ages}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_pregnant_females_all_ages');">{{cum_pregnant_females_all_ages}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -203,11 +203,11 @@
       <td style="text-align: left;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>A</b>&nbsp;&nbsp;Children below 24 m at ART initiation
       </td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('children_below_24_months_at_art_initiation');">{{children_below_24_months_at_art_initiation}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_children_below_24_months_at_art_initiation');">{{cum_children_below_24_months_at_art_initiation}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -217,11 +217,11 @@
       <td style="text-align: left;border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>B</b>&nbsp;&nbsp;Children 24 m - 14 yrs at ART initiation
       </td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('children_24_months_14_years_at_art_initiation');">{{children_24_months_14_years_at_art_initiation}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_children_24_months_14_years_at_art_initiation');">{{cum_children_24_months_14_years_at_art_initiation}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -231,11 +231,11 @@
       <td style="text-align: left;border-top-style: none;font-weight: normal;padding-left: 10px;" colspan="2">
         <b>C</b>&nbsp;&nbsp;Adults 15 years+ at ART initiation
       </td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('adults_at_art_initiation');">{{adults_at_art_initiation}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_adults_at_art_initiation');">{{cum_adults_at_art_initiation}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -252,11 +252,11 @@
         border-bottom-width:0px;"><b>PSHD</b></td>
       <td style="border-left-style: none; text-align: left; padding-left:10px;
         border-bottom-width:0px;">&nbsp;&nbsp;Pres. Sev. HIV disease age <12 m</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('presumed_severe_hiv_disease_in_infants');">{{presumed_severe_hiv_disease_in_infants}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_presumed_severe_hiv_disease_in_infants');">{{cum_presumed_severe_hiv_disease_in_infants}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -272,11 +272,11 @@
         border-top-width:0px;"><b>PCR</b> Infants <12 mths PCR</td>
 
 
-      <td style="border-top-width:0px; border-bottom-width:0px; font-weight: normal;">&nbsp;</td>
+      <td style="border-top-width:0px; border-bottom-width:0px; font-weight: normal;"><a href="#" @click="drillDown('confirmed_hiv_infection_in_infants_pcr');">{{confirmed_hiv_infection_in_infants_pcr}}</a></td>
       <td style="border-top-width:0px; border-bottom-width:0px; font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_confirmed_hiv_infection_in_infants_pcr');">{{cum_confirmed_hiv_infection_in_infants_pcr}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -289,11 +289,11 @@
       <td style="border-left-width: 1px;
         border-top-width:0px; border-style:dotted; text-align: left; padding-left:10px;
         border-bottom-width:0px;"><b>U5</b> Children 12-59mths</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('quarterly_children_12_59_months');">{{quarterly_children_12_59_months}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_children_12_59_months');">{{cum_children_12_59_months}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -306,11 +306,11 @@
       <td style="border-left-style: none;
         border-top-width:0px; text-align: left; padding-left:10px;
         border-bottom-width:0px;"><b>Preg</b> Pregnant women</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('pregnant_women');">{{pregnant_women}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_pregnant_women');">{{cum_pregnant_women}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -324,11 +324,11 @@
       <td style="border-left-style: none;
         border-top-width:0px; text-align: left; padding-left:10px;
         border-bottom-width:0px;"><b>BF</b> Breastfeeding mothers</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('breastfeeding_mothers');">{{breastfeeding_mothers}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_breastfeeding_mothers');">{{cum_breastfeeding_mothers}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -341,12 +341,12 @@
         border-top-width:0px; border-bottom-width:0px;">&nbsp;</td>
       <td style="border-left-style: none;
         border-top-width:0px; text-align: left; padding-left:10px;
-        border-bottom-width:0px;"><b>CD4</b> CD4 below threshol</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+        border-bottom-width:0px;"><b>CD4</b> CD4 below threshold</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('who_stage_two');">{{who_stage_two}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_who_stage_two');">{{cum_who_stage_two}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -361,11 +361,11 @@
       <td style="border-left-style: none;
         border-top-width:0px; text-align: left; padding-left:10px;
         border-bottom-width:0px;"><b>Asy</b> Asymptomatic / mild</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('asymptomatic');">{{asymptomatic}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_asymptomatic');">{{cum_asymptomatic}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -379,11 +379,11 @@
       <td style="border-left-style: none;
         border-bottom-width:0px; text-align: left; padding-left:10px;
         border-top-width:0px;">WHO stage 3</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('who_stage_three');">{{who_stage_three}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_who_stage_three');">{{cum_who_stage_three}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -397,11 +397,11 @@
       <td style="border-left-width:0px;
         border-bottom-style:none; text-align: left; padding-left:10px;
         border-top-width:0px;">WHO stage 4</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('who_stage_four');">{{who_stage_four}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_who_stage_four');">{{cum_who_stage_four}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -413,11 +413,11 @@
         border-top-style:none;"><b>Unk</b></td>
       <td style="border-left-style: none; text-align: left; padding-left:10px;
         border-top-style:none;">Unknown / reason outside guidelines</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('unknown_other_reason_outside_guidelines');">{{unknown_other_reason_outside_guidelines}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_unknown_other_reason_outside_guidelines');">{{cum_unknown_other_reason_outside_guidelines}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -432,11 +432,11 @@
       <td style="font-weight: normal;padding-left: 10px;width: 15px; text-align: left; padding-left:10px;
         border-right-style: none !important;"><b>Nev/>2yrs</b></td>
       <td style="border-left-style: none; text-align: left; padding-left:10px;">Never TB / TB over 2 years ago</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('no_tb');">{{no_tb}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_no_tb');">{{cum_no_tb}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -446,11 +446,11 @@
       <td style="font-weight: normal;padding-left: 10px;width: 15px; text-align: left; padding-left:10px;
         border-right-style: none !important;"><b>Last 2yrs</b></td>
       <td style=" text-align: left; padding-left:10px;border-left-style: none;">TB within the last 2 years</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('tb_within_the_last_two_years');">{{tb_within_the_last_two_years}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_tb_within_the_last_two_years');">{{cum_tb_within_the_last_two_years}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -460,11 +460,11 @@
       <td style="font-weight: normal;padding-left: 10px;width: 15px; text-align: left; padding-left:10px;
         border-right-style: none !important;"><b>Curr</b></td>
       <td style="border-left-style: none; text-align: left; padding-left:10px;">Current episode of TB</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('current_episode_of_tb');">{{current_episode_of_tb}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_current_episode_of_tb');">{{cum_current_episode_of_tb}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -478,11 +478,11 @@
       <td style="font-weight: normal;padding-left: 10px;width: 15px; text-align: left; padding-left:10px;
         border-right-style: none !important;"><b>KS</b></td>
       <td style="border-left-style: none; text-align: left; padding-left:10px;">Kaposi’s Sarcoma</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('kaposis_sarcoma');">{{kaposis_sarcoma}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td class="vertical-separator">&nbsp;</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('cum_kaposis_sarcoma');">{{cum_kaposis_sarcoma}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -504,7 +504,7 @@
     <tr>
       <td class="numbers">53.</td>
       <td style="text-align: left; padding-left: 10px;" colspan="6">Total alive and on ART</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('total_alive_and_on_art');">{{total_alive_and_on_art}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -521,7 +521,7 @@
       <td style="text-align: left; padding-left: 10px;
         border-right-style: none;border-bottom-style: none; border-left-style: none;" 
         colspan="4">Died within the 1st month after ART initiation</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('died_within_the_1st_month_of_art_initiation');">{{died_within_the_1st_month_of_art_initiation}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -534,7 +534,7 @@
       <td style="text-align: left; padding-left: 10px;border-top-style: none;
         border-right-style: none;border-bottom-style: none; border-left-style: none;" 
         colspan="4">Died within the 2nd month after ART initiation</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('died_within_the_2nd_month_of_art_initiation');">{{died_within_the_2nd_month_of_art_initiation}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -546,7 +546,7 @@
       <td style="text-align: left; padding-left:10px; border-top-style: none;
         border-right-style:none; border-bottom-style:none; border-left-style: none;" 
         colspan="4">Died within the 3rd month after ART initiation</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('died_within_the_3rd_month_of_art_initiation');">{{died_within_the_3rd_month_of_art_initiation}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -558,7 +558,7 @@
       <td style="text-align: left; padding-left: 10px;
         border-right-style:none; border-left-style:none; border-top-style: none;" 
         colspan="4">Died after the end of the 3rd month after ART initiation</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('died_after_the_3rd_month_of_art_initiation');">{{died_after_the_3rd_month_of_art_initiation}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -566,7 +566,7 @@
     <tr>
       <td class="numbers">58.</td>
       <td style="text-align: left; padding-left: 10px; border-bottom-style:none;" colspan="6">Died total</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('died_total');">{{died_total}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -575,7 +575,7 @@
       <td class="numbers">59.</td>
       <td style="text-align: left; padding-left: 10px;
         border-top-style:none; border-bottom-style:none;" colspan="6">Defaulted (more than 2 months overdue after expected to have run out of ARVs)</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('defaulted');">{{defaulted}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -584,7 +584,7 @@
       <td class="numbers">60.</td>
       <td style="text-align: left; padding-left: 10px;
         border-top-style:none; border-bottom-style:none;" colspan="6">Stopped taking ARVs (clinician or patient own decision, last known alive)</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('stopped_art');">{{stopped_art}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -592,7 +592,7 @@
     <tr>
       <td class="numbers">61.</td>
       <td style="text-align: left; padding-left: 10px;border-top-style:none;" colspan="6">Transferred Out</td>
-      <td style="font-weight: normal;">&nbsp;</td>
+      <td style="font-weight: normal;"><a href="#" @click="drillDown('transfered_out');">{{transfered_out}}</a></td>
       <td style="font-weight: normal;">&nbsp;</td>
       <td style="font-weight: normal;">&nbsp;</td>
     </tr>
@@ -642,8 +642,8 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">0</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('zero_p');">{{zero_p}}</a></td>
+      <td><a href="#" @click="drillDown('zero_a');">{{zero_a}}</a></td>
     </tr>
     
     <tr>
@@ -657,8 +657,8 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">2</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('two_p');">{{two_p}}</a></td>
+      <td><a href="#" @click="drillDown('two_a');">{{two_a}}</a></td>
     </tr>
     
     <tr>
@@ -672,8 +672,8 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">4</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('four_p');">{{four_p}}</a></td>
+      <td><a href="#" @click="drillDown('four_a');">{{four_a}}</a></td>
     </tr>
     
     <tr>
@@ -688,7 +688,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">5</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('five_a');">{{five_a}}</a></td>
     </tr>
     
     <tr>
@@ -703,7 +703,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">6</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('six_a');">{{six_a}}</a></td>
     </tr>
     
     <tr>
@@ -718,7 +718,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">7</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('seven_a');">{{seven_a}}</a></td>
     </tr>
     
     <tr>
@@ -733,7 +733,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">8</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('eight_a');">{{eight_a}}</a></td>
     </tr>
     
     <tr>
@@ -747,8 +747,8 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">9</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('nine_p');">{{nine_p}}</a></td>
+      <td><a href="#" @click="drillDown('nine_a');">{{nine_a}}</a></td>
     </tr>
     
     <tr>
@@ -763,7 +763,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">10</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('ten_a');">{{ten_a}}</a></td>
     </tr>
     
     <tr>
@@ -777,8 +777,8 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">11</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('eleven_p');">{{eleven_p}}</a></td>
+      <td><a href="#" @click="drillDown('eleven_a');">{{eleven_a}}</a></td>
     </tr>
     
     <tr>
@@ -793,7 +793,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">12</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('twelve_a');">{{twelve_a}}</a></td>
     </tr>
     
     <tr>
@@ -808,7 +808,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">13</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('thirteen_a');">{{thirteen_a}}</a></td>
     </tr>
     
     <tr>
@@ -823,7 +823,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">14</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('fourteen_a');">{{fourteen_a}}</a></td>
     </tr>
     
     <tr>
@@ -838,7 +838,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">15</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('fifteen_a');">{{fifteen_a}}</a></td>
     </tr>
     
     <tr>
@@ -853,7 +853,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">16</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('sixteen_a');">{{sixteen_a}}</a></td>
     </tr>
     
     <tr>
@@ -868,7 +868,7 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">17</td>
       <td style="background-color:#D9D9D9;">&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('seventeen_a');">{{seventeen_a}}</a></td>
     </tr>
     
     <tr>
@@ -881,7 +881,7 @@
         border-left-width:0px; border-top-width:0px;
         text-align:left; padding-left:10px;">Other (paed./adult)</td>
       <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td><a href="#" @click="drillDown('unknown_regimen');">{{unknown_regimen}}</a></td>
     </tr>
     
     <tr class="horisonatl-separator">
@@ -897,7 +897,7 @@
       border-bottom-width: 0px;" colspan="4">(as of the last visit before end of quarter)</td>
       <td style="font-weight: normal; border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">Pregnant</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('total_pregnant_women');">{{total_pregnant_women}}</a></td>
     </tr>
 
     <tr>
@@ -909,7 +909,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">Breastfeeding</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('total_breastfeeding_women');">{{total_breastfeeding_women}}</a></td>
     </tr>
 
     <tr>
@@ -921,7 +921,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;" colspan="2">All others (not circled)</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('total_other_patients');">{{total_other_patients}}</a></td>
     </tr>
 
     <tr class="horisonatl-separator">
@@ -937,7 +937,7 @@
       border-bottom-width: 0px;" colspan="3">(as of the last visit before end of quarter)</td>
       <td style="font-weight: normal; border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">TB not suspected</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('tb_not_suspected');">{{tb_not_suspected}}</a></td>
     </tr>
 
     <tr>
@@ -949,7 +949,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">TB suspected</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('tb_suspected');">{{tb_suspected}}</a></td>
     </tr>
 
     <tr>
@@ -961,7 +961,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">TB conf., <b>not</b> on Rx</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('tb_confirmed_currently_not_yet_on_tb_treatment');">{{tb_confirmed_currently_not_yet_on_tb_treatment}}</a></td>
     </tr>
 
     <tr>
@@ -973,7 +973,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">TB conf., <b>on</b> TB Rx</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('tb_confirmed_on_tb_treatment');">{{tb_confirmed_on_tb_treatment}}</a></td>
     </tr>
 
     <tr>
@@ -985,7 +985,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;" colspan="2">Unknown (not circled)</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('unknown_tb_status');">{{unknown_tb_status}}</a></td>
     </tr>
 
     <tr class="horisonatl-separator">
@@ -1001,7 +1001,7 @@
       border-bottom-width: 0px;" colspan="4">(as of the last visit before end of quarter)</td>
       <td style="font-weight: normal; border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">None</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('total_patients_without_side_effects');">{{total_patients_without_side_effects}}</a></td>
     </tr>
 
     <tr>
@@ -1013,7 +1013,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">Any side effects</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('total_patients_with_side_effects');">{{total_patients_with_side_effects}}</a></td>
     </tr>
 
     <tr>
@@ -1025,7 +1025,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;" colspan="2">Unknown (not circled)</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('unknown_side_effects');">{{unknown_side_effects}}</a></td>
     </tr>
 
     <tr class="horisonatl-separator">
@@ -1041,7 +1041,7 @@
       border-bottom-width: 0px;" colspan="4">(as of the last visit before end of quarter)</td>
       <td style="font-weight: normal; border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">0 – 3 doses missed</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('patients_with_0_6_doses_missed_at_their_last_visit');">{{patients_with_0_6_doses_missed_at_their_last_visit}}</a></td>
     </tr>
 
     <tr>
@@ -1053,7 +1053,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:0px;
         text-align:left; padding-left:10px;" colspan="2">4+ doses missed</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('patients_with_7_plus_doses_missed_at_their_last_visit');">{{patients_with_7_plus_doses_missed_at_their_last_visit}}</a></td>
     </tr>
 
     <tr>
@@ -1065,7 +1065,7 @@
       <td style="font-weight: normal; border-top-width:0px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;" colspan="2">Unknown (not circled)</td>
-      <td colspan="2" style="font-weight: normal;">&nbsp;</td>
+      <td colspan="2" style="font-weight: normal;"><a href="#" @click="drillDown('patients_with_unknown_adhrence');">{{patients_with_unknown_adhrence}}</a></td>
     </tr>
 
     <tr class="horisonatl-separator">
@@ -1075,19 +1075,19 @@
     
     <tr>
       <td class="numbers">95.</td>
-      <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
+      <td style="text-align:left; padding-left: 10px; border-bottom-width:1px;
         border-top-width: 1px; border-right-width:0px; font-weight: bold;">CPT / IPT</td>
       <td colspan="4" style="font-weight: normal; border-top-width:1px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;">Approx. % of patients retained in ART who are currently on CPT / IPT</td>
-      <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
-        border-top-width: 1px; border-right-width:0px;">&nbsp;</td>
-      <td style="font-weight:bold; order-top-width:1px;
-        border-left-width:0px; border-bottom-width:1px;">CPT%</td>
-      <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
-        border-top-width: 1px; border-right-width:0px;">&nbsp;</td>
-      <td style="font-weight:bold; order-top-width:1px;
-        border-left-width:0px; border-bottom-width:1px;">IPT%</td>
+      <td style="text-align:right; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px;"><a href="#" @click="drillDown('total_patients_on_arvs_and_cpt');">{{total_patients_on_arvs_and_cpt}}</a></td>
+      <td style="font-weight:bold; order-top-width:1px; text-align:right;
+        border-left-width:0px; border-bottom-width:1px; padding-right:5px;">CPT%</td>
+      <td style="text-align:right; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px;"><a href="#" @click="drillDown('total_patients_on_arvs_and_ipt');">{{total_patients_on_arvs_and_ipt}}</a></td>
+      <td style="font-weight:bold; order-top-width:1px; text-align: right;
+        border-left-width:0px; border-bottom-width:1px; padding-right:5px;">IPT%</td>
     </tr>
     
     <tr class="horisonatl-separator">
@@ -1102,10 +1102,10 @@
       <td colspan="4" style="font-weight: normal; border-top-width:1px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;">Approx. % of women who received Depo at ART in the last quarter</td>
-      <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
-        border-top-width: 1px; border-right-width:0px;">&nbsp;</td>
-      <td colspan="3" style="text-align: right; padding-right:10px; order-top-width:1px;
-        border-left-width:0px; border-bottom-width:1px;">%</td>
+      <!--td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px;">{{total_patients_on_family_planning}}</td-->
+      <td colspan="4" style="text-align: right; padding-right:10px; order-top-width:1px;
+        border-left-width:0px; border-bottom-width:1px;"><span><a href="#" @click="drillDown('total_patients_on_family_planning');">{{total_patients_on_family_planning}}</a></span>&nbsp;%</td>
     </tr>
     
     <tr class="horisonatl-separator">
@@ -1120,10 +1120,10 @@
       <td colspan="4" style="font-weight: normal; border-top-width:1px;
         border-left-width:0px; border-bottom-width:1px;
         text-align:left; padding-left:10px;">Approx. % of adult ART patients with BP recorded at least once this year</td>
-      <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
-        border-top-width: 1px; border-right-width:0px;">&nbsp;</td>
-      <td colspan="3" style="text-align: right; padding-right:10px; order-top-width:1px;
-        border-left-width:0px; border-bottom-width:1px;">%</td>
+      <!--td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px;">{{total_patients_with_screened_bp}}</td-->
+      <td colspan="4" style="text-align: right; padding-right:10px; order-top-width:1px;
+        border-left-width:0px; border-bottom-width:1px;"><span><a href="#" @click="drillDown('total_patients_on_family_planning');">{{total_patients_with_screened_bp}}</a></span>&nbsp;%</td>
     </tr>
 
     <tr class="horisonatl-separator">
@@ -1144,100 +1144,474 @@
         border-left-width:0px; border-bottom-width:1px;">&nbsp;</td>
     </tr>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   </table>
 
-  </table>
 </template>
 
 <script>
+
 export default {
   data: function(){
     return {
-      items: [3,4,5,6,7,8,9]
+      items: [3,4,5,6,7,8,9],
+
+      re_initiated_on_art: 0,
+      cum_re_initiated_on_art: 0,
+
+      total_registered: 0,
+      cum_total_registered: 0,
+      quarterly_all_males: 0,
+      cummulative_all_males: 0,
+
+      pregnant_females_all_ages: 0,
+      cum_pregnant_females_all_ages: 0,
+      non_pregnant_females: 0,
+      cum_non_pregnant_females: 0,
+      children_below_24_months_at_art_initiation: 0,
+      cum_children_below_24_months_at_art_initiation: 0,
+      confirmed_hiv_infection_in_infants_pcr: 0,
+      cum_confirmed_hiv_infection_in_infants_pcr: 0,
+      quarterly_children_12_59_months: 0,
+      cum_children_12_59_months: 0,
+      breastfeeding_mothers: 0,
+      cum_breastfeeding_mothers: 0,
+      who_stage_two: 0,
+      cum_who_stage_two: 0,
+      asymptomatic: 0,
+      cum_asymptomatic: 0,
+      who_stage_three: 0,
+      cum_who_stage_three: 0,
+      who_stage_four: 0,
+      cum_who_stage_four: 0,
+      unknown_other_reason_outside_guidelines: 0,
+      cum_unknown_other_reason_outside_guidelines: 0,
+      no_tb: 0,
+      cum_no_tb: 0,
+      tb_within_the_last_two_years: 0,
+      cum_tb_within_the_last_two_years: 0,
+      current_episode_of_tb: 0,
+      cum_current_episode_of_tb: 0,
+      kaposis_sarcoma: 0,
+      cum_kaposis_sarcoma: 0,
+      total_alive_and_on_art: 0,
+      died_within_the_1st_month_of_art_initiation: 0,
+      died_within_the_2nd_month_of_art_initiation: 0,
+      died_within_the_3rd_month_of_art_initiation: 0,
+      died_after_the_3rd_month_of_art_initiation: 0,
+      died_total: 0,
+      defaulted: 0,
+      stopped_art: 0,
+      transfered_out: 0,
+      zero_p: 0,
+      zero_a: 0,
+      two_p: 0,
+      two_a: 0,
+      four_p: 0,
+      four_a: 0,
+      five_a: 0,
+      six_a: 0,
+      seven_a: 0,
+      eight_a: 0,
+      nine_p: 0,
+      nine_a: 0,
+      ten_a: 0,
+      eleven_p: 0,
+      eleven_a: 0,
+      twelve_a: 0,
+      thirteen_a: 0,
+      fourteen_a:  0,
+      fifteen_a: 0,
+      sixteen_a: 0,
+      seventeen_a: 0,
+      unknown_regimen: 0,
+      total_pregnant_women: 0,
+      total_breastfeeding_women: 0,
+      total_other_patients: 0,
+      tb_not_suspected: 0,
+      tb_suspected: 0,
+      tb_confirmed_currently_not_yet_on_tb_treatment: 0,
+      tb_confirmed_on_tb_treatment: 0,
+      unknown_tb_status: 0,
+      total_patients_without_side_effects: 0,
+      total_patients_with_side_effects: 0,
+      unknown_side_effects: 0,
+      patients_with_0_6_doses_missed_at_their_last_visit: 0,
+      patients_with_7_plus_doses_missed_at_their_last_visit: 0,
+      patients_with_unknown_adhrence: 0,
+      total_patients_on_arvs_and_cpt: 0,
+      total_patients_on_arvs_and_ipt: 0,
+      total_patients_on_family_planning: 0,
+      total_patients_with_screened_bp: 0,
+      transfer_in: 0,
+      cum_transfer_in: 0,
+      males_initiated_on_art_first_time: 0,
+      cum_males_initiated_on_art_first_time: 0,
+      initial_pregnant_females_all_ages: 0,
+      cum_initial_pregnant_females_all_ages: 0,
+      initial_non_pregnant_females_all_ages: 0,
+      cum_initial_non_pregnant_females_all_ages: 0,
+      unknown_gender: 0,
+      cum_unknown_gender: 0,
+      initiated_on_art_first_time: 0,
+      cum_initiated_on_art_first_time: 0,
+
+      cum_children_24_months_14_years_at_art_initiation: 0,
+      adults_at_art_initiation: 0,
+      cum_adults_at_art_initiation: 0,
+      presumed_severe_hiv_disease_in_infants: 0,
+      cum_presumed_severe_hiv_disease_in_infants: 0,
+      pregnant_women: 0,
+      cum_pregnant_women: 0,
+      children_24_months_14_years_at_art_initiation: 0
+    }
+  },
+  props: ["params", "reportid"],
+  methods: {
+   renderResults() {
+    for(var i = 0; i < this.params.length; i++){
+      //console.log(this.params[i].name);
+
+      if(this.params[i].name == 're_initiated_on_art')
+        this.re_initiated_on_art = this.params[i].contents;
+     
+      if(this.params[i].name == 'cum_re_initiated_on_art')
+        this.cum_re_initiated_on_art = this.params[i].contents;
+     
+      if(this.params[i].name == 'transfer_in')
+        this.transfer_in = this.params[i].contents;
+     
+      if(this.params[i].name == 'cum_transfer_in')
+        this.cum_transfer_in = this.params[i].contents;
+
+      if(this.params[i].name == 'total_registered')
+        this.total_registered = this.params[i].contents;
+      
+      if(this.params[i].name == 'cum_total_registered')
+        this.cum_total_registered = this.params[i].contents;
+      
+      if(this.params[i].name == 'cum_all_males')
+        this.cummulative_all_males = this.params[i].contents;
+      
+      if(this.params[i].name == 'all_males')
+        this.quarterly_all_males = this.params[i].contents;
+      
+      if(this.params[i].name == 'non_pregnant_females')
+        this.non_pregnant_females = this.params[i].contents;
+      
+      if(this.params[i].name == 'cum_non_pregnant_females')
+        this.cum_non_pregnant_females = this.params[i].contents;
+      
+      if(this.params[i].name == 'pregnant_females_all_ages')
+        this.pregnant_females_all_ages = this.params[i].contents;
+      
+      if(this.params[i].name == 'cum_pregnant_females_all_ages')
+        this.cum_pregnant_females_all_ages = this.params[i].contents;
+      
+      if(this.params[i].name == 'children_below_24_months_at_art_initiation')
+        this.children_below_24_months_at_art_initiation = this.params[i].contents;
+      
+      if(this.params[i].name == 'cum_children_below_24_months_at_art_initiation')
+        this.cum_children_below_24_months_at_art_initiation = this.params[i].contents;
+      
+      if(this.params[i].name == 'children_24_months_14_years_at_art_initiation')
+        this.children_24_months_14_years_at_art_initiation = this.params[i].contents;
+      
+      if(this.params[i].name == 'cum_children_24_months_14_years_at_art_initiation')
+        this.cum_children_24_months_14_years_at_art_initiation = this.params[i].contents;
+      
+      if(this.params[i].name == 'adults_at_art_initiation')
+        this.adults_at_art_initiation = this.params[i].contents;
+      
+      if(this.params[i].name == 'cum_adults_at_art_initiation')
+        this.cum_adults_at_art_initiation = this.params[i].contents;
+      
+      if(this.params[i].name == 'presumed_severe_hiv_disease_in_infants')
+        this.presumed_severe_hiv_disease_in_infants = this.params[i].contents;
+      
+      if(this.params[i].name == 'cum_presumed_severe_hiv_disease_in_infants')
+        this.cum_presumed_severe_hiv_disease_in_infants = this.params[i].contents;
+      
+      if(this.params[i].name == 'confirmed_hiv_infection_in_infants_pcr')
+        this.confirmed_hiv_infection_in_infants_pcr = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_confirmed_hiv_infection_in_infants_pcr')
+        this.cum_confirmed_hiv_infection_in_infants_pcr = this.params[i].contents;
+
+      if(this.params[i].name == 'quarterly_children_12_59_months')
+        this.quarterly_children_12_59_months = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_children_12_59_months')
+        this.cum_children_12_59_months = this.params[i].contents;
+
+      if(this.params[i].name == 'pregnant_women')
+        this.pregnant_women = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_pregnant_women')
+        this.cum_pregnant_women = this.params[i].contents;
+
+      if(this.params[i].name == 'breastfeeding_mothers')
+        this.breastfeeding_mothers = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_breastfeeding_mothers')
+        this.cum_breastfeeding_mothers = this.params[i].contents;
+
+      if(this.params[i].name == 'who_stage_two')
+        this.who_stage_two = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_who_stage_two')
+        this.cum_who_stage_two = this.params[i].contents;
+
+      if(this.params[i].name == 'asymptomatic')
+        this.asymptomatic = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_asymptomatic')
+        this.cum_asymptomatic = this.params[i].contents;
+
+      if(this.params[i].name == 'who_stage_three')
+        this.who_stage_three = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_who_stage_three')
+        this.cum_who_stage_three = this.params[i].contents;
+
+      if(this.params[i].name == 'who_stage_four')
+        this.who_stage_four = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_who_stage_four')
+        this.cum_who_stage_four = this.params[i].contents;
+
+      if(this.params[i].name == 'unknown_other_reason_outside_guidelines')
+        this.unknown_other_reason_outside_guidelines = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_unknown_other_reason_outside_guidelines')
+        this.cum_unknown_other_reason_outside_guidelines = this.params[i].contents;
+
+      if(this.params[i].name == 'no_tb')
+        this.no_tb = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_no_tb')
+        this.cum_no_tb = this.params[i].contents;
+
+      if(this.params[i].name == 'tb_within_the_last_two_years')
+        this.tb_within_the_last_two_years = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_tb_within_the_last_two_years')
+        this.cum_tb_within_the_last_two_years = this.params[i].contents;
+
+      if(this.params[i].name == 'current_episode_of_tb')
+        this.current_episode_of_tb = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_current_episode_of_tb')
+        this.cum_current_episode_of_tb = this.params[i].contents;
+
+      if(this.params[i].name == 'kaposis_sarcoma')
+        this.kaposis_sarcoma = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_kaposis_sarcoma')
+        this.cum_kaposis_sarcoma = this.params[i].contents;
+
+      if(this.params[i].name == 'total_alive_and_on_art')
+        this.total_alive_and_on_art = this.params[i].contents;
+
+      if(this.params[i].name == 'died_within_the_1st_month_of_art_initiation')
+        this.died_within_the_1st_month_of_art_initiation = this.params[i].contents;
+
+      if(this.params[i].name == 'died_within_the_2nd_month_of_art_initiation')
+        this.died_within_the_2nd_month_of_art_initiation = this.params[i].contents;
+
+      if(this.params[i].name == 'died_within_the_3rd_month_of_art_initiation')
+        this.died_within_the_3rd_month_of_art_initiation = this.params[i].contents;
+
+      if(this.params[i].name == 'died_after_the_3rd_month_of_art_initiation')
+        this.died_after_the_3rd_month_of_art_initiation = this.params[i].contents;
+
+      if(this.params[i].name == 'died_total')
+        this.died_total = this.params[i].contents;
+
+      if(this.params[i].name == 'defaulted')
+        this.defaulted = this.params[i].contents;
+
+      if(this.params[i].name == 'stopped_art')
+        this.stopped_art = this.params[i].contents;
+
+      if(this.params[i].name == 'transfered_out')
+        this.transfered_out = this.params[i].contents;
+
+      if(this.params[i].name == 'zero_p')
+        this.zero_p = this.params[i].contents;
+
+      if(this.params[i].name == 'zero_a')
+        this.zero_a = this.params[i].contents;
+
+      if(this.params[i].name == 'two_p')
+        this.two_p = this.params[i].contents;
+
+      if(this.params[i].name == 'two_a')
+        this.two_a = this.params[i].contents;
+
+      if(this.params[i].name == 'four_p')
+        this.four_p = this.params[i].contents;
+
+      if(this.params[i].name == 'four_a')
+        this.four_a = this.params[i].contents;
+
+      if(this.params[i].name == 'five_a')
+        this.five_a = this.params[i].contents;
+
+      if(this.params[i].name == 'six_a')
+        this.six_a = this.params[i].contents;
+
+      if(this.params[i].name == 'seven_a')
+        this.seven_a = this.params[i].contents;
+
+      if(this.params[i].name == 'eight_a')
+        this.eight_a = this.params[i].contents;
+
+      if(this.params[i].name == 'nine_p')
+        this.nine_p = this.params[i].contents;
+
+      if(this.params[i].name == 'nine_a')
+        this.nine_a = this.params[i].contents;
+
+      if(this.params[i].name == 'ten_a')
+        this.ten_a = this.params[i].contents;
+
+      if(this.params[i].name == 'eleven_p')
+        this.eleven_p = this.params[i].contents;
+
+      if(this.params[i].name == 'eleven_a')
+        this.eleven_a = this.params[i].contents;
+
+      if(this.params[i].name == 'thirteen_a')
+        this.thirteen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'fourteen_a')
+        this.fourteen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'fifteen_a')
+        this.fifteen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'sixteen_a')
+        this.sixteen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'seventeen_a')
+        this.seventeen_a = this.params[i].contents;
+
+      if(this.params[i].name == 'unknown_regimen')
+        this.unknown_regimen = this.params[i].contents;
+    
+      if(this.params[i].name == 'total_pregnant_women')
+        this.total_pregnant_women = this.params[i].contents;
+
+      if(this.params[i].name == 'total_breastfeeding_women')
+        this.total_breastfeeding_women = this.params[i].contents;
+
+      if(this.params[i].name == 'total_other_patients')
+        this.total_other_patients = this.params[i].contents;
+
+      if(this.params[i].name == 'tb_not_suspected')
+        this.tb_not_suspected = this.params[i].contents;
+      
+      if(this.params[i].name == 'tb_suspected')
+         this.tb_suspected = this.params[i].contents;
+
+      if(this.params[i].name == 'tb_not_suspected')
+        this.tb_not_suspected = this.params[i].contents;
+   
+      if(this.params[i].name == 'tb_confirmed_currently_not_yet_on_tb_treatment')
+        this.tb_confirmed_currently_not_yet_on_tb_treatment = this.params[i].contents;
+   
+      if(this.params[i].name == 'tb_confirmed_on_tb_treatment')
+        this.tb_confirmed_on_tb_treatment = this.params[i].contents;
+   
+      if(this.params[i].name == 'unknown_tb_status')
+        this.unknown_tb_status = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_without_side_effects')
+        this.total_patients_without_side_effects = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_with_side_effects')
+        this.total_patients_with_side_effects = this.params[i].contents;
+
+      if(this.params[i].name == 'unknown_side_effects')
+        this.unknown_side_effects = this.params[i].contents;
+
+      if(this.params[i].name == 'patients_with_0_6_doses_missed_at_their_last_visit')
+        this.patients_with_0_6_doses_missed_at_their_last_visit = this.params[i].contents;
+
+      if(this.params[i].name == 'patients_with_7_plus_doses_missed_at_their_last_visit')
+        this.patients_with_7_plus_doses_missed_at_their_last_visit = this.params[i].contents;
+
+      if(this.params[i].name == 'patients_with_unknown_adhrence')
+        this.patients_with_unknown_adhrence = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_on_arvs_and_cpt')
+        this.total_patients_on_arvs_and_cpt = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_on_arvs_and_ipt')
+        this.total_patients_on_arvs_and_ipt = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_on_family_planning')
+        this.total_patients_on_family_planning = this.params[i].contents;
+
+      if(this.params[i].name == 'total_patients_with_screened_bp')
+        this.total_patients_with_screened_bp = this.params[i].contents;
+
+      if(this.params[i].name == 'males_initiated_on_art_first_time')
+        this.males_initiated_on_art_first_time = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_males_initiated_on_art_first_time')
+        this.cum_males_initiated_on_art_first_time = this.params[i].contents;
+
+      if(this.params[i].name == 'initial_pregnant_females_all_ages')
+        this.initial_pregnant_females_all_ages = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_initial_pregnant_females_all_ages')
+        this.cum_initial_pregnant_females_all_ages = this.params[i].contents;
+
+      if(this.params[i].name == 'initial_non_pregnant_females_all_ages')
+        this.initial_non_pregnant_females_all_ages = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_initial_non_pregnant_females_all_ages')
+        this.cum_initial_non_pregnant_females_all_ages = this.params[i].contents;
+
+      if(this.params[i].name == 'unknown_gender')
+        this.unknown_gender = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_unknown_gender')
+        this.cum_unknown_gender = this.params[i].contents;
+
+      if(this.params[i].name == 'initiated_on_art_first_time')
+        this.initiated_on_art_first_time = this.params[i].contents;
+
+      if(this.params[i].name == 'cum_initiated_on_art_first_time')
+        this.cum_initiated_on_art_first_time = this.params[i].contents;
+   
+    }
+   },
+   drillDown(indicator_name){
+     if(!this.reportid)
+      return;
+
+     let indicator_id;
+
+     for(let i = 0; i < this.params.length;  i++){
+       if(this.params[i].name === indicator_name){
+          indicator_id = this.params[i].id;
+       }
+     } 
+     document.location = "/drill_down/" + indicator_name + "/" + indicator_id;
+   }
+  },
+  watch: {
+    params: {
+      immediate: true,
+      handler() {
+        this.renderResults();
+      }
     }
   }
 }
+
 </script>
 
 <style scope>
