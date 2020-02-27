@@ -6,7 +6,7 @@
         <!-- Page Content -->
         <div id="main-container" class="col-12 table-col">
           <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-          <table class="table table-striped report">
+          <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
                 <th scope="col">ARV number</th>
@@ -16,15 +16,6 @@
                 <th class="center-text" scope="col">DOB</th>
               </tr>
             </thead>
-            <tbody>
-              <tr v-for="record in reportData">
-                <td>{{record.arv_number}}</td>
-                <td>{{record.given_name}}</td>
-                <td>{{record.family_name}}</td>
-                <td class="center-text">{{record.gender}}</td>
-                <td class="center-text">{{moment(record.birthdate).format('DD/MMM/YYYY')}}</td>
-              </tr>
-            </tbody>
           </table>
         </div>
         <!-- Page Content end -->
@@ -32,12 +23,34 @@
   </div>
 </template>
 
-
 <script>
+
+require("@/assets/datatable/css/bootstrap.css");
+require("@/assets/datatable/css/dataTables.bootstrap4.min.css");
+
+//require("@/assets/datatable/jquery-ui.css");
+require("@/assets/datatable/css/buttons.dataTables.min.css");
+require("@/assets/datatable/css/dataTables.jqueryui.min.css");
+
 import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
+
+import jQuery from 'jquery';
+import datatable from 'datatables';
+
+
+
+require("@/assets/datatable/js/buttons.flash.min.js");
+require("@/assets/datatable/js/jszip.min.js");
+require("@/assets/datatable/js/pdfmake.min.js");
+require("@/assets/datatable/js/vfs_fonts.js");
+require("@/assets/datatable/js/buttons.html5.min.js");
+require("@/assets/datatable/js/buttons.print.min.js");
+
+
+
 
 
 export default {
@@ -58,19 +71,46 @@ export default {
         setTimeout(() => this.fetchData(), 5000);
       }
     },
+    initDataTable(){
+      this.dTable = jQuery("#cohort-clients").dataTable({
+        order: [[ 0, "asc" ]],
+        fixedHeader: true,
+        data: this.formatedData,
+        dom: 'Bfrtip',
+        buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+      });
+    },
     checkResult(data){
-        const url_string = window.location;
-        const parsedURL = new URL(url_string);
-        const resource_id = parsedURL.searchParams.get("resource_id");
-        this.reportData = data;
+      const url_string = window.location;
+      const parsedURL = new URL(url_string);
+      const resource_id = parsedURL.searchParams.get("resource_id");
+      this.reportData = data;
+      setTimeout(() => this.datatableEnable(data), 10);
+    },
+    datatableEnable(data){
+      for(let i = 0; i < data.length; i++){
+        /*this.dTable.fnAddData( [data[i].arv_number,
+          data[i].given_name, data[i].family_name,
+          data[i].gender, data[i].birthdate] );*/
+        this.formatedData.push( [data[i].arv_number,
+          data[i].given_name, data[i].family_name,
+          data[i].gender, data[i].birthdate] );
+      }
+      this.dTable.api().destroy();
+      this.initDataTable();
     }
   },
   mounted() {
+    setTimeout(() => this.initDataTable(), 300);
     setTimeout(() => this.fetchData(), 300);
   }, data: function() {
       return {
         report_title: 'MoH cohort report drill down (version 24)',
-        reportData: null
+        reportData: null,
+        dTable: null,
+        formatedData: []
       }
     }
 }
@@ -85,7 +125,7 @@ export default {
 span {
   text-align: left;
   float: left;
-  padding-bottom: 10px;
+  padding-bottom: 30px;
   width:  100%;
 }
 
@@ -97,9 +137,9 @@ button {
 table {
     text-align: left;
     margin-left: 5px;
+    padding-top: 10px;
 }
 .center-text {
     text-align: center;
 }
-
 </style>
