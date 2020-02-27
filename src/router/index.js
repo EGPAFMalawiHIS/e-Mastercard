@@ -77,6 +77,16 @@ const routes = [
     path: "/drill_down/:indicator/:id",
     name: "cohort_driller",
     component: () => import("../views/CohortDriller.vue")
+  },
+  {
+    path: "/art_refill_periods",
+    name: "art_refill_periods",
+    component: () => import("../views/ArtRefillPeriods.vue")
+  },
+  {
+    path: "/patient_registration",
+    name: "patient_registration",
+    component: () => import("../views/PatientRegistration.vue")
   }
 ]
 
