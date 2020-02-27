@@ -75,7 +75,7 @@
     <!-- </select> -->
 </div>
 <button type="button" class="btn btn-primary" @click="saveEncounter">save</button>
-<vitals v-on:getStuff="$event"> </vitals>
+<!-- <vitals v-on:getStuff="$event"> </vitals> -->
 </div>
 </template>
 
