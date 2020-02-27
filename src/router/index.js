@@ -78,6 +78,11 @@ const routes = [
     name: "art_refill_periods",
     component: () => import("../views/ArtRefillPeriods.vue")
   },
+  {
+    path: "/patient_registration",
+    name: "patient_registration",
+    component: () => import("../views/PatientRegistration.vue")
+  }
 ]
 
 const router = new VueRouter({
