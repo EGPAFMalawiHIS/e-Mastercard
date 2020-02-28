@@ -24,7 +24,7 @@
             </div>
 
             <div class="col-sm">
-              <div class="btn-container">
+              <div class="btn-container" @click="redirect('/defaulters')">
                 <div class="card">
                   <img src="../assets/report-icons/defaulter-list.png" class="btn-icon"/>
                   <p>Defaulter list</p>
@@ -33,7 +33,7 @@
             </div>
 
             <div class="col-sm">
-              <div class="btn-container">
+              <div class="btn-container" @click="redirect('/appointment_missed')">
                 <div class="card">
                   <img src="../assets/report-icons/appointment-missed.png" class="btn-icon"/>
                   <p>Missed appointments</p>

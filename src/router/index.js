@@ -97,6 +97,16 @@ const routes = [
     path: "/appointments",
     name: "clinicAppointments",
     component: () => import("../views/ClinicAppointments.vue")
+  },
+  {
+    path: "/defaulters",
+    name: "defaulltersList",
+    component: () => import("../views/DefaulterList.vue")
+  },
+  {
+    path: "/appointment_missed",
+    name: "AppointmentMissed",
+    component: () => import("../views/AppointmentMissed.vue")
   }
 ]
 

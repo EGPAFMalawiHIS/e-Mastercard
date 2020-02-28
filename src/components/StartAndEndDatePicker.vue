@@ -34,7 +34,7 @@
 }
 
 .ctr-table{
-    width: 550px;
+    width: 590px;
     text-align: right;
     display: table;
     float: right;
@@ -52,10 +52,6 @@
 .ctr-cell{
     display:  table-cell;
 }
-
-
-
-
 
 .vdpComponent  {
     font-size: 18px;
