@@ -15,33 +15,66 @@
           <div class="row">
             
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/moh')">
+              <div class="btn-container" @click="redirect('/appointments')">
                 <div class="card">
-                  <img src="../assets/mw.png" class="btn-icon"/>
-                  <p>MoH reports</p>
+                  <img src="../assets/report-icons/appointments.png" class="btn-icon"/>
+                  <p>Clinic appointments</p>
                 </div>
               </div>
             </div>
 
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/clinic')">
+              <div class="btn-container">
                 <div class="card">
-                  <img src="../assets/clinic.png" class="btn-icon"/>
-                  <p>Clinic reports</p>
+                  <img src="../assets/report-icons/defaulter-list.png" class="btn-icon"/>
+                  <p>Defaulter list</p>
                 </div>
               </div>
             </div>
 
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/pepfar')">
+              <div class="btn-container">
                 <div class="card">
-                  <img src="../assets/PEPFAR.png" class="btn-icon"/>
-                  <p>PEPFAR reports</p>
+                  <img src="../assets/report-icons/appointment-missed.png" class="btn-icon"/>
+                  <p>Missed appointments</p>
                 </div>
               </div>
+            </div>
+          
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/')">
+                <div class="card">
+                  <img src="../assets/report-icons/regimen-give.png" class="btn-icon"/>
+                  <p>Regimen distribution</p>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/')">
+                <div class="card">
+                  <img src="../assets/report-icons/regimen-switch.png" class="btn-icon"/>
+                  <p>Regimen switch</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm">
+              <!--div class="btn-container" @click="redirect">
+                <div class="card">
+                  <img src="../assets/report-icons/cohort.png" class="btn-icon"/>
+                  <p>IPT (usage)</p>
+                </div>
+              </div-->
             </div>
 
           </div>
+
         </div>
 
 
@@ -65,6 +98,8 @@
   transition: 0.3s;
   text-align: center;
   cursor: pointer;
+  width: 250px;
+  height: 150px;
 }
 
 /* On mouse-over, add a deeper shadow */
@@ -91,6 +126,10 @@
   font-weight: bold;
 }
 
+.row {
+  padding-bottom: 20px;
+}
+
 </style>
 
 
@@ -107,11 +146,10 @@ export default {
     "top-nav": TopNav,
     "side-bar": Sidebar
   }, methods: {
-    redirect: function(url) {
+    redirect: function (url) {
       this.$router.push(url);
     }
   }
-  
 }
 
 

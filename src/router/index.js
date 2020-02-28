@@ -87,6 +87,16 @@ const routes = [
     path: "/patient_registration",
     name: "patient_registration",
     component: () => import("../views/PatientRegistration.vue")
+  },
+  {
+    path: "/clinic",
+    name: "clinic",
+    component: () => import("../views/ClinicReports.vue")
+  },
+  {
+    path: "/appointments",
+    name: "clinicAppointments",
+    component: () => import("../views/ClinicAppointments.vue")
   }
 ]
 
