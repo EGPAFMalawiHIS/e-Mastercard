@@ -6,11 +6,11 @@
 <div class="row">
   <label class="col-md-4 control-label" for="radios">Phone Follow Up</label>
  <div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="inlineRadioOptions"  value="1065" v-model="obs.phoneFollowUp.child.value_coded">
+  <input class="form-check-input" type="radio" name="inlineRadioOptions"  value="1065" v-model="encounter.obs.phoneFollowUp.child.value_coded">
   <label class="form-check-label" for="inlineRadio1">Yes</label>
 </div>
 <div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="inlineRadioOptions" value="1066" v-model="obs.phoneFollowUp.child.value_coded">
+  <input class="form-check-input" type="radio" name="inlineRadioOptions" value="1066" v-model="encounter.obs.phoneFollowUp.child.value_coded">
   <label class="form-check-label" for="inlineRadio2">No</label>
 </div>
 </div>
@@ -19,11 +19,11 @@
 <div class="row">
   <label class="col-md-4 control-label" for="radios">Home Follow Up</label>
  <div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="inlineRadioOptions"  value="1065" v-model="obs.homeFollowUp.child.value_coded">
+  <input class="form-check-input" type="radio" name="inlineRadioOptions"  value="1065" v-model="encounter.obs.homeFollowUp.child.value_coded">
   <label class="form-check-label" for="inlineRadio1">Yes</label>
 </div>
 <div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="inlineRadioOptions"  value="1066" v-model="obs.homeFollowUp.child.value_coded">
+  <input class="form-check-input" type="radio" name="inlineRadioOptions"  value="1066" v-model="encounter.obs.homeFollowUp.child.value_coded">
   <label class="form-check-label" for="inlineRadio2">No</label>
 </div>
 </div>
@@ -32,11 +32,11 @@
 <div class="row">
   <label class="col-md-4 control-label" for="radios">Ever Recieved ART</label>
  <div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="inlineRadioOptions" value="1065" v-model="obs.everReceivedART.value_coded">
+  <input class="form-check-input" type="radio" name="inlineRadioOptions" value="1065" v-model="encounter.obs.everReceivedART.value_coded">
   <label class="form-check-label" for="inlineRadio1">Yes</label>
 </div>
 <div class="form-check form-check-inline">
-  <input class="form-check-input" type="radio" name="inlineRadioOptions" value="1066" v-model="obs.everReceivedART.value_coded">
+  <input class="form-check-input" type="radio" name="inlineRadioOptions" value="1066" v-model="encounter.obs.everReceivedART.value_coded">
   <label class="form-check-label" for="inlineRadio2">No</label>
 </div>
 </div>
@@ -44,7 +44,7 @@
 
 <div class="form-group">
     <label for="exampleFormControlSelect1">Confirmatory Test</label>
-    <select class="form-control" v-model="obs.confirmatoryTest.value_coded">
+    <select class="form-control" v-model="encounter.obs.confirmatoryTest.value_coded">
       <option value="1040">Rapid Antibody Test</option>
       <option value="844">DNA PCR</option>
       <option value="1118">Not Done</option>
@@ -52,30 +52,30 @@
 </div>
  <div class="form-group">
     <label for="exampleFormControlSelect1">Test Location</label>
-    <!-- <select class="form-control" v-model="obs.testLocation"> -->
+    <!-- <select class="form-control" v-model="encounter.obs.testLocation"> -->
         <v-select :options="locations" @search="getlocations" @input="getVal"></v-select>
     <!-- </select> -->
 </div>
  <div class="form-group">
     <label for="exampleFormControlSelect1">Test Date</label>
-    <input type="date" name=""  v-model="obs.testDate.value_datetime">
+    <input type="date" name=""  v-model="encounter.obs.testDate.value_datetime">
 </div>
 <div class="form-group">
     <label for="exampleFormControlSelect1">ARV Last Taken</label>
-    <input type="date" name=""  v-model="obs.dateARTLastTaken.value_datetime">
+    <input type="date" name=""  v-model="encounter.obs.dateARTLastTaken.value_datetime">
 </div>
 <div class="form-group">
     <label for="exampleFormControlSelect1">ARV Start Date</label>
-    <input type="date" name=""  v-model="obs.dateARTStarted.value_datetime">
+    <input type="date" name=""  v-model="encounter.obs.dateARTStarted.value_datetime">
 </div>
 <div class="form-group">
     <label for="exampleFormControlSelect1">ARV Start Location</label>
-    <!-- <select class="form-control" v-model="obs.testLocation"> -->
+    <!-- <select class="form-control" v-model="encounter.obs.testLocation"> -->
         <v-select :options="locations" @search="getlocations" @input="getLoc"></v-select>
     <!-- </select> -->
 </div>
-<button type="button" class="btn btn-primary" @click="saveEncounter">save</button>
-<!-- <vitals v-on:getStuff="$event"> </vitals> -->
+<button type="button" class="btn btn-primary" @click="createEncounters">save</button>
+<vitals v-on:getStuff="getStuff"> </vitals>
 </div>
 </template>
 
@@ -92,6 +92,9 @@ export default {
     },
     data: function() {
         return {
+            encounters: [],
+            encounter: {
+            encounter_id: 9,
             obs: {
 
                 phoneFollowUp: {
@@ -143,10 +146,18 @@ export default {
                     value_datetime: null,
 
                 },
+            }
             },
             locations: []
         }
     },methods: {
+        createEncounters: function() {
+            this.encounters.push(this.encounter);
+            this.encounters.forEach(enc => {
+                this.saveEncounter(enc);
+            })
+
+        },
         getExpected: function(element) {
         let expected = ["value_group_id","value_boolean","value_coded","value_coded_name_id","value_drug","value_datetime","value_numeric","value_modifier","value_text"] ;
         let key = "";
@@ -174,14 +185,14 @@ export default {
                 });
                 }
             );
-        }, saveEncounter: async function() {
+        }, saveEncounter: async function(encounterOb) {
             let observations = [];
-            Object.keys(this.obs).forEach(element => {
-                observations.push(this.obs[element]);
+            Object.keys(encounterOb.obs).forEach(element => {
+                observations.push(encounterOb.obs[element]);
             });
             const personId = this.$route.params.id;
             // const visitID = window.sessionStorage.visit_id
-            const encounter = await EncounterService.createEncounter(personId, 9);
+            const encounter = await EncounterService.createEncounter(personId, encounterOb.encounter_id);
             this.successfulOperation = true;
             if(encounter.status === 201 || encounter.status === 200){
                 let encounterID = encounter.encounter_id;
@@ -208,18 +219,23 @@ export default {
 
 
         }, getVal(val) {
-            this.obs.testLocation.value_text = val.label;
-            this.obs.testLocation.location_id = val.location_id;
+            this.encounter.obs.testLocation.value_text = val.label;
+            this.encounter.obs.testLocation.location_id = val.location_id;
             
 
         }, getLoc(val) {
-            this.obs.ARTStartLocation.value_text = val.label;
-            this.obs.ARTStartLocation.location_id = val.location_id;
+            this.encounter.obs.ARTStartLocation.value_text = val.label;
+            this.encounter.obs.ARTStartLocation.location_id = val.location_id;
             
 
         },
         getStuff(val) {
-            console.log(val);
+            // val.forEach(e => {
+            //     console.log(e);
+            //     this.encounter.obs[Object.keys(e)[0]] = e[Object.keys(e)[0]];
+            // })
+            // console.log(this.encounter.obs)
+            this.encounters.push(val);
         }
 
     }, mounted() {
