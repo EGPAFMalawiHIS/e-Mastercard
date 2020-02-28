@@ -75,6 +75,7 @@
     <!-- </select> -->
 </div>
 <button type="button" class="btn btn-primary" @click="saveEncounter">save</button>
+<!-- <vitals v-on:getStuff="$event"> </vitals> -->
 </div>
 </template>
 
@@ -82,10 +83,12 @@
 import ApiClient from "../../services/api_client";
 import EncounterService from '../../services/encounter_service'
 import 'vue-select/dist/vue-select.css';
-import VueSelect from 'vue-select'
+import VueSelect from 'vue-select';
+import vitals from '@/components/encounters/vitals.vue'
 export default {
     components: {
-        "v-select": VueSelect
+        "v-select": VueSelect,
+        "vitals": vitals
     },
     data: function() {
         return {
@@ -144,6 +147,17 @@ export default {
             locations: []
         }
     },methods: {
+        getExpected: function(element) {
+        let expected = ["value_group_id","value_boolean","value_coded","value_coded_name_id","value_drug","value_datetime","value_numeric","value_modifier","value_text"] ;
+        let key = "";
+        Object.keys(element).filter(function(elem) {
+            if(expected.includes(elem)){
+            key = elem;
+            }
+        } );
+        return key;
+        },
+
         getlocations: async function(val) {
             this.locations = [];
             await ApiClient.get(`/locations?name=`+val).then(
@@ -180,6 +194,7 @@ export default {
                 this.success = true;
                 this.fail = false;
                 this.postResponse = "Appointment has been set."
+                this.$router.go(0);
                 }else{
                 this.success = false;
                 this.fail = true;
@@ -202,6 +217,9 @@ export default {
             this.obs.ARTStartLocation.location_id = val.location_id;
             
 
+        },
+        getStuff(val) {
+            console.log(val);
         }
 
     }, mounted() {

@@ -95,10 +95,11 @@ const ApiClient = (() => {
    *   const response = post('people', {given_name: 'Foo', family_name: 'Bar}).then((response) => console.log(response));
    */
   const post = (uri, data, options = {}) => execFetch(uri, {method: 'POST', body: JSON.stringify(data)}, options)
-
+  const remove = (uri, data, options = {}) => execFetch(uri, {method: 'DELETE', body: JSON.stringify(data)}, options)
+  const put = (uri, data, options = {}) => execFetch(uri, {method: 'PUT', body: JSON.stringify(data)}, options)
   const setRouter = (router) => config.router = router
   getConfig();
-  return {get, post, getRouter, setRouter, getConfig, config}
+  return {get, post, put, remove, getRouter, setRouter, getConfig, config}
 })();
 
 export default ApiClient;
