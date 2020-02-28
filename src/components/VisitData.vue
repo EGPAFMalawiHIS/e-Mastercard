@@ -22,6 +22,11 @@
         <td>{{visit.ARTRegimen}}</td>
         <td>{{visit.nextAppointment}}</td>
         <td>{{visit.outcome}}</td>
+        <td>
+          <button class="btn btn-danger" @click="deleteVisit(visit.encounters)">
+            X
+          </button>
+        </td>
       </tr>
      
     </tbody>
@@ -43,7 +48,8 @@ export default {
         sideEffects: null,
         ARTRegimen: null,
         nextAppointment: null,
-        outcoume: null
+        outcoume: null,
+        encounters: [],
       },
       obs: [
         {
@@ -78,11 +84,30 @@ export default {
         }
       );
     },
+    deleteVisit: function(encounters) {
+      encounters.forEach(encounter => {
+        this.removeEncounter(encounter).then(el => {
+          if(el.status == 204) {
+            console.log("deleted")
+          }else {
+            console.log("not deleted")
+          }
+        })
+      })
+      this.$router.go(0);
+    },
+    removeEncounter: async function(encounter) {
+      let response = await ApiClient.remove('encounters/'+encounter);
+      return response;
+    },
     setVisits: function(details){
       let temp = [];
+      let encounters = [];
       details.forEach(element => {
+               
               temp.push({
-               visitDate: element 
+               visitDate: element,
+               encounters: this
               });
       });
       this.createOb(temp);
@@ -91,6 +116,12 @@ export default {
 
       let url = `/observations?person_id=${this.$route.params.id}&&concept_id=${conceptSet.conceptID}&&obs_datetime=${element.visitDate}`;
       url = conceptSet.params ? url + `&&` + conceptSet.params : url;
+      let observations = await ApiClient.get(url);
+      return await observations.json();
+    },
+    getEncounters: async function(date) {
+
+      let url = `/encounters?patient_id=${this.$route.params.id}&&date=${date}`;
       let observations = await ApiClient.get(url);
       return await observations.json();
     },
@@ -165,6 +196,13 @@ export default {
             tempob.givenTo = "Guardian";
           }
         })
+        this.getEncounters(element.visitDate).then(el => {
+            let j = [];
+            el.forEach(f => {
+              j.push(f.encounter_id);
+            })
+            tempob.encounters = [...j];
+        });
         this.patientVisits.push(tempob);
       });
         
@@ -174,6 +212,7 @@ export default {
   },
   mounted() {
     this.getVisits();
+    // this.getEncounters('2020-02-24');
   }
 };
 </script>
