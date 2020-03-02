@@ -176,8 +176,8 @@ export default {
     },
 
     calucateAge(dob) {
-      var ageDifMs = Date.now() - dob.getTime();
-      var ageDate = new Date(ageDifMs);
+      let ageDifMs = Date.now() - dob.getTime();
+      let ageDate = new Date(ageDifMs);
       return Math.abs(ageDate.getUTCFullYear() - 1970);
     },
 
