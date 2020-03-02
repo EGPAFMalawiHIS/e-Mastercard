@@ -24,7 +24,7 @@
             </div>
 
             <div class="col-sm">
-              <div class="btn-container">
+              <div class="btn-container" @click="redirect('/clinic')">
                 <div class="card">
                   <img src="../assets/clinic.png" class="btn-icon"/>
                   <p>Clinic reports</p>

@@ -10,17 +10,14 @@
           <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Age group</th>
-                <th>Gender</th>
-                <th class="disaggregated-numbers">Tx new (new on ART)</th>
-                <th class="disaggregated-numbers">TX curr (receiving ART)</th>
-                <th class="disaggregated-numbers">TX curr (received IPT)</th>
-                <th class="disaggregated-numbers">TX curr (screened for TB)</th>
+                <th scope="col">ARV number</th>
+                <th scope="col">First name</th>
+                <th scope="col">Last name</th>
+                <th class="center-text" scope="col">Gender</th>
+                <th class="center-text" scope="col">DOB</th>
+                <th class="center-text" scope="col">&nbsp;</th>
               </tr>
             </thead>
-            <tbody ref="tableBody">
-            </tbody>
           </table>
         </div>
         <!-- Page Content end -->
@@ -67,18 +64,23 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     fetchDates: async function(dates) {
+      this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
+      this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
+      let url_path = '/defaulter_list?start_date=' + dates[0] + "&date=" + dates[1];
+      url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=false"; 
+      const response = await ApiClient.get(url_path, {}, {});
+
+      if (response.status === 200) {
+        response.json().then((data) => this.checkResult(data) );
+      }else{
+        setTimeout(() => this.fetchData(), 5000);
+      }
     },
     initDataTable(){
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: true,
-        searching: false,
-        paging: false,
-        Processing: true,
-        ServerSide: true,
-        scroller: {
-          loadingIndicator: true
-        },
+        data: this.formatedData,
         dom: 'Bfrtip',
         buttons: [
           {
@@ -97,81 +99,57 @@ export default {
             extend: 'print',
             title:  this.report_title
           }
+        ],
+        columnDefs: [
+          {"className": "center-text", "targets": 3},
+          {"className": "center-text", "targets": 4}
         ]
       });
     },
     checkResult(data){
+      const url_string = window.location;
+      const parsedURL = new URL(url_string);
+      const resource_id = parsedURL.searchParams.get("resource_id");
+      this.reportData = data;
+      setTimeout(() => this.datatableEnable(data), 10);
     },
-    datatableEnable(info){
-      this.formatedData = []; 
-      for(let patient_id in info){
-      }
-      //this.dTable.api().destroy();
-      //this.initDataTable();
-    },
-    addTableBody() {
-      let columns = [
-        '0-5 months', '6-11 months','12-23 months',
-        '2-4 years', '5-9 years',
-        '10-14 years', '15-17 years',
-        '18-19 years', '20-24 years',
-        '25-29 years', '30-34 years',
-        '35-39 years', '40-44 years',
-        '45-49 years', '50 plus years'
-      ];
-
-      let table_body  = this.$refs.tableBody;
-      let row_count = 1;
-      let gender = ['Female', 'Male'];
-
-      for(let s = 0 ; s < gender.length; s++){
-        for(let i = 0 ; i < columns.length; i++){
-          let tr = document.createElement('tr');
-          tr.setAttribute('class', gender[s] + '_row');
-          table_body.appendChild(tr);
-          let td_count = 0;
-
-          while (td_count < 7) {
-            var td = document.createElement('td');
-            tr.appendChild(td);
-            if(td_count == 0)
-              td.innerHTML = (row_count++);
-            
-            if(td_count == 1)
-              td.innerHTML = columns[i];
-               
-            if(td_count == 2)
-              td.innerHTML = gender[s];
-               
-            if(td_count > 2){
-              td.innerHTML = 0;
-              td.setAttribute('class','disaggregated-numbers');
-            }   
-            tr.appendChild(td);
-            td_count++;
-          }
+    datatableEnable(data){
+      for(let i = 0; i < data.length; i++){
+        /*this.dTable.fnAddData( [data[i].arv_number,
+          data[i].given_name, data[i].family_name,
+          data[i].gender, data[i].birthdate] );*/
+        let birthdate;
+        try {
+          birthdate = moment(data[i].birthdate).format('DD/MMM/YYYY');
+        }catch(e) {
+          birthdate = 'N/A';
         }
+        
+        this.formatedData.push( [data[i].arv_number,
+          data[i].given_name, data[i].family_name,
+          data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
       }
-      setTimeout(() => this.initDataTable(), 300);
+      this.dTable.api().destroy();
+      this.initDataTable();
+    },
+    createdShowBTN(person_id){
+      var span = document.createElement('span');
+      var button  = document.createElement('button');
+      button.setAttribute("onclick", 'javascript:location="/patient/mastercard/' + person_id + '"');
+      button.innerHTML = "Show";
+      button.setAttribute('class','btn-warning show-btn');
+      span.appendChild(button);
+      return span.innerHTML;
     }
   },
   mounted() {
-    setTimeout(() => this.addTableBody(), 300);
+    setTimeout(() => this.initDataTable(), 300);
   }, data: function() {
       return {
-        report_title: 'PEPFAR Disaggregated ',
+        report_title: 'Defaulted clients ',
         reportData: null,
         dTable: null,
-        formatedData: [],
-        ageGroups: [
-          '0-5 months', '6-11 months','12-23 months',
-          '2-4 years', '5-9 years',
-          '10-14 years', '15-17 years',
-          '18-19 years', '20-24 years',
-          '25-29 years', '30-34 years',
-          '35-39 years', '40-44 years',
-          '45-49 years', '50 plus years'
-        ].reverse()
+        formatedData: []
       }
     }
 }

@@ -74,6 +74,11 @@ const routes = [
     component: () => import("../views/MohDisaggregated.vue")
   },
   {
+    path: "/drill_down/:indicator/:id",
+    name: "cohort_driller",
+    component: () => import("../views/CohortDriller.vue")
+  },
+  {
     path: "/art_refill_periods",
     name: "art_refill_periods",
     component: () => import("../views/ArtRefillPeriods.vue")
@@ -82,6 +87,36 @@ const routes = [
     path: "/patient_registration",
     name: "patient_registration",
     component: () => import("../views/PatientRegistration.vue")
+  },
+  {
+    path: "/clinic",
+    name: "clinic",
+    component: () => import("../views/ClinicReports.vue")
+  },
+  {
+    path: "/appointments",
+    name: "clinicAppointments",
+    component: () => import("../views/ClinicAppointments.vue")
+  },
+  {
+    path: "/defaulters",
+    name: "defaulltersList",
+    component: () => import("../views/DefaulterList.vue")
+  },
+  {
+    path: "/appointment_missed",
+    name: "AppointmentMissed",
+    component: () => import("../views/AppointmentMissed.vue")
+  },
+  {
+    path: "/regimen_distribution",
+    name: "RegimenDistribution",
+    component: () => import("../views/RegimenDistribution.vue")
+  },
+  {
+    path: "/regimen_switch",
+    name: "RegimenSwitch",
+    component: () => import("../views/RegimenSwitch.vue")
   }
 ]
 

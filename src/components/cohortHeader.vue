@@ -24,8 +24,8 @@
     <tr>
       <td class="numbers">10.</td>
       <td class="row-title" style="border-bottom-style: solid; border-top-style: none;">Quarter evaluated</td>
-      <td class="row-name name-left" style="border-bottom-style: solid;">Year:&nbsp;</td>
-      <td colspan="2" class="signatures" style="border-bottom-style: solid;">Quarter:&nbsp;</td>
+      <td class="row-name name-left" style="border-bottom-style: solid;">Year:&nbsp;<b>{{quarterYr}}</b></td>
+      <td colspan="2" class="signatures" style="border-bottom-style: solid;">Quarter:&nbsp;<b>{{quarterStr}}</b></td>
     </tr>
   </table>
 </template>
@@ -34,7 +34,28 @@
 export default {
   data: function(){
     return {
-      items: ['3.','4.','5.','6.','7.','8.','9.']
+      items: ['3.','4.','5.','6.','7.','8.','9.'],
+      quarterStr: null,
+      quarterYr: null
+    }
+  },
+  methods: {
+    renderQuarter() {
+      if(!this.reportparams)
+        return;
+
+      let quarter = this.reportparams;
+      this.quarterStr = quarter.split(" ")[0];
+      this.quarterYr  = quarter.split(" ")[1];
+    }
+  },
+  props: ["reportparams"],
+  watch: {
+    reportparams: {
+      immediate: true,
+      handler() {
+        this.renderQuarter();
+      }
     }
   }
 }
