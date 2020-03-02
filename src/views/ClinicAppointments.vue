@@ -6,6 +6,7 @@
         <!-- Page Content -->
         <div id="main-container" class="col-12 table-col">
           <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+           <edPicker :onSubmit="fetchDate"></edPicker>
           <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
@@ -37,6 +38,7 @@ import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
+import EndDatePicker from "@/components/EndDatePicker.vue";
 
 import jQuery from 'jquery';
 import datatable from 'datatables';
@@ -58,12 +60,13 @@ export default {
   name: "reports",
   components: {
     "top-nav": TopNav,
-    "side-bar": Sidebar
+    "side-bar": Sidebar,
+    "edPicker": EndDatePicker
   },methods: {
-    fetchData: async function() {
-      let url_path = 'cohort_report_drill_down?id=' + this.$route.params.id;
-      url_path += '&date=2020-01-01';  
-      url_path += '&program_id=1';
+    fetchDate: async function(date) {
+      this.report_title = "Clients booked on " + moment(date).format('dddd, Do of MMM YYYY');
+      let url_path = '/programs/1/scheduled_appointments?date=' + date;
+      url_path += '&paginate=false';
       const response = await ApiClient.get(url_path, {}, {});
 
       if (response.status === 200) {
@@ -73,9 +76,6 @@ export default {
       }
     },
     initDataTable(){
-      let indicator_name =  this.$route.params.indicator.split('_');
-      this.report_title = indicator_name.join(" ").toUpperCase();
-
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: true,
@@ -113,6 +113,7 @@ export default {
       setTimeout(() => this.datatableEnable(data), 10);
     },
     datatableEnable(data){
+      this.formatedData = []; 
       for(let i = 0; i < data.length; i++){
         /*this.dTable.fnAddData( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
@@ -123,7 +124,6 @@ export default {
         }catch(e) {
           birthdate = 'N/A';
         }
-        
         this.formatedData.push( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
           data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
@@ -143,10 +143,9 @@ export default {
   },
   mounted() {
     setTimeout(() => this.initDataTable(), 300);
-    setTimeout(() => this.fetchData(), 300);
   }, data: function() {
       return {
-        report_title: 'MoH cohort report drill down (version 24)',
+        report_title: 'Clinic  appointments ',
         reportData: null,
         dTable: null,
         formatedData: []

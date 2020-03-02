@@ -6,6 +6,7 @@
         <!-- Page Content -->
         <div id="main-container" class="col-12 table-col">
           <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+           <sdPicker :onSubmit="fetchDates"></sdPicker>
           <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
@@ -14,7 +15,9 @@
                 <th scope="col">Last name</th>
                 <th class="center-text" scope="col">Gender</th>
                 <th class="center-text" scope="col">DOB</th>
-                <th class="center-text" scope="col">&nbsp;</th>
+                <th class="center-text" scope="col">Regimen</th>
+                <th class="center-text" scope="col">ARVs</th>
+                <th class="center-text" scope="col">Dispensed date</th>
               </tr>
             </thead>
           </table>
@@ -37,6 +40,7 @@ import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
+import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
 import jQuery from 'jquery';
 import datatable from 'datatables';
@@ -58,12 +62,15 @@ export default {
   name: "reports",
   components: {
     "top-nav": TopNav,
-    "side-bar": Sidebar
+    "side-bar": Sidebar,
+    "sdPicker": StartAndEndDatePicker
   },methods: {
-    fetchData: async function() {
-      let url_path = 'cohort_report_drill_down?id=' + this.$route.params.id;
-      url_path += '&date=2020-01-01';  
-      url_path += '&program_id=1';
+    fetchDates: async function(dates) {
+      this.report_title = "Regimen dispensation report: ";
+      this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
+      this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
+      let url_path = '/regimen_report?start_date=' + dates[0] + "&date=" + dates[1];
+      url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=false"; 
       const response = await ApiClient.get(url_path, {}, {});
 
       if (response.status === 200) {
@@ -73,9 +80,6 @@ export default {
       }
     },
     initDataTable(){
-      let indicator_name =  this.$route.params.indicator.split('_');
-      this.report_title = indicator_name.join(" ").toUpperCase();
-
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: true,
@@ -100,8 +104,8 @@ export default {
           }
         ],
         columnDefs: [
-          {"className": "center-text", "targets": 3},
-          {"className": "center-text", "targets": 4}
+          {"className": "center-text", "targets": 5},
+          {"className": "center-text", "targets": 7}
         ]
       });
     },
@@ -112,21 +116,34 @@ export default {
       this.reportData = data;
       setTimeout(() => this.datatableEnable(data), 10);
     },
-    datatableEnable(data){
-      for(let i = 0; i < data.length; i++){
+    datatableEnable(info){
+      this.formatedData = []; 
+      for(let patient_id in info){
+        let data = info[patient_id];
         /*this.dTable.fnAddData( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
           data[i].gender, data[i].birthdate] );*/
         let birthdate;
         try {
-          birthdate = moment(data[i].birthdate).format('DD/MMM/YYYY');
+          birthdate = moment(data.birthdate).format('DD/MMM/YYYY');
         }catch(e) {
           birthdate = 'N/A';
         }
         
-        this.formatedData.push( [data[i].arv_number,
-          data[i].given_name, data[i].family_name,
-          data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
+        let current_reg = data.current_regimen;
+        let medications = [];
+        let meds = data.medication;
+        let prescription_date;
+        
+        for(let i = 0; i < meds.length; i++){
+            medications.push(meds[i].medication + " (" + meds[i].quantity + ")");
+            prescription_date = moment(meds[i].start_date).format('DD/MMM/YYYY');
+        }  
+
+        this.formatedData.push( [data.arv_number,
+          data.given_name, data.family_name,
+          data.gender, birthdate, current_reg,
+          medications.join('<br />'), prescription_date ] );
       }
       this.dTable.api().destroy();
       this.initDataTable();
@@ -143,10 +160,9 @@ export default {
   },
   mounted() {
     setTimeout(() => this.initDataTable(), 300);
-    setTimeout(() => this.fetchData(), 300);
   }, data: function() {
       return {
-        report_title: 'MoH cohort report drill down (version 24)',
+        report_title: 'Regimen distribution ',
         reportData: null,
         dTable: null,
         formatedData: []

@@ -10,14 +10,35 @@
         <!-- Page Content -->
         <div class="container" id="btn-container">
           <div class="row">
+
             <div class="col-sm">
               <div class="btn-container" @click="redirect('/pepfar_disaggregated')">
                 <div class="card">
-                  <img src="../assets/report-icons/cohort.png" class="btn-icon" />
+                  <img src="../assets/report-icons/split.png" class="btn-icon" />
                   <p>PEPFAR Disagreggated Report</p>
                 </div>
               </div>
             </div>
+
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/pepfar_disaggregated')">
+                <div class="card">
+                  <img src="../assets/report-icons/defaulter-list.png" class="btn-icon" />
+                  <p>Defaulter list</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/pepfar_disaggregated')">
+                <div class="card">
+                  <img src="../assets/report-icons/px.png" class="btn-icon" />
+                  <p>ARVs refill periods</p>
+                </div>
+              </div>
+            </div>
+
+            
           </div>
         </div>
         <!-- Page Content end -->
