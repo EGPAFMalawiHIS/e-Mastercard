@@ -107,6 +107,16 @@ const routes = [
     path: "/appointment_missed",
     name: "AppointmentMissed",
     component: () => import("../views/AppointmentMissed.vue")
+  },
+  {
+    path: "/regimen_distribution",
+    name: "RegimenDistribution",
+    component: () => import("../views/RegimenDistribution.vue")
+  },
+  {
+    path: "/regimen_switch",
+    name: "RegimenSwitch",
+    component: () => import("../views/RegimenSwitch.vue")
   }
 ]
 

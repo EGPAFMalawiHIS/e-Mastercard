@@ -42,7 +42,7 @@
             </div>
           
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/')">
+              <div class="btn-container" @click="redirect('/regimen_distribution')">
                 <div class="card">
                   <img src="../assets/report-icons/regimen-give.png" class="btn-icon"/>
                   <p>Regimen distribution</p>
@@ -56,7 +56,7 @@
           <div class="row">
 
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/')">
+              <div class="btn-container" @click="redirect('/regimen_switch')">
                 <div class="card">
                   <img src="../assets/report-icons/regimen-switch.png" class="btn-icon"/>
                   <p>Regimen switch</p>

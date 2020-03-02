@@ -6,16 +6,17 @@
         <!-- Page Content -->
         <div id="main-container" class="col-12 table-col">
           <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-           <edPicker :onSubmit="fetchDate"></edPicker>
+           <sdPicker :onSubmit="fetchDates"></sdPicker>
           <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
-                <th scope="col">ARV number</th>
-                <th scope="col">First name</th>
-                <th scope="col">Last name</th>
+                <th scope="col">ARV#</th>
                 <th class="center-text" scope="col">Gender</th>
                 <th class="center-text" scope="col">DOB</th>
-                <th class="center-text" scope="col">&nbsp;</th>
+                <th class="center-text" scope="col">Prev.Regimen</th>
+                <th class="center-text" scope="col">Curr.Regimen</th>
+                <th class="center-text" scope="col">ARVs</th>
+                <th class="center-text" scope="col">Dispensed date</th>
               </tr>
             </thead>
           </table>
@@ -38,7 +39,7 @@ import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
-import EndDatePicker from "@/components/EndDatePicker.vue";
+import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
 import jQuery from 'jquery';
 import datatable from 'datatables';
@@ -61,12 +62,14 @@ export default {
   components: {
     "top-nav": TopNav,
     "side-bar": Sidebar,
-    "edPicker": EndDatePicker
+    "sdPicker": StartAndEndDatePicker
   },methods: {
-    fetchDate: async function(date) {
-      this.report_title = "Clients booked on " + moment(date).format('dddd, Do of MMM YYYY');
-      let url_path = '/programs/1/scheduled_appointments?date=' + date;
-      url_path += '&paginate=false';
+    fetchDates: async function(dates) {
+      this.report_title = "Regimen switch report: ";
+      this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
+      this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
+      let url_path = '/regimen_switch?start_date=' + dates[0] + "&date=" + dates[1];
+      url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=false"; 
       const response = await ApiClient.get(url_path, {}, {});
 
       if (response.status === 200) {
@@ -100,8 +103,10 @@ export default {
           }
         ],
         columnDefs: [
+          {"className": "center-text", "targets": 1},
           {"className": "center-text", "targets": 3},
-          {"className": "center-text", "targets": 4}
+          {"className": "center-text", "targets": 4},
+          {"className": "center-text", "targets": 6}
         ]
       });
     },
@@ -112,21 +117,33 @@ export default {
       this.reportData = data;
       setTimeout(() => this.datatableEnable(data), 10);
     },
-    datatableEnable(data){
+    datatableEnable(info){
       this.formatedData = []; 
-      for(let i = 0; i < data.length; i++){
-        /*this.dTable.fnAddData( [data[i].arv_number,
-          data[i].given_name, data[i].family_name,
-          data[i].gender, data[i].birthdate] );*/
+      console.log(info);
+
+      for(let patient_id in info){
+        let data = info[patient_id];
         let birthdate;
         try {
-          birthdate = moment(data[i].birthdate).format('DD/MMM/YYYY');
+          birthdate = moment(data.birthdate).format('DD/MMM/YYYY');
         }catch(e) {
           birthdate = 'N/A';
         }
-        this.formatedData.push( [data[i].arv_number,
-          data[i].given_name, data[i].family_name,
-          data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
+        
+        let current_reg = data.current_regimen;
+        let medications = [];
+        let meds = data.medication;
+        let prescription_date;
+        let previous_reg = data.previous_regimen;
+        
+        for(let i = 0; i < meds.length; i++){
+            medications.push(meds[i].medication + " (" + meds[i].quantity + ")");
+            prescription_date = moment(meds[i].start_date).format('DD/MMM/YYYY');
+        }  
+
+        this.formatedData.push( [data.arv_number,
+          data.gender, birthdate, previous_reg, current_reg,
+          medications.join('<br />'), prescription_date ] );
       }
       this.dTable.api().destroy();
       this.initDataTable();
@@ -145,7 +162,7 @@ export default {
     setTimeout(() => this.initDataTable(), 300);
   }, data: function() {
       return {
-        report_title: 'Clinic  appointments ',
+        report_title: 'Regimen switch report',
         reportData: null,
         dTable: null,
         formatedData: []

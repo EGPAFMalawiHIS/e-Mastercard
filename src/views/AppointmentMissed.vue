@@ -115,6 +115,7 @@ export default {
       setTimeout(() => this.datatableEnable(data), 10);
     },
     datatableEnable(data){
+      this.formatedData = []; 
       for(let i = 0; i < data.length; i++){
         /*this.dTable.fnAddData( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
@@ -125,7 +126,6 @@ export default {
         }catch(e) {
           birthdate = 'N/A';
         }
-        
         this.formatedData.push( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
           data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
