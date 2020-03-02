@@ -96,6 +96,10 @@
       <label for="exampleFormControlSelect1">Test Location</label>
       <v-select :options="locations" @search="getlocations" @input="getVal"></v-select>
     </div>
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">Start Location</label>
+      <v-select :options="locations" @search="getlocations" @input="getLoc"></v-select>
+    </div>
 <div class="input-group mb-3">
   <div class="input-group-prepend">
     <span class="input-group-text" id="height">Test Date</span>

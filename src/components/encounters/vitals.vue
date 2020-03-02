@@ -42,7 +42,7 @@ methods: {
         }
       }
     }
-    this.$emit('addEncounter', encounterObject);
+    this.$emit('addEncounter',  encounterObject);
   }
 }
 }
