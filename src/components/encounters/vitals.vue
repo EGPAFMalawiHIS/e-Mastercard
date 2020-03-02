@@ -12,9 +12,6 @@
   </div>
   <input type="number" class="form-control" v-model="height.value_numeric" aria-label="Default" aria-describedby="inputGroup-sizing-default">
 </div>
-  <button type="button" class="btn btn-primary" v-on:click="setVitals">
-    setValue
-  </button>
   </div>
 </template>
 
@@ -23,6 +20,7 @@ export default {
 
 data: function() {
     return {
+
       weight: {
         value_numeric: null,
         concept_id: 5090
@@ -34,15 +32,17 @@ data: function() {
     }
 },
 methods: {
-  setVitals: function() {
+  saveEncounter: function() {
     let encounterObject = {
-      encounter_id: 6,
-      obs: {
-        weight: this.weight,
-        height: this.height
+      vitals: {
+        encounter_id: 6,
+        obs: {
+          weight: this.weight,
+          height: this.height
+        }
       }
     }
-    this.$emit('getStuff', encounterObject);
+    this.$emit('addEncounter', encounterObject);
   }
 }
 }

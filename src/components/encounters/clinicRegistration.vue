@@ -1,40 +1,47 @@
 <template>
   <div>
     <div class="row">
-      <fieldset>
-        <label class="col-md-4 control-label" for="radios">Phone Follow Up</label>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="inlineRadioOptions"
-            value="1065"
-            v-model="encounter.obs.phoneFollowUp.child.value_coded"
-          />
-          <label class="form-check-label" for="inlineRadio1">Yes</label>
+        <div class="col">
+        <p>Phone Follow Up</p>
         </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="inlineRadioOptions"
-            value="1066"
-            v-model="encounter.obs.phoneFollowUp.child.value_coded"
-          />
-          <label class="form-check-label" for="inlineRadio2">No</label>
+        <div class="col">
+        <fieldset>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="inlineRadioOptions"
+              value="1065"
+              v-model="clinicRegistration.obs.phoneFollowUp.child.value_coded"
+            />
+            <label class="form-check-label" for="inlineRadio1">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="inlineRadioOptions"
+              value="1066"
+              v-model="clinicRegistration.obs.phoneFollowUp.child.value_coded"
+            />
+            <label class="form-check-label" for="inlineRadio2">No</label>
+          </div>
+        </fieldset>
         </div>
-      </fieldset>
     </div>
     <form>
       <div class="row">
-        <label class="col-md-4 control-label" for="radios">Home Follow Up</label>
+        <div class="col">
+        <p>Home Follow Up</p>
+        </div>
+        <div class="col">
         <div class="form-check form-check-inline">
           <input
             class="form-check-input"
             type="radio"
             name="inlineRadioOptions"
             value="1065"
-            v-model="encounter.obs.homeFollowUp.child.value_coded"
+            v-model="clinicRegistration.obs.homeFollowUp.child.value_coded"
           />
           <label class="form-check-label" for="inlineRadio1">Yes</label>
         </div>
@@ -44,22 +51,26 @@
             type="radio"
             name="inlineRadioOptions"
             value="1066"
-            v-model="encounter.obs.homeFollowUp.child.value_coded"
+            v-model="clinicRegistration.obs.homeFollowUp.child.value_coded"
           />
           <label class="form-check-label" for="inlineRadio2">No</label>
         </div>
       </div>
+      </div>
     </form>
     <form>
       <div class="row">
-        <label class="col-md-4 control-label" for="radios">Ever Recieved ART</label>
+        <div class="col">
+        <p>Ever Recieved ART</p>
+        </div>
+        <div class="col">
         <div class="form-check form-check-inline">
           <input
             class="form-check-input"
             type="radio"
             name="inlineRadioOptions"
             value="1065"
-            v-model="encounter.obs.everReceivedART.value_coded"
+            v-model="clinicRegistration.obs.everReceivedART.value_coded"
           />
           <label class="form-check-label" for="inlineRadio1">Yes</label>
         </div>
@@ -69,47 +80,40 @@
             type="radio"
             name="inlineRadioOptions"
             value="1066"
-            v-model="encounter.obs.everReceivedART.value_coded"
+            v-model="clinicRegistration.obs.everReceivedART.value_coded"
           />
           <label class="form-check-label" for="inlineRadio2">No</label>
+        </div>
         </div>
       </div>
     </form>
 
     <div class="form-group">
       <label for="exampleFormControlSelect1">Confirmatory Test</label>
-      <select class="form-control" v-model="encounter.obs.confirmatoryTest.value_coded">
-        <option value="1040">Rapid Antibody Test</option>
-        <option value="844">DNA PCR</option>
-        <option value="1118">Not Done</option>
-      </select>
+        <v-select :options="options" v-model="clinicRegistration.obs.confirmatoryTest.value_coded" :reduce="option => option.value"></v-select>
     </div>
     <div class="form-group">
       <label for="exampleFormControlSelect1">Test Location</label>
-      <!-- <select class="form-control" v-model="encounter.obs.testLocation"> -->
       <v-select :options="locations" @search="getlocations" @input="getVal"></v-select>
-      <!-- </select> -->
     </div>
-    <div class="form-group">
-      <label for="exampleFormControlSelect1">Test Date</label>
-      <input type="date" name v-model="encounter.obs.testDate.value_datetime" />
-    </div>
-    <div class="form-group">
-      <label for="exampleFormControlSelect1">ARV Last Taken</label>
-      <input type="date" name v-model="encounter.obs.dateARTLastTaken.value_datetime" />
-    </div>
-    <div class="form-group">
-      <label for="exampleFormControlSelect1">ARV Start Date</label>
-      <input type="date" name v-model="encounter.obs.dateARTStarted.value_datetime" />
-    </div>
-    <div class="form-group">
-      <label for="exampleFormControlSelect1">ARV Start Location</label>
-      <!-- <select class="form-control" v-model="encounter.obs.testLocation"> -->
-      <v-select :options="locations" @search="getlocations" @input="getLoc"></v-select>
-      <!-- </select> -->
-    </div>
-    <button type="button" class="btn btn-primary" @click="createEncounters">save</button>
-    <vitals v-on:getStuff="getStuff"></vitals>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="height">Test Date</span>
+  </div>
+    <input type="date" class="form-control" name v-model="clinicRegistration.obs.testDate.value_datetime" />
+</div>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="height">ARV Last Taken</span>
+  </div>
+    <input type="date" class="form-control" name v-model="clinicRegistration.obs.dateARTLastTaken.value_datetime" />
+</div>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="height">ARV Start Date</span>
+  </div>
+          <input type="date" class="form-control" name v-model="clinicRegistration.obs.dateARTStarted.value_datetime" />
+</div>
   </div>
 </template>
 
@@ -122,12 +126,24 @@ import vitals from "@/components/encounters/vitals.vue";
 export default {
   components: {
     "v-select": VueSelect,
-    vitals: vitals
   },
   data: function() {
     return {
-      encounters: [],
-      encounter: {
+        options: [
+          {
+            label: "Rapid Antibody Test",
+            value: 1040
+          },
+          {
+            label: "DNA PCR",
+            value: 844
+          },
+          {
+            label: "Not Done",
+            value: 1118
+          },
+        ],
+      clinicRegistration: {
         encounter_id: 9,
         obs: {
           phoneFollowUp: {
@@ -182,32 +198,7 @@ export default {
     };
   },
   methods: {
-    createEncounters: function() {
-      this.encounters.push(this.encounter);
-      this.encounters.forEach(enc => {
-        this.saveEncounter(enc);
-      });
-    },
-    getExpected: function(element) {
-      let expected = [
-        "value_group_id",
-        "value_boolean",
-        "value_coded",
-        "value_coded_name_id",
-        "value_drug",
-        "value_datetime",
-        "value_numeric",
-        "value_modifier",
-        "value_text"
-      ];
-      let key = "";
-      Object.keys(element).filter(function(elem) {
-        if (expected.includes(elem)) {
-          key = elem;
-        }
-      });
-      return key;
-    },
+    
 
     getlocations: async function(val) {
       this.locations = [];
@@ -223,55 +214,23 @@ export default {
         });
       });
     },
-    saveEncounter: async function(encounterOb) {
-      let observations = [];
-      Object.keys(encounterOb.obs).forEach(element => {
-        observations.push(encounterOb.obs[element]);
-      });
-      const personId = this.$route.params.id;
-      // const visitID = window.sessionStorage.visit_id
-      const encounter = await EncounterService.createEncounter(
-        personId,
-        encounterOb.encounter_id
-      );
-      this.successfulOperation = true;
-      if (encounter.status === 201 || encounter.status === 200) {
-        let encounterID = encounter.encounter_id;
-        let f = {
-          encounter_id: encounterID,
-          observations: observations
-        };
-        const response = await ApiClient.post("observations", f);
-        if (response.status === 201 || response.status === 200) {
-          this.success = true;
-          this.fail = false;
-          this.postResponse = "Appointment has been set.";
-          this.$router.go(0);
-        } else {
-          this.success = false;
-          this.fail = true;
-          this.postResponse = "Appointment could not be set.";
-        }
-      } else {
-        this.success = false;
-        this.fail = true;
-        this.postResponse = "Appointment could not be set.";
-      }
-    },
+
     getVal(val) {
-      this.encounter.obs.testLocation.value_text = val.label;
-      this.encounter.obs.testLocation.location_id = val.location_id;
+      this.clinicRegistration.obs.testLocation.value_text = val.label;
+      this.clinicRegistration.obs.testLocation.location_id = val.location_id;
     },
     getLoc(val) {
-      this.encounter.obs.ARTStartLocation.value_text = val.label;
-      this.encounter.obs.ARTStartLocation.location_id = val.location_id;
+      this.clinicRegistration.obs.ARTStartLocation.value_text = val.label;
+      this.clinicRegistration.obs.ARTStartLocation.location_id = val.location_id;
     },
     getStuff(val) {
       this.encounters.push(val);
+    },
+    saveEncounter() {
+      this.$emit('addEncounter',({clinicRegistration: this.clinicRegistration}));
     }
   },
   mounted() {
-    this.getlocations();
   }
 };
 </script>
