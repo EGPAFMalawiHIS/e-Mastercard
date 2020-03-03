@@ -17,10 +17,6 @@ data: function() {
         value_datetime: null,
         concept_id: 5096
       },
-    //   height: {
-    //     value_numeric: null,
-    //     concept_id: 5089
-    //   }
     }
 },
 methods: {
@@ -30,7 +26,6 @@ methods: {
         encounter_id: 7,
         obs: {
           date: this.date,
-        //   height: this.height
         }
       }
     }

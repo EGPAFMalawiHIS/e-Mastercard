@@ -4,6 +4,7 @@
     <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>      
     <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
     <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
+    <!-- <staging/> -->
     <button type="button" class="btn btn-primary" @click="createEncounters">save</button>
   </div>
 </template>
@@ -12,6 +13,7 @@
 import vitals from '@/components/encounters/vitals.vue'
 import clinicRegistration from '@/components/encounters/clinicRegistration.vue'
 import reception from '@/components/encounters/reception.vue';
+import staging from '@/components/encounters/staging.vue';
 import appointment from '@/components/encounters/appointment.vue';
 import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
@@ -26,7 +28,8 @@ export default {
         "vitals": vitals,
         "clinic-registration": clinicRegistration,
         "reception": reception,
-        "appointment": appointment
+        "appointment": appointment,
+        "staging": staging
     },
     methods: {
         addEncounter(encounterData) {
