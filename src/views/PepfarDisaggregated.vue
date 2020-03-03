@@ -56,9 +56,6 @@ require("@/assets/datatable/js/buttons.html5.min.js");
 require("@/assets/datatable/js/buttons.print.min.js");
 
 
-
-
-
 export default {
   name: "reports",
   components: {
@@ -66,7 +63,10 @@ export default {
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
   },methods: {
-    fetchDates: async function(dates) {
+    fetchDates: function(dates) {
+      this.startDate = dates[0];
+      this.endDate = dates[1];
+      this.initializeReport();
     },
     initDataTable(){
       this.dTable = jQuery("#cohort-clients").dataTable({
@@ -153,6 +153,123 @@ export default {
         }
       }
       setTimeout(() => this.initDataTable(), 300);
+    },
+    initializeReport: async function() {
+      this.report_title = "Appointment missed";
+      let url = 'cohort_disaggregated';
+      url += "?date=" + moment().format('YYYY-MM-DD');
+      url += "&quarter=pepfar";
+      url += "&age_group=" + this.ageGroups[0];
+      url += "&rebuild_outcome=" + this.rebuildOutcome;
+      url += "&initialize=false";
+      url += "&start_date=" + this.startDate;
+      url += "&end_date=" + this.endDate;
+      url += '&program_id=1';
+      
+      const response = await ApiClient.get(url, {}, {});
+
+      if (response.status === 200) {
+        //response.json().then((data) => this.checkResult(data) );
+        this.rebuildOutcome = false;
+        response.json().then((data) =>  setTimeout(() => this.addData(data), 5000) );
+      }else{
+        //setTimeout(() => this.fetchData(), 5000);
+      }
+
+    },
+    addData(data) {
+      let rows = this.$refs.tableBody.children;
+      let female_row;
+      let male_row;
+
+      for(let i = 0 ; i < rows.length; i++){
+        let tds = rows[i].children;
+        for(let j = 0; j < tds.length; j++){
+           if(tds[j].innerHTML == this.ageGroups[0]){
+             tds[2].innerHTML == 'Female' ? female_row = rows[i] : male_row = rows[i];
+           } 
+        }
+      }
+
+      for(let age_group in data){
+        let gender = data[age_group];
+        for(let sex in gender){
+           let e = (sex == 'F' ?  female_row : male_row);
+           let row_data = data[age_group][sex];
+           e.children[3].innerHTML = row_data.tx_new;
+           e.children[4].innerHTML = row_data.tx_curr;
+           this.screenedTB.push( [e.children[6], sex, age_group] );
+           this.givenIPT.push( [e.children[5], sex, age_group] );
+        }
+      }  
+
+      if(this.ageGroups.length > 0)
+        this.ageGroups.shift();
+
+      if(this.ageGroups.length > 0)
+        this.initializeReport(); 
+
+      if(this.ageGroups.length < 1)
+        this.addTBscreenedData();
+
+    },
+    addTBscreenedData: async function() {
+      let age_group = this.screenedTB[0][2];
+      let gender  = this.screenedTB[0][1];
+      let el = this.screenedTB[0][0];
+      
+      let url = 'screened_for_tb';
+      url += "?date=" + moment().format('YYYY-MM-DD');
+      url += "&outcome_table=temp_pepfar_patient_outcomes";
+      url += "&age_group=" + age_group;
+      url += "&gender=" + gender;
+      url += "&start_date=" + this.startDate;
+      url += "&end_date=" + this.endDate;
+      url += '&program_id=1';
+     
+      const response = await ApiClient.get(url, {}, {});
+
+      if (response.status === 200) {
+        //response.json().then((data) => this.checkResult(data) );
+        this.screenedTB.shift();
+        response.json().then((data) =>  el.innerHTML = data.length );
+        if(this.screenedTB.length < 1) {
+           this.addGivenIPTdata();
+        }else{
+          setTimeout(() => this.addTBscreenedData(), 500);
+        }
+      }else{
+        //setTimeout(() => this.fetchData(), 5000);
+      }
+    },
+    addGivenIPTdata: async function() {
+      let age_group = this.givenIPT[0][2];
+      let gender  = this.givenIPT[0][1];
+      let el = this.givenIPT[0][0];
+      
+      let url = 'clients_given_ipt';
+      url += "?date=" + moment().format('YYYY-MM-DD');
+      url += "&outcome_table=temp_pepfar_patient_outcomes";
+      url += "&age_group=" + age_group;
+      url += "&gender=" + gender;
+      url += "&start_date=" + this.startDate;
+      url += "&end_date=" + this.endDate;
+      url += '&program_id=1';
+     
+      const response = await ApiClient.get(url, {}, {});
+
+      if (response.status === 200) {
+        //response.json().then((data) => this.checkResult(data) );
+        this.givenIPT.shift();
+        response.json().then((data) =>  el.innerHTML = data.length );
+        if(this.givenIPT.length < 1) {
+           //got to IPT 
+        }else{
+          setTimeout(() => this.addGivenIPTdata(), 500);
+        }
+      }else{
+        //setTimeout(() => this.fetchData(), 5000);
+      }
     }
   },
   mounted() {
@@ -163,6 +280,11 @@ export default {
         reportData: null,
         dTable: null,
         formatedData: [],
+        rebuildOutcome: true,
+        startDate: null,
+        endDate: null,
+        screenedTB: [],
+        givenIPT: [],
         ageGroups: [
           '0-5 months', '6-11 months','12-23 months',
           '2-4 years', '5-9 years',
