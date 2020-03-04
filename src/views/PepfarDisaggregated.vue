@@ -155,7 +155,7 @@ export default {
       setTimeout(() => this.initDataTable(), 300);
     },
     initializeReport: async function() {
-      this.report_title = "Appointment missed";
+      this.report_title = "PEPFAR Disaggregated report";
       let url = 'cohort_disaggregated';
       url += "?date=" + moment().format('YYYY-MM-DD');
       url += "&quarter=pepfar";
@@ -200,6 +200,15 @@ export default {
            e.children[4].innerHTML = row_data.tx_curr;
            this.screenedTB.push( [e.children[6], sex, age_group] );
            this.givenIPT.push( [e.children[5], sex, age_group] );
+
+           if(sex == 'M') {
+             this.totalMales[0] += row_data.tx_new;
+             this.totalMales[1] += row_data.tx_curr;
+           }else{
+             this.totalFemales[0] += row_data.tx_new;
+             this.totalFemales[1] += row_data.tx_curr;
+           }
+
         }
       }  
 
@@ -232,7 +241,8 @@ export default {
       if (response.status === 200) {
         //response.json().then((data) => this.checkResult(data) );
         this.screenedTB.shift();
-        response.json().then((data) =>  el.innerHTML = data.length );
+        response.json().then((data) =>  this.TBscreened(el, gender, data) );
+
         if(this.screenedTB.length < 1) {
            this.addGivenIPTdata();
         }else{
@@ -261,21 +271,150 @@ export default {
       if (response.status === 200) {
         //response.json().then((data) => this.checkResult(data) );
         this.givenIPT.shift();
-        response.json().then((data) =>  el.innerHTML = data.length );
+        response.json().then((data) =>  this.iptGiven(el, gender, data) );
+
         if(this.givenIPT.length < 1) {
-           //got to IPT 
+           //Go to All males();
+           this.allMales();
         }else{
           setTimeout(() => this.addGivenIPTdata(), 500);
         }
       }else{
         //setTimeout(() => this.fetchData(), 5000);
       }
+    },
+    iptGiven(el, gender, data){
+      el.innerHTML = data.length;
+      if(gender == 'M') {
+        this.totalMales[2] += data.length;
+      }else{
+        this.totalFemales[2] += data.length;
+      }
+
+    },
+    TBscreened(el, gender, data){
+      el.innerHTML = data.length;
+
+      if(gender == 'M'){
+        this.totalMales[3] += data.length;
+      }else{
+        this.totalFemales[3] += data.length;
+      }
+    
+    },
+    allMales() {
+      this.dTable.fnAddData([ "31", "All", "Male", this.totalMales[0],
+        this.totalMales[1], this.totalMales[2], this.totalMales[3] ]);
+      
+      this.getAllFemale("Pregnant");
+    },
+    getAllFemale: async function(age_group) {
+      let url = 'cohort_disaggregated';
+      url += "?date=" + moment().format('YYYY-MM-DD');
+      url += "&outcome_table=temp_pepfar_patient_outcomes";
+      url += "&age_group=" + age_group;
+      url += "&start_date=" + this.startDate;
+      url += "&end_date=" + this.endDate;
+      url += '&program_id=1';
+      url += "&quarter=pepfar";
+      url += "&initialize=false";
+      url += "&rebuild_outcome=" + this.rebuildOutcome;
+     
+      const response = await ApiClient.get(url, {}, {});
+
+      if (response.status === 200) {
+        response.json().then((data) =>  this.addNewFemaleRow(age_group, data) );
+      }
+
+    },
+    addNewFemaleRow(age_group, data){
+      for(let age in data) {
+        let gender = data[age];
+        for(let sex in gender) {
+          let tx_new = data[age][sex].tx_new;
+          let tx_curr = data[age][sex].tx_curr;
+          let tx_screened_for_tb = data[age][sex].tx_screened_for_tb;
+          let tx_given_ipt = data[age][sex].tx_given_ipt;
+
+          if(age_group == 'Pregnant'){
+            let newRow = this.dTable.fnAddData([ "32", "All", "FP", tx_new,
+              tx_curr, tx_given_ipt, tx_screened_for_tb ]);
+
+            let oSettings = this.dTable.fnSettings();
+            let nTr = oSettings.aoData[ newRow[0] ].nTr;
+            this.fpRow = nTr;
+
+            this.getAllFemale('Breastfeeding');
+          } else {
+            let newRow = this.dTable.fnAddData([ "33", "All", "Fbf", tx_new,
+              tx_curr, tx_given_ipt, tx_screened_for_tb ]);
+            
+            let oSettings = this.dTable.fnSettings();
+            let nTr = oSettings.aoData[ newRow[0] ].nTr;
+
+            this.fbfRow = nTr;
+            this.loadFPdata("pregnant", 'screened_for_tb');
+          } 
+        }
+      }
+    },
+    loadFPdata: async function(age_group, urlPath){
+      let url = urlPath;
+      url += "?date=" + moment().format('YYYY-MM-DD');
+      url += "&start_date=" + this.startDate;
+      url += "&end_date=" + this.endDate;
+      url += "&gender=" + age_group;
+      url += "&age_group=" + age_group;
+      url += "&outcome_table=temp_pepfar_patient_outcomes";
+      url += '&program_id=1';
+     
+      const response = await ApiClient.get(url, {}, {});
+
+      if (response.status === 200 && age_group == 'pregnant' && urlPath == 'screened_for_tb') {
+        response.json().then((data) =>  this.assignValueTD(this.fpRow, data.length, 2) );
+        this.loadFPdata("breastfeeding", urlPath);
+      }else if(response.status === 200 && age_group == 'breastfeeding' && urlPath == 'screened_for_tb'){
+        response.json().then((data) =>  this.assignValueTD(this.fbfRow, data.length, 2) );
+        this.loadFPdata("pregnant", 'clients_given_ipt');
+      }else if(response.status === 200 && age_group == 'pregnant'){
+        response.json().then((data) =>  this.assignValueTD(this.fpRow, data.length, 1) );
+        this.loadFPdata("breastfeeding", urlPath);
+      }else if(response.status === 200 && age_group == 'breastfeeding'){
+        response.json().then((data) =>  this.assignValueTD(this.fbfRow, data.length, 1) );
+        setTimeout(() => this.addAllFemaleRow(), 5000);
+      }
+    },
+    assignValueTD(el, count, rowNum){
+      if(rowNum == 1){
+        console.log(jQuery('td', el)[5].innerHTML = count);
+      }else{
+        console.log(jQuery('td', el)[6].innerHTML = count);
+      }
+    },addAllFemaleRow(){
+      let rows = this.$refs.tableBody.children;
+
+      for(let i = 0 ; i < rows.length; i++){
+        let td = rows[i].children[0];
+        let tds = rows[i].children;
+         if(td.innerHTML == "32" || td.innerHTML == "33"){
+           this.totalFemales[0] -= parseInt(tds[3].innerHTML);
+           this.totalFemales[1] -= parseInt(tds[4].innerHTML);
+           this.totalFemales[2] -= parseInt(tds[5].innerHTML);
+           this.totalFemales[3] -= parseInt(tds[6].innerHTML);
+        }
+      }
+      this.dTable.fnAddData([ "34", "All", "FNP", this.totalFemales[0],
+        this.totalFemales[1], this.totalFemales[2], this.totalFemales[3] ]);
+      
+      this.dTable.fnDestroy();
+      this.initDataTable();
     }
   },
   mounted() {
     setTimeout(() => this.addTableBody(), 300);
   }, data: function() {
-      return {
+    return {
+        reportData: null,
         report_title: 'PEPFAR Disaggregated ',
         reportData: null,
         dTable: null,
@@ -285,6 +424,10 @@ export default {
         endDate: null,
         screenedTB: [],
         givenIPT: [],
+        totalMales: [0, 0, 0, 0],
+        totalFemales: [0, 0, 0, 0],
+        fpRow: null,
+        fbfRow: null,
         ageGroups: [
           '0-5 months', '6-11 months','12-23 months',
           '2-4 years', '5-9 years',
