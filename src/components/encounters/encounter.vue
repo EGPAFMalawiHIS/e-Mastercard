@@ -1,10 +1,11 @@
 <template>
   <div>
-    <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration>
+    <!-- <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration>
     <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>      
     <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
-    <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
+    <reception ref="reception" v-on:addEncounter="addEncounter"></reception> -->
     <!-- <staging/> -->
+    <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
     <button type="button" class="btn btn-primary" @click="createEncounters">save</button>
   </div>
 </template>
@@ -15,6 +16,7 @@ import clinicRegistration from '@/components/encounters/clinicRegistration.vue'
 import reception from '@/components/encounters/reception.vue';
 import staging from '@/components/encounters/staging.vue';
 import appointment from '@/components/encounters/appointment.vue';
+import consultation from '@/components/encounters/consultation.vue';
 import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
 import { isMoment } from 'moment';
@@ -29,7 +31,8 @@ export default {
         "clinic-registration": clinicRegistration,
         "reception": reception,
         "appointment": appointment,
-        "staging": staging
+        "staging": staging,
+        "consultation": consultation
     },
     methods: {
         addEncounter(encounterData) {
