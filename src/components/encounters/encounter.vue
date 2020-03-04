@@ -5,7 +5,8 @@
     <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
     <reception ref="reception" v-on:addEncounter="addEncounter"></reception> -->
     <!-- <staging/> -->
-    <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
+    <!-- <consultation ref="consultation" v-on:addEncounter="addEncounter"/> -->
+    <prescription />
     <button type="button" class="btn btn-primary" @click="createEncounters">save</button>
   </div>
 </template>
@@ -17,6 +18,7 @@ import reception from '@/components/encounters/reception.vue';
 import staging from '@/components/encounters/staging.vue';
 import appointment from '@/components/encounters/appointment.vue';
 import consultation from '@/components/encounters/consultation.vue';
+import prescription from '@/components/encounters/prescription.vue';
 import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
 import { isMoment } from 'moment';
@@ -32,7 +34,8 @@ export default {
         "reception": reception,
         "appointment": appointment,
         "staging": staging,
-        "consultation": consultation
+        "consultation": consultation,
+        "prescription": prescription
     },
     methods: {
         addEncounter(encounterData) {

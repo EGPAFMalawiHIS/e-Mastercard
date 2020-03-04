@@ -188,7 +188,6 @@
       </div>
     </form>
     <div class="container-fluid">
-      <p></p>
       <div class="form-check form-check-inline">
         <label class="form-check-label" for="inlineCheckbox1">Has TB Associated Symptoms?</label>
         <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="true" v-model="hasTBSymps"/>
@@ -231,6 +230,30 @@
 
       </div>
     </div>
+    <br>
+    <div class="container-fluid">
+
+      <p>Prescribe Drugs</p>
+      <div class="row" >
+        <div
+          class="col-md-4"
+          v-for="(drug, index) in Object.keys(drugs)"
+          :key="index"
+        >
+          <div class="form-check">
+            <label class="form-check-label">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                :value="drugs[drug]"
+                v-model="drugsToPrescribe"
+              />
+              {{drug}}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -265,6 +288,11 @@ export default {
         "TB suspected": 7455,
         "Confirmed TB NOT on treatment": 7456
       },
+      drugs: {
+        "ARVs": 1085,
+        "CPT": 916,
+        "IPT": 656
+      },
       tbSymptoms: {
         "cough of any duration": 8261,
         fever: 5945,
@@ -297,6 +325,7 @@ export default {
       sides: [],
       otherSides: [],
       tbSymps: [],
+      drugsToPrescribe: [],
       onFP: false,
       prescribeFP: false,
       hasSE: false,
@@ -370,7 +399,12 @@ export default {
           }
         };
       });
-      // console.log(encounterObject);
+     this.drugsToPrescribe.forEach(el => {
+        encounterObject.consultation.obs[el] = {
+          concept_id: 1282,
+          value_coded: el,
+        };
+      });
       this.$emit("addEncounter", encounterObject);
     },
     getCoded: function(parentArray, val) {
