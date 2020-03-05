@@ -64,11 +64,11 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     fetchDates: async function(dates) {
-      this.report_title = 'MoH Defaulter list ';
+      this.report_title = 'PEPFAR Defaulter list ';
       this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
       this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
       let url_path = '/defaulter_list?start_date=' + dates[0] + "&date=" + dates[1];
-      url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=false"; 
+      url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=true"; 
       const response = await ApiClient.get(url_path, {}, {});
 
       if (response.status === 200) {
@@ -147,7 +147,7 @@ export default {
     setTimeout(() => this.initDataTable(), 300);
   }, data: function() {
       return {
-        report_title: 'Defaulted clients ',
+        report_title: 'PEPFAR Defaulted clients ',
         reportData: null,
         dTable: null,
         formatedData: []
