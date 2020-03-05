@@ -7,7 +7,7 @@
         {{quarter}}
       </option>
     </select>
-    <button class="btn btn-primary" @click="selectQuarter(false)" id="submit-btn" ref="myid">Cached report (if available)</button>
+    <button class="btn btn-primary" @click="selectQuarter(false)" id="submit-btn" ref="myid">Archived report (if available)</button>
     <button class="btn btn-danger" @click="selectQuarter(true)" id="generate-btn" ref="myid">Fresh report</button>
 
   </div>
