@@ -181,17 +181,18 @@
                 ></v-select>
               </div>
             </div>
+
             <input
               type="button"
               name="next"
               class="btn btn-primary personal action-button"
               value="Next Step"
               @click="sampleClicked"
-              style="margin: 95px"
+              style="margin-top: 95px"
             />
             <div
               class="errorTxt"
-              style="margin-top: 40px; height: 50px; text-align: center; font-weight: bold"
+              style="margin-top: 10px; text-align: center; font-weight: bold"
             ></div>
           </form>
 
@@ -1596,7 +1597,6 @@ select.list-dt:focus {
 }
 
 #progressbar {
-  margin-bottom: 30px;
   overflow: hidden;
   color: lightgrey;
 }
@@ -1673,7 +1673,7 @@ select.list-dt:focus {
 }
 
 .form-template {
-  height: 670px;
+  height: 690px;
 }
 
 .input-label {
