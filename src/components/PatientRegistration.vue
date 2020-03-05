@@ -462,8 +462,8 @@
                     </tr>
                     <tr>
                       <th scope="row">Birthdate</th>
-                      <td>{{estimateBirthdate(estimatedAge)}}</td>
-                      <td>{{guardianDateOfBirth}}</td>
+                      <td>{{dateOfBirth || estimateBirthdate(estimatedAge)}}</td>
+                      <td>{{guardianDateOfBirth || estimateBirthdate(guardianEstimatedAge)}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Gender</th>
@@ -1162,7 +1162,7 @@ export default {
         current_village: this.guardianHomeCurrentAddress
           ? this.guardianHomeVillage
           : this.guardianHomeCurrentAddress,
-        landmark: this.landmark.code,
+        landmark: this.guardianLandMark.code,
         cell_phone_number: this.guardianPhoneNumber,
         occupation: null,
         relationship: this.registerGuardian ? "Yes" : "No",
