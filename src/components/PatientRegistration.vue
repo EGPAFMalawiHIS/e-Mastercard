@@ -1415,7 +1415,7 @@ export default {
           };
 
           // validate if checkbox checked to register
-          if (detilsValid()) {
+          if (detilsValid() || !$("#register-guardian").is(":checked")) {
             $(".guardianError").html("");
             current_fs = $(this).parent();
             next_fs = $(this)
