@@ -10,7 +10,6 @@
             <input
               class="form-check-input"
               type="radio"
-              name="inlineRadioOptions"
               value="1065"
               v-model="patient.value_coded"
             />
@@ -20,7 +19,6 @@
             <input
               class="form-check-input"
               type="radio"
-              name="inlineRadioOptions"
               value="1066"
               v-model="patient.value_coded"
             />

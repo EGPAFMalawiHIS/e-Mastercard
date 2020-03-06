@@ -94,7 +94,7 @@ export default {
           }
         })
       })
-      this.$router.go(0);
+      // this.$router.go(0);
     },
     removeEncounter: async function(encounter) {
       let response = await ApiClient.remove('encounters/'+encounter);
@@ -126,7 +126,7 @@ export default {
       return await observations.json();
     },
     getCurrentPatientInfo: async function(element) {
-      let url = `programs/1/patients/${this.$route.params.id}?master_card_data?date=${element.visitDate}`;
+      let url = `programs/1/patients/${this.$route.params.id}?date=${element.visitDate}`;
       let observations = await ApiClient.get(url);
       return await observations.json();
     },

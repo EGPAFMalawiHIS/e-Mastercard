@@ -10,7 +10,6 @@
             <input
               class="form-check-input"
               type="radio"
-              name="inlineRadioOptions"
               value="1065"
               v-model="clinicRegistration.obs.phoneFollowUp.child.value_coded"
             />
@@ -20,7 +19,6 @@
             <input
               class="form-check-input"
               type="radio"
-              name="inlineRadioOptions"
               value="1066"
               v-model="clinicRegistration.obs.phoneFollowUp.child.value_coded"
             />
@@ -39,7 +37,6 @@
           <input
             class="form-check-input"
             type="radio"
-            name="inlineRadioOptions"
             value="1065"
             v-model="clinicRegistration.obs.homeFollowUp.child.value_coded"
           />
@@ -49,7 +46,6 @@
           <input
             class="form-check-input"
             type="radio"
-            name="inlineRadioOptions"
             value="1066"
             v-model="clinicRegistration.obs.homeFollowUp.child.value_coded"
           />
@@ -68,7 +64,6 @@
           <input
             class="form-check-input"
             type="radio"
-            name="inlineRadioOptions"
             value="1065"
             v-model="clinicRegistration.obs.everReceivedART.value_coded"
           />
@@ -78,7 +73,6 @@
           <input
             class="form-check-input"
             type="radio"
-            name="inlineRadioOptions"
             value="1066"
             v-model="clinicRegistration.obs.everReceivedART.value_coded"
           />

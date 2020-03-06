@@ -110,7 +110,6 @@
             <input
               class="form-check-input"
               type="radio"
-              name="inlineRadioOptions"
               value="1065"
               v-model="pregnant.value_coded"
             />
@@ -120,7 +119,6 @@
             <input
               class="form-check-input"
               type="radio"
-              name="inlineRadioOptions"
               value="1066"
               v-model="pregnant.value_coded"
             />
@@ -139,7 +137,6 @@
             <input
               class="form-check-input"
               type="radio"
-              name="inlineRadioOptions"
               value="1065"
               v-model="breastFeeding.value_coded"
             />
@@ -149,7 +146,6 @@
             <input
               class="form-check-input"
               type="radio"
-              name="inlineRadioOptions"
               value="1066"
               v-model="breastFeeding.value_coded"
             />
@@ -168,7 +164,6 @@
             <input
               class="form-check-input"
               type="radio"
-              name="inlineRadioOptions"
               value="1065"
               v-model="onTb.value_coded"
             />
@@ -178,7 +173,6 @@
             <input
               class="form-check-input"
               type="radio"
-              name="inlineRadioOptions"
               value="1066"
               v-model="onTb.value_coded"
             />
@@ -231,7 +225,7 @@
       </div>
     </div>
     <br>
-    <div class="container-fluid">
+    <!-- <div class="container-fluid">
 
       <p>Prescribe Drugs</p>
       <div class="row" >
@@ -253,7 +247,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

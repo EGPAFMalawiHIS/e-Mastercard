@@ -1,12 +1,12 @@
 <template>
   <div>
-    <!-- <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration>
-    <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
-    <reception ref="reception" v-on:addEncounter="addEncounter"></reception> -->
-    <!-- <staging/> -->
-    <!-- <consultation ref="consultation" v-on:addEncounter="addEncounter"/> -->
+    <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration>
     <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>      
-    <!-- <prescription ref="prescription" v-on:addEncounter="addEncounter"/> -->
+    <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
+    <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
+    <!-- <staging/> -->
+    <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
+    <prescription v-on:addEncounter="addEncounter" ref="prescription"/>
     <button type="button" class="btn btn-primary" @click="createEncounters">save</button>
   </div>
 </template>
@@ -46,15 +46,18 @@ export default {
         },
         saveEncounter: async function(encounterOb) {
             let observations = [];
-            let encounterObject = {};
-            console.log(encounterOb);
-            if(Object.keys(encounterOb).includes("obs")) {
+            let enc = {
+                url: "observations"
+            };
+              if(Object.keys(encounterOb).includes("obs")) {
                 Object.keys(encounterOb.obs).forEach(element => {
                     observations.push(encounterOb.obs[element]);
                 });
-                encounterObject.observations = observations;
+                enc.observations = observations;
+                
             }else if(Object.keys(encounterOb).includes("drug_orders")) {
-                encounterObject.drug_orders = encounterOb.drug_orders;
+                enc.drug_orders = encounterOb.drug_orders;
+                enc.url = "drug_orders"
             }
             
             const personId = this.$route.params.id;
@@ -65,8 +68,8 @@ export default {
             this.successfulOperation = true;
             if (encounter.status === 201 || encounter.status === 200) {
                 let encounterID = encounter.encounter_id;
-                encounterObject.encounter_id = encounterID; 
-                const response = await ApiClient.post("observations", encounterObject);
+                enc.encounter_id = encounterID;
+                const response = await ApiClient.post(enc.url, enc);
                 if (response.status === 201 || response.status === 200) {
                 this.success = true;
                 this.fail = false;
