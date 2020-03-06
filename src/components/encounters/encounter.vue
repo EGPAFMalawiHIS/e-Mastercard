@@ -5,6 +5,8 @@
     <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
     <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
     <!-- <staging/> -->
+    <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
+    <prescription v-on:addEncounter="addEncounter" ref="prescription"/>
     <button type="button" class="btn btn-primary" @click="createEncounters">save</button>
   </div>
 </template>
@@ -15,6 +17,8 @@ import clinicRegistration from '@/components/encounters/clinicRegistration.vue'
 import reception from '@/components/encounters/reception.vue';
 import staging from '@/components/encounters/staging.vue';
 import appointment from '@/components/encounters/appointment.vue';
+import consultation from '@/components/encounters/consultation.vue';
+import prescription from '@/components/encounters/prescription.vue';
 import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
 import { isMoment } from 'moment';
@@ -29,7 +33,9 @@ export default {
         "clinic-registration": clinicRegistration,
         "reception": reception,
         "appointment": appointment,
-        "staging": staging
+        "staging": staging,
+        "consultation": consultation,
+        "prescription": prescription
     },
     methods: {
         addEncounter(encounterData) {
@@ -40,9 +46,20 @@ export default {
         },
         saveEncounter: async function(encounterOb) {
             let observations = [];
-            Object.keys(encounterOb.obs).forEach(element => {
-                observations.push(encounterOb.obs[element]);
-            });
+            let enc = {
+                url: "observations"
+            };
+              if(Object.keys(encounterOb).includes("obs")) {
+                Object.keys(encounterOb.obs).forEach(element => {
+                    observations.push(encounterOb.obs[element]);
+                });
+                enc.observations = observations;
+                
+            }else if(Object.keys(encounterOb).includes("drug_orders")) {
+                enc.drug_orders = encounterOb.drug_orders;
+                enc.url = "drug_orders"
+            }
+            
             const personId = this.$route.params.id;
             const encounter = await EncounterService.createEncounter(
                 personId,
@@ -51,11 +68,8 @@ export default {
             this.successfulOperation = true;
             if (encounter.status === 201 || encounter.status === 200) {
                 let encounterID = encounter.encounter_id;
-                let f = {
-                encounter_id: encounterID,
-                observations: observations
-                };
-                const response = await ApiClient.post("observations", f);
+                enc.encounter_id = encounterID;
+                const response = await ApiClient.post(enc.url, enc);
                 if (response.status === 201 || response.status === 200) {
                 this.success = true;
                 this.fail = false;
