@@ -117,6 +117,11 @@ const routes = [
     path: "/regimen_switch",
     name: "RegimenSwitch",
     component: () => import("../views/RegimenSwitch.vue")
+  },
+  {
+    path: "/pepfar_defaulter_list",
+    name: "PepfarDefaulterList",
+    component: () => import("../views/PepfarDefaulterList.vue")
   }
 ]
 

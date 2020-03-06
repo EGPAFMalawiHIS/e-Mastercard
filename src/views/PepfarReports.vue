@@ -21,7 +21,7 @@
             </div>
 
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/pepfar_disaggregated')">
+              <div class="btn-container" @click="redirect('/pepfar_defaulter_list')">
                 <div class="card">
                   <img src="../assets/report-icons/defaulter-list.png" class="btn-icon" />
                   <p>Defaulter list</p>
@@ -30,7 +30,7 @@
             </div>
 
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/pepfar_disaggregated')">
+              <div class="btn-container" @click="redirect('/art_refill_periods')">
                 <div class="card">
                   <img src="../assets/report-icons/px.png" class="btn-icon" />
                   <p>ARVs refill periods</p>
