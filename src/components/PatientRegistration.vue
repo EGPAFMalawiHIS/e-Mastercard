@@ -458,47 +458,47 @@
                     <tr>
                       <th scope="row">Name</th>
                       <td>{{firstname}} {{middlename}} {{lastname}}</td>
-                      <td>{{guardianFirstname}} {{guardianMiddlename}} {{guardianLastname}}</td>
+                      <td>{{registerGuardian ? (guardianFirstname + " " + guardianMiddlename + " " + guardianLastname) : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Birthdate</th>
                       <td>{{dateOfBirth || estimateBirthdate(estimatedAge)}}</td>
-                      <td>{{guardianDateOfBirth || estimateBirthdate(guardianEstimatedAge)}}</td>
+                      <td>{{registerGuardian ? guardianDateOfBirth || estimateBirthdate(guardianEstimatedAge) : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Gender</th>
                       <td>{{gender}}</td>
-                      <td>{{guardianGender}}</td>
+                      <td>{{registerGuardian ? guardianGender : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Cellphone</th>
                       <td>{{phoneNumber}}</td>
-                      <td>{{guardianPhoneNumber}}</td>
+                      <td>{{registerGuardian ? guardianPhoneNumber : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Home Village</th>
                       <td>{{homeVillage.code}}</td>
-                      <td>{{guardianHomeVillage.code}}</td>
+                      <td>{{registerGuardian ? guardianHomeVillage.code : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Closest Landmaark</th>
                       <td>{{landmark.code}}</td>
-                      <td>{{guardianLandMark.code}}</td>
+                      <td>{{registerGuardian ? guardianLandMark.code : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Current Village</th>
                       <td>{{autoCompletedVillage.code}}</td>
-                      <td>{{guardianCurrentVillage.code}}</td>
+                      <td>{{registerGuardian ? guardianCurrentVillage.code : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Current Closest Landmark</th>
                       <td>{{autoCompletedLandMark.code}}</td>
-                      <td>{{guardianAutoCompletedLandMark.code}}</td>
+                      <td>{{registerGuardian ? guardianAutoCompletedLandMark.code : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Patient to Guardian Relationship</th>
-                      <td>{{patientGuardianRelationship.code}}</td>
-                      <td>{{patientGuardianRelationship.code}}</td>
+                      <td>{{registerGuardian ? patientGuardianRelationship.code : 'N/A'}}</td>
+                      <td>{{registerGuardian ? patientGuardianRelationship.code : 'N/A'}}</td>
                     </tr>
                   </tbody>
                 </table>
