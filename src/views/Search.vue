@@ -8,7 +8,7 @@
       <!-- Page Content -->
       <div id="page-content-wrapper">
         <top-nav />
-        <div class="container-fluid">
+        <div class="container-fluid" style="width: 40%; margin: auto; margin-top: 12px">
           <div class="input-group mb-3 rounded">
             <input
               class="form-control border-primary"
@@ -18,11 +18,11 @@
               v-model="searchText"
             />
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button" @click="searchPatients">search</button>
+              <button class="btn btn-outline-secondary" type="button" @click="searchPatients" style="margin-left: 10px">search</button>
             </div>
           </div>
 
-          <div class="justify-content-center">
+          <div class="justify-content-center" style="width: 80%; margin: auto; margin-left: 60px">
             <form class="form-inline">
               <div class="form-group">
                 <label for="gender">Gender:</label>
@@ -33,7 +33,7 @@
                   <option value="F">Female</option>
                 </select>
               </div>
-              <div class="form-group" style="margin-left: 10%;">
+              <div class="form-group" style="margin-left: 20px">
                 <input
                   type="checkbox"
                   name="ARV number"
@@ -42,6 +42,9 @@
                   v-model="arvNumber"
                 />
                 <label class="form-check-input" for="arvNumber">ARV Number</label>
+              </div>
+              <div class="form-group" style="margin-left: 20px">
+                <button type="button" class="btn btn-primary" @click="redirect('/patient_registration')">Add New Patient</button>
               </div>
             </form>
           </div>
@@ -152,6 +155,9 @@ export default {
         .json()
         .then(result => (this.sitePrefix = result.site_prefix));
       return;
+    },
+    redirect: function(url) {
+      this.$router.push(url);
     }
   },
   mounted() {
