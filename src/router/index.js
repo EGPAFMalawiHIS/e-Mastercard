@@ -202,7 +202,17 @@ const routes = [
     path: "/cleaning_tools/prescription_without_dispensation",
     name: "Prescription without dispensation",
     component: () => import("../views/cleaning_tools/prescription_without_dispensation.vue")
-  } 
+  }, 
+  {
+    path: "/users",
+    name: "ListUsers",
+    component: () => import("../views/Users/list.vue")
+  },
+  {
+    path: "/users/create",
+    name: "CreateUser",
+    component: () => import("../views/Users/create.vue")
+  },
 ]
 
 const router = new VueRouter({
