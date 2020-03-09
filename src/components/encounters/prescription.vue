@@ -123,10 +123,13 @@ export default {
           quantity: this.ARVquantity
         });
       });
-      consultationObs.prescribeIPT= {
+      if(this.prescribeARVs) {
+          consultationObs.prescribeARV= {
           concept_id : 1282,
           value_coded : 1085
         }
+      }
+      
       if(this.prescribeCPT) {
         this.CPTRegimens.forEach(element => {
           this.selectedDrugs.push({
