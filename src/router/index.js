@@ -122,7 +122,17 @@ const routes = [
     path: "/pepfar_defaulter_list",
     name: "PepfarDefaulterList",
     component: () => import("../views/PepfarDefaulterList.vue")
-  }
+  },
+  {
+    path: "/users",
+    name: "ListUsers",
+    component: () => import("../views/Users/list.vue")
+  },
+  {
+    path: "/users/create",
+    name: "CreateUser",
+    component: () => import("../views/Users/create.vue")
+  },
 ]
 
 const router = new VueRouter({
