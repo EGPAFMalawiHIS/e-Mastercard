@@ -49,19 +49,12 @@
         <input type="number" class="form-control" id="inputZip" v-model="IPTquantity" />
       </div>
     </div>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="height">Appointment Date</span>
-      </div>
-      <input type="date" class="form-control" name id v-model="nextAppointment" />
-    </div>
-
-    <!-- <button type="button" class="btn btn-primary" @click="getSelectedRegimen">dispense</button> -->
   </div>
 </template>
 
 <script>
 import ApiClient from "../../services/api_client";
+import EventBus from "../../services/event-bus.js";
 import moment from "moment";
 export default {
   data: function() {
@@ -77,16 +70,38 @@ export default {
       prescribeARVs: false,
       prescribeCPT: false,
       prescribeIPT: false,
+      weight: null,
+      CPTRegimens: [], 
+      IPTRegimens: [], 
 
     };
   },
   methods: {
     getRegimens: async function(val) {
       let patientID = this.$route.params.id;
-      await ApiClient.get(`/programs/1/regimens?weight=50&tb_dosage=true`).then(
+      await ApiClient.get(`/programs/1/regimens?weight=${this.weight}&tb_dosage=true`).then(
         res => {
           res.json().then(ret => {
             this.regimens = ret;
+          });
+        }
+      );
+    },
+    getCPT: async function() {
+      let patientID = this.$route.params.id;
+      await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=Cotrimoxazole`).then(
+        res => {
+          res.json().then(ret => {
+            this.CPTRegimens = ret;
+          });
+        }
+      );
+    },getIPT: async function() {
+      let patientID = this.$route.params.id;
+      await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=INH`).then(
+        res => {
+          res.json().then(ret => {
+            this.IPTRegimens = ret;
           });
         }
       );
@@ -95,26 +110,56 @@ export default {
       let selectedRegimens = [];
       this.selectedDrugs = [];
       let currentDrugs = this.regimens[this.selectedRegimen];
+      let consultationObs= {
+        
+      }
       currentDrugs.forEach(element => {
         this.selectedDrugs.push({
           drug_name: element.drug_name,
           drug_id: element.drug_id,
           units: element.units,
           am: element.am,
-          pm: element.pm
+          pm: element.pm,
+          quantity: this.ARVquantity
         });
       });
-      if(this.prescribeIPT) {
-
-        this.selectedDrugs.push({
-          drug_name: element.drug_name,
-          drug_id: element.drug_id,
-          units: element.units,
-          am: element.am,
-          pm: element.pm
+      consultationObs.prescribeIPT= {
+          concept_id : 1282,
+          value_coded : 1085
+        }
+      if(this.prescribeCPT) {
+        this.CPTRegimens.forEach(element => {
+          this.selectedDrugs.push({
+            drug_name: element.drug_name,
+            drug_id: element.drug_id,
+            units: element.units,
+            am: element.am,
+            pm: element.pm,
+            quantity: this.CPTquantity
+          });
         });
+        consultationObs.prescribeCPT= {
+          concept_id : 1282,
+          value_coded : 916
+        }
       }
-      for (var i = 0; i < this.selectedDrugs.length; i++) {
+      if(this.prescribeIPT) {
+        this.IPTRegimens.forEach(element => {
+          this.selectedDrugs.push({
+            drug_name: element.drug_name,
+            drug_id: element.drug_id,
+            units: element.units,
+            am: element.am,
+            pm: element.pm,
+            quantity: this.IPTquantity
+          });
+        });
+        consultationObs.prescribeIPT= {
+          concept_id :1282,
+          value_coded : 656
+        }
+      }
+      for (let i = 0; i < this.selectedDrugs.length; i++) {
         let morning_tabs = parseFloat(this.selectedDrugs[i]["am"]);
         let evening_tabs = parseFloat(this.selectedDrugs[i]["pm"]);
         let frequency = "ONCE A DAY (OD)";
@@ -147,32 +192,46 @@ export default {
           equivalent_daily_dose: equivalent_daily_dose,
           frequency: frequency,
           start_date: moment().format("YYYY-MM-DD"),
-          auto_expire_date: moment(this.nextAppointment).format("YYYY-MM-DD"),
+          auto_expire_date: moment().add((this.quantity/equivalent_daily_dose) + 2, 'days').format("YYYY-MM-DD"),
           instructions: instructions,
           units: this.selectedDrugs[i].units,
-          quantity: this.ARVquantity
+          quantity: this.selectedDrugs[i].quantity
         };
+        if(this.selectedDrugs[i].drug_name === "Cotrimoxazole (480mg tablet)") {
 
-        selectedRegimens.push(drug_order);
+        }else {
+
+          selectedRegimens.push(drug_order);
+        }
       }
-      // let drug_orders_params = { 
-      //   prescription: {
-      //     encounter_type_id: 25, 
-      //   }
-      // };
+  
     let enc = {
       prescription: {
         encounter_id: 25,
         drug_orders: selectedRegimens 
       }
     }
-    // console.log(drug_orders_params);
+    let enc2 = {
+      consultation: {
+        encounter_id: 53,
+        obs: consultationObs
+      }
+    }
+      console.log(enc2);
     this.$emit('addEncounter',  enc);
+    this.$emit('addEncounter',  enc2);
     },
     
   },
   mounted() {
     this.getRegimens();
+    let currentWeight = null;
+    EventBus.$on('set-weight', payload => {
+      this.weight = payload;
+      this.getRegimens();
+      this.getCPT();
+      this.getIPT();
+    });
   }
 };
 </script>
