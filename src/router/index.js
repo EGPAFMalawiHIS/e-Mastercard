@@ -122,6 +122,11 @@ const routes = [
     path: "/pepfar_defaulter_list",
     name: "PepfarDefaulterList",
     component: () => import("../views/PepfarDefaulterList.vue")
+  },
+  {
+    path: "/registration",
+    name: "registration",
+    component: () => import("../views/Registration.vue")
   }
 ]
 
