@@ -7,6 +7,7 @@
     <!-- <staging/> -->
     <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
     <prescription v-on:addEncounter="addEncounter" ref="prescription"/>
+    <!-- <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>       -->
     <button type="button" class="btn btn-primary" @click="createEncounters">save</button>
   </div>
 </template>
@@ -26,6 +27,7 @@ export default {
     data: function() {
         return {
             encounters: {},
+            numEnc: 0,
         }
     },
     components: {
@@ -40,7 +42,6 @@ export default {
     methods: {
         addEncounter(encounterData) {
             let key = Object.keys(encounterData)[0];
-            // console.log("here" + Object.keys(encounterData));    
             this.encounters[key] = encounterData[key];
             
         },
@@ -71,6 +72,10 @@ export default {
                 enc.encounter_id = encounterID;
                 const response = await ApiClient.post(enc.url, enc);
                 if (response.status === 201 || response.status === 200) {
+                this.numEnc++;
+                if(this.numEnc === Object.keys(this.encounters).length) {
+                    this.$router.go(0);
+                }
                 this.success = true;
                 this.fail = false;
                 this.postResponse = "Appointment has been set.";
@@ -96,9 +101,11 @@ export default {
             })
             // console.log()
             let keys = Object.keys(this.encounters);
+            // this.numEnc = this.keys.length;
             keys.forEach(enc => {
                 this.saveEncounter(this.encounters[enc]);
             });
+            
         },
         getExpected: function(element) {
             let expected = [
