@@ -6,9 +6,9 @@
             </div>
             <div class="col-md-8">
                 <div class="card-body">
-                    <h5 class="card-title">  {{full_name}}</h5>
-                    <p class="card-text">{{formatted_age}}</p>
-                    <p class="card-text">ARV Number: {{arvNumber}}</p>
+                    <h5 class="card-title" style="float: left">  {{full_name}}</h5>
+                    <p class="card-text" style="float: left">{{formatted_age}}</p>
+                    <p class="card-text" style="float: left">ARV Number: {{arvNumber}}</p>
                 </div>
             </div>
         </div>
