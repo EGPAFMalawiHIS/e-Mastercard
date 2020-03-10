@@ -1,117 +1,142 @@
 <template>
-  <div>
+  <div style="margin: auto; width: 95%">
+    <div class="row" style="margin: auto;">
+      <div class="col-md-12" style="background: rgba(137, 140, 145, 0.2); height: 37px ">
+        <div style="margin-top: 6px; float: left">
+          <span style="font-weight: bold;">Agrees to follow up?</span>
+          <div>
+            <label class="checkbox-label" style="margin-left: 50px">
+              <input type="checkbox" style="margin-left: 50px" />
+              <span class="checkbox-custom rectangular" style="margin-left: 188px; margin-top: 6px"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin: auto; margin-top: 15px">
+      <div class="col-md-12" style="background: rgba(137, 140, 145, 0.2); height: 37px ">
+        <div style="margin-top: 6px; float: left">
+          <span style="font-weight: bold;">Ever recieved ARVs for treatment or prophylaxis?</span>
+          <div>
+            <label class="checkbox-label" style="margin-left: 50px">
+              <input type="checkbox" style="margin-left: 50px" @click="everRecieved()" />
+              <span class="checkbox-custom rectangular" style="margin-left: 405px; margin-top: 6px"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if = "recievedTreatment" class="row" style="margin-top: 10px">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float: left; font-weight: bold">Year last taken ARVs</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <input
+            type="date"
+            class="form-control"
+            name
+            v-model="clinicRegistration.obs.dateARTLastTaken.value_datetime"
+          />
+        </div>
+      </div>
+    </div>
+    <div v-if = "recievedTreatment"  class="row" style="margin: auto">
+      <div class="col-md-12" style="background: rgba(137, 140, 145, 0.2); height: 37px ">
+        <div style="margin-top: 6px;float: left">
+          <span style="font-weight: bold;">Ever registered at an ART clinic?</span>
+          <div>
+            <label class="checkbox-label" style="margin-left: 50px">
+              <input type="checkbox" style="margin-left: 50px" />
+              <span class="checkbox-custom rectangular" style="margin-left: 280px; margin-top: 6px"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if = "recievedTreatment"  class="row" style="margin-top: 8px">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float: left; font-weight: bold">Location of ART Initiation</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <v-select :options="locations" @search="getlocations" @input="getLoc"></v-select>
+        </div>
+      </div>
+    </div>
+    <div v-if = "recievedTreatment"  class="row">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-4">
+            <label style="float: left; font-weight: bold">Year started ART</label>
+          </div>
+        </div>
+        <div class="row" style="float: left;">
+          <div class="col-md-12">
+            <span
+              style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
+            >Year started ART Unknown?</span>
+            <div>
+              <label class="checkbox-label" style="margin-left: 50px">
+                <input type="checkbox" style="margin-left: 50px" />
+                <span class="checkbox-custom rectangular" style="margin-left: 243px;"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <input
+            type="date"
+            class="form-control"
+            name
+            v-model="clinicRegistration.obs.dateARTLastTaken.value_datetime"
+          />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float: left; font-weight: bold">ART Number</label>
+          </div>
+        </div>
+        <div class="row" style="float: left;">
+          <div class="col-md-12">
+            <span
+              style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
+            >ARV Number Unknown?</span>
+            <div>
+              <label class="checkbox-label" style="margin-left: 50px">
+                <input type="checkbox" style="margin-left: 50px" />
+                <span class="checkbox-custom rectangular" style="margin-left: 215px;"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" name placeholder="ARV Number" />
+        </div>
+      </div>
+    </div>
     <div class="row">
-        <div class="col">
-        <p>Phone Follow Up</p>
-        </div>
-        <div class="col">
-        <fieldset>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              value="1065"
-              v-model="clinicRegistration.obs.phoneFollowUp.child.value_coded"
-            />
-            <label class="form-check-label" for="inlineRadio1">Yes</label>
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float: left; font-weight: bold">Confirmatory Test</label>
           </div>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              value="1066"
-              v-model="clinicRegistration.obs.phoneFollowUp.child.value_coded"
-            />
-            <label class="form-check-label" for="inlineRadio2">No</label>
-          </div>
-        </fieldset>
         </div>
-    </div>
-    <form>
-      <div class="row">
-        <div class="col">
-        <p>Home Follow Up</p>
-        </div>
-        <div class="col">
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            value="1065"
-            v-model="clinicRegistration.obs.homeFollowUp.child.value_coded"
-          />
-          <label class="form-check-label" for="inlineRadio1">Yes</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            value="1066"
-            v-model="clinicRegistration.obs.homeFollowUp.child.value_coded"
-          />
-          <label class="form-check-label" for="inlineRadio2">No</label>
+        <div class="form-group">
+          <v-select
+            :options="options"
+            v-model="clinicRegistration.obs.confirmatoryTest.value_coded"
+            :reduce="option => option.value"
+          ></v-select>
         </div>
       </div>
-      </div>
-    </form>
-    <form>
-      <div class="row">
-        <div class="col">
-        <p>Ever Recieved ART</p>
-        </div>
-        <div class="col">
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            value="1065"
-            v-model="clinicRegistration.obs.everReceivedART.value_coded"
-          />
-          <label class="form-check-label" for="inlineRadio1">Yes</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            value="1066"
-            v-model="clinicRegistration.obs.everReceivedART.value_coded"
-          />
-          <label class="form-check-label" for="inlineRadio2">No</label>
-        </div>
-        </div>
-      </div>
-    </form>
-
-    <div class="form-group">
-      <label for="exampleFormControlSelect1">Confirmatory Test</label>
-        <v-select :options="options" v-model="clinicRegistration.obs.confirmatoryTest.value_coded" :reduce="option => option.value"></v-select>
     </div>
-    <div class="form-group">
-      <label for="exampleFormControlSelect1">Test Location</label>
-      <v-select :options="locations" @search="getlocations" @input="getVal"></v-select>
-    </div>
-    <div class="form-group">
-      <label for="exampleFormControlSelect1">Start Location</label>
-      <v-select :options="locations" @search="getlocations" @input="getLoc"></v-select>
-    </div>
-<div class="input-group mb-3">
-  <div class="input-group-prepend">
-    <span class="input-group-text" id="height">Test Date</span>
-  </div>
-    <input type="date" class="form-control" name v-model="clinicRegistration.obs.testDate.value_datetime" />
-</div>
-<div class="input-group mb-3">
-  <div class="input-group-prepend">
-    <span class="input-group-text" id="height">ARV Last Taken</span>
-  </div>
-    <input type="date" class="form-control" name v-model="clinicRegistration.obs.dateARTLastTaken.value_datetime" />
-</div>
-<div class="input-group mb-3">
-  <div class="input-group-prepend">
-    <span class="input-group-text" id="height">ARV Start Date</span>
-  </div>
-          <input type="date" class="form-control" name v-model="clinicRegistration.obs.dateARTStarted.value_datetime" />
-</div>
   </div>
 </template>
 
@@ -123,24 +148,25 @@ import VueSelect from "vue-select";
 import vitals from "@/components/encounters/vitals.vue";
 export default {
   components: {
-    "v-select": VueSelect,
+    "v-select": VueSelect
   },
   data: function() {
     return {
-        options: [
-          {
-            label: "Rapid Antibody Test",
-            value: 1040
-          },
-          {
-            label: "DNA PCR",
-            value: 844
-          },
-          {
-            label: "Not Done",
-            value: 1118
-          },
-        ],
+      recievedTreatment: false,
+      options: [
+        {
+          label: "Rapid Antibody Test",
+          value: 1040
+        },
+        {
+          label: "DNA PCR",
+          value: 844
+        },
+        {
+          label: "Not Done",
+          value: 1118
+        }
+      ],
       clinicRegistration: {
         encounter_id: 9,
         obs: {
@@ -196,18 +222,22 @@ export default {
     };
   },
   methods: {
-    
-
-    getlocations: async function(val) {
-      this.locations = [];
+    everRecieved(){
+      if(this.recievedTreatment == true){
+        this.recievedTreatment = false
+      }else if(this.recievedTreatment == false){
+        this.recievedTreatment = true
+      }
+    },
+    getlocations: async function(val = "") {
       await ApiClient.get(`/locations?name=` + val).then(res => {
         res.json().then(ret => {
-          let loc = ret.forEach(element => {
-            this.locations.push({
+          this.locations = ret.map(element => {
+            return {
               label: element.name,
               code: element.name,
               location_id: element.location_id
-            });
+            };
           });
         });
       });
@@ -219,19 +249,157 @@ export default {
     },
     getLoc(val) {
       this.clinicRegistration.obs.ARTStartLocation.value_text = val.label;
-      this.clinicRegistration.obs.ARTStartLocation.location_id = val.location_id;
+      this.clinicRegistration.obs.ARTStartLocation.location_id =
+        val.location_id;
     },
     getStuff(val) {
       this.encounters.push(val);
     },
     saveEncounter() {
-      this.$emit('addEncounter',({clinicRegistration: this.clinicRegistration}));
+      this.$emit("addEncounter", {
+        clinicRegistration: this.clinicRegistration
+      });
     }
   },
-  mounted() {
-  }
+  created() {
+    this.getlocations();
+  },
+  mounted() {}
 };
 </script>
 
-<style>
+<style scoped>
+@import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900");
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.checkbox-label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkbox-label .checkbox-custom {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 24px;
+  width: 24px;
+  background-color: transparent;
+  border-radius: 5px;
+  transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  border: 2px solid black;
+}
+
+.checkbox-label input:checked ~ .checkbox-custom {
+  background-color: #009bff;
+  border-radius: 5px;
+  -webkit-transform: rotate(0deg) scale(1);
+  -ms-transform: rotate(0deg) scale(1);
+  transform: rotate(0deg) scale(1);
+  opacity: 1;
+  border: 2px solid black;
+}
+
+.checkbox-label .checkbox-custom::after {
+  position: absolute;
+  content: "";
+  left: 12px;
+  top: 12px;
+  height: 0px;
+  width: 0px;
+  border-radius: 5px;
+  border: solid #009bff;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(0deg) scale(0);
+  -ms-transform: rotate(0deg) scale(0);
+  transform: rotate(0deg) scale(0);
+  opacity: 1;
+  transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+}
+
+.checkbox-label input:checked ~ .checkbox-custom::after {
+  -webkit-transform: rotate(45deg) scale(1);
+  -ms-transform: rotate(45deg) scale(1);
+  transform: rotate(45deg) scale(1);
+  opacity: 1;
+  left: 8px;
+  top: 3px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+/* For Ripple Effect */
+.checkbox-label .checkbox-custom::before {
+  position: absolute;
+  content: "";
+  left: 10px;
+  top: 10px;
+  width: 0px;
+  height: 0px;
+  border-radius: 5px;
+  border: 2px solid black;
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+
+.checkbox-label input:checked ~ .checkbox-custom::before {
+  left: -3px;
+  top: -3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  -webkit-transform: scale(3);
+  -ms-transform: scale(3);
+  transform: scale(3);
+  opacity: 0;
+  z-index: 999;
+  transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+}
+
+/* Style for Circular Checkbox */
+.checkbox-label .checkbox-custom.circular {
+  border-radius: 50%;
+  border: 2px solid black;
+}
+
+.checkbox-label input:checked ~ .checkbox-custom.circular {
+  background-color: #0067ff;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+.checkbox-label input:checked ~ .checkbox-custom.circular::after {
+  border: solid white;
+  border-width: 0 2px 2px 0;
+}
+.checkbox-label .checkbox-custom.circular::after {
+  border-radius: 50%;
+}
+
+.checkbox-label .checkbox-custom.circular::before {
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+.checkbox-label input:checked ~ .checkbox-custom.circular::before {
+  border-radius: 50%;
+}
 </style>
