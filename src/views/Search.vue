@@ -16,6 +16,7 @@
               type="text"
               placeholder="Search for a patient.."
               v-model="searchText"
+              v-on:keyup.enter="searchPatients"
             />
             <div class="input-group-append">
               <button
