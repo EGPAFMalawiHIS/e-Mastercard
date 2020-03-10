@@ -65,6 +65,11 @@
           <br />
           <br />
         </div>
+        <div class="d-flex justify-content-center" v-if="loading">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-4" v-for="(result, index) in results" v-bind:key="index">
@@ -98,11 +103,13 @@ export default {
       results: [],
       arvNumber: false,
       gender: null,
-      sitePrefix: null
+      sitePrefix: null,
+      loading: false
     };
   },
   methods: {
     searchPatients: async function() {
+      this.loading = true;
       let personOBJ =
         this.searchText != null && this.searchText.length > 0
           ? this.splitName(this.searchText)
@@ -127,6 +134,7 @@ export default {
           .join("&");
         let response = await ApiClient.get(personOBJ.URL + urlParams);
         this.results = (await response.json()) || [];
+        this.loading = false;
       }
     },
     toggleAdvanced: function() {
