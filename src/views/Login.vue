@@ -51,6 +51,11 @@
                 />
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
               </div>
+              <div class="d-flex justify-content-center" v-if="loading">
+                        <div class="spinner-border" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
+              </div>
               <div v-for="(error, index) in errors" v-bind:key="index">
 <h4 style="color:#ff3548;">{{error}}</h4>
               </div>
@@ -102,11 +107,13 @@ export default {
     return {
       errors: [],
       username: null,
-      password: null
+      password: null,
+      loading: false,
     };
   },
   methods: {
     checkForm: async function(event) {
+      this.loading = true;
       event.preventDefault();
 
       this.errors = [];
@@ -122,6 +129,9 @@ export default {
       const params = { username: this.username, password: this.password };
       const response = await ApiClient.post("auth/login", params, {
         noRedirectCodes: [401]
+      }).catch((error) => {
+        this.errors.push("Failed to connect to API")
+        this.loading = false;
       });
 
       if (response.status === 200) {
@@ -134,9 +144,11 @@ export default {
         this.$store.commit('setUser', user);
         this.errors = [];
         this.$router.push("/");
+        this.loading = false;
       } else {
         this.errors.push("Invalid username or password");
         console.warn(`Response: ${response.status} - ${response.body}`);
+        this.loading = false;
         return;
       }
     }

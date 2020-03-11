@@ -92,20 +92,14 @@ export default {
             }
         },
         createEncounters: function() {
-        //    console.log(this.$refs); 
             let encounters = Object.keys(this.$refs);
             encounters.forEach(el => {
-
-            //    console.log(el); 
                 this.$refs[el].saveEncounter();
             })
-            // console.log()
             let keys = Object.keys(this.encounters);
-            // this.numEnc = this.keys.length;
             keys.forEach(enc => {
                 this.saveEncounter(this.encounters[enc]);
             });
-            
         },
         getExpected: function(element) {
             let expected = [

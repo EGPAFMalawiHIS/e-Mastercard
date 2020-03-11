@@ -16,11 +16,22 @@
           <button
             type="button"
             class="btn btn-primary"
-            style="margin: 0px; margin-top: 5px;"
             data-toggle="modal"
             data-target="#exampleModalCenter"
           >Add Visit</button>
-          <div class="row" style="margin: 0px; margin-top: 5px;">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#outcomeModal"
+          >Update Outcome</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#exampleModalCenter"
+          >Viral Load</button>
+          <div class="row" style="margin: 10px; margin-top: 5px;">
             <visit-data></visit-data>
           </div>
 
@@ -45,6 +56,30 @@
                 </div>
               </div>
             </div>
+            
+          </div>
+ <div
+            class="modal fade"
+            id="outcomeModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="outcomeModal"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">New Visit</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <outcome />
+                </div>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>
@@ -61,6 +96,7 @@ import PatientInformation from "@/components/PatientInformation.vue";
 import VisitData from "@/components/VisitData.vue";
 import clinicRegistration from "@/components/encounters/clinicRegistration.vue";
 import encounter from "@/components/encounters/encounter.vue"
+import outcome from "@/components/outcome.vue"
 export default {
   name: "home",
   components: {
@@ -69,10 +105,15 @@ export default {
     "patient-information": PatientInformation,
     "visit-data": VisitData,
     "clinic-registration": clinicRegistration,
-    "encounter": encounter
+    "encounter": encounter,
+    "outcome": outcome
   }
 };
 </script>
 
 <style >
+.btn-primary {
+  margin: 10px; 
+  margin-top: 5px;
+}
 </style>

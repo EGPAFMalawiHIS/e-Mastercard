@@ -16,9 +16,15 @@
               type="text"
               placeholder="Search for a patient.."
               v-model="searchText"
+              v-on:keyup.enter="searchPatients"
             />
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button" @click="searchPatients" style="margin-left: 10px">search</button>
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                @click="searchPatients"
+                style="margin-left: 10px"
+              >search</button>
             </div>
           </div>
 
@@ -27,7 +33,12 @@
               <div class="form-group">
                 <label for="gender">Gender:</label>
                 <!-- <input type="password" class="form-control" id="pwd"> -->
-                <select name="gender" id="gender" class="form-control form-control" v-model="gender" >
+                <select
+                  name="gender"
+                  id="gender"
+                  class="form-control form-control"
+                  v-model="gender"
+                >
                   <option value selected disabled>Gender</option>
                   <option value="M">Male</option>
                   <option value="F">Female</option>
@@ -44,17 +55,26 @@
                 <label class="form-check-input" for="arvNumber">ARV Number</label>
               </div>
               <div class="form-group" style="margin-left: 20px">
-                <button type="button" class="btn btn-primary" @click="redirect('/patient_registration')">Add New Patient</button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  @click="redirect('/patient_registration')"
+                >Add New Patient</button>
               </div>
             </form>
           </div>
           <br />
           <br />
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-md-4" v-for="(result, index) in results" v-bind:key="index">
-                <patient-card :patient="result" />
-              </div>
+        </div>
+        <div class="d-flex justify-content-center" v-if="loading">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-4" v-for="(result, index) in results" v-bind:key="index">
+              <patient-card :patient="result" />
             </div>
           </div>
         </div>
@@ -84,11 +104,13 @@ export default {
       results: [],
       arvNumber: false,
       gender: null,
-      sitePrefix: null
+      sitePrefix: null,
+      loading: false
     };
   },
   methods: {
     searchPatients: async function() {
+      this.loading = true;
       let personOBJ =
         this.searchText != null && this.searchText.length > 0
           ? this.splitName(this.searchText)
@@ -113,6 +135,7 @@ export default {
           .join("&");
         let response = await ApiClient.get(personOBJ.URL + urlParams);
         this.results = (await response.json()) || [];
+        this.loading = false;
       }
     },
     toggleAdvanced: function() {
@@ -134,17 +157,17 @@ export default {
         }
       }
       //var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/search/patients/by_identifier?type_id=" + identifier_type + "&identifier="  + identfier_id;
-        if (this.gender) {
-          personOBJ.gender = this.gender;
-        }
-        if (this.arvNumber) {
-          // personOBJ.identifier = tempName[0];
-          let f = this.getSitePrefix();
-          // console.log(f);
-          personOBJ = {};
-          personOBJ.identifier = this.sitePrefix + "-ARV-" + tempName[0];
-          personOBJ.URL = "/search/patients/by_identifier?type_id=4&&";
-        }
+      if (this.gender) {
+        personOBJ.gender = this.gender;
+      }
+      if (this.arvNumber) {
+        // personOBJ.identifier = tempName[0];
+        let f = this.getSitePrefix();
+        // console.log(f);
+        personOBJ = {};
+        personOBJ.identifier = this.sitePrefix + "-ARV-" + tempName[0];
+        personOBJ.URL = "/search/patients/by_identifier?type_id=4&&";
+      }
       return personOBJ;
     },
     getSitePrefix: async function() {
