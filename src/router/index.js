@@ -132,6 +132,11 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: () => import("../views/Settings.vue")
+  },
+  {
+    path: "/merge",
+    name: "Merge Clients",
+    component: () => import("../views/dob_greater_than")
   }
 ]
 
