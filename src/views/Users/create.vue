@@ -1,6 +1,7 @@
 <template>
   <PageView>
-    <UserEditForm @on-submit="createUser" />
+    <UserEditForm @on-submit="createUser"
+                  submitText="Create user" />
   </PageView>
 </template>
 
@@ -14,7 +15,7 @@ export default {
     async createUser(user) {
       const response = await ApiClient.post('/users', user); 
 
-      if (response.status == 400) {
+      if (response.status === 400) {
         response.text()
                 .then(alert)
         return;

@@ -41,9 +41,14 @@ export default {
   },
   methods: {
     async editUser(user) {
-      const response = await ApiClient.post('/users', user); 
+      const {password, ...params} = user;
+      if (password && password.length > 0) {
+        params['password'] = password
+      }
 
-      if (response.status == 400) {
+      const response = await ApiClient.put(`/users/${this.user.user_id}`, params); 
+
+      if (response.status !== 200) {
         response.text()
                 .then(alert)
         return;
@@ -55,7 +60,7 @@ export default {
       const response = await ApiClient.get(`/users/${this.userId}`);
 
       if (response.status === 404) {
-        this.$router.push({name: 'NotFoundError', message: `User #${this.userId} not found!`});
+        this.$router.push({name: 'NotFoundError', params: {message: `User #${this.userId} not found!`}});
         return null;
       } else if (response.status !== 200) {
         alert(`Unexpected error occurred: ${response.status}`);

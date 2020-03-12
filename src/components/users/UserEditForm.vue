@@ -13,10 +13,10 @@
         <FormInputLabel for="password">Password</FormInputLabel>
         <input id="password" type="password" class="form-control password-input"
                placeholder="Password" v-model.trim="form.password"
-               @input="$v.password.$touch()" autocomplete="password" required minlength=6 />
+               @input="$v.password.$touch()" autocomplete="password" :required="!editMode" minlength=6 />
         <input id="shadow-password" type="password" class="form-control password-input password-input-right"
                placeholder="Verify password" v-model="$v.shadow_password"
-               autocomplete="password" required minlength=6 />
+               autocomplete="password" :required="!editMode" minlength=6 />
         <p class="alert alert-danger" v-if="!$v.password.required">Password is required</p>
         <p class="alert alert-danger" v-if="!$v.password.minLength">Username must be at least 6 characters long</p>
 
