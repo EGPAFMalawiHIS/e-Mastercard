@@ -187,7 +187,7 @@
                 >Location unknown?</span>
                 <div>
                   <label class="checkbox-label">
-                    <input type="checkbox" @click="locationOfInitiationCheck()" />
+                    <input type="checkbox" @click="locationOfConfirmatoryCheck()" />
                     <span class="checkbox-custom rectangular" style="margin-left: 220px;"></span>
                   </label>
                 </div>
@@ -199,9 +199,9 @@
               <v-select
                 :options="locations"
                 @search="getlocations"
-                @input="getLoc"
-                v-model="locationOfInitiation"
-                :disabled="locationOfInitiationUnknown"
+                @input="getVal"
+                v-model="locationOfConfirmatory"
+                :disabled="locationOfConfirmatoryUnknown"
               ></v-select>
             </div>
           </div>
@@ -220,7 +220,7 @@
                 >Test year unknown?</span>
                 <div>
                   <label class="checkbox-label">
-                    <input type="checkbox" @click="locationOfInitiationCheck()" />
+                    <input type="checkbox" @click="confirmatoryYearCheck()" />
                     <span class="checkbox-custom rectangular" style="margin-left: 220px;"></span>
                   </label>
                 </div>
@@ -229,7 +229,7 @@
           </div>
           <div class="col-md-12">
             <div class="form-group">
-              <input type="date" class="form-control" name v-model="yearLastTaken" />
+              <input type="date" class="form-control" name v-model="hivTestYear" />
             </div>
           </div>
         </div>
@@ -262,7 +262,11 @@ export default {
       yearLastTaken: null,
       locationOfInitiation: "Select Location of Initiation",
       locationOfInitiationUnknown: false,
+      locationOfConfirmatory: "Select Location Confirmatory",
+      locationOfConfirmatoryUnknown: false,
       confirmatory: "Select Confirmatory Test",
+      hivTestYear: null,
+      hivTestYearUnknown: false,
 
       options: [
         {
@@ -332,7 +336,17 @@ export default {
           dateARTStarted: {
             concept_id: 2516,
             value_datetime: null
-          }
+          },
+          testLocation: {
+            // Location of ART Confirmatory
+            value_text: null,
+            concept_id: 7881,
+            location_id: null
+          },
+          testDate: {
+            concept_id: 7882,
+            value_datetime: null
+          },
         }
       },
       locations: []
@@ -427,6 +441,29 @@ export default {
       }
     },
 
+    locationOfConfirmatoryCheck(){
+      if (this.locationOfConfirmatoryUnknown == true) {
+        this.locationOfConfirmatory = "Select Location";
+        this.locationOfConfirmatoryUnknown = false;
+      } else if (this.locationOfConfirmatoryUnknown == false) {
+        this.locationOfConfirmatory = "Unknown";
+        this.clinicRegistration.obs.ARTStartLocation.value_text = "Unknown";
+        this.locationOfConfirmatoryUnknown = true;
+      }
+    },
+
+    confirmatoryYearCheck(){
+      if (this.hivTestYearUnknown == true) {
+        this.hivTestYear = "";
+        this.hivTestYearUnknown = false;
+      } else if (this.hivTestYearUnknown == false) {
+        this.hivTestYear = "Unknown";
+        this.clinicRegistration.obs.testDate.value_datetime =
+          "Unknown";
+        this.hivTestYearUnknown = true;
+      }
+    },
+
     getlocations: async function(val = "") {
       await ApiClient.get(`/locations?name=` + val).then(res => {
         res.json().then(ret => {
@@ -453,6 +490,9 @@ export default {
       const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
       this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
       this.clinicRegistration.obs.confirmatoryTest.value_coded = this.confirmatory;
+
+      const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
+      this.clinicRegistration.obs.testDate.value_datetime = testYear
     },
     getVal(val) {
       this.clinicRegistration.obs.testLocation.value_text = val.label;
