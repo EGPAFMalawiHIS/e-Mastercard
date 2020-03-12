@@ -136,6 +136,7 @@ export default {
       let counter = 1;
       let report_gender = ['F','M'];
       let set_age_groups = this.ageGroups;
+      this.dTable.fnClearTable();
 
       for(let j = 0; j < report_gender.length; j++){
         let age_group_found = false;
