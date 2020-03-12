@@ -1,12 +1,9 @@
 <template>
   <PageView>
-    <div class="row">
-      <UserList :users="users" class="col-md-9" />
-      <ActionPane class="col-md-3">
-        <Action><router-link :to="{name: 'CreateUser'}">Create user</router-link></Action>
-        <Action :onClick="openUserReports">Reports</Action>
-      </ActionPane>
-    </div>
+    <UserList :users="users"
+              @create-user="createUser"
+              @edit-user="editUser"
+              @deactivate-user="deactivateUser" />
   </PageView>
 </template>
 
@@ -49,11 +46,14 @@ export default {
 
       return await Promise.all(attachNamesToUsers);
     },
-    openCreateUserModal() {
-      console.log('Create user');
+    createUser() {
+      this.$router.push({name: 'CreateUser'});
     },
-    openUserReports() {
-      console.log("User reports");
+    editUser(userId) {
+      this.$router.push({name: 'EditUser', params: {userId}})
+    },
+    deactivateUser(userId) {
+      console.log(['deactivateUser', userId]);
     }
   }
 }
