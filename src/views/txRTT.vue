@@ -14,11 +14,9 @@
             <th>#</th>
             <th>Age group</th>
             <th>Gender</th>
-            <th class="disaggregated-numbers">Defaulted</th>
-            <th class="disaggregated-numbers">Died</th>
-            <th class="disaggregated-numbers">Stopped</th>
-            <th class="disaggregated-numbers">Transferred out</th>
-            <th class="disaggregated-numbers">Unknown</th>
+            <th class="disaggregated-numbers">Returned after 14 - 27 days</th>
+            <th class="disaggregated-numbers">Returned after 28 - 59 days</th>
+            <th class="disaggregated-numbers">Returned after 60 or more days</th>
           </tr>
         </thead>
         <tbody ref="tableBody">
@@ -118,7 +116,7 @@ export default {
       this.loadXLdata();
     },
     loadXLdata: async function(){
-      let url = "tx_ml?date=" + moment().format('YYYY-MM-DD');
+      let url = "tx_rtt?date=" + moment().format('YYYY-MM-DD');
       url += "&start_date=" + this.startDate;
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
@@ -131,7 +129,7 @@ export default {
     },
     loadGroupData(data){
       //this.loadXLdata();
-      this.report_title = "TX ML: " + moment(this.startDate).format('DD/MMM/YYYY')
+      this.report_title = "TX RTT: " + moment(this.startDate).format('DD/MMM/YYYY')
       this.report_title += " - " + moment(this.endtDate).format('DD/MMM/YYYY')
       let counter = 1;
       let report_gender = ['F','M'];
@@ -146,17 +144,23 @@ export default {
             for(let sex in gender){
               if (age_group == set_age_groups[i]  &&  sex == report_gender[j]) {  
                 let numbers = gender[sex];
-                this.dTable.fnAddData([ counter++, age_group, sex, numbers[0],
-                    numbers[1], numbers[2], numbers[3], numbers[4]]);
+                this.dTable.fnAddData([ counter++, age_group, sex, numbers[0], numbers[1], numbers[2] ]);
                 age_group_found = true;
-
+                break;
               }
+              if(age_group_found == true)
+                break;
+
             }
+            if(age_group_found == true)
+              break;
+
           }
+          
           if(!age_group_found){
-            this.dTable.fnAddData([ counter++, set_age_groups[i], report_gender[j], 0,0,0,0,0 ]);
+            this.dTable.fnAddData([ counter++, set_age_groups[i], report_gender[j], 0,0,0 ]);
           }else{
-            age_group_found = false;
+            age_group_found = false
           }
         }
       }
@@ -164,7 +168,7 @@ export default {
     }
   }, data: function() {
       return {
-        report_title: 'TX ML ',
+        report_title: 'TX RTT ',
         startDate: null,
         endDate: null,
         ageGroups: [
