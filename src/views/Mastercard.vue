@@ -47,24 +47,22 @@
           <td>{{this.occupation}}</td>
         </tr>
         <tr>
-          <th colspan="2">Guardian name</th>
-          <th>Test Date</th>
+          <th colspan="3">Test Date</th>
           <th colspan="2">Place of HIV test</th>
           <th>Agrees to followup</th>
         </tr>
         <tr>
-          <td colspan="2">Jane Doe</td>
-          <td>{{this.testDate}}</td>
+          <td colspan="3">{{this.testDate}}</td>
           <td colspan="2">{{this.testLocation}}</td>
-          <td>&nbsp;</td>
+          <td>{{this.AgreesToFollowup}}</td>
         </tr>
         <tr>
           <th colspan="3">Date of starting 1st Line ARV regimen</th>
           <th colspan="3">Reason for starting ART</th>
         </tr>
         <tr>
-          <td colspan="3">10th June 2020</td>
-          <td colspan="3">&nbsp;</td>
+          <td colspan="3">{{this.earliestSatrtDate}}</td>
+          <td colspan="3">{{this.reasonForART}}</td>
         </tr>
         <tr>
           <th colspan="3">Pulmonary tuberculosis within the last 2 years</th>
@@ -73,18 +71,20 @@
           <th>Kaposi's sarcoma</th>
         </tr>
         <tr>
-          <td colspan="3">Yes</td>
+          <td colspan="3">-</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
         <tr>
-          <th colspan="3">Latest VL Date</th>
-          <th colspan="3">VL result</th>
+          <th colspan="2">Latest VL Date</th>
+          <th colspan="2">VL result</th>
+          <th colspan="3">Guardian</th>
         </tr>
         <tr>
-          <td colspan="3">10th June 2020</td>
-          <td colspan="3">&nbsp;</td>
+          <td colspan="2">&nbsp;</td>
+          <td colspan="2">&nbsp;</td>
+          <td colspan="2"><a href="#">{{this.Guardian}}</a></td>
         </tr>
 
         </table>
@@ -104,10 +104,10 @@
               <th>Wt</th>
               <th>BMI</th>
               <th>Regimen</th>
-              <th>Pill count</th>
+              <th>Gave</th>
               <th>Adherence</th>
               <th>Side effects</th>
-              <th>Gave</th>
+              <th>Pill count</th>
               <th>Outcome</th>
               <th>Next appointment</th>
               <th>&nbsp;</th>
@@ -159,9 +159,15 @@ export default {
         order: [[ 0, "desc" ]],
         fixedHeader: true,
         searching: false,
-        paging: false,
+        paging: true,
         Processing: true,
         ServerSide: true,
+
+        bPaginate: false,
+        bFilter: false,
+        bInfo: false,
+        bLengthChange: false,
+
         scroller: {
           loadingIndicator: true
         }
@@ -175,52 +181,58 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
-        response.json().then((data) =>  (this.visitDates = data, this.fetchVisits()) );
+        response.json().then((data) =>  this.loadVisitDates(data) );
       }
     },
-    fetchVisits(){
-      if(this.visitDates.length > 0)
-        this.fetchEncounter(this.visitDates[0]);
-
+    loadVisitDates(visits){
+      for (let i = 0; i <= visits.length; i++) {
+        this.visitDates.push(visits[i]);
+      }
+      this.fetchVisit(this.visitDates[0]);
     },
-    fetchEncounter: async function(visit_date){
-      this.visitDates.shift();
+    fetchVisit: async function(visit_date) {
+      if(!visit_date)
+      return;
+
       let patient_id = this.$route.params.id;
-      let url = "encounters?patient_id" + patient_id;
-      url += "&date=" + visit_date + "&program_id=1";
-     
+      let url = "patients/" + patient_id + "/visit?date=" + visit_date;
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
-        response.json().then((data) => this.loadVisit(data) );
+        response.json().then((data) =>  this.loadVisit(data, visit_date) );
       }
-      
     },
-    loadVisit(encounters){
-      let visit = {};
-      let visit_date;
+    loadVisit(data, visit_date){
+      this.dTable.fnAddData([ 
+        moment(visit_date).format('YYYY-MM-DD'),
+        data.visit_type,
+        data.height,
+        data.weight,
+        "",
+        data.regimen,
+        "",
+        "",
+        "",
+        "",
+        (data.outcome == 'On antiretrovirals' ? 'On ART' : data.outcome),
+        (data.appointment ? moment(data.appointment).format('DD/MMM/YY') : null),
+        this.addVoidBtn(visit_date)
+      ]);
 
-      for(let i = 0; encounters.length; i++){
-        visit_date = moment(encounters[i].encounter_datetime).format('YYYY-MM-DD');
-        if(!visit[visit_date]){
-          visit[visit_date] = {
-            visit_type: null,
-            height: null, weight: null,
-            bmi: null, regimen: null, 
-            pill_count: null,
-            adherence: null,
-            side_effects: null,
-            gave: null, 
-            outcome: null,
-            next_appointment: null 
-          }
-        }
-        break;
+      this.visitDates.shift();
+      if(this.visitDates.length > 0)
+        this.fetchVisit(this.visitDates[0]);
 
 
-      }
-
-      this.dTable.fnAddData([ visit_date, "","","","","","","","","","","","" ]);
+    },
+    addVoidBtn(visit_date){
+      let span = document.createElement('span');
+      let btn = document.createElement('button');
+      btn.setAttribute("class", "btn btn-danger");
+      btn.setAttribute("onclick", "voidVisit('" + visit_date + "')");
+      btn.innerHTML = "X";
+      span.appendChild(btn);
+      return span.innerHTML;
     },
     fetchDemographics: async function() {
       let patient_id = this.$route.params.id;
@@ -319,8 +331,80 @@ export default {
       if(data.length < 1)
         return;
       
-      console.log(data);
       concept_id == 7881 ? (this.testLocation = data[0].value_text) : (this.testDate = data[0].value_datetime);
+    },
+    fetchObs: async  function(concept_id, element_name){
+      let patient_id = this.$route.params.id;
+      let url = "observations?person_id=" + patient_id;
+      url += "&concept_id=" + concept_id;
+      const response = await ApiClient.get(url, {}, {});
+
+      if (response.status === 200) {
+        response.json().then((data) => (this.fetchConceptName(data, element_name)) );
+      }
+    },
+    fetchConceptName: async function(obs, element_name){
+      if(obs.length < 1)
+        return;
+
+      if(element_name == 'Earliest satrt date'){
+        let earliestSatrtDate = obs[0].value_datetime;
+        if(!earliestSatrtDate){
+          let estimated_period = obs[0].value_text;
+          let obs_datetime = moment(obs[0].obs_datetime);
+          if(estimated_period.match(/months/)){
+            let months = estimated_period.split("")[0];
+            let startdate = obs_datetime.subtract(months, "months");
+            startdate = startdate.format("DD/MMM/YYYY");
+            this.earliestSatrtDate = startdate + " (Estimated)";
+          }
+        }else{
+          this.earliestSatrtDate = moment(obs[0].value_datetime).format('DD/MMM/YYYY');
+        }
+        return;
+      }
+
+      if(element_name == 'TB states'){
+        return;
+      }
+      let value_coded = obs[0].value_coded;
+      let url = "concepts/" + value_coded;
+      const response = await ApiClient.get(url, {}, {});
+
+      if (response.status === 200) {
+        response.json().then((data) => this.loadFetchedConceptName(data, element_name) );
+      }
+    },
+    loadFetchedConceptName(concept, e){
+      let concept_names = concept.concept_names
+      for (let key in concept_names) {
+        if (concept_names[key]["concept_name_type"].match(/FULLY_SPECIFIED/i)) {
+          let value = concept_names[key]["name"];
+          if(e == 'Reason for ART')
+            this.reasonForART = value;
+
+          if(e == 'Agrees to followup')
+            this.AgreesToFollowup = value;
+
+          break;
+        }
+      }
+    },
+    getRelationships: async function(){
+      let url = "people/" + this.$route.params.id + "/relationships"
+      const response = await ApiClient.get(url, {}, {});
+
+      if (response.status === 200) {
+        response.json().then((data) => this.loadGuardian(data[0]) );
+      }
+    },
+    loadGuardian(data){
+      if(!data)
+      return;
+
+      let person_name = data["relation"]["names"][0];
+      let relationship_type = (data["type"]["b_is_to_a"]);
+      this.Guardian = person_name["given_name"] + " " + person_name["family_name"] + " (" + relationship_type + ")";
     }
   }, data: function() {
       return {
@@ -337,7 +421,11 @@ export default {
         initWeight: null,
         initHeight: null,
         testLocation: null,
-        testDate: null
+        testDate: null,
+        reasonForART: null,
+        AgreesToFollowup: null,
+        earliestSatrtDate: null,
+        Guardian: 'Add'
       }
   },
   mounted(){
@@ -346,6 +434,11 @@ export default {
     setTimeout(() => this.fetchInitHeightWeight(5089), 300);
     setTimeout(() => this.fetchInitHeightWeight(5090), 300);
     setTimeout(() => this.fetchConfirmatoryHIVTestLocationAndDate(7881), 300);
+    setTimeout(() => this.fetchObs(7563, 'Reason for ART'), 300);
+    setTimeout(() => this.fetchObs(2552, 'Agrees to followup'), 300);
+    setTimeout(() => this.fetchObs(2516, 'Earliest satrt date'), 300);
+    setTimeout(() => this.fetchObs(2743, 'TB states'), 300);
+    setTimeout(() => this.getRelationships(), 300);
   }
   
 }
@@ -385,6 +478,6 @@ export default {
   width: 97.7%;
   margin: 15px  10px 5px 10px;
   border-style: solid;
-  border-width: 1px;
+  border-width: 1px 0px 1px 0px;
 }
 </style>
