@@ -118,12 +118,12 @@
       </div>
     </div>
     <div v-if="recievedTreatment" class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-2">
             <label style="float: left; font-weight: bold">ART Number</label>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-5">
             <span
               style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
             >Number Unknown?</span>
@@ -141,7 +141,9 @@
           />
         </div>
       </div>
-      <div class="col-md-6">
+    </div>
+    <div class="row">
+      <div class="col-md-12">
         <div class="row">
           <div class="col-md-12">
             <label style="float: left; font-weight: bold">Confirmatory Test</label>
