@@ -213,6 +213,11 @@ const routes = [
     name: "CreateUser",
     component: () => import("../views/Users/create.vue")
   },
+  {
+    path: "/users/edit/:userId",
+    name: "EditUser",
+    component: () => import("../views/Users/edit.vue")
+  }
 ]
 
 const router = new VueRouter({
