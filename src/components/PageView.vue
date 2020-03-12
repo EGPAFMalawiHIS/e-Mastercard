@@ -23,7 +23,12 @@ export default {
 
 <style scoped>
 div.content {
-  padding-left: 5%;
-  padding-right: 5%;
+  padding-top: 2.5%;
+}
+
+@media (min-width: 1920px) {
+  div.content {
+    margin: 2%;
+  } 
 }
 </style>
