@@ -124,6 +124,11 @@ const routes = [
     component: () => import("../views/PepfarDefaulterList.vue")
   },
   {
+    path: "/registration",
+    name: "registration",
+    component: () => import("../views/Registration.vue")
+  },
+  {
     path: "/tx_ml",
     name: "txML",
     component: () => import("../views/txML.vue")
