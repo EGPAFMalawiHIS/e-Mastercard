@@ -71,6 +71,9 @@
             <span class="sr-only">Loading...</span>
           </div>
         </div>
+        <div class="d-flex justify-content-center">
+          <p> number of results: ({{results.length}})</p>
+        </div>
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-4" v-for="(result, index) in results" v-bind:key="index">
