@@ -142,6 +142,11 @@ const routes = [
     path: "/survival_analysis",
     name: "SurvivalAnalysis",
     component: () => import("../views/SurvivalAnalysis.vue")
+  },
+  {
+    path: "/registration/:id",
+    name: "registration",
+    component: () => import("../views/Registration.vue")
   }
 ]
 
