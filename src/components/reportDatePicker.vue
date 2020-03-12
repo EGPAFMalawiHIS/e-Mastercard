@@ -85,6 +85,7 @@ export default {
     text-align: right;
     margin: 10px  0px 10px 0px;
     width: 100%;
+    padding-right: 5px;
   }
 
   select {
