@@ -18,13 +18,7 @@
           :actions="actions"
         >
           <template slot="birthdate" slot-scope="props">
-            <b>{{moment(props.cell_value).format("DD/MMM/YYYY")}}</b>
-          </template>
-          <template slot="earliest_start_date" slot-scope="props">
-            <b>{{moment(props.cell_value).format("DD/MMM/YYYY")}}</b>
-          </template>
-          <template slot="date_enrolled" slot-scope="props">
-            <b>{{moment(props.cell_value).format("DD/MMM/YYYY")}}</b>
+            <b>{{moment(props.cell_value).format("DD/MMM/YYYY") }} ({{moment().diff(props.cell_value, 'years',false)}})</b>
           </template>
           <template slot="patient_id" slot-scope="props">
             <button type="button" class="btn btn-primary" @click="redirect(props.cell_value)">show</button>
@@ -86,15 +80,6 @@ export default {
           name: "birthdate",
           slot_name: "birthdate",
           sort: true
-        },
-        {
-          label: "Earliest Start Date",
-          name: "earliest_start_date",
-          sort: true
-        },
-        {
-          label: "Date Enrolled",
-          name: "date_enrolled"
         },
         {
           label: "Action",

@@ -15,7 +15,7 @@
             <div class="col" v-for="(tool, index) in tools" :key="index">
               <div class="btn-container" @click="redirect(tool.path)">
                 <div class="card">
-                  <img src="../assets/mw.png" class="btn-icon" />
+                  <img src="../assets/clean.png" class="btn-icon" />
                   <p>{{tool.name}}</p>
                 </div>
               </div>

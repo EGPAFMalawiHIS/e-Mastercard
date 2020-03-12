@@ -18,7 +18,7 @@
           :actions="actions"
         >
           <template slot="birthdate" slot-scope="props">
-            <b>{{moment(props.cell_value).format("DD/MMM/YYYY")}}</b>
+            <b>{{moment(props.cell_value).format("DD/MMM/YYYY") }} ({{moment().diff(props.cell_value, 'years',false)}})</b>
           </template>
           <template slot="start_date" slot-scope="props">
             <b>{{moment(props.cell_value).format("DD/MMM/YYYY")}}</b>
