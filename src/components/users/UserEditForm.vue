@@ -3,31 +3,59 @@
     <div class="col-md-12 rounded shadow content-pane">
       <form class="form" @submit="submitForm">
         <FormInputLabel forInput="username">Username</FormInputLabel>
-        <input id="username" type="text" class="form-control" placeholder="Username"
-               v-model.trim="form.username" @input="$v.username.$touch()"
-               autocomplete="username" required minlength=4
+        <input id="username" type="text" class="form-control" :class="$v.form.username.$error && 'form-control-invalid'" placeholder="Username"
+               v-model.trim="$v.form.username.$model"
+               autocomplete="username"
                :disabled="editMode ? true : false" />
-        <p class="alert alert-danger" v-if="!$v.username.required">Username is required</p>
-        <p class="alert alert-danger" v-if="!$v.username.minLength">Username must be at least 4 characters long</p>
+        <span v-if="$v.form.username.$dirty">
+          <p class="text-danger form-error" v-if="!$v.form.username.required">Username is required</p>
+          <p class="text-danger form-error" v-if="!$v.form.username.minLength">Username must be at least {{ $v.form.username.$params.minLength.min }} characters long</p>
+        </span>
         
         <FormInputLabel for="password">Password</FormInputLabel>
         <input id="password" type="password" class="form-control password-input"
-               placeholder="Password" v-model.trim="form.password"
-               @input="$v.password.$touch()" autocomplete="password" :required="!editMode" minlength=6 />
+               :class="($v.form.password.$error || $v.form.shadow_password.$error) && 'form-control-invalid'"
+               placeholder="Password" v-model.trim="$v.form.password.$model"
+               autocomplete="password" />
         <input id="shadow-password" type="password" class="form-control password-input password-input-right"
-               placeholder="Verify password" v-model="$v.shadow_password"
-               autocomplete="password" :required="!editMode" minlength=6 />
-        <p class="alert alert-danger" v-if="!$v.password.required">Password is required</p>
-        <p class="alert alert-danger" v-if="!$v.password.minLength">Username must be at least 6 characters long</p>
+               :class="($v.form.password.$error || $v.form.shadow_password.$error) && 'form-control-invalid'"
+               placeholder="Verify password" v-model="$v.form.shadow_password.$model"
+               autocomplete="password" />
+        <span v-if="$v.form.password.$dirty">
+          <p class="form-error text-danger" v-if="!$v.form.password.required">Password is required</p>
+          <p class="form-error text-danger" v-if="!$v.form.password.minLength">Password must be at least {{ $v.form.password.$params.minLength.min }} characters long</p>
+        </span>
+        <span v-if="$v.form.shadow_password.$dirty">
+          <p class="form-error text-danger" v-if="!$v.form.shadow_password.sameAs">Passwords don't match</p>
+        </span>
+
 
         <FormInputLabel for="roles">Roles</FormInputLabel>
-        <VueSelect id="roles" v-model="form.roles" :options="roles" multiple></VueSelect>
+        <VueSelect id="roles" v-model="$v.form.roles.$model"
+                  :class="$v.form.roles.$error && 'form-control-invalid'"
+                  :options="roles" multiple>
+        </VueSelect>
+        <span v-if="$v.form.roles.$dirty">
+          <p class="form-error text-danger" v-if="!$v.form.roles.required">At least one role is required</p>
+        </span>
 
         <FormInputLabel for="given-name">Given name</FormInputLabel>
-        <input id="given-name" type="text" class="form-control" placeholder="Given name" v-model="form.given_name" required />
+        <input id="given-name" type="text" class="form-control"
+               :class="$v.form.given_name.$error && 'form-control-invalid'"
+               placeholder="Given name" v-model="$v.form.given_name.$model" />
+        <span v-if="$v.form.given_name.$dirty">
+          <p class="form-error text-danger" v-if="!$v.form.given_name.required">Given name is required</p>
+          <p class="form-error text-danger" v-if="!$v.form.given_name.minLength">Given name must be at least {{ $v.form.given_name.$params.minLength.min }} characters long</p>
+        </span>
 
         <FormInputLabel for="family-name">Family name</FormInputLabel>
-        <input id="family-name" type="text" class="form-control" placeholder="Family name" v-model="form.family_name" required />
+        <input id="family-name" type="text" class="form-control"
+               :class="$v.form.family_name.$error && 'form-control-invalid'"
+               placeholder="Family name" v-model="$v.form.family_name.$model" />
+        <span v-if="$v.form.family_name.$dirty">
+          <p class="form-error text-danger" v-if="!$v.form.family_name.required">Family name is required</p>
+          <p class="form-error text-danger" v-if="!$v.form.family_name.minLength">Family name must be at least {{ $v.form.family_name.$params.minLength.min }} characters long</p>
+        </span>
 
         <input type="submit" class="btn btn-primary" :value="submitText || 'Submit'" />
       </form>
@@ -37,9 +65,10 @@
 
 <script>
 import ApiClient from "@/services/api_client";
+
 import FormInputLabel from "@/components/FormInputLabel";
 import { validationMixin } from "vuelidate";
-import { required, minLength } from "vuelidate/lib/validators";
+import { required, requiredIf, minLength, sameAs } from "vuelidate/lib/validators";
 import VueSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
 
@@ -65,14 +94,32 @@ export default {
         .then(roles => this.roles = roles.map(role => role.role))
         .then(this.loadUserIntoForm);
   },
-  validations: {
-    username: {
-      required,
-      minLength: minLength(4),
-    },
-    password: {
-      required,
-      minLength: minLength(6)
+  validations() {
+    return {
+      form: {
+        username: {
+          required: requiredIf(() => !this.editMode),
+          minLength: minLength(4),
+        },
+        password: {
+          required: requiredIf(() => !this.editMode),
+          minLength: minLength(6)
+        },
+        shadow_password: {
+          sameAs: sameAs('password')
+        },
+        roles: {
+          required
+        },
+        given_name: {
+          required,
+          minLength: minLength(2)
+        },
+        family_name: {
+          required,
+          minLength: minLength(2)
+        }
+      }
     }
   },
   methods: {
@@ -88,9 +135,9 @@ export default {
     async submitForm(event) {
       event.preventDefault();
 
-      // if (!this.validateForm()) {
-      //   return;
-      // }
+      if (!this.validateForm()) {
+        return;
+      }
       
       const {shadow_password: _, ...user} = this.form;
 
@@ -105,6 +152,10 @@ export default {
       this.form.given_name = this.user.given_name;
       this.form.family_name = this.user.family_name;
       this.form.roles = this.roles.filter(role => this.user.roles.findIndex(userRole => role === userRole.role) >= 0);
+    },
+    validateForm() {
+      this.$v.$touch();
+      return !this.$v.$invalid;
     }
   }
 }
@@ -126,6 +177,21 @@ input[type="submit"] {
   padding: 2em;
   left: 5%;
   right: 5%;
+}
+
+.form-control {
+  margin-top: 0;
+  margin-bottom: 0
+}
+
+.form-control-invalid {
+  border-color: red;
+  box-shadow: inset 0 1px 1px orangered,  0 0 8px red;
+}
+
+.form-error {
+  font-size: 0.8em;
+  margin: 0;
 }
 
 .password-input {
