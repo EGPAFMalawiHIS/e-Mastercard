@@ -53,7 +53,7 @@
           <div class="row">
 
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('#')">
+              <div class="btn-container" @click="redirect('/tx_rtt')">
                 <div class="card">
                   <img src="../assets/report-icons/restart.png" class="btn-icon" />
                   <p>TX RTT</p>

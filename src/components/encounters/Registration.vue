@@ -156,8 +156,7 @@ export default {
       }
 
       // pass params
-      //const personId = this.$route.params.id;
-      const personId = 21046 // REMOVE THIS
+      const personId = this.$route.params.id;
       const encounter = await EncounterService.createEncounter(
         personId,
         encounterOb.encounter_id
@@ -382,6 +381,7 @@ export default {
     }
   },
   mounted() {
+    console.log( this.$route.params.id)
     this.initileWizard();
   }
 };
