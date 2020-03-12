@@ -17,7 +17,7 @@
               name="next"
               class="btn btn-primary clinical action-button"
               value="Next Step"
-              style="margin-top: 50px"
+              style="margin-top: 10px"
             />
             <div class="errorTxt" style="margin-top: 10px; text-align: center; font-weight: bold"></div>
           </form>
