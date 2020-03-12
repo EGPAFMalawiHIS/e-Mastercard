@@ -420,7 +420,7 @@ export default {
         this.locationOfConfirmatoryUnknown = false;
       } else if (this.locationOfConfirmatoryUnknown == false) {
         this.locationOfConfirmatory = "Unknown";
-        this.clinicRegistration.obs.ARTStartLocation.value_text = "Unknown";
+        this.clinicRegistration.obs.testLocation.value_text = "Unknown";
         this.locationOfConfirmatoryUnknown = true;
       }
     },
