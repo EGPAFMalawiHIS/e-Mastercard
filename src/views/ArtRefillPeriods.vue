@@ -14,8 +14,7 @@
                 <th scope="col" style="width: 20%;">&nbsp;</th>
                 <th class="center-text" scope="col"># of clients on <3 months of ARVs</th>
                 <th class="center-text" scope="col"># of clients on 3 - 5 months of ARVs</th>
-                <th class="center-text" scope="col"># of clients on 6 months of ARVs</th>
-                <th class="center-text" scope="col"># of clients on >6 months of ARVs</th>
+                <th class="center-text" scope="col"># of clients on >= 6 months of ARVs</th>
               </tr>
             </thead>
           </table>
@@ -80,11 +79,11 @@ export default {
         return;
       }
       
-      this.report_title = 'ARVs refill period ';
+      this.report_title = 'TX CURR MMD ';
       this.report_title += " between " + moment(this.startDate).format('dddd, Do of MMM YYYY');
       this.report_title += " and " + moment(this.endDate).format('dddd, Do of MMM YYYY');
       let url_path = 'arv_refill_periods?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');
-      url_path += "&end_date=" + this.endDate + "&program_id=1";
+      url_path += "&end_date=" + this.endDate + "&program_id=1&org=pepfar";
       url_path += "&min_age=" + min_age;
       url_path += "&max_age=" + max_age;
 
@@ -123,8 +122,7 @@ export default {
         columnDefs: [
           {"className": "center-text", "targets": 2},
           {"className": "center-text", "targets": 3},
-          {"className": "center-text", "targets": 4},
-          {"className": "center-text", "targets": 5}
+          {"className": "center-text", "targets": 4}
         ]
       });
     },
@@ -132,27 +130,23 @@ export default {
       let column_3 = 0;
       let column_4 = 0;
       let column_5 = 0;
-      let column_6 = 0;
 
       for(let person_id in data){
         let info =  data[person_id];
-        let prescribed_months = info.prescribed_months;
+        let prescribed_days = info.prescribed_days;
 
-        if(prescribed_months < 3)
+        if(prescribed_days < 90)
           column_3 += 1
 
-        if(prescribed_months >= 3 && prescribed_months <= 5)
+        if(prescribed_days >= 90 && prescribed_days <= 179)
           column_4 += 1
 
-        if(prescribed_months == 6)
+        if(prescribed_days >= 180)
           column_5 += 1
-
-        if(prescribed_months > 6)
-          column_6 += 1
 
       }
       this.dTable.fnAddData([ (this.rowCounter++), this.reportingGroups[0], column_3,
-        column_4, column_5, column_6 ]);
+        column_4, column_5 ]);
       this.reportingGroups.shift();
     },
     setMinMaxAges(group){
@@ -201,7 +195,7 @@ export default {
     setTimeout(() => this.initDataTable(), 300);
   }, data: function() {
       return {
-        report_title: 'ARVs refill periods ',
+        report_title: 'TX CURR MMD ',
         reportData: null,
         dTable: null,
         startDate: null,

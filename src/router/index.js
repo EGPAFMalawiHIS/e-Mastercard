@@ -127,6 +127,16 @@ const routes = [
     path: "/registration",
     name: "registration",
     component: () => import("../views/Registration.vue")
+  },
+  {
+    path: "/tx_ml",
+    name: "txML",
+    component: () => import("../views/txML.vue")
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: () => import("../views/Settings.vue")
   }
 ]
 

@@ -23,8 +23,16 @@
         <td>{{visit.nextAppointment}}</td>
         <td>{{visit.outcome}}</td>
         <td>
-          <button class="btn btn-danger" @click="deleteVisit(visit.encounters)">
-            X
+          <button class="btn btn-danger" @click="deleteVisit(index, visit.encounters)" >
+            <template v-if="visit.state === 'deleting'">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span class="sr-only">Loading...</span>
+            </template>
+
+            
+            <template v-else>
+              <span>X</span>
+            </template>
           </button>
         </td>
       </tr>
@@ -50,7 +58,9 @@ export default {
         nextAppointment: null,
         outcoume: null,
         encounters: [],
+        state: null
       },
+      encountersToDelete: [],
       obs: [
         {
           conceptID: 5089,
@@ -84,17 +94,22 @@ export default {
         }
       );
     },
-    deleteVisit: function(encounters) {
-      encounters.forEach(encounter => {
+    deleteVisit: function(index, encounters) {
+      let itemsProcessed = encounters.length;
+      this.patientVisits[index].state = "deleting";
+      encounters.forEach(encounter=> {
         this.removeEncounter(encounter).then(el => {
           if(el.status == 204) {
-            console.log("deleted")
+            itemsProcessed -= 1;
+            if(itemsProcessed === 0) {
+              this.patientVisits.splice(index, 1)
+            }
           }else {
             console.log("not deleted")
           }
         })
       })
-      // this.$router.go(0);
+      
     },
     removeEncounter: async function(encounter) {
       let response = await ApiClient.remove('encounters/'+encounter);
@@ -217,5 +232,6 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+  /* .available */
 </style>

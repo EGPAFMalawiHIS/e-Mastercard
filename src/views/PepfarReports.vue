@@ -33,13 +33,37 @@
               <div class="btn-container" @click="redirect('/art_refill_periods')">
                 <div class="card">
                   <img src="../assets/report-icons/px.png" class="btn-icon" />
-                  <p>ARVs refill periods</p>
+                  <p>TX CURR MMD</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/tx_ml')">
+                <div class="card">
+                  <img src="../assets/report-icons/tx-ml.png" class="btn-icon" />
+                  <p>TX ML</p>
                 </div>
               </div>
             </div>
 
             
           </div>
+          
+          <div class="row">
+
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('#')">
+                <div class="card">
+                  <img src="../assets/report-icons/restart.png" class="btn-icon" />
+                  <p>TX RTT</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
         </div>
         <!-- Page Content end -->
       </div>
