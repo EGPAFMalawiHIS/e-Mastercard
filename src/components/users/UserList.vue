@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import glyphicons from 'glyphicons';
 import moment from "moment";
 import VueBootstrap4Table from "vue-bootstrap4-table";
 
