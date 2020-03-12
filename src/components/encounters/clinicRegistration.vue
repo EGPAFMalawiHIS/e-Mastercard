@@ -7,7 +7,7 @@
           <div>
             <label class="checkbox-label" style="margin-left: 50px">
               <input type="checkbox" v-model="agreesToFollowUp" style="margin-left: 50px" />
-              <span class="checkbox-custom rectangular" style="margin-left: 480px; margin-top: 6px"></span>
+              <span class="checkbox-custom rectangular" style="margin-left: 180px; margin-top: 6px"></span>
             </label>
           </div>
         </div>
@@ -18,23 +18,20 @@
           <div>
             <label class="checkbox-label" style="margin-left: 50px">
               <input type="checkbox" style="margin-left: 50px" @click="everRecieved()" />
-              <span class="checkbox-custom rectangular" style="margin-left: 480px; margin-top: 6px"></span>
+              <span class="checkbox-custom rectangular" style="margin-left: 400px; margin-top: 6px"></span>
             </label>
           </div>
         </div>
       </div>
     </div>
-    <div v-if="recievedTreatment" class="row" style="margin-top: 10px">
+    <div v-if="recievedTreatment" class="row">
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
             <label style="float: left; font-weight: bold">ART Clinic registration</label>
           </div>
         </div>
-        <div
-          class="col-md-12"
-          style="background: rgba(137, 140, 145, 0.2); height: 37px; margin-top: 15px"
-        >
+        <div class="col-md-12" style="background: rgba(137, 140, 145, 0.2); height: 37px;">
           <div style="margin-top: 6px; float: left;">
             <span style="font-weight: bold;">Ever registered at an ART clinic?</span>
             <div>
@@ -42,7 +39,7 @@
                 <input type="checkbox" style="margin-left: 50px" @click="everRegistered()" />
                 <span
                   class="checkbox-custom rectangular"
-                  style="margin-left: 465px; margin-top: 6px"
+                  style="margin-left: 275px; margin-top: 6px"
                 ></span>
               </label>
             </div>
@@ -51,19 +48,14 @@
       </div>
       <div class="col-md-6">
         <div class="row">
-          <div class="col-md-5">
+          <div class="col-md-6">
             <label style="float: left; font-weight: bold">Year last taken ARVs</label>
           </div>
           <div class="col-md-6">
             <span
-              style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
-            >Year last taken Unknown?</span>
-            <div>
-              <label class="checkbox-label">
-                <input type="checkbox" @click="yearLastTakenUknownCheck()" />
-                <span class="checkbox-custom rectangular" style="margin-left: 260px;"></span>
-              </label>
-            </div>
+              style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic;"
+            >Year Unknown?</span>
+            <input type="checkbox" @click="yearLastTakenUknownCheck()" style="margin-left: 10px" />
           </div>
         </div>
         <div class="form-group">
@@ -71,7 +63,7 @@
         </div>
       </div>
     </div>
-    <div v-if="recievedTreatment" class="row" style="margin-top: 8px">
+    <div v-if="recievedTreatment" class="row">
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
@@ -79,16 +71,15 @@
               <div class="col-md-6">
                 <label style="float: left; font-weight: bold">Location of ART Initiation</label>
               </div>
-              <div class="col-md-5">
+              <div class="col-md-6">
                 <span
                   style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
                 >Location Unknown?</span>
-                <div>
-                  <label class="checkbox-label">
-                    <input type="checkbox" @click="locationOfInitiationCheck()" />
-                    <span class="checkbox-custom rectangular" style="margin-left: 220px;"></span>
-                  </label>
-                </div>
+                <input
+                  type="checkbox"
+                  @click="locationOfInitiationCheck()"
+                  style="margin-left: 10px"
+                />
               </div>
             </div>
           </div>
@@ -109,19 +100,14 @@
         <div class="row">
           <div class="col-md-12">
             <div class="row">
-              <div class="col-md-5">
+              <div class="col-md-6">
                 <label style="float: left; font-weight: bold">Year started ART</label>
               </div>
               <div class="col-md-6">
                 <span
                   style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
-                >Year started ART Unknown?</span>
-                <div>
-                  <label class="checkbox-label" style="margin-left: 50px">
-                    <input type="checkbox" style="margin-left: 50px" @click="startDateUnknown()" />
-                    <span class="checkbox-custom rectangular" style="margin-left: 260px;"></span>
-                  </label>
-                </div>
+                >Year Unknown?</span>
+                <input type="checkbox" @click="startDateUnknown()" style="margin-left: 10px" />
               </div>
             </div>
             <div class="form-group">
@@ -132,21 +118,16 @@
       </div>
     </div>
     <div v-if="recievedTreatment" class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-2">
             <label style="float: left; font-weight: bold">ART Number</label>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-5">
             <span
               style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
             >Number Unknown?</span>
-            <div>
-              <label class="checkbox-label" style="margin-left: 50px">
-                <input type="checkbox" style="margin-left: 50px" @click="arvNumberUnkownCheckbox()" />
-                <span class="checkbox-custom rectangular" style="margin-left: 220px;"></span>
-              </label>
-            </div>
+            <input type="checkbox" style="margin-left: 10px" @click="arvNumberUnkownCheckbox()" />
           </div>
         </div>
         <div class="form-group">
@@ -160,16 +141,16 @@
           />
         </div>
       </div>
-      <div class="col-md-6" style="margin-top: 20px">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <label style="float: left; font-weight: bold">Confirmatory Test</label>
-            </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float: left; font-weight: bold">Confirmatory Test</label>
           </div>
-          <div class="form-group">
-            <v-select :options="options" v-model="confirmatory" :reduce="option => option.value"></v-select>
-          </div>
+        </div>
+        <div class="form-group">
+          <v-select :options="options" v-model="confirmatory" :reduce="option => option.value"></v-select>
         </div>
       </div>
     </div>
@@ -185,12 +166,11 @@
                 <span
                   style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
                 >Location unknown?</span>
-                <div>
-                  <label class="checkbox-label">
-                    <input type="checkbox" @click="locationOfInitiationCheck()" />
-                    <span class="checkbox-custom rectangular" style="margin-left: 220px;"></span>
-                  </label>
-                </div>
+                <input
+                  type="checkbox"
+                  @click="locationOfConfirmatoryCheck()"
+                  style="margin-left: 10px"
+                />
               </div>
             </div>
           </div>
@@ -199,9 +179,9 @@
               <v-select
                 :options="locations"
                 @search="getlocations"
-                @input="getLoc"
-                v-model="locationOfInitiation"
-                :disabled="locationOfInitiationUnknown"
+                @input="getVal"
+                v-model="locationOfConfirmatory"
+                :disabled="locationOfConfirmatoryUnknown"
               ></v-select>
             </div>
           </div>
@@ -217,19 +197,14 @@
               <div class="col-md-6">
                 <span
                   style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
-                >Test year unknown?</span>
-                <div>
-                  <label class="checkbox-label">
-                    <input type="checkbox" @click="locationOfInitiationCheck()" />
-                    <span class="checkbox-custom rectangular" style="margin-left: 220px;"></span>
-                  </label>
-                </div>
+                >Year Unknown?</span>
+                <input type="checkbox" @click="confirmatoryYearCheck()" style="margin-left: 10px" />
               </div>
             </div>
           </div>
           <div class="col-md-12">
             <div class="form-group">
-              <input type="date" class="form-control" name v-model="yearLastTaken" />
+              <input type="date" class="form-control" name v-model="hivTestYear" />
             </div>
           </div>
         </div>
@@ -262,7 +237,11 @@ export default {
       yearLastTaken: null,
       locationOfInitiation: "Select Location of Initiation",
       locationOfInitiationUnknown: false,
+      locationOfConfirmatory: "Select Location Confirmatory",
+      locationOfConfirmatoryUnknown: false,
       confirmatory: "Select Confirmatory Test",
+      hivTestYear: null,
+      hivTestYearUnknown: false,
 
       options: [
         {
@@ -331,6 +310,16 @@ export default {
           },
           dateARTStarted: {
             concept_id: 2516,
+            value_datetime: null
+          },
+          testLocation: {
+            // Location of ART Confirmatory
+            value_text: null,
+            concept_id: 7881,
+            location_id: null
+          },
+          testDate: {
+            concept_id: 7882,
             value_datetime: null
           }
         }
@@ -411,7 +400,7 @@ export default {
       if (this.yearStartedKnown == true) {
         this.yearStartedKnown = false;
       } else if (this.yearStartedKnown == false) {
-        this.clinicRegistration.obs.dateARTStarted.value_datetime = "Unknown"; // FIX THIS
+        this.artStartDate = "Unknown"; // FIX THIS
         this.yearStartedKnown = true;
       }
     },
@@ -424,6 +413,28 @@ export default {
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text =
           "Unknown";
         this.arvNumberUnkown = true;
+      }
+    },
+
+    locationOfConfirmatoryCheck() {
+      if (this.locationOfConfirmatoryUnknown == true) {
+        this.locationOfConfirmatory = "Select Location";
+        this.locationOfConfirmatoryUnknown = false;
+      } else if (this.locationOfConfirmatoryUnknown == false) {
+        this.locationOfConfirmatory = "Unknown";
+        this.clinicRegistration.obs.testLocation.value_text = "Unknown";
+        this.locationOfConfirmatoryUnknown = true;
+      }
+    },
+
+    confirmatoryYearCheck() {
+      if (this.hivTestYearUnknown == true) {
+        this.hivTestYear = "";
+        this.hivTestYearUnknown = false;
+      } else if (this.hivTestYearUnknown == false) {
+        this.hivTestYear = "Unknown";
+        this.clinicRegistration.obs.testDate.value_datetime = "Unknown";
+        this.hivTestYearUnknown = true;
       }
     },
 
@@ -453,6 +464,9 @@ export default {
       const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
       this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
       this.clinicRegistration.obs.confirmatoryTest.value_coded = this.confirmatory;
+
+      const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
+      this.clinicRegistration.obs.testDate.value_datetime = testYear;
     },
     getVal(val) {
       this.clinicRegistration.obs.testLocation.value_text = val.label;

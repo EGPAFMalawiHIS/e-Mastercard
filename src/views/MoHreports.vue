@@ -24,7 +24,7 @@
             </div>
 
             <div class="col-sm">
-              <div class="btn-container">
+              <div class="btn-container" @click="redirect('/survival_analysis')">
                 <div class="card">
                   <img src="../assets/report-icons/refill.png" class="btn-icon"/>
                   <p>Survival analysis</p>
@@ -42,7 +42,7 @@
             </div>
           
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/')">
+              <div class="btn-container">
                 <div class="card">
                   <img src="../assets/report-icons/ipt-usage.png" class="btn-icon"/>
                   <p>IPT (coverage)</p>

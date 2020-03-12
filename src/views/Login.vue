@@ -36,6 +36,7 @@
                   id="username"
                   v-model="username"
                   required
+                  autofocus
                 />
                 <span class="glyphicon glyphicon-user form-control-feedback"></span>
               </div>

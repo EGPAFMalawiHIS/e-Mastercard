@@ -62,7 +62,7 @@
                 <label class="input-label" for="dobInput">Date Of Birth (*)</label>
                 <input
                   v-model="dateOfBirth"
-                  type="text"
+                  type="date"
                   class="form-control"
                   id="patient-date-of-birth"
                   name="patient-date-of-birth"
@@ -290,7 +290,7 @@
                 <label class="input-label" for="dobInput">Date Of Birth (*)</label>
                 <input
                   v-model="guardianDateOfBirth"
-                  type="text"
+                  type="date"
                   class="form-control"
                   id="guardian-date-of-birth"
                   placeholder="Date of Birth"
@@ -983,7 +983,7 @@ export default {
               if (this.registerGuardian) {
                 this.submitGuardianCreate(patientId);
               }
-              this.createPatientTypeObs(this.buildPatientTypeObs(ob));
+              this.createPatientTypeObs(this.buildPatientTypeObs(ob), patientId);
             });
           }
         })
@@ -1004,7 +1004,7 @@ export default {
       };
     },
 
-    createPatientTypeObs(params = {}) {
+    createPatientTypeObs(params = {}, patientId) {
       fetch(`${this.config.api_base_url}/observations`, {
         method: "POST",
         headers: {
@@ -1016,6 +1016,7 @@ export default {
         .then(response => {
           if (response.status === 201) {
             return response.json().then(data => {
+              this.redirect(`/registration/${patientId}`)
               console.log(data);
             });
           }
@@ -1229,6 +1230,7 @@ export default {
         .then(response => {
           if (response.status === 201) {
             return response.json().then(data => {
+              this.redirect(`/registration/${params.patient_id}`)
               console.log(data);
             });
           }
@@ -1529,6 +1531,9 @@ export default {
           return false;
         });
       });
+    },
+    redirect: function(url) {
+      this.$router.push(url);
     }
   },
   created() {

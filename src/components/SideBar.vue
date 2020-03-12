@@ -5,7 +5,7 @@
         <a href="/" class="side-list list-group-item list-group-item-action ">Dashboard</a>
         <a href="/search" class="side-list list-group-item list-group-item-action ">Search</a>
         <a href="/reports" class="side-list list-group-item list-group-item-action ">Reports</a>
-        <a href="#" class="side-list list-group-item list-group-item-action ">Data cleaning tools</a>
+        <a href="/cleaning_tools" class="side-list list-group-item list-group-item-action ">Data cleaning tools</a>
         <router-link v-if="this.$store.getters.userIs('Superuser')" :to="{name: 'ListUsers'}" class="side-list list-group-item list-group-item-action">Users</router-link>
         
         <!-- <a href="#" class="side-list list-group-item list-group-item-action ">Overview</a>
@@ -47,11 +47,15 @@ export default {};
 #sidebar-wrapper .list-group {
   width: 15rem;
 }
+@media print {
+  .side-bar {
+    display: none;
+  }
+} 
 @media (min-width: 768px) {
   #sidebar-wrapper {
     margin-left: 0;
   }
-
   #page-content-wrapper {
     min-width: 0;
     width: 100%;

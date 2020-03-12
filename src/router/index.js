@@ -149,6 +149,71 @@ const routes = [
     component: () => import("../views/Settings.vue")
   },
   {
+    path: "/cleaning_tools",
+    name: "Data cleaning tools",
+    component: () => import("../views/DataCleaningTools.vue")
+  },{
+    path: "/survival_analysis",
+    name: "SurvivalAnalysis",
+    component: () => import("../views/SurvivalAnalysis.vue")
+  },
+  {
+    path: "/registration/:id",
+    name: "registration",
+    component: () => import("../views/Registration.vue")
+  },
+  {
+    path: "/tx_rtt",
+    name: "txRTT",
+    component: () => import("../views/txRTT.vue")
+  }
+  ,
+  {
+    path: "/cleaning_tools/date_enrolled_greater_than_earliest_start_date",
+    name: "Date enrolled greater than start date",
+    component: () => import("../views/cleaning_tools/date_enrolled_greater_than_earliest_start_date.vue")
+  }  ,
+  {
+    path: "/cleaning_tools/encounters_after_death",
+    name: "Encounters after death",
+    component: () => import("../views/cleaning_tools/encounter_after_death.vue")
+  }  ,
+  {
+    path: "/cleaning_tools/enrolled_before_birth",
+    name: "enrolled_before_death",
+    component: () => import("../views/cleaning_tools/enrolled_before_birth.vue")
+  }  ,
+  {
+    path: "/cleaning_tools/incomplete_visits",
+    name: "Incomplete Visits",
+    component: () => import("../views/cleaning_tools/incomplete_visit.vue")
+  }  ,
+  {
+    path: "/cleaning_tools/male_with_female_obs",
+    name: "Male with Female Obs",
+    component: () => import("../views/cleaning_tools/male_with_female_obs.vue")
+  }  ,
+  {
+    path: "/cleaning_tools/missing_start_reason",
+    name: "missing start reason",
+    component: () => import("../views/cleaning_tools/missing_start_reason.vue")
+  }  ,
+  {
+    path: "/cleaning_tools/multiple_start_reason",
+    name: "Multiple start reasons",
+    component: () => import("../views/cleaning_tools/multiple_start_reason.vue")
+  }  ,
+  {
+    path: "/cleaning_tools/pre_art_and_unkown_outocme",
+    name: "pre ART and unknown outcome",
+    component: () => import("../views/cleaning_tools/pre_art_and_unknown_outcome.vue")
+  }  ,
+  {
+    path: "/cleaning_tools/prescription_without_dispensation",
+    name: "Prescription without dispensation",
+    component: () => import("../views/cleaning_tools/prescription_without_dispensation.vue")
+  }, 
+  {
     path: "/users",
     name: "ListUsers",
     component: () => import("../views/Users/list.vue"),

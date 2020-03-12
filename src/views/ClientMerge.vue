@@ -8,71 +8,21 @@
       <!-- Page Content -->
       <div id="page-content-wrapper">
         <top-nav />
+          <div class="row">
+           <div class="col">
+               
+          <search />
+           </div> 
+           <div class="col">
+               
+          <search />
+           </div> 
+          </div>
         <div class="container-fluid" style="width: 40%; margin: auto; margin-top: 12px">
-          <div class="input-group mb-3 rounded">
-            <input
-              class="form-control border-primary"
-              id="myInput"
-              type="text"
-              placeholder="Search for a patient.."
-              v-model="searchText"
-              v-on:keyup.enter="searchPatients"
-            />
-            <div class="input-group-append">
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                @click="searchPatients"
-                style="margin-left: 10px"
-              >search</button>
-            </div>
-          </div>
-
-          <div class="justify-content-center" style="width: 80%; margin: auto; margin-left: 60px">
-            <form class="form-inline">
-              <div class="form-group">
-                <label for="gender">Gender:</label>
-                <!-- <input type="password" class="form-control" id="pwd"> -->
-                <select
-                  name="gender"
-                  id="gender"
-                  class="form-control form-control"
-                  v-model="gender"
-                >
-                  <option value selected disabled>Gender</option>
-                  <option value="M">Male</option>
-                  <option value="F">Female</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-left: 20px">
-                <input
-                  type="checkbox"
-                  name="ARV number"
-                  id="arvNumber"
-                  value="ARV Number"
-                  v-model="arvNumber"
-                />
-                <label class="form-check-input" for="arvNumber">ARV Number</label>
-              </div>
-              <div class="form-group" style="margin-left: 20px">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  @click="redirect('/patient_registration')"
-                >Add New Patient</button>
-              </div>
-            </form>
-          </div>
-          <br />
-          <br />
-        </div>
         <div class="d-flex justify-content-center" v-if="loading">
           <div class="spinner-border" role="status">
             <span class="sr-only">Loading...</span>
           </div>
-        </div>
-        <div class="d-flex justify-content-center">
-          <p> number of results: ({{results.length}})</p>
         </div>
         <div class="container-fluid">
           <div class="row">
@@ -85,6 +35,7 @@
       <!-- /#page-content-wrapper -->
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -92,13 +43,15 @@
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import PatientCard from "@/components/PatientCard.vue";
+import PatientSearch from "@/components/Search.vue";
 import ApiClient from "../services/api_client";
 export default {
   name: "home",
   components: {
     "top-nav": TopNav,
     "side-bar": Sidebar,
-    "patient-card": PatientCard
+    "patient-card": PatientCard,
+    "search": PatientSearch
   },
   data: function() {
     return {
