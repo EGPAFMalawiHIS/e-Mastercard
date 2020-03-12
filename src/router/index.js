@@ -141,7 +141,7 @@ const routes = [
   {
     path: "/registration/:id",
     name: "registration",
-    component: () => import("../components/encounters/Registration.vue")
+    component: () => import("../views/Registration.vue")
   }
 ]
 
