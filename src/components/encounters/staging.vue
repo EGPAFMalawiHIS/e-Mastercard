@@ -53,7 +53,7 @@
           <div class="col">
             <div class="form-group">
               <label style="font-weight: bold">Stage 4</label>
-              <state-four-list multiple v-model="stateFourValue" :options="Object.keys(stageFourConditions)"></state-four-list>
+              <v-select multiple v-model="stateFourValue" :options="Object.keys(stageFourConditions)"></v-select>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@
           <div class="col">
             <div class="form-group">
               <label style="font-weight: bold">Stage 3</label>
-              <state-four-list multiple v-model="stateThreeValue" :options="Object.keys(stageThreeConditions)"></state-four-list>
+              <v-select multiple v-model="stateThreeValue" :options="Object.keys(stageThreeConditions)"></v-select>
             </div>
           </div>
         </div>
@@ -73,7 +73,7 @@
           <div class="col">
             <div class="form-group">
               <label style="font-weight: bold">Stage 2</label>
-              <state-four-list multiple v-model="stateTwoValue" :options="Object.keys(stageTwoConditions)"></state-four-list>
+              <v-select multiple v-model="stateTwoValue" :options="Object.keys(stageTwoConditions)"></v-select>
             </div>
           </div>
         </div>
@@ -83,7 +83,7 @@
           <div class="col">
             <div class="form-group">
               <label style="font-weight: bold">Stage 1</label>
-              <state-four-list multiple v-model="stateOneValue" :options="Object.keys(stageOneConditions)"></state-four-list>
+              <v-select multiple v-model="stateOneValue" :options="Object.keys(stageOneConditions)"></v-select>
             </div>
           </div>
         </div>
@@ -98,6 +98,7 @@
 <script>
 
 import Multiselect from 'vue-multiselect'
+import VueSelect from "vue-select";
 
 var who_stage_concept_map = {
   "Cryptococcal meningitis or other extrapulmonary cryptococcosis": 7548,
@@ -224,7 +225,8 @@ var whoStageConceptMapHash = {
 
 export default {
   components: {
-    'state-four-list': Multiselect
+    'state-four-list': Multiselect,
+    "v-select": VueSelect,
   },
 
   data: function() {
