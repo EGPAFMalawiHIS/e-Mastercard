@@ -3,12 +3,22 @@
     <side-bar />
     <div id="page-content-wrapper">
       <top-nav />
-      <!-- Page Content -->
       <div id="main-container" class="col-12 table-col">
         <div class="row">
-          <!-- <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>   -->
+          <div class="col-md-4">
+            <label for="">Select data cleaning tool</label>
+            <select class="form-control" name="" id="" v-model="report">
+              <option v-for="(tool, index) in tools" :key="index" :value="{name: tool.name, path: tool.path}">
+                {{tool.name}}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-8">
           <sdPicker :onSubmit="fetchDates"></sdPicker>
-          <!-- <p style="color:red;"> check dates </p> -->
+          </div>
+          <div class="form-group">
+            
+          </div>
         </div>
         <vue-bootstrap4-table
           :rows="rows"
@@ -25,7 +35,6 @@
           </template>
         </vue-bootstrap4-table>
       </div>
-      <!-- Page Content end -->
     </div>
   </div>
 </template>
@@ -40,18 +49,51 @@ import ApiClient from "../../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from "moment";
-import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
+import StartAndEndDatePicker from "@/components/picker.vue";
 
 export default {
   name: "App",
   data: function() {
-    let report_title = "Appointment missed";
     return {
-      report_title: report_title,
       reportData: null,
       dTable: null,
       formatedData: [],
       showLoader: false,
+      report: {},
+      tools: [
+        {
+          path:"DATE ENROLLED LESS THAN EARLIEST START DATE",
+          name: "Patients with earliest start date less than date enrolled"
+        },
+        {
+          path: "CLIENTS WITH ENCOUNTERS AFTER DECLARED DEAD",
+          name: "Encounters after death"
+        },
+        {
+          path: "DOB MORE THAN DATE ENROLLED",
+          name: "Patients enrolled on art before birth"
+        },
+        {
+          path: "MALE CLIENTS WITH FEMALE OBS",
+          name: "Male patients with female observations"
+        },
+        {
+          path: "MISSING START REASONS",
+          name: "Patient without ART start reason"
+        },
+        {
+          path: "MULTIPLE START REASONS",
+          name: "Patients with multiple start reasons"
+        },
+        {
+          path: "PRE ART OR UNKNOWN OUTCOMES",
+          name: "Patients with PRE-ART / unknown as outcome status"
+        },
+        {
+          path: "PRESCRIPTION WITHOUT DISPENSATION",
+          name: "Patient with prescriptions without dispensation"
+        }
+      ],
       rows: [],
       columns: [
         {
@@ -88,7 +130,7 @@ export default {
         }
       ],
       config: {
-        card_title: report_title,
+        card_title: 'data cleaning tools',
         show_refresh_button: false,
         show_reset_button: false
       },
@@ -122,21 +164,25 @@ export default {
   },
   methods: {
     fetchDates: async function(dates) {
-      this.rows.length = 0;
+      this.rows = [];
+      this.report_title = this.report.name;
       const even = element => element === "Invalid date";
       if (dates.some(even)) {
         console.log("Check your dates");
       } else {
         this.showLoader = true;
         let url =
-          "/incomplete_visits"
+          "/art_data_cleaning_tools?start_date=" +
+          dates[0] +
+          "&end_date=" +
+          dates[1];
+        url += "&program_id=1";
+        url += `&report_name=${this.report.path}`;
         const response = await ApiClient.get(url, {}, {});
         if (response.status === 200) {
           response.json().then(data => {
             if (Object.keys(data).length > 0) {
-              this.rows.push(data);
-            }else {
-              this.rows = [];
+              this.rows = data;
             }
           });
           this.showLoader = false;
@@ -154,6 +200,7 @@ export default {
     "top-nav": TopNav,
     "side-bar": Sidebar,
     sdPicker: StartAndEndDatePicker
+  }, computed: {
   }
 };
 </script>
