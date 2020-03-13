@@ -1,6 +1,7 @@
 <template>
   <PageView>
-    <UserEditForm @on-submit="editUser"
+    <UserEditForm v-if="!loading"
+                  @on-submit="editUser"
                   :user="user"
                   :editMode="true"
                   submitText="Update user" />
@@ -16,18 +17,7 @@ import UserEditForm from "@/components/users/UserEditForm"
 export default {
   components: {PageView, UserEditForm},
   created() {
-    this.fetchUser()
-        .then(user => {
-          const name = user.person.names[0];
-
-          this.user = {
-            user_id: user.user_id,
-            username: user.username,
-            given_name: name && name.given_name,
-            family_name: name && name.family_name,
-            roles: user.roles
-          }
-        });
+    this.loadUser();
   },
   computed: {
     userId() {
@@ -36,7 +26,8 @@ export default {
   },
   data() {
     return {
-      user: {}
+      user: {},
+      loading: true
     }
   },
   methods: {
@@ -68,6 +59,22 @@ export default {
       } else {
         return response.json();
       }
+    },
+    async loadUser() {
+      this.loading = true;
+
+      const user = await this.fetchUser();
+      const name = user.person.names[0];
+
+      this.user = {
+        user_id: user.user_id,
+        username: user.username,
+        given_name: name && name.given_name,
+        family_name: name && name.family_name,
+        roles: user.roles
+      };
+
+      this.loading = false;
     }
   }
 }

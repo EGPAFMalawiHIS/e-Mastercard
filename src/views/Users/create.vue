@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import ApiClient from "@/services/api_client";
 import PageView from "@/components/PageView";
 import UserEditForm from "@/components/users/UserEditForm"
 
