@@ -4,24 +4,13 @@
       <li class="nav-item">
         <a
           class="nav-link active"
-          id="home-tab"
+          id="contact-tab"
           data-toggle="tab"
-          href="#stage_1"
+          href="#stage_4"
           role="tab"
-          aria-controls="stage 1"
+          aria-controls="stage 4"
           aria-selected="true"
-        >Stage 1</a>
-      </li>
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          id="profile-tab"
-          data-toggle="tab"
-          href="#stage_2"
-          role="tab"
-          aria-controls="stage 2"
-          aria-selected="false"
-        >Stage 2</a>
+        >Stage 4</a>
       </li>
       <li class="nav-item">
         <a
@@ -37,67 +26,64 @@
       <li class="nav-item">
         <a
           class="nav-link"
-          id="contact-tab"
+          id="profile-tab"
           data-toggle="tab"
-          href="#stage_4"
+          href="#stage_2"
           role="tab"
-          aria-controls="stage 4"
+          aria-controls="stage 2"
           aria-selected="false"
-        >Stage 4</a>
+        >Stage 2</a>
+      </li>
+
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          id="home-tab"
+          data-toggle="tab"
+          href="#stage_1"
+          role="tab"
+          aria-controls="stage 1"
+          aria-selected="false"
+        >Stage 1</a>
       </li>
     </ul>
     <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade" id="stage_4" role="tabpanel" aria-labelledby="stage_4">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label style="font-weight: bold">Stage 4</label>
+              <state-four-list multiple v-model="stateFourValue" :options="Object.keys(stageFourConditions)"></state-four-list>
+            </div>
+          </div>
+        </div>
+      </div>
+       <div class="tab-pane fade" id="stage_3" role="tabpanel" aria-labelledby="stage_3">
+         <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label style="font-weight: bold">Stage 3</label>
+              <state-four-list multiple v-model="stateThreeValue" :options="Object.keys(stageThreeConditions)"></state-four-list>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="stage_2" role="tabpanel" aria-labelledby="stage_2">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label style="font-weight: bold">Stage 2</label>
+              <state-four-list multiple v-model="stateTwoValue" :options="Object.keys(stageTwoConditions)"></state-four-list>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="tab-pane fade" id="stage_1" role="tabpanel" aria-labelledby="stage_1">
         <div class="row">
           <div class="col">
             <div class="form-group">
-              <label for="exampleFormControlSelect2">Stage 1</label>
-              <select multiple class="form-control" id="exampleFormControlSelect2">
-                <option
-                  v-for="(stage, index) in Object.keys(stageOneConditions)"
-                  :key="index"
-                >{{stage}}</option>
-              </select>
-            </div>
-          </div>
-        </div>1
-      </div>
-      <div class="tab-pane fade" id="stage_2" role="tabpanel" aria-labelledby="stage_2">
-        <div class="col-md-3">
-          <div class="row">
-            <p>Stage 4</p>
-          </div>
-
-          <div class="row" v-for="(stage, index) in Object.keys(stageFourConditions)" :key="index">
-            <div class="form-check form-check-inline">
-              <label class="form-check-label" for="inlineRadio1">{{stage}}</label>
-              <input class="form-check-input" type="checkbox" :value="stageFourConditions[stage]" />
-            </div>
-          </div>
-        </div>2
-      </div>
-      <div class="tab-pane fade" id="stage_3" role="tabpanel" aria-labelledby="stage_3">
-        <div class="col-md-3">
-          <div class="row">
-            <p>Stage 3</p>
-          </div>
-          <div class="row" v-for="(stage, index) in Object.keys(stageThreeConditions)" :key="index">
-            <div class="form-check form-check-inline">
-              <label class="form-check-label" for="inlineRadio1">{{stage}}</label>
-              <input class="form-check-input" type="checkbox" :value="stageFourConditions[stage]" />
-            </div>
-          </div>
-        </div>3
-      </div>
-      <div class="tab-pane fade" id="stage_4" role="tabpanel" aria-labelledby="stage_4">
-        <div class="col-md-3">
-          <div class="row">
-            <p>Stage 2</p>
-          </div>
-          <div class="row" v-for="(stage, index) in Object.keys(stageTwoConditions)" :key="index">
-            <div class="form-check form-check-inline">
-              <label class="form-check-label" for="inlineRadio1">{{stage}}</label>
-              <input class="form-check-input" type="checkbox" :value="stageFourConditions[stage]" />
+              <label style="font-weight: bold">Stage 1</label>
+              <state-four-list multiple v-model="stateOneValue" :options="Object.keys(stageOneConditions)"></state-four-list>
             </div>
           </div>
         </div>
@@ -110,6 +96,9 @@
 </template>
 
 <script>
+
+import Multiselect from 'vue-multiselect'
+
 var who_stage_concept_map = {
   "Cryptococcal meningitis or other extrapulmonary cryptococcosis": 7548,
   "Candidiasis of oseophagus, trachea and bronchi or lungs": 5340,
@@ -234,8 +223,17 @@ var whoStageConceptMapHash = {
 };
 
 export default {
+  components: {
+    'state-four-list': Multiselect
+  },
+
   data: function() {
     return {
+      stateFourValue: null,
+      stateThreeValue: null,
+      stateTwoValue: null,
+      stateOneValue: null,
+
       stages: ["Stage 4", "Stage 3", "Stage 2", "Stage 1"],
       stageFourConditions: {
         "Cryptococcal meningitis or other extrapulmonary cryptococcosis": 7548,
@@ -346,6 +344,8 @@ export default {
   }
 };
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style>
 </style>
