@@ -17,7 +17,7 @@
               name="next"
               class="btn btn-primary clinical action-button"
               value="Next Step"
-              style="margin-top: 10px"
+              style="position: absolute; bottom: 30px; right: 45%"
             />
             <div class="errorTxt" style="margin-top: 10px; text-align: center; font-weight: bold"></div>
           </form>
@@ -37,14 +37,14 @@
               name="previous"
               class="btn btn-primary previous action-button-previous"
               value="Previous"
-              style="margin-right: 5px; margin-top: 20px"
+              style="position: absolute; bottom: 30px; right: 50%"
             />
             <input
               type="button"
               name="next"
               class="btn btn-primary reception action-button"
               value="Next Step"
-              style=" margin-top: 20px"
+              style="position: absolute; bottom: 30px; right: 40%"
             />
             <div
               class="guardianError"
@@ -57,19 +57,70 @@
           <form
             class="content-tab tab-pane fade show active shadow-lg p-3 mb-5 bg-white rounded form-template"
           >
-          Summary
             <div class="row">
               <h5 style="font-weight: bold; margin: auto; margin-bottom: 10px">Summary</h5>
+              <div class="col-md-12">
+                <table class="table table-striped" style="text-align: left">
+                  <col />
+                  <colgroup span="2"></colgroup>
+                  <colgroup span="2"></colgroup>
+                  <!-- <tr>
+                    <td rowspan="2"></td>
+                  </tr> -->
+                  <tr>
+                    <th scope="col">HIV Registration</th>
+                    <th scope="col">Staging</th>
+                  </tr>
+                  <tbody>
+                    <tr>
+                      <td>N/A</td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td>N/A</td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td>N/A</td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td>N/A</td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td>N/A</td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td>N/A</td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td>N/A</td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td>N/A</td>
+                      <td>N/A</td>
+                    </tr>
+                    <tr>
+                      <td>N/A</td>
+                      <td>N/A</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
             <input
               type="button"
               name="previous"
               class="btn btn-primary previous action-button-previous"
               value="Previous"
-              style="margin-right: 5px; margin-top: 45px"
+              style="position: absolute; bottom: 30px; right: 50%"
             />
             <button
-              style="margin-top: 45px"
+              style="position: absolute; bottom: 30px; right: 43%"
               type="button"
               class="btn btn-primary"
               @click="createEncounters"
