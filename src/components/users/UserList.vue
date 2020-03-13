@@ -4,7 +4,8 @@
                   :config="table.config"
                   :actions="table.actions"
                   @on-create-user="createUser"
-                  class="table table-striped">
+                  class="table table-striped"
+                  :show-loader="showLoader">
     <template slot="roles" slot-scope="props">
       <ul class="roles-list">
         <li v-for="role_object in props.cell_value" :key="role_object.role" class="roles-list-item">
@@ -19,8 +20,11 @@
       <button type="button" @click="() => editUser(props.cell_value)">
         <i class="fas fa-user-edit" aria-hidden="true"></i>
       </button>
-      <button type="button" @click="() => deactivateUser(props.cell_value)">
-        <span class="fas fa-user-minus" aria-hidden="true"></span>
+      <button v-if="!userIsDeactivated(props.cell_value)" type="button" @click="() => deactivateUser(props.cell_value)">
+        <i class="fas fa-user-minus" aria-hidden="true"></i>
+      </button>
+      <button v-if="userIsDeactivated(props.cell_value)" type="button" @click="() => activateUser(props.cell_value)">
+        <i class="fas fa-user-plus" aria-hidden="true"></i>
       </button>
     </template>
   </BootstrapTable>
@@ -31,7 +35,7 @@ import moment from "moment";
 import VueBootstrap4Table from "vue-bootstrap4-table";
 
 export default {
-  props: ["users"],
+  props: ['users', 'showLoader'],
   components: {BootstrapTable: VueBootstrap4Table},
   computed: {
     table_rows: function() {
@@ -96,14 +100,23 @@ export default {
     }
   },
   methods: {
-    createUser: function() {
+    createUser() {
       this.$emit('create-user');
     },
     editUser(userId) {
       this.$emit('edit-user', userId);
     },
+    activateUser(userId) {
+      this.$emit('activate-user', userId);
+    },
     deactivateUser(userId) {
       this.$emit('deactivate-user', userId);
+    },
+    getUserByUserId(userId) {
+      return this.users.find(user => user.user_id == userId);
+    },
+    userIsDeactivated(userId) {
+      return !!this.getUserByUserId(userId).deactivated_on;
     }
   }
 }

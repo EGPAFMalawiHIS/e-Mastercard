@@ -1,9 +1,11 @@
 <template>
   <PageView>
     <UserList :users="users"
+              :show-loader="loading"
               @create-user="createUser"
               @edit-user="editUser"
-              @deactivate-user="deactivateUser" />
+              @deactivate-user="deactivateUser"
+              @activate-user="activateUser" />
   </PageView>
 </template>
 
@@ -21,12 +23,16 @@ export default {
   components: { Action, ActionPane, PageView, UserList },
   data() {
     return {
-      users: []
+      users: [],
+      loading: true
     }
   },
   created() {
     this.fetchUsers()
-        .then((users) => this.users = users);
+        .then((users) => {
+          this.users = users;
+          this.loading = false;
+        });
   },
   methods: {
     async fetchUsers() {
@@ -54,6 +60,9 @@ export default {
     },
     deactivateUser(userId) {
       console.log(['deactivateUser', userId]);
+    },
+    activateUser(userId) {
+      console.log(['activateUser', userId]);
     }
   }
 }
