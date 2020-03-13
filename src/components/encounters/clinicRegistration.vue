@@ -27,8 +27,38 @@
     <div v-if="recievedTreatment" class="row">
       <div class="col-md-6">
         <div class="row">
+          <div class="col-md-6">
+            <label style="float: left; font-weight: bold">Year last taken ARVs</label>
+          </div>
+          <div class="col-md-6">
+            <span
+              style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic;"
+            >Year Unknown?</span>
+            <input type="checkbox" @click="yearLastTakenUknownCheck()" style="margin-left: 10px" />
+          </div>
+        </div>
+        <div class="form-group">
+          <input
+            v-if="!yearLastTakenUknown"
+            type="date"
+            class="form-control"
+            name
+            v-model="yearLastTaken"
+          />
+          <input
+            v-if="yearLastTakenUknown"
+            type="text"
+            class="form-control"
+            value="Unknown"
+            v-model="yearLastTaken"
+            disabled
+          />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
           <div class="col-md-12">
-            <label style="float: left; font-weight: bold">ART Clinic registration</label>
+            <label style="float: left; font-weight: bold">Registered at a clinic</label>
           </div>
         </div>
         <div class="col-md-12" style="background: rgba(137, 140, 145, 0.2); height: 37px;">
@@ -46,32 +76,68 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-6">
-            <label style="float: left; font-weight: bold">Year last taken ARVs</label>
-          </div>
-          <div class="col-md-6">
-            <span
-              style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic;"
-            >Year Unknown?</span>
-            <input type="checkbox" @click="yearLastTakenUknownCheck()" style="margin-left: 10px" />
-          </div>
-        </div>
-        <div class="form-group">
-          <input type="date" class="form-control" name v-model="yearLastTaken" />
-        </div>
-      </div>
     </div>
-    <div v-if="recievedTreatment" class="row">
+    <div v-if="recievedTreatment && yearLastTakenUknown" class="row">
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
+            <label style="float: left; font-weight: bold">ARVs taken 2 months prior?</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <input
+            v-if="!yearLastTakenUknown"
+            type="date"
+            class="form-control"
+            name
+            v-model="yearLastTaken"
+          />
+          <select
+            v-model="arvsTakenTwoMonthsPrior"
+            id="patient-gender"
+            name="patient-gender"
+            class="form-control"
+            v-if="yearLastTakenUknown"
+          >
+            <option disabled>Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="Unknown">Unknown</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float: left; font-weight: bold">ARVs taken 2 weeks prior?</label>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <select
+            v-model="arvsTakenTwoWeeksPrior"
+            id="patient-gender"
+            name="patient-gender"
+            class="form-control"
+            v-if="yearLastTakenUknown"
+            :disabled="arvsTakenTwoMonthsPrior != 'Yes'"
+          >
+            <option disabled>Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="Unknown">Unknown</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div v-if="recievedTreatment && registered" class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-3">
                 <label style="float: left; font-weight: bold">Location of ART Initiation</label>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-3">
                 <span
                   style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
                 >Location Unknown?</span>
@@ -96,6 +162,8 @@
           </div>
         </div>
       </div>
+    </div>
+    <div v-if="recievedTreatment && registered" class="row">
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
@@ -111,19 +179,36 @@
               </div>
             </div>
             <div class="form-group">
-              <input type="date" class="form-control" name v-model="artStartDate" />
+              <input
+                v-if="!yearStartedKnown"
+                type="date"
+                class="form-control"
+                name
+                v-model="artStartDate"
+              />
+              <select
+                v-if="yearStartedKnown"
+                id="patient-gender"
+                name="patient-gender"
+                class="form-control"
+              >
+                <option disabled>Select</option>
+                <option value="Yes">6 months</option>
+                <option value="No">12 months</option>
+                <option value="Unknown">18 months</option>
+                <option value="No">24 months</option>
+                <option value="Unknown">Over 2 years</option>
+              </select>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div v-if="recievedTreatment" class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <div class="row">
-          <div class="col-md-2">
-            <label style="float: left; font-weight: bold">ART Number</label>
+          <div class="col-md-6">
+            <label style="float: left; font-weight: bold">ARV Number</label>
           </div>
-          <div class="col-md-5">
+          <div class="col-md-6">
             <span
               style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
             >Number Unknown?</span>
@@ -154,7 +239,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div v-if="confirmatory == 1040 || confirmatory == 844" class="row">
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
@@ -187,7 +272,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div v-if="confirmatory == 1040 || confirmatory == 844" class="col-md-6">
         <div class="row">
           <div class="col-md-12">
             <div class="row">
@@ -204,7 +289,22 @@
           </div>
           <div class="col-md-12">
             <div class="form-group">
-              <input type="date" class="form-control" name v-model="hivTestYear" />
+              <input
+                v-if="!hivTestYearUnknown"
+                type="date"
+                class="form-control"
+                name
+                v-model="hivTestYear"
+              />
+              <input
+                v-if="hivTestYearUnknown"
+                type="text"
+                class="form-control"
+                value="Unknown"
+                name
+                v-model="hivTestYear"
+                disabled
+              />
             </div>
           </div>
         </div>
@@ -212,6 +312,8 @@
     </div>
   </div>
 </template>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
 <script>
 import ApiClient from "../../services/api_client";
@@ -242,6 +344,8 @@ export default {
       confirmatory: "Select Confirmatory Test",
       hivTestYear: null,
       hivTestYearUnknown: false,
+      arvsTakenTwoMonthsPrior: "Select",
+      arvsTakenTwoWeeksPrior: "Select",
 
       options: [
         {
@@ -279,16 +383,19 @@ export default {
             }
           },
           yearLastTakenARVs: {
+            // OPTIONAL FIELD
             //DONE
             concept_id: 7751,
             value_datetime: null
           },
           everReceivedART: {
+            // OPTIONAL FIELD
             // DONE
             value_coded: null,
             concept_id: 7754
           },
           everRegisteredAtClinic: {
+            // MA
             // DONE
             concept_id: 7937,
             value_coded: null
@@ -352,6 +459,7 @@ export default {
     everRecieved() {
       if (this.recievedTreatment == true) {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1066;
+        this.registered = false;
         this.recievedTreatment = false;
       } else if (this.recievedTreatment == false) {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1065;
@@ -386,6 +494,7 @@ export default {
 
     //Location of ART initiation
     locationOfInitiationCheck() {
+      this.estimateYearLastTaken() // REMOVE THIS
       if (this.locationOfInitiationUnknown == true) {
         this.locationOfInitiation = "Select Location";
         this.locationOfInitiationUnknown = false;
@@ -435,6 +544,35 @@ export default {
         this.hivTestYear = "Unknown";
         this.clinicRegistration.obs.testDate.value_datetime = "Unknown";
         this.hivTestYearUnknown = true;
+      }
+    },
+
+    estimateYearLastTaken() {
+      if (this.yearLastTakenUknown) {
+        if (this.arvsTakenTwoMonthsPrior == "Yes") {
+          if (this.arvsTakenTwoWeeksPrior == "Yes") {
+            let date = new Date();
+            date.setDate(date.getDate() - 14); //two weeks
+            date = date.toDateString();
+            const weekEstimate = moment(date).format("YYYY-MM-DD");
+            console.log(weekEstimate);
+          }
+          if (this.arvsTakenTwoWeeksPrior == "No") {
+            let date = new Date();
+            date.setDate(date.getDate() - 60); // 2 months
+            date = date.toDateString();
+            const monthEstimated = moment(date).format("YYYY-MM-DD");
+            console.log(monthEstimated);
+          }
+        }
+        if (this.arvsTakenTwoMonthsPrior == "No") {
+          let date = new Date();
+          date.setDate(date.getDate() - 90); //3 months
+          date = date.toDateString();
+          const monthEstimated = moment(date).format("YYYY-MM-DD");
+          this.arvsTakenTwoWeeksPrior = "Select"
+          console.log(monthEstimated);
+        }
       }
     },
 
