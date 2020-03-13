@@ -90,6 +90,11 @@ export default {
       tools: [
         {
           path:
+            "/cleaning_tools/cleaner",
+          name: "cleaning tool"
+        },
+        {
+          path:
             "/cleaning_tools/date_enrolled_greater_than_earliest_start_date",
           name: "Date enrolled greater than start date"
         },

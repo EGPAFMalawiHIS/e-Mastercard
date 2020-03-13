@@ -1,0 +1,29 @@
+<template>
+  <PageView>
+    <UserEditForm @on-submit="createUser"
+                  submitText="Create user" />
+  </PageView>
+</template>
+
+<script>
+import ApiClient from "@/services/api_client";
+import PageView from "@/components/PageView";
+import UserEditForm from "@/components/users/UserEditForm"
+
+export default {
+  components: {PageView, UserEditForm},
+  methods: {
+    async createUser(user) {
+      const response = await ApiClient.post('/users', user); 
+
+      if (response.status === 400) {
+        response.text()
+                .then(alert)
+        return;
+      }
+
+      this.$router.push({name: 'ListUsers'});
+    }
+  }
+}
+</script>
