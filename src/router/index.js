@@ -1,11 +1,21 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Home from '../views/Home.vue';
 
-Vue.use(VueRouter)
+import Store from "@/store";
+
+Vue.use(VueRouter);
+
+function authSuperuser(to, from, next) {
+    if (Store.getters.userIs('Superuser')) {
+      next();
+      return;
+    }
+
+    next('/');
+}
 
 const routes = [
-  
   {
     path: '/',
     name: 'dashboard',
@@ -202,7 +212,25 @@ const routes = [
     path: "/cleaning_tools/prescription_without_dispensation",
     name: "Prescription without dispensation",
     component: () => import("../views/cleaning_tools/prescription_without_dispensation.vue")
-  } 
+  }, 
+  {
+    path: "/users",
+    name: "ListUsers",
+    component: () => import("../views/Users/list.vue"),
+    beforeEnter: authSuperuser,
+  },
+  {
+    path: "/users/create",
+    name: "CreateUser",
+    component: () => import("../views/Users/create.vue"),
+    beforeEnter: authSuperuser
+  },
+  {
+    path: "/users/edit/:userId",
+    name: "EditUser",
+    component: () => import("../views/Users/edit.vue"),
+    beforeEnter: authSuperuser
+  }
 ]
 
 const router = new VueRouter({
@@ -211,4 +239,4 @@ const router = new VueRouter({
   routes
 })
 
-export default router
+export default router;
