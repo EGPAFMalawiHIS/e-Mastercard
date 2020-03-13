@@ -1,7 +1,8 @@
 <template>
   <div class="row">
-    <div class="col-md-12 rounded shadow content-pane">
-      <form class="form" @submit="submitForm">
+    <Loader :loading="loading"></Loader>
+    <div v-if="!loading" class="col-md-12 rounded shadow content-pane">
+      <form class="form" @submit.prevent="submitForm">
         <FormInputLabel forInput="username">Username</FormInputLabel>
         <input id="username" type="text" class="form-control" :class="$v.form.username.$error && 'form-control-invalid'" placeholder="Username"
                v-model.trim="$v.form.username.$model"
@@ -67,6 +68,8 @@
 import ApiClient from "@/services/api_client";
 
 import FormInputLabel from "@/components/FormInputLabel";
+import Fragment from "vue-fragment";
+import Loader from "@/components/Loader";
 import { validationMixin } from "vuelidate";
 import { required, requiredIf, minLength, sameAs } from "vuelidate/lib/validators";
 import VueSelect from "vue-select";
@@ -74,10 +77,11 @@ import "vue-select/dist/vue-select.css";
 
 export default {
   mixins: [validationMixin],
-  components: {FormInputLabel, VueSelect},
+  components: {FormInputLabel, Fragment, Loader, VueSelect},
   props: ['user', 'editMode', 'submitText'],
   data() {
     return {
+      loading: true,
       roles: [],
       form: {
         username: '',
@@ -90,9 +94,12 @@ export default {
     };
   },
   mounted() {
+    this.loading = true;
+
     this.fetchRoles()
         .then(roles => this.roles = roles.map(role => role.role))
-        .then(this.loadUserIntoForm);
+        .then(this.loadUserIntoForm)
+        .then(() => this.loading = false);
   },
   validations() {
     return {
@@ -133,11 +140,11 @@ export default {
       return await response.json();
     },
     async submitForm(event) {
-      event.preventDefault();
-
       if (!this.validateForm()) {
         return;
       }
+
+      this.loading = true;
       
       const {shadow_password: _, ...user} = this.form;
 
