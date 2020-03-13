@@ -27,14 +27,15 @@ export default {
       loading: true
     }
   },
-  created() {
-    this.fetchUsers()
-        .then((users) => {
-          this.users = users;
-          this.loading = false;
-        });
+  mounted() {
+    this.loadUsers();
   },
   methods: {
+    async loadUsers() {
+      this.loading = true;
+      this.users = await this.fetchUsers();
+      this.loading = false;
+    },
     async fetchUsers() {
       const response = await ApiClient.get("users?paginate=false");
       const users = await response.json();
@@ -58,11 +59,25 @@ export default {
     editUser(userId) {
       this.$router.push({name: 'EditUser', params: {userId}})
     },
-    deactivateUser(userId) {
-      console.log(['deactivateUser', userId]);
+    async deactivateUser(userId) {
+      const response = await ApiClient.post(`users/${userId}/deactivate`);
+
+      if (response.status !== 200) {
+        response.json().then(alert);
+        return;
+      }
+
+      this.loadUsers();
     },
-    activateUser(userId) {
-      console.log(['activateUser', userId]);
+    async activateUser(userId) {
+      const response = await ApiClient.post(`users/${userId}/activate`);
+
+      if (response.status !== 200) {
+        response.json().then(alert);
+        return;
+      }
+
+      this.loadUsers();
     }
   }
 }

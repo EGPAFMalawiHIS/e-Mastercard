@@ -14,7 +14,7 @@
       </ul>
     </template>
     <template slot="deactivated_on" slot-scope="props">
-      {{ props.cell_value ? moment(pros.cell_value).format('dd/MMM/YYYY') : 'N/A' }}
+      {{ props.cell_value ? moment(props.cell_value).format('d/MMM/YYYY') : 'N/A' }}
     </template>
     <template slot="user_id" slot-scope="props">
       <button type="button" @click="() => editUser(props.cell_value)">
