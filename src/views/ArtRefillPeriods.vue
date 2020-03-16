@@ -4,9 +4,21 @@
       <div id="page-content-wrapper">
          <top-nav />
         <!-- Page Content -->
+        <div class="alert alert-info">
+          <strong>TX CURR MMD</strong> Clients that are alive and on treatment in the reporting period and
+the difference in days between their clinical dispensation visit and next appointment / drug-runout date is:
+          <ul>
+            <li><3 months (1 – 89 days)</li>
+            <li>3-5 months (90-179 days)</li>
+            <li>6+ months (180 or more days)</li>
+          </ul>
+        </div>
+
         <div id="main-container" class="col-12 table-col">
-          <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+          <!--span><button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
            <sdPicker :onSubmit="fetchDates"></sdPicker>
+          
+          
           <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
@@ -235,6 +247,12 @@ table {
     text-align: left;
     margin-left: 5px;
     padding-top: 10px;
+}
+
+.alert-info {
+  width: 98%;
+  margin: 10px;
+  text-align: left;
 }
 </style>
 
