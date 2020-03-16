@@ -186,6 +186,11 @@ const routes = [
     name: "EditUser",
     component: () => import("../views/Users/edit.vue"),
     beforeEnter: authSuperuser
+  },
+  {
+    path: "/ipt_coverage",
+    name: "IPTcoverage",
+    component: () => import("../views/IPTcoverage.vue")
   }
 ]
 
