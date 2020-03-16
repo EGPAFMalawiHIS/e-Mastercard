@@ -170,6 +170,11 @@ const routes = [
     component: () => import("../views/cleaning_tools/cleaning_tool.vue")
   },   
   {
+    path: "/cleaning_tools/merging",
+    name: "merging",
+    component: () => import("../views/cleaning_tools/Merging.vue")
+  },
+  {
     path: "/users",
     name: "ListUsers",
     component: () => import("../views/Users/list.vue"),
