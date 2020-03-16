@@ -1,12 +1,12 @@
 <template>
   <div>
-    <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration>
+    <!-- <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration> -->
     <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>      
-    <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
-    <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
+    <!-- <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>       -->
+    <!-- <reception ref="reception" v-on:addEncounter="addEncounter"></reception> -->
     <!-- <staging/> -->
-    <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
-    <prescription v-on:addEncounter="addEncounter" ref="prescription"/>
+    <!-- <consultation ref="consultation" v-on:addEncounter="addEncounter"/> -->
+    <!-- <prescription v-on:addEncounter="addEncounter" ref="prescription"/> -->
     <!-- <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>       -->
     <button type="button" class="btn btn-primary" @click="createEncounters">save</button>
   </div>
