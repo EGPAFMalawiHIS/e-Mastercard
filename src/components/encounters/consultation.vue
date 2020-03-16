@@ -1,5 +1,7 @@
 <template>
   <div>
+    <div v-if="isFemale">
+
     <div class="container-fluid">
       <div class="form-check form-check-inline">
         <label class="form-check-label" for="inlineCheckbox1">Currently on family planning methods?</label>
@@ -40,6 +42,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
     <br />
     <div class="container-fluid">
@@ -100,7 +103,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row" v-if="isFemale">
       <div class="col">
         <p>Pregnant</p>
       </div>
@@ -127,7 +130,7 @@
         </fieldset>
       </div>
     </div>
-    <form>
+    <form v-if="isFemale">
       <div class="row">
         <div class="col">
           <p>Breastfeeding</p>
@@ -328,6 +331,12 @@ export default {
       statusTB: null, 
     };
   },
+  computed: {
+    isFemale() {
+      let gender = this.$store.getters.getPatient;
+      return gender.sex === "F" ? true: false;
+    }
+  },
   methods: {
     saveEncounter: function() {
       let encounterObject = {
@@ -335,16 +344,17 @@ export default {
           encounter_id: 53,
           obs: {
             tb: this.onTb,
-            pregnant: this.pregnant,
-            breastFeeding: this.breastFeeding,
-            onFP: {
-              concept_id: 1717,
-              value_coded: 1066
-            }
+            
           }
         }
       };
-
+      if(this.isFemale) {
+      encounterObject.consultation.obs.pregnant=  this.pregnant;
+      encounterObject.consultation.obs.breastFeeding=  this.breastFeeding;
+      encounterObject.consultation.obs.onFP=   {
+              concept_id: 1717,
+              value_coded: 1066
+            };
       Object.keys(this.fpm).forEach(el => {
         encounterObject.consultation.obs[`pres` + el] = {
           concept_id: this.fpm[el],
@@ -357,6 +367,10 @@ export default {
           value_coded: this.getCoded(this.currentFPM, this.fpm[el])
         };
       });
+        if(this.onFP) {
+          encounterObject.consultation.obs.onFP.value_coded = 1065;
+        }
+      }
       Object.keys(this.sideEffects).forEach(el => {
         encounterObject.consultation.obs[el] = {
           concept_id: 7755,
@@ -380,9 +394,7 @@ export default {
           }
         };
       });
-      if(this.onFP) {
-        encounterObject.consultation.obs.onFP.value_coded = 1065;
-      }
+      
       Object.keys(this.tbSymptoms).forEach(el => {
         encounterObject.consultation.obs[el] = {
           concept_id: this.tbSymptoms[el],
