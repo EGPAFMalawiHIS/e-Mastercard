@@ -5,8 +5,13 @@
   <div id="page-content-wrapper">
     <top-nav />
     <!-- Page Content -->
+
     <div id="main-container" class="col-12 table-col">
-      <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+          <div class="alert alert-info">
+          <strong>TX ML</strong> Clients that were Alive and on treatment before the reporting period and their “next appointment date / drug runout” date falls within the reporting period. 30 or more days have gone between their appointment date and the end of the reporting period without any clinical dispensation visit.
+        </div>
+
+      <!--span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
        <sdPicker :onSubmit="fetchDates"></sdPicker>
       <table class="table table-striped report" id="cohort-clients">
         <thead>
@@ -204,4 +209,11 @@ table {
     margin-left: 5px;
     padding-top: 10px;
 }
+
+.alert-info {
+  width: 98%;
+  margin: 10px;
+  text-align: left;
+}
+
 </style>
