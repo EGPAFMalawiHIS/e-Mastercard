@@ -97,7 +97,6 @@
 
 <script>
 
-import Multiselect from 'vue-multiselect'
 import VueSelect from "vue-select";
 
 var who_stage_concept_map = {
@@ -225,7 +224,6 @@ var whoStageConceptMapHash = {
 
 export default {
   components: {
-    'state-four-list': Multiselect,
     "v-select": VueSelect,
   },
 
@@ -346,8 +344,6 @@ export default {
   }
 };
 </script>
-
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style>
 </style>

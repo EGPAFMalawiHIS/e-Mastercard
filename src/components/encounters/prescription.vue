@@ -71,6 +71,7 @@ export default {
       prescribeCPT: false,
       prescribeIPT: false,
       weight: null,
+      latestWeight: null,
       CPTRegimens: [], 
       IPTRegimens: [], 
 
@@ -230,11 +231,33 @@ export default {
     this.getRegimens();
     let currentWeight = null;
     EventBus.$on('set-weight', payload => {
+      this.selectedRegimen = null;
+      if(payload.trim() === "") {
+        this.weight = this.latestWeight;
+      }else {
+        this.weight = payload;
+      }
+      this.getRegimens();
+      this.getCPT();
+      this.getIPT();
+    });
+    EventBus.$on('set-initial-weight', payload => {
+      this.latestWeight = payload;
       this.weight = payload;
       this.getRegimens();
       this.getCPT();
       this.getIPT();
     });
+    EventBus.$on('set-present', payload => {
+      this.selectedRegimen = null;
+        if (payload === "1066") {
+          this.weight = this.latestWeight;
+          this.getRegimens();
+          this.getCPT();
+          this.getIPT();
+        }  
+    });
+   
   }
 };
 </script>

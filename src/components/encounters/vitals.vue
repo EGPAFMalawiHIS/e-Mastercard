@@ -44,7 +44,6 @@ methods: {
       }
     }
     this.$emit('addEncounter',  encounterObject);
-      console.log(encounterObject);
   }, setWeight: function() {
     EventBus.$emit('set-weight', this.weight.value_numeric);
   }

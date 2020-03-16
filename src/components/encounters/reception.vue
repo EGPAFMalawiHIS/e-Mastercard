@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import EventBus from "../../services/event-bus.js";
 export default {
   data: function() {
     return {
@@ -83,7 +84,18 @@ export default {
         }
       };
       this.$emit("addEncounter", encounterObject);
-    }
+    }, 
+    setPresent: function() {
+    EventBus.$emit('set-present', this.patient.value_coded);
+  }
+  }, 
+  watch: {
+     patient: {
+     handler(val){
+       this.setPresent();
+     },
+     deep: true
+  }
   }
 };
 </script>

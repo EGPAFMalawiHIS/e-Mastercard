@@ -10,6 +10,7 @@
         <th>ART Regimen</th>
         <th>Next Appointment</th>
         <th>Outcome</th>
+        <th>Viral Load</th>
       </tr>
     </thead>
     <tbody>
@@ -22,6 +23,7 @@
         <td>{{visit.ARTRegimen}}</td>
         <td>{{visit.nextAppointment}}</td>
         <td>{{visit.outcome}}</td>
+        <td>{{visit.viralLoad}}</td>
         <td>
           <button class="btn btn-danger" @click="deleteVisit(index, visit.encounters)" >
             <template v-if="visit.state === 'deleting'">
@@ -56,6 +58,7 @@ export default {
         sideEffects: null,
         ARTRegimen: null,
         nextAppointment: null,
+        viralLoad: null,
         outcoume: null,
         encounters: [],
         state: null
@@ -79,6 +82,13 @@ export default {
           variableName: "nextAppointment",
           valueType: "value_datetime",
           secondType: "value_text"
+        },
+        {
+          conceptID: 856,
+          variableName: "viralLoad",
+          valueType: "value_numeric",
+          secondType: "value_text",
+          prepend: "value_text"
         }
       ]
     };
@@ -160,6 +170,7 @@ export default {
           if (res.length > 0) {
             if (innerElement.returnValue) {
               element.variableName = innerElement.returnValue;
+              
             } else if (innerElement.subConcepts) {
               res.forEach(ret => {
                 try {
@@ -167,6 +178,7 @@ export default {
                 } catch (error) {}
               });
             } else {
+              
               let val = res[res.length - 1][innerElement.valueType]
                 ? res[res.length - 1][innerElement.valueType]
                 : res[res.length - 1][innerElement.secondType];
@@ -175,6 +187,9 @@ export default {
                   : val;
               if (innerElement.valueType === "value_coded") {
                 this.getConcept(element, val, context);
+              }
+              if(innerElement.prepend) {
+                tempob[innerElement.variableName]= res[res.length - 1][innerElement.prepend] + " " + val;
               }
             }
           } else {
