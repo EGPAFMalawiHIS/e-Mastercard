@@ -48,7 +48,7 @@ const ApiClient = (() => {
 
   function getRouter() {
     if (!config.router) {
-      throw new Exception('Router not configured')
+      throw new Error('Router not configured');
     }
 
     return config.router
