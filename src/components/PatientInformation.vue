@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid card" style="margin-top: 10px;">
     <div class="container-fluid">
       <table class="row">
         <div class="col-md-3">
@@ -445,7 +445,7 @@ export default {
               sex: this.sex
             };
             this.$store.commit('setPatient', personObj);
-
+            console.log(moment().diff("2020-02-26", 'days',false))
 
       });
       this.obs.forEach(value => {
@@ -469,7 +469,7 @@ export default {
   line-height: 20px;
   font-size: 15px;
   background-color: #f6f6f6;
-  text-align: center;
+  text-align: left;
   padding: 3px;
   /* margin: auto; */
   /* font-family: 'Avenir', Helvetica, Arial, sans-serif; */
