@@ -255,6 +255,7 @@
 </template>
 
 <script>
+import EventBus from "../../services/event-bus.js";
 export default {
   data: function() {
     return {
@@ -416,6 +417,14 @@ export default {
     getCoded: function(parentArray, val) {
       return parentArray.includes(val) ? 1065 : 1066;
     }
+  },watch: {
+     onTb: {
+     handler(val){
+        EventBus.$emit('set-tb', this.onTb.value_coded);
+      //  this.setPresent();
+     },
+     deep: true
+  }
   }
 };
 </script>

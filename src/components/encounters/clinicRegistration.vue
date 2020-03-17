@@ -235,7 +235,7 @@
           </div>
         </div>
         <div class="form-group">
-          <v-select :options="options" v-model="confirmatory" :reduce="option => option.value"></v-select>
+          <v-select :options="options" v-model="confirmatory" :reduce="option => option.value" v-on:input="setRegistration"></v-select>
         </div>
       </div>
     </div>
@@ -436,6 +436,7 @@ export default {
   },
   methods: {
     initial() {
+      this.setRegistration()
       this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1066; // No answer
       this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1066; // No answer
       this.clinicRegistration.obs.everReceivedART.value_coded = 1066; // No answer
@@ -444,6 +445,7 @@ export default {
 
     // Agrees to follow up
     followUp() {
+      this.setRegistration()
       if (this.agreesToFollowUp == true) {
         this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1066;
         this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1066;
@@ -457,6 +459,7 @@ export default {
 
     // Ever recieved ARVs for treatment
     everRecieved() {
+      this.setRegistration()
       if (this.recievedTreatment == true) {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1066;
         this.registered = false;
@@ -469,6 +472,7 @@ export default {
 
     // Year last taken ARVs
     yearLastTakenUknownCheck() {
+      this.setRegistration()
       if (this.yearLastTakenUknown == true) {
         const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
         this.yearLastTaken = "";
@@ -483,6 +487,7 @@ export default {
 
     // Ever registered at an ART Clinic
     everRegistered() {
+      this.setRegistration()
       if (this.registered == true) {
         this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1066;
         this.registered = false;
@@ -494,6 +499,7 @@ export default {
 
     //Location of ART initiation
     locationOfInitiationCheck() {
+      this.setRegistration()
       this.estimateYearLastTaken() // REMOVE THIS
       if (this.locationOfInitiationUnknown == true) {
         this.locationOfInitiation = "Select Location";
@@ -506,6 +512,7 @@ export default {
     },
 
     startDateUnknown() {
+      this.setRegistration()
       if (this.yearStartedKnown == true) {
         this.yearStartedKnown = false;
       } else if (this.yearStartedKnown == false) {
@@ -514,6 +521,7 @@ export default {
       }
     },
     arvNumberUnkownCheckbox() {
+      this.setRegistration()
       if (this.arvNumberUnkown == true) {
         this.arvNumber = "";
         this.arvNumberUnkown = false;
@@ -526,6 +534,7 @@ export default {
     },
 
     locationOfConfirmatoryCheck() {
+      this.setRegistration()
       if (this.locationOfConfirmatoryUnknown == true) {
         this.locationOfConfirmatory = "Select Location";
         this.locationOfConfirmatoryUnknown = false;
@@ -537,6 +546,7 @@ export default {
     },
 
     confirmatoryYearCheck() {
+      this.setRegistration()
       if (this.hivTestYearUnknown == true) {
         this.hivTestYear = "";
         this.hivTestYearUnknown = false;
@@ -548,6 +558,7 @@ export default {
     },
 
     estimateYearLastTaken() {
+      this.setRegistration()
       if (this.yearLastTakenUknown) {
         if (this.arvsTakenTwoMonthsPrior == "Yes") {
           if (this.arvsTakenTwoWeeksPrior == "Yes") {
@@ -577,6 +588,7 @@ export default {
     },
 
     getlocations: async function(val = "") {
+      this.setRegistration()
       await ApiClient.get(`/locations?name=` + val).then(res => {
         res.json().then(ret => {
           this.locations = ret.map(element => {
@@ -592,6 +604,7 @@ export default {
 
     buildObservations() {
       // YEAR LAST TAKEN
+      this.setRegistration()
       const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
       this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = yearLastTaken;
 
@@ -605,17 +618,24 @@ export default {
 
       const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
       this.clinicRegistration.obs.testDate.value_datetime = testYear;
+
+    },
+    setRegistration(){
+      this.$store.commit('setRegistration', this.clinicRegistration)
     },
     getVal(val) {
+      this.setRegistration()
       this.clinicRegistration.obs.testLocation.value_text = val.label;
       this.clinicRegistration.obs.testLocation.location_id = val.location_id;
     },
     getLoc(val) {
+      this.setRegistration()
       this.clinicRegistration.obs.ARTStartLocation.value_text = val.label;
       this.clinicRegistration.obs.ARTStartLocation.location_id =
         val.location_id;
     },
     getStuff(val) {
+      this.setRegistration()
       this.encounters.push(val);
     },
     saveEncounter() {

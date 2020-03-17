@@ -6,7 +6,7 @@
   </div>
   <input type="number" class="form-control" v-model="weight.value_numeric" aria-label="Default" aria-describedby="inputGroup-sizing-default" v-on:input="setWeight"> 
 </div>
-<div class="input-group mb-3">
+<div class="input-group mb-3" v-if="showHeight">
   <div class="input-group-prepend">
     <span class="input-group-text" id="height">Height</span>
   </div>
@@ -29,7 +29,8 @@ data: function() {
       height: {
         value_numeric: null,
         concept_id: 5089
-      }
+      },
+      previousHeight: null
     }
 },
 methods: {
@@ -46,8 +47,19 @@ methods: {
     this.$emit('addEncounter',  encounterObject);
   }, setWeight: function() {
     EventBus.$emit('set-weight', this.weight.value_numeric);
+  },
+  
+},mounted() {
+    
+}, computed: {
+showHeight() {
+    let patient = this.$store.getters.getPatient;
+    if(patient.height) {
+      this.previousHeight = patient.height;
+    }
+    return (parseInt(patient.age) >= 18 && (this.previousHeight !== null )) ? false : true;
   }
-},
+}
 }
 
 </script>

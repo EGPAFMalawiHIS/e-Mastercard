@@ -388,6 +388,11 @@ export default {
             if(conceptSet.conceptID === 5089) {
               let weight = (res[0][conceptSet.valueType] ? res[0][conceptSet.valueType] : res[0][conceptSet.secondType]);
               EventBus.$emit('set-initial-weight', weight);
+            }
+            if(conceptSet.conceptID === 5090) {
+              let height = (res[0][conceptSet.valueType] ? res[0][conceptSet.valueType] : res[0][conceptSet.secondType]);
+              EventBus.$emit('set-previous-height', height);
+              this.$store.commit('setHeight', height);
             } 
           }
         }else {
@@ -434,7 +439,8 @@ export default {
             this.occupation = this.getAtribute(patient, 13);
             let personObj = {
               name: this.name,
-              age: this.age,
+              dob: patient.person.birthdate,
+              age: moment().diff(patient.person.birthdate, 'years',false),
               arvNumber:  this.arvNumber,
               sex: this.sex
             };

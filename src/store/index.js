@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist';
+import registration from './modules/registration';
+import staging from './modules/staging';
+
 
 Vue.use(Vuex)
 
@@ -32,11 +35,16 @@ export default new Vuex.Store({
     },
     setPatient(state, patient) {
       state.patient = patient;
+    },
+    setHeight(state, height) {
+      state.patient.height = height;
     }
   },
   actions: {
   },
   modules: {
+    registration,
+    staging
   },
   plugins: [vuexPersist.plugin]
 })

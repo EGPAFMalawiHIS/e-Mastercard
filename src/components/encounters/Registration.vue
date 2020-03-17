@@ -10,7 +10,7 @@
           >
             <h5 style="font-weight: bold">HIV Clinic Registration</h5>
 
-            <clinic-registration v-on:addEncounter="addEncounter" ref="c linicRegistration"></clinic-registration>
+            <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration>
 
             <input
               type="button"
@@ -18,6 +18,7 @@
               class="btn btn-primary clinical action-button"
               value="Next Step"
               style="position: absolute; bottom: 30px; right: 45%"
+              @click="registrationObject"
             />
             <div class="errorTxt" style="margin-top: 10px; text-align: center; font-weight: bold"></div>
           </form>
@@ -31,7 +32,7 @@
             <div class="row">
               <h5 style="font-weight: bold; margin: auto; margin-bottom: 10px">Staging</h5>
             </div>
-            <staging/> 
+            <staging v-on:addEncounter="addEncounter" v-bind:patientId="PATIENT_ID" ref="staging" />
             <input
               type="button"
               name="previous"
@@ -45,6 +46,7 @@
               class="btn btn-primary reception action-button"
               value="Next Step"
               style="position: absolute; bottom: 30px; right: 40%"
+              @click="stagingObject"
             />
             <div
               class="guardianError"
@@ -58,55 +60,69 @@
             class="content-tab tab-pane fade show active shadow-lg p-3 mb-5 bg-white rounded form-template"
           >
             <div class="row">
-              <h5 style="font-weight: bold; margin: auto; margin-bottom: 10px">Summary</h5>
               <div class="col-md-12">
-                <table class="table table-striped" style="text-align: left">
-                  <col />
-                  <colgroup span="2"></colgroup>
-                  <colgroup span="2"></colgroup>
-                  <!-- <tr>
-                    <td rowspan="2"></td>
-                  </tr> -->
-                  <tr>
-                    <th scope="col">HIV Registration</th>
-                    <th scope="col">Staging</th>
-                  </tr>
+                <h5 style="font-weight: bold; margin: auto; margin-bottom: 10px">Summary</h5>
+              </div>
+            </div>
+            <div v-if="registrationEncounter && stagingEncounter" class="row">
+              <div class="col-md-6" style="text-align: left">
+                <label style="font-weight: bold">HIV Clinic Registration</label>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Value</th>
+                    </tr>
+                  </thead>
                   <tbody>
                     <tr>
-                      <td>N/A</td>
-                      <td>N/A</td>
+                      <td>Year Last Taken ARVs</td>
+                      <td>{{registrationEncounter['obs']['yearLastTakenARVs']['value_datetime']}}</td>
                     </tr>
                     <tr>
-                      <td>N/A</td>
-                      <td>N/A</td>
+                      <td>Ever registered at a clinic</td>
+                      <td>{{registrationEncounter['obs']['everRegisteredAtClinic']['value_coded']}}</td>
                     </tr>
                     <tr>
-                      <td>N/A</td>
-                      <td>N/A</td>
+                      <td>ART # at previous location</td>
+                      <td>{{registrationEncounter['obs']['artNumberAtPreviousLocation']['value_text']}}</td>
                     </tr>
                     <tr>
-                      <td>N/A</td>
-                      <td>N/A</td>
+                      <td>Confirmatory Test</td>
+                      <td>{{registrationEncounter['obs']['confirmatoryTest']['value_coded']}}</td>
                     </tr>
                     <tr>
-                      <td>N/A</td>
-                      <td>N/A</td>
+                      <td>ART Start Location</td>
+                      <td>{{registrationEncounter['obs']['ARTStartLocation']['value_text']}}</td>
                     </tr>
                     <tr>
-                      <td>N/A</td>
-                      <td>N/A</td>
+                      <td>Date ART Started</td>
+                      <td>{{registrationEncounter['obs']['dateARTStarted']['value_datetime']}}</td>
                     </tr>
                     <tr>
-                      <td>N/A</td>
-                      <td>N/A</td>
+                      <td>Test Location</td>
+                      <td>{{registrationEncounter['obs']['testLocation']['value_text']}}</td>
                     </tr>
                     <tr>
-                      <td>N/A</td>
-                      <td>N/A</td>
+                      <td>Date of Test</td>
+                      <td>{{registrationEncounter['obs']['testDate']['value_datetime']}}</td>
                     </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-md-6" style="height: 500px; overflow-y: auto; text-align: left">
+                <label style="font-weight: bold">Staging</label>
+                <table class="table table-striped">
+                  <thead>
                     <tr>
-                      <td>N/A</td>
-                      <td>N/A</td>
+                      <th scope="col">Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(stage, index) in Object.values(stagingEncounter)" :key="index">
+                      <td v-if="Object.entries(stage.conditions).length > 0"> 
+                        <label v-for="(item, index) in Object.values(stage.conditions)" :key="index"> {{item}} - Stage {{stage.id}}</label> 
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -178,7 +194,10 @@ import $ from "jquery";
 export default {
   data: function() {
     return {
-      encounters: {}
+      encounters: {},
+      PATIENT_ID: this.$route.params.id,
+      registrationEncounter: null,
+      stagingEncounter: null,
     };
   },
   components: {
@@ -207,9 +226,8 @@ export default {
       }
 
       // pass params
-      const personId = this.$route.params.id;
       const encounter = await EncounterService.createEncounter(
-        personId,
+        this.PATIENT_ID,
         encounterOb.encounter_id
       );
       this.successfulOperation = true;
@@ -235,6 +253,7 @@ export default {
     },
     createEncounters: function() {
       let encounters = Object.keys(this.$refs);
+      console.log(encounters)
       encounters.forEach(el => {
         //    console.log(el);
         this.$refs[el].saveEncounter();
@@ -242,8 +261,15 @@ export default {
       // console.log()
       let keys = Object.keys(this.encounters);
       keys.forEach(enc => {
+        console.log(this.encounters[enc])
         this.saveEncounter(this.encounters[enc]);
       });
+      // patient/mastercard/
+      this.redirect(`/patient/mastercard/${this.PATIENT_ID}`)
+      
+    },
+    redirect: function(url) {
+      this.$router.push(url);
     },
     getExpected: function(element) {
       let expected = [
@@ -429,10 +455,20 @@ export default {
           return false;
         });
       });
+    },
+    registrationObject(){
+      this.registrationEncounter = this.$store.state.registration.registration
+
+      console.log(this.registrationEncounter)
+    },
+    stagingObject(){
+      this.stagingEncounter = this.$store.state.staging.staging
+
+      console.log(Object.values(this.stagingEncounter)[3].id)
     }
   },
   mounted() {
-    console.log( this.$route.params.id)
+    console.log(this.$route.params.id);
     this.initileWizard();
   }
 };
@@ -519,7 +555,6 @@ select.list-dt:focus {
   font-family: FontAwesome;
   content: "2";
 }
-
 
 #progressbar #summary:before {
   font-family: FontAwesome;
