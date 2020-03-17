@@ -5,7 +5,7 @@
       <input class="form-check-input" type="checkbox" name="" id="" value="true" v-model="prescribeCPT"> CPT
     </label>
   </div>
-  <div class="form-check form-check-inline">
+  <div class="form-check form-check-inline" v-if="!onTb">
     <label class="form-check-label">
       <input class="form-check-input" type="checkbox" name="" id="" value="true" v-model="prescribeIPT"> IPT
     </label>
@@ -73,7 +73,8 @@ export default {
       weight: null,
       latestWeight: null,
       CPTRegimens: [], 
-      IPTRegimens: [], 
+      IPTRegimens: [],
+      onTb: false, 
 
     };
   },
@@ -257,7 +258,13 @@ export default {
           this.getIPT();
         }  
     });
-   
+    EventBus.$on('set-tb', payload => {
+        if (payload === "1065") {
+          this.onTb = true;
+        }else {
+          this.onTb = false;
+        }  
+    });
   }
 };
 </script>

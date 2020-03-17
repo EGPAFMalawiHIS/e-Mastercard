@@ -32,6 +32,9 @@ export default new Vuex.Store({
     },
     setPatient(state, patient) {
       state.patient = patient;
+    },
+    setHeight(state, height) {
+      state.patient.height = height;
     }
   },
   actions: {
