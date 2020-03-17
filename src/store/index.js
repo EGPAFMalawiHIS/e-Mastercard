@@ -11,7 +11,8 @@ const vuexPersist = new VuexPersist({key: 'eMastercard', storage: window.session
 
 export default new Vuex.Store({
   state: {
-    user: null
+    user: null,
+    patient: null
   },
   getters: {
     userIs(state) {
@@ -23,11 +24,20 @@ export default new Vuex.Store({
         const userRoles = state.user.roles;
         return userRoles.findIndex(userRole => userRole.role.toLowerCase() === role.toLowerCase()) >= 0;
       }
+    }, 
+    getPatient(state) {
+      return state.patient;
     }
   },
   mutations: {
     setUser(state, user) {
       state.user = user;
+    },
+    setPatient(state, patient) {
+      state.patient = patient;
+    },
+    setHeight(state, height) {
+      state.patient.height = height;
     }
   },
   actions: {

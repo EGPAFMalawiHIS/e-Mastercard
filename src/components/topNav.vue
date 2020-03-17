@@ -36,8 +36,8 @@
             aria-expanded="false"
           >{{username}}</a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="/login">Logout</a>
             <a class="dropdown-item" href="/settings">Settings</a>
+            <a class="dropdown-item" href="/login">Logout</a>
           </div>
         </li>
       </ul>

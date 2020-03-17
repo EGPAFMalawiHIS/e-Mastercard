@@ -209,6 +209,7 @@
 
 <script>
 import ApiClient from "../services/api_client";
+import EventBus from "../services/event-bus.js";
 import moment from "moment";
 export default {
   data: function() {
@@ -383,6 +384,15 @@ export default {
             context[conceptSet.variableName] = (conceptSet.valueType === "value_datetime" ? moment(val).format('DD-MMM-YYYY') : val);  
             if (conceptSet.valueType === "value_coded") {
               this.getConcept(conceptSet, val, context);
+            }
+            if(conceptSet.conceptID === 5089) {
+              let weight = (res[0][conceptSet.valueType] ? res[0][conceptSet.valueType] : res[0][conceptSet.secondType]);
+              EventBus.$emit('set-initial-weight', weight);
+            }
+            if(conceptSet.conceptID === 5090) {
+              let height = (res[0][conceptSet.valueType] ? res[0][conceptSet.valueType] : res[0][conceptSet.secondType]);
+              EventBus.$emit('set-previous-height', height);
+              this.$store.commit('setHeight', height);
             } 
           }
         }else {
@@ -427,6 +437,16 @@ export default {
             this.location = patient.person.addresses[0].city_village;
             this.landmark = this.getAtribute(patient, 19);
             this.occupation = this.getAtribute(patient, 13);
+            let personObj = {
+              name: this.name,
+              dob: patient.person.birthdate,
+              age: moment().diff(patient.person.birthdate, 'years',false),
+              arvNumber:  this.arvNumber,
+              sex: this.sex
+            };
+            this.$store.commit('setPatient', personObj);
+
+
       });
       this.obs.forEach(value => {
         this.createOb(value, this);

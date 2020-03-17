@@ -48,6 +48,7 @@
               type="radio"
               value="1066"
               v-model="guardian.value_coded"
+              :disabled="patient.value_coded === '1066'"
             />
             <label class="form-check-label" for="inlineRadio2">No</label>
           </div>
@@ -58,6 +59,7 @@
 </template>
 
 <script>
+import EventBus from "../../services/event-bus.js";
 export default {
   data: function() {
     return {
@@ -83,7 +85,21 @@ export default {
         }
       };
       this.$emit("addEncounter", encounterObject);
+    }, 
+    setPresent: function() {
+    EventBus.$emit('set-present', this.patient.value_coded);
+    if(this.patient.value_coded === "1066") {
+      this.guardian.value_coded = 1065;
     }
+  }
+  }, 
+  watch: {
+     patient: {
+     handler(val){
+       this.setPresent();
+     },
+     deep: true
+  }
   }
 };
 </script>

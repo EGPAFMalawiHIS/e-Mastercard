@@ -1,12 +1,13 @@
 <template>
   <div>
-    <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration>
-    <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>      
-    <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
+    <!-- <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration> -->
     <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
+    <vitals v-on:addEncounter="addEncounter" ref="vitals" v-if="patientPresent"></vitals>      
     <!-- <staging/> -->
-    <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
+    <consultation ref="consultation" v-on:addEncounter="addEncounter" v-if="patientPresent"/>
+
     <prescription v-on:addEncounter="addEncounter" ref="prescription"/>
+    <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
     <!-- <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>       -->
     <button type="button" class="btn btn-primary" @click="createEncounters">save</button>
   </div>
@@ -22,12 +23,14 @@ import consultation from '@/components/encounters/consultation.vue';
 import prescription from '@/components/encounters/prescription.vue';
 import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
+import EventBus from "../../services/event-bus.js";
 import { isMoment } from 'moment';
 export default {
     data: function() {
         return {
             encounters: {},
             numEnc: 0,
+            patientPresent: false,
         }
     },
     components: {
@@ -121,7 +124,12 @@ export default {
             });
             return key;
         },
-    }
+    },
+    mounted() {
+    EventBus.$on('set-present', payload => {
+        this.patientPresent = payload === "1066" ? false : true;  
+    });
+  }
 }
 </script>
 

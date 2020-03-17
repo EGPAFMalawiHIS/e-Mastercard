@@ -5,13 +5,8 @@
   <div id="page-content-wrapper">
     <top-nav />
     <!-- Page Content -->
-
     <div id="main-container" class="col-12 table-col">
-          <div class="alert alert-info">
-          <strong>TX ML</strong> Clients that were Alive and on treatment before the reporting period and their “next appointment date / drug runout” date falls within the reporting period. 30 or more days have gone between their appointment date and the end of the reporting period without any clinical dispensation visit.
-        </div>
-
-      <!--span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
+      <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
        <sdPicker :onSubmit="fetchDates"></sdPicker>
       <table class="table table-striped report" id="cohort-clients">
         <thead>
@@ -19,11 +14,7 @@
             <th>#</th>
             <th>Age group</th>
             <th>Gender</th>
-            <th class="disaggregated-numbers">Defaulted</th>
-            <th class="disaggregated-numbers">Died</th>
-            <th class="disaggregated-numbers">Stopped</th>
-            <th class="disaggregated-numbers">Transferred out</th>
-            <th class="disaggregated-numbers">Unknown</th>
+            <th class="disaggregated-numbers">Count</th>
           </tr>
         </thead>
         <tbody ref="tableBody">
@@ -114,6 +105,12 @@ export default {
             extend: 'print',
             title:  this.report_title
           }
+        ],
+        columnDefs: [
+          {"className": "dt-center numbers", "targets": 0},
+          {"className": "dt-center", "targets": 1},
+          {"className": "dt-center", "targets": 2},
+          {"className": "dt-right", "targets": 3}
         ]
       });
     },
@@ -123,7 +120,7 @@ export default {
       this.loadXLdata();
     },
     loadXLdata: async function(){
-      let url = "tx_ml?date=" + moment().format('YYYY-MM-DD');
+      let url = "ipt_coverage?date=" + moment().format('YYYY-MM-DD');
       url += "&start_date=" + this.startDate;
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
@@ -136,41 +133,30 @@ export default {
     },
     loadGroupData(data){
       //this.loadXLdata();
-      this.report_title = "TX ML: " + moment(this.startDate).format('DD/MMM/YYYY')
+      this.report_title = "IPT coverage (those completed six months: 168 days): " + moment(this.startDate).format('DD/MMM/YYYY')
       this.report_title += " - " + moment(this.endtDate).format('DD/MMM/YYYY')
       let counter = 1;
-      let report_gender = ['F','M'];
-      let set_age_groups = this.ageGroups;
       this.dTable.fnClearTable();
+      let age_groups = this.ageGroups;
+      let gender = ['Female', 'Male'];
+      let row_counter = 1;
 
-      for(let j = 0; j < report_gender.length; j++){
-        let age_group_found = false;
-        for(let i = 0; i < set_age_groups.length; i++){
-
-          for(let age_group in data){
-            let gender = data[age_group];  
-            for(let sex in gender){
-              if (age_group == set_age_groups[i]  &&  sex == report_gender[j]) {  
-                let numbers = gender[sex];
-                this.dTable.fnAddData([ counter++, age_group, sex, numbers[0],
-                    numbers[1], numbers[2], numbers[3], numbers[4]]);
-                age_group_found = true;
-
-              }
-            }
+      for(let j = 0; j < gender.length; j++){
+        for(let i = 0; i < age_groups.length; i++){
+          let count = 0
+          try {
+            count = (data[age_groups[i]][gender[j]] ?  data[age_groups[i]][gender[j]].length : 0);  
+          }catch(e){
+            count  = 0
           }
-          if(!age_group_found){
-            this.dTable.fnAddData([ counter++, set_age_groups[i], report_gender[j], 0,0,0,0,0 ]);
-          }else{
-            age_group_found = false;
-          }
+
+          this.dTable.fnAddData([ (row_counter++), age_groups[i], gender[j], count ]);
         }
       }
-
     }
   }, data: function() {
       return {
-        report_title: 'TX ML ',
+        report_title: 'IPT coverage (those completed six months: 168 days)',
         startDate: null,
         endDate: null,
         ageGroups: [
@@ -209,11 +195,19 @@ table {
     margin-left: 5px;
     padding-top: 10px;
 }
+</style>
 
-.alert-info {
-  width: 98%;
-  margin: 10px;
-  text-align: left;
+<style>
+.dt-center {
+  text-align: center;
 }
 
+.dt-right {
+  text-align: right;
+  padding-right: 5px;
+}
+
+.numbers {
+  width: 15px;
+}
 </style>

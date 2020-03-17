@@ -5,7 +5,7 @@
       <input class="form-check-input" type="checkbox" name="" id="" value="true" v-model="prescribeCPT"> CPT
     </label>
   </div>
-  <div class="form-check form-check-inline">
+  <div class="form-check form-check-inline" v-if="!onTb">
     <label class="form-check-label">
       <input class="form-check-input" type="checkbox" name="" id="" value="true" v-model="prescribeIPT"> IPT
     </label>
@@ -71,8 +71,10 @@ export default {
       prescribeCPT: false,
       prescribeIPT: false,
       weight: null,
+      latestWeight: null,
       CPTRegimens: [], 
-      IPTRegimens: [], 
+      IPTRegimens: [],
+      onTb: false, 
 
     };
   },
@@ -230,10 +232,38 @@ export default {
     this.getRegimens();
     let currentWeight = null;
     EventBus.$on('set-weight', payload => {
+      this.selectedRegimen = null;
+      if(payload.trim() === "") {
+        this.weight = this.latestWeight;
+      }else {
+        this.weight = payload;
+      }
+      this.getRegimens();
+      this.getCPT();
+      this.getIPT();
+    });
+    EventBus.$on('set-initial-weight', payload => {
+      this.latestWeight = payload;
       this.weight = payload;
       this.getRegimens();
       this.getCPT();
       this.getIPT();
+    });
+    EventBus.$on('set-present', payload => {
+      this.selectedRegimen = null;
+        if (payload === "1066") {
+          this.weight = this.latestWeight;
+          this.getRegimens();
+          this.getCPT();
+          this.getIPT();
+        }  
+    });
+    EventBus.$on('set-tb', payload => {
+        if (payload === "1065") {
+          this.onTb = true;
+        }else {
+          this.onTb = false;
+        }  
     });
   }
 };

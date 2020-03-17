@@ -170,6 +170,11 @@ const routes = [
     component: () => import("../views/cleaning_tools/cleaning_tool.vue")
   },   
   {
+    path: "/cleaning_tools/merging",
+    name: "merging",
+    component: () => import("../views/cleaning_tools/Merging.vue")
+  },
+  {
     path: "/users",
     name: "ListUsers",
     component: () => import("../views/Users/list.vue"),
@@ -186,6 +191,11 @@ const routes = [
     name: "EditUser",
     component: () => import("../views/Users/edit.vue"),
     beforeEnter: authSuperuser
+  },
+  {
+    path: "/ipt_coverage",
+    name: "IPTcoverage",
+    component: () => import("../views/IPTcoverage.vue")
   }
 ]
 

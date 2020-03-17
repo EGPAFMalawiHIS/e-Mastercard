@@ -191,16 +191,6 @@ input[type="submit"] {
   margin-bottom: 0
 }
 
-.form-control-invalid {
-  border-color: red;
-  box-shadow: inset 0 1px 1px orangered,  0 0 8px red;
-}
-
-.form-error {
-  font-size: 0.8em;
-  margin: 0;
-}
-
 .password-input {
   max-width: 49%;
   display: inline-block;

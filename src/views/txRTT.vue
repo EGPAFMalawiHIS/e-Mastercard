@@ -6,7 +6,11 @@
     <top-nav />
     <!-- Page Content -->
     <div id="main-container" class="col-12 table-col">
-      <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+      <div class="alert alert-info">
+          <strong>TX RTT</strong> Clients that have their clinical dispensation visit falling in the
+reporting period and there is a difference of 30 or more days between their visit date and their previous appointment date / runout date
+        </div>
+      <!--span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
        <sdPicker :onSubmit="fetchDates"></sdPicker>
       <table class="table table-striped report" id="cohort-clients">
         <thead>
@@ -207,5 +211,11 @@ table {
     text-align: left;
     margin-left: 5px;
     padding-top: 10px;
+}
+
+.alert-info {
+  width: 98%;
+  margin: 10px;
+  text-align: left;
 }
 </style>

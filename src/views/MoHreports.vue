@@ -42,9 +42,9 @@
             </div>
           
             <div class="col-sm">
-              <div class="btn-container">
+              <div class="btn-container" @click="redirect('/ipt_coverage')">
                 <div class="card">
-                  <img src="../assets/report-icons/ipt-usage.png" class="btn-icon"/>
+                  <img src="../assets/report-icons/ipt-coverage.png" class="btn-icon"/>
                   <p>IPT (coverage)</p>
                 </div>
               </div>
@@ -56,12 +56,12 @@
           <div class="row">
 
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/')">
+              <!--div class="btn-container" @click="redirect('/ipt_coverage')">
                 <div class="card">
-                  <img src="../assets/report-icons/ipt-coverage.png" class="btn-icon"/>
+                  <img src="../assets/report-icons/ipt-usage.png" class="btn-icon"/>
                   <p>IPT (usage)</p>
                 </div>
-              </div>
+              </div-->
             </div>
 
             <div class="col-sm">
