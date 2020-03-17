@@ -162,10 +162,14 @@ const routes = [
     path: "/tx_rtt",
     name: "txRTT",
     component: () => import("../views/txRTT.vue")
-  }
-  ,
+  },
   {
     path: "/cleaning_tools",
+    name: "cleaning_tools",
+    component: () => import("../views/DataCleaningTools.vue")
+  },
+  {
+    path: "/cleaning_tools/cleaning_tool",
     name: "Date enrolled greater than start date",
     component: () => import("../views/cleaning_tools/cleaning_tool.vue")
   },   
