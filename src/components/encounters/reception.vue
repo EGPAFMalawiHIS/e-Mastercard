@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="row">
-      <div class="col">
+    <div class="row ">
+      <div class="col d-flex justify-content-start">
         <p>Patient Present</p>
       </div>
       <div class="col">
@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col d-flex justify-content-start">
         <p>Guardian Present</p>
       </div>
       <div class="col">
