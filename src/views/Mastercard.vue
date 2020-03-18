@@ -47,6 +47,12 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLongTitle">New Visit</h5>
+                  <div class="input-group" style="width: 50%; margin-left: 10px; ">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="height">Encounter Date</span>
+                    </div>
+                    <input type="date" class="form-control" name="" id="">
+                  </div>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -70,6 +76,7 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLongTitle">New Visit</h5>
+                  
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>

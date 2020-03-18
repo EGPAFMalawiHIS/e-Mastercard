@@ -1630,7 +1630,7 @@ export default {
 
 </script>
 
-<style scope>
+<style scoped>
 
 table {
   width: 100%;

@@ -1,74 +1,79 @@
 <template>
   <div>
     <div v-if="isFemale">
-
-    <div class="container-fluid">
-      <!-- <div class="col d-flex justify-content-start"> -->
-      <div class="form-check form-check-inline d-flex justify-content-start">
-      </div>
-     <div class="row">
+    <!-- Pregnant / Breastfeeding Questions -->
+    <div class="row" v-if="isFemale">
       <div class="col d-flex justify-content-start">
-        <label class="form-check-label" for="inlineCheckbox1">Currently on family planning methods?</label>
+        <p>Pregnant</p>
+      </div>
+      <div class="col">
+        <fieldset>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              value="1065"
+              v-model="pregnant.value_coded"
+            />
+            <label class="form-check-label" for="inlineRadio1">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              value="1066"
+              v-model="pregnant.value_coded"
+            />
+            <label class="form-check-label" for="inlineRadio2">No</label>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    <form v-if="isFemale">
+      <div class="row">
+      <div class="col d-flex justify-content-start">
+          <p>Breastfeeding</p>
         </div>
         <div class="col">
           <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="true" v-model="onFP"/>
-        
+            <input
+              class="form-check-input"
+              type="radio"
+              value="1065"
+              v-model="breastFeeding.value_coded"
+            />
+            <label class="form-check-label" for="inlineRadio1">Yes</label>
           </div>
           <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              value="1066"
+              v-model="breastFeeding.value_coded"
+            />
+            <label class="form-check-label" for="inlineRadio2">No</label>
           </div>
         </div>
       </div>
-      <!-- <p>Current Family planning Methods </p>  <input type="checkbox" class="form-check-input" /> -->
-      <div class="row" v-show="onFP">
-        <div class="col-md-4" :value="fpm[fp]" v-for="(fp, index) in Object.keys(fpm)" :key="index">
-          <div class="form-check">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" :value="fpm[fp]" v-model="currentFPM" />
-              {{fp}}
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-    <br />
-    <div class="container-fluid">
-    <div class="row">
+    </form>
+      <form >
+      <div class="row">
       <div class="col d-flex justify-content-start">
-        <label class="form-check-label" for="inlineCheckbox1">Prescribe family planning methods?</label>
+          <p>TB Status</p>
         </div>
         <div class="col">
-          <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="true" v-model="prescribeFP"/>
-        
-          </div>
-          <div class="form-check form-check-inline">
-          </div>
-        </div>
-      </div>
-      <div class="form-check form-check-inline d-flex justify-content-start">
-      </div>
-      <div class="row" v-show="prescribeFP">
-        <div class="col-md-4" v-for="(fp, index) in Object.keys(fpm)" :key="index">
-          <div class="form-check">
-            <label class="form-check-label">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                name
-                id
-                :value="fpm[fp]"
-                v-model="prescribedFPM"
-              />
-              {{fp}}
-            </label>
+          <select class="form-control" name="" id="" v-model="currentStatus">
+            <option v-for="(status, index) in Object.keys(tb_status)"
+          :key="index"
+          :value="tb_status[status]">
+            {{status}}
+          </option>
+          </select>
           </div>
         </div>
-      </div>
-    </div>
-    </div>
-    <br />
-    <div class="container-fluid">
+    </form>
+    <!-- /Pregnant / Breastfeeding Questions -->
+<div class="container-fluid">
     <div class="row">
       <div class="col d-flex justify-content-start">
         <label class="form-check-label" for="inlineCheckbox1">Has Side Effects / Contraindications?</label>
@@ -135,60 +140,76 @@
         </div>
       </div>
     </div>
-    <div class="row" v-if="isFemale">
-      <div class="col d-flex justify-content-start">
-        <p>Pregnant</p>
+    <!-- <div class="container-fluid">
+      <div class="form-check form-check-inline d-flex justify-content-start">
       </div>
-      <div class="col">
-        <fieldset>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              value="1065"
-              v-model="pregnant.value_coded"
-            />
-            <label class="form-check-label" for="inlineRadio1">Yes</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              value="1066"
-              v-model="pregnant.value_coded"
-            />
-            <label class="form-check-label" for="inlineRadio2">No</label>
-          </div>
-        </fieldset>
-      </div>
-    </div>
-    <form v-if="isFemale">
-      <div class="row">
+     <div class="row">
       <div class="col d-flex justify-content-start">
-          <p>Breastfeeding</p>
+        <label class="form-check-label" for="inlineCheckbox1">Currently on family planning methods?</label>
         </div>
         <div class="col">
           <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              value="1065"
-              v-model="breastFeeding.value_coded"
-            />
-            <label class="form-check-label" for="inlineRadio1">Yes</label>
+        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="true" v-model="onFP"/>
+        
           </div>
           <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              value="1066"
-              v-model="breastFeeding.value_coded"
-            />
-            <label class="form-check-label" for="inlineRadio2">No</label>
           </div>
         </div>
       </div>
-    </form>
+      <div class="row" v-show="onFP">
+        <div class="col-md-4" :value="fpm[fp]" v-for="(fp, index) in Object.keys(fpm)" :key="index">
+          <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" :value="fpm[fp]" v-model="currentFPM" />
+              {{fp}}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="container-fluid">
+    <div class="row">
+      <div class="col d-flex justify-content-start">
+        <label class="form-check-label" for="inlineCheckbox1">Prescribe family planning methods?</label>
+        </div>
+        <div class="col">
+          <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="true" v-model="prescribeFP"/>
+        
+          </div>
+          <div class="form-check form-check-inline">
+          </div>
+        </div>
+      </div>
+      <div class="form-check form-check-inline d-flex justify-content-start">
+      </div>
+      <div class="row" v-show="prescribeFP">
+        <div class="col-md-4" v-for="(fp, index) in Object.keys(fpm)" :key="index">
+          <div class="form-check">
+            <label class="form-check-label">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                name
+                id
+                :value="fpm[fp]"
+                v-model="prescribedFPM"
+              />
+              {{fp}}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div> -->
+    <br />
+    
+  
+
+  
+    </div>
+<!-- 
     <form>
       <div class="row">
       <div class="col d-flex justify-content-start">
@@ -267,7 +288,7 @@
         </div>
 
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -288,6 +309,7 @@ export default {
         value_coded: null,
         concept_id: 2690
       },
+      currentStatus: null,
       fpm: {
         "Oral contraceptive pills": 780,
         "Depo-Provera": 907,
@@ -298,11 +320,14 @@ export default {
         "Tubal ligation": 1719,
         "None of the above": 1107
       },
-      tbStatus: {
+     tb_status : 
+     {
         "TB NOT suspected": 7454,
         "TB suspected": 7455,
-        "Confirmed TB NOT on treatment": 7456
-      },
+        "Confirmed TB NOT on treatment": 7456,
+        "Confirmed TB on treatment": 7458
+      }
+      ,
       drugs: {
         "ARVs": 1085,
         "CPT": 916,

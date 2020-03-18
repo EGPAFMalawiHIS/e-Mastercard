@@ -1,6 +1,6 @@
 <template>
   <div>
-  <div class="form-check form-check-inline">
+  <!-- <div class="form-check form-check-inline">
     <label class="form-check-label">
       <input class="form-check-input" type="checkbox" name="" id="" value="true" v-model="prescribeCPT"> CPT
     </label>
@@ -14,9 +14,9 @@
     <label class="form-check-label">
       <input class="form-check-input" type="checkbox" name="" id="" value="true" v-model="prescribeARVs"> ARVs
     </label>
-  </div>
-    <div class="form-row" v-if="prescribeARVs">
-      <div class="form-group col-md-8">
+  </div> -->
+    <div class="form-row" >
+      <div class="form-group col-md-6">
         <label for="inputState">Regimen</label>
         <select
           id="inputState"
@@ -26,25 +26,25 @@
           <option v-for="(regimen, index) in regimens" :key="index">{{index}}</option>
         </select>
       </div>
-      <div class="form-group col-md-4">
+      <div class="form-group col-md-6">
         <label for="inputZip">Quantity</label>
         <input type="number" class="form-control" id="inputZip" v-model="ARVquantity" />
       </div>
     </div>
-    <div class="form-row" v-if="prescribeCPT">
-      <div class="form-group col-md-8">
+    <div class="form-row" >
+      <div class="form-group col-md-6">
         <label for="inputState">CPT</label>
       </div>
-      <div class="form-group col-md-4">
+      <div class="form-group col-md-6">
         <label for="inputZip">Quantity</label>
         <input type="number" class="form-control" id="inputZip" v-model="CPTquantity" />
       </div>
     </div>
-     <div class="form-row" v-if="prescribeIPT">
-      <div class="form-group col-md-8">
+     <div class="form-row" >
+      <div class="form-group col-md-6">
         <label for="inputState">IPT</label>
       </div>
-      <div class="form-group col-md-4">
+      <div class="form-group col-md-6">
         <label for="inputZip">Quantity</label>
         <input type="number" class="form-control" id="inputZip" v-model="IPTquantity" />
       </div>

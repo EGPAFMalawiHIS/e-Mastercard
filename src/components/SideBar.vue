@@ -6,7 +6,7 @@
         <a href="/search" class="side-list list-group-item list-group-item-action ">Search</a>
         <a href="/reports" class="side-list list-group-item list-group-item-action ">Reports</a>
         <a href="/cleaning_tools" class="side-list list-group-item list-group-item-action ">Data cleaning tools</a>
-        <router-link v-if="this.$store.getters.userIs('Superuser')" :to="{name: 'ListUsers'}" class="side-list list-group-item list-group-item-action">Users</router-link>
+        <a v-if="this.$store.getters.userIs('Superuser')" href="/users" class="side-list list-group-item list-group-item-action">users</a>
         
         <!-- <a href="#" class="side-list list-group-item list-group-item-action ">Overview</a>
         <a href="#" class="side-list list-group-item list-group-item-action ">Events</a>

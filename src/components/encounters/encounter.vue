@@ -1,10 +1,10 @@
 <template>
   <div>
     <!-- <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration> -->
-    <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
-    <vitals v-on:addEncounter="addEncounter" ref="vitals" v-if="patientPresent"></vitals>      
+    <vitals v-on:addEncounter="addEncounter" ref="vitals" ></vitals>      
+    <!-- <reception ref="reception" v-on:addEncounter="addEncounter"></reception> -->
     <!-- <staging/> -->
-    <consultation ref="consultation" v-on:addEncounter="addEncounter" v-if="patientPresent"/>
+    <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
 
     <prescription v-on:addEncounter="addEncounter" ref="prescription"/>
     <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
