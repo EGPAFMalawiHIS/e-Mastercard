@@ -1,11 +1,5 @@
 <template>
-  <div>    
-    <div class="row">
-     
-        <div class="col">
-          <div class="form-check form-check-inline">
-        
-          
+  <div>
   <div class="form-check form-check-inline">
     <label class="form-check-label">
       <input class="form-check-input" type="checkbox" name="" id="" value="true" v-model="prescribeCPT"> CPT
@@ -55,10 +49,6 @@
         <input type="number" class="form-control" id="inputZip" v-model="IPTquantity" />
       </div>
     </div>
-</div>
-        </div>
-      </div>
-<br>
   </div>
 </template>
 
