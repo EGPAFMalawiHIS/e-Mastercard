@@ -77,35 +77,35 @@
                   <tbody>
                     <tr>
                       <td>Year Last Taken ARVs</td>
-                      <td>{{registrationEncounter['obs']['yearLastTakenARVs']['value_datetime']}}</td>
+                      <td>{{registrationEncounter['obs']['yearLastTakenARVs']['value_datetime'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Ever registered at a clinic</td>
-                      <td>{{registrationEncounter['obs']['everRegisteredAtClinic']['value_coded']}}</td>
+                      <td>{{CONCEPTS[registrationEncounter['obs']['everRegisteredAtClinic']['value_coded']] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>ART # at previous location</td>
-                      <td>{{registrationEncounter['obs']['artNumberAtPreviousLocation']['value_text']}}</td>
+                      <td>{{registrationEncounter['obs']['artNumberAtPreviousLocation']['value_text'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Confirmatory Test</td>
-                      <td>{{registrationEncounter['obs']['confirmatoryTest']['value_coded']}}</td>
+                      <td>{{CONCEPTS[registrationEncounter['obs']['confirmatoryTest']['value_coded']] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>ART Start Location</td>
-                      <td>{{registrationEncounter['obs']['ARTStartLocation']['value_text']}}</td>
+                      <td>{{registrationEncounter['obs']['ARTStartLocation']['value_text'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Date ART Started</td>
-                      <td>{{registrationEncounter['obs']['dateARTStarted']['value_datetime']}}</td>
+                      <td>{{registrationEncounter['obs']['dateARTStarted']['value_datetime'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Test Location</td>
-                      <td>{{registrationEncounter['obs']['testLocation']['value_text']}}</td>
+                      <td>{{registrationEncounter['obs']['testLocation']['value_text'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Date of Test</td>
-                      <td>{{registrationEncounter['obs']['testDate']['value_datetime']}}</td>
+                      <td>{{registrationEncounter['obs']['testDate']['value_datetime'] || "N/A"}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -198,6 +198,14 @@ export default {
       PATIENT_ID: this.$route.params.id,
       registrationEncounter: null,
       stagingEncounter: null,
+      CONCEPTS: {
+        1065: "Yes",
+        1066: "No",
+        1040: "Rapid Antibody Test",
+        844: "DNA PCR",
+        1118: "Not Done"
+
+      }
     };
   },
   components: {
@@ -458,13 +466,9 @@ export default {
     },
     registrationObject(){
       this.registrationEncounter = this.$store.state.registration.registration
-
-      console.log(this.registrationEncounter)
     },
     stagingObject(){
       this.stagingEncounter = this.$store.state.staging.staging
-
-      console.log(Object.values(this.stagingEncounter)[3].id)
     }
   },
   mounted() {
