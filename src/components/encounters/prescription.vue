@@ -1,9 +1,7 @@
 <template>
   <div>    
     <div class="row">
-      <div class="col d-flex justify-content-start">
-        <label class="form-check-label" for="inlineCheckbox1">Drugs to Prescribe</label>
-        </div>
+     
         <div class="col">
           <div class="form-check form-check-inline">
         

@@ -24,11 +24,11 @@ data: function() {
 
       weight: {
         value_numeric: null,
-        concept_id: 5090
+        concept_id: 5089
       },
       height: {
         value_numeric: null,
-        concept_id: 5089
+        concept_id: 5090
       },
       previousHeight: null
     }
@@ -40,9 +40,11 @@ methods: {
         encounter_id: 6,
         obs: {
           weight: this.weight,
-          height: this.height
         }
       }
+    }
+    if(this.showHeight) {
+     encounterObject.vitals.obs.height = this.height; 
     }
     this.$emit('addEncounter',  encounterObject);
   }, setWeight: function() {
