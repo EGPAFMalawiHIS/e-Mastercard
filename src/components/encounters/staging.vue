@@ -1,116 +1,156 @@
 <template>
   <div>
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a
-          class="nav-link active"
-          id="contact-tab"
+          class="nav-item nav-link active"
+          id="nav-home-tab"
           data-toggle="tab"
-          href="#stage_4"
+          href="#nav-home"
           role="tab"
-          aria-controls="stage 4"
+          aria-controls="nav-home"
           aria-selected="true"
         >Stage 4</a>
-      </li>
-      <li class="nav-item">
         <a
-          class="nav-link"
-          id="contact-tab"
+          class="nav-item nav-link"
+          id="nav-profile-tab"
           data-toggle="tab"
-          href="#stage_3"
+          href="#nav-profile"
           role="tab"
-          aria-controls="stage 3"
+          aria-controls="nav-profile"
           aria-selected="false"
         >Stage 3</a>
-      </li>
-      <li class="nav-item">
         <a
-          class="nav-link"
-          id="profile-tab"
+          class="nav-item nav-link"
+          id="nav-contact-tab"
           data-toggle="tab"
-          href="#stage_2"
+          href="#nav-contact"
           role="tab"
-          aria-controls="stage 2"
+          aria-controls="nav-contact"
           aria-selected="false"
         >Stage 2</a>
-      </li>
-
-      <li class="nav-item">
         <a
-          class="nav-link"
-          id="home-tab"
+          class="nav-item nav-link"
+          id="stage-one-tab"
           data-toggle="tab"
-          href="#stage_1"
+          href="#nav-stage-one"
           role="tab"
-          aria-controls="stage 1"
+          aria-controls="nav-stage-one"
           aria-selected="false"
         >Stage 1</a>
-      </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-      <div class="tab-pane fade" id="stage_4" role="tabpanel" aria-labelledby="stage_4">
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label style="font-weight: bold">Stage 4</label>
-              <v-select
-                multiple
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div
+        class="tab-pane fade show active"
+        id="nav-home"
+        role="tabpanel"
+        aria-labelledby="nav-home-tab"
+      >
+        <ul
+          class="list-group list-group-flush list-group-striped"
+          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
+        >
+          <li
+            class="list-group-item"
+            v-for="(stage, index) in Object.keys(stageFourConditions)"
+            :key="index"
+          >
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                v-bind:value="stage"
                 v-model="stateFourValue"
-                :options="Object.keys(stageFourConditions)"
+                @click="selectedValues()"
                 v-on:input="setStaging()"
-              ></v-select>
-            </div>
-          </div>
-        </div>
+              />
+              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
+            </label>
+            <label style="margin-left: 16px">{{ stage }}</label>
+          </li>
+        </ul>
       </div>
-      <div class="tab-pane fade" id="stage_3" role="tabpanel" aria-labelledby="stage_3">
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label style="font-weight: bold">Stage 3</label>
-              <v-select
-                multiple
+      <div
+        class="tab-pane fade"
+        id="nav-profile"
+        role="tabpanel"
+        aria-labelledby="nav-profile-tab"
+      ><ul
+          class="list-group list-group-flush list-group-striped"
+          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
+        >
+          <li
+            class="list-group-item"
+            v-for="(stage, index) in Object.keys(stageThreeConditions)"
+            :key="index"
+          >
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                v-bind:value="stage"
                 v-model="stateThreeValue"
-                :options="Object.keys(stageThreeConditions)"
+                @click="selectedValues()"
                 v-on:input="setStaging()"
-              ></v-select>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane fade" id="stage_2" role="tabpanel" aria-labelledby="stage_2">
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label style="font-weight: bold">Stage 2</label>
-              <v-select
-                multiple
+              />
+              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
+            </label>
+            <label style="margin-left: 16px">{{ stage }}</label>
+          </li>
+        </ul></div>
+      <div
+        class="tab-pane fade"
+        id="nav-contact"
+        role="tabpanel"
+        aria-labelledby="nav-contact-tab"
+      ><ul
+          class="list-group list-group-flush list-group-striped"
+          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
+        >
+          <li
+            class="list-group-item"
+            v-for="(stage, index) in Object.keys(stageTwoConditions)"
+            :key="index"
+          >
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                v-bind:value="stage"
                 v-model="stateTwoValue"
-                :options="Object.keys(stageTwoConditions)"
+                @click="selectedValues()"
                 v-on:input="setStaging()"
-              ></v-select>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane fade" id="stage_1" role="tabpanel" aria-labelledby="stage_1">
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label style="font-weight: bold">Stage 1</label>
-              <v-select
-                multiple
+              />
+              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
+            </label>
+            <label style="margin-left: 16px">{{ stage }}</label>
+          </li>
+        </ul></div>
+        <div
+        class="tab-pane fade"
+        id="nav-stage-one" 
+        role="tabpanel"
+        aria-labelledby="stage-one-tab"
+      ><ul
+          class="list-group list-group-flush list-group-striped"
+          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
+        >
+          <li
+            class="list-group-item"
+            v-for="(stage, index) in Object.keys(stageOneConditions)"
+            :key="index"
+          >
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                v-bind:value="stage"
                 v-model="stateOneValue"
-                :options="Object.keys(stageOneConditions)"
+                @click="selectedValues()"
                 v-on:input="setStaging()"
-              ></v-select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="container-fluid">
-      <div class="row"></div>
+              />
+              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
+            </label>
+            <label style="margin-left: 16px">{{ stage }}</label>
+          </li>
+        </ul></div>
     </div>
   </div>
 </template>
@@ -146,6 +186,7 @@ export default {
   props: ["patientId"],
   data: function() {
     return {
+      languages: [],
       encounterObject: {
         encounter_id: 52,
         obs: {}
@@ -283,8 +324,12 @@ export default {
   methods: {
     saveEncounter: function() {
       this.addConditions();
-      console.log(this.encounterObject);
+      //this.addCD4()
       this.$emit("addEncounter", { staging: this.encounterObject });
+    },
+
+    selectedValues() {
+      console.log(this.languages);
     },
 
     addConditions() {
@@ -394,13 +439,161 @@ export default {
     setStaging() {
       this.addConditions();
       this.$store.commit("setStaging", this.conditions);
+    },
+    initialize() {
+      return Object.keys(this.stageFourConditions);
     }
   },
   created() {
+    this.initialize();
     this.fetchDemographics();
+  },
+
+  mounted() {
+    this.initialize();
   }
 };
 </script>
 
-<style>
+<style scoped>
+@import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900");
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.checkbox-label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkbox-label .checkbox-custom {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 24px;
+  width: 24px;
+  background-color: transparent;
+  border-radius: 5px;
+  transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  border: 2px solid black;
+}
+
+.checkbox-label input:checked ~ .checkbox-custom {
+  background-color: #009bff;
+  border-radius: 5px;
+  -webkit-transform: rotate(0deg) scale(1);
+  -ms-transform: rotate(0deg) scale(1);
+  transform: rotate(0deg) scale(1);
+  opacity: 1;
+  border: 2px solid black;
+}
+
+.checkbox-label .checkbox-custom::after {
+  position: absolute;
+  content: "";
+  left: 12px;
+  top: 12px;
+  height: 0px;
+  width: 0px;
+  border-radius: 5px;
+  border: solid #009bff;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(0deg) scale(0);
+  -ms-transform: rotate(0deg) scale(0);
+  transform: rotate(0deg) scale(0);
+  opacity: 1;
+  transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+}
+
+.checkbox-label input:checked ~ .checkbox-custom::after {
+  -webkit-transform: rotate(45deg) scale(1);
+  -ms-transform: rotate(45deg) scale(1);
+  transform: rotate(45deg) scale(1);
+  opacity: 1;
+  left: 8px;
+  top: 3px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+/* For Ripple Effect */
+.checkbox-label .checkbox-custom::before {
+  position: absolute;
+  content: "";
+  left: 10px;
+  top: 10px;
+  width: 0px;
+  height: 0px;
+  border-radius: 5px;
+  border: 2px solid black;
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+
+.checkbox-label input:checked ~ .checkbox-custom::before {
+  left: -3px;
+  top: -3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  -webkit-transform: scale(3);
+  -ms-transform: scale(3);
+  transform: scale(3);
+  opacity: 0;
+  z-index: 999;
+  transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+}
+
+/* Style for Circular Checkbox */
+.checkbox-label .checkbox-custom.circular {
+  border-radius: 50%;
+  border: 2px solid black;
+}
+
+.checkbox-label input:checked ~ .checkbox-custom.circular {
+  background-color: #0067ff;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+.checkbox-label input:checked ~ .checkbox-custom.circular::after {
+  border: solid white;
+  border-width: 0 2px 2px 0;
+}
+.checkbox-label .checkbox-custom.circular::after {
+  border-radius: 50%;
+}
+
+.checkbox-label .checkbox-custom.circular::before {
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+.checkbox-label input:checked ~ .checkbox-custom.circular::before {
+  border-radius: 50%;
+}
+
+ul.list-group.list-group-striped li:nth-of-type(odd) {
+  background: white;
+}
+ul.list-group.list-group-striped li:nth-of-type(even) {
+  background: rgb(233, 233, 233);
+}
 </style>
