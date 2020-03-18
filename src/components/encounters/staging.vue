@@ -1,192 +1,156 @@
 <template>
   <div>
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a
-          class="nav-link active"
-          id="contact-tab"
+          class="nav-item nav-link active"
+          id="nav-home-tab"
           data-toggle="tab"
-          href="#stage_4"
+          href="#nav-home"
           role="tab"
-          aria-controls="stage 4"
+          aria-controls="nav-home"
           aria-selected="true"
         >Stage 4</a>
-      </li>
-      <li class="nav-item">
         <a
-          class="nav-link"
-          id="contact-tab"
+          class="nav-item nav-link"
+          id="nav-profile-tab"
           data-toggle="tab"
-          href="#stage_3"
+          href="#nav-profile"
           role="tab"
-          aria-controls="stage 3"
+          aria-controls="nav-profile"
           aria-selected="false"
         >Stage 3</a>
-      </li>
-      <li class="nav-item">
         <a
-          class="nav-link"
-          id="profile-tab"
+          class="nav-item nav-link"
+          id="nav-contact-tab"
           data-toggle="tab"
-          href="#stage_2"
+          href="#nav-contact"
           role="tab"
-          aria-controls="stage 2"
+          aria-controls="nav-contact"
           aria-selected="false"
         >Stage 2</a>
-      </li>
-
-      <li class="nav-item">
         <a
-          class="nav-link"
-          id="home-tab"
+          class="nav-item nav-link"
+          id="stage-one-tab"
           data-toggle="tab"
-          href="#stage_1"
+          href="#nav-stage-one"
           role="tab"
-          aria-controls="stage 1"
+          aria-controls="nav-stage-one"
           aria-selected="false"
         >Stage 1</a>
-      </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-      <div class="tab-pane fade" id="stage_4" role="tabpanel" aria-labelledby="stage_4">
-        <div class="row">
-          <div class="col-md-12" style="margin: auto">
-            <div class="form-group">
-              <label style="font-weight: bold">Stage 4</label>
-              <ul
-                class="list-group list-group-flush list-group-striped"
-                style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
-              >
-                <li
-                  class="list-group-item"
-                  v-for="(stage, index) in Object.keys(stageFourConditions)"
-                  :key="index"
-                >
-                  <label class="checkbox-label">
-                    <input
-                      type="checkbox"
-                      v-bind:value="stage"
-                      v-model="stateFourValue"
-                      @click="selectedValues()"
-                      v-on:input="setStaging()"
-                    />
-                    <span
-                      class="checkbox-custom rectangular"
-                      style="margin-top: 13px; margin-left: 5px"
-                    ></span>
-                  </label>
-                  <label style="margin-left: 16px">{{ stage }}</label>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
       </div>
-      <div class="tab-pane fade" id="stage_3" role="tabpanel" aria-labelledby="stage_3">
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label style="font-weight: bold">Stage 3</label>
-              <ul
-                class="list-group list-group-flush list-group-striped"
-                style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
-              >
-                <li
-                  class="list-group-item"
-                  v-for="(stage, index) in Object.keys(stageThreeConditions)"
-                  :key="index"
-                >
-                  <label class="checkbox-label">
-                    <input
-                      type="checkbox"
-                      v-bind:value="stage"
-                      v-model="stateThreeValue"
-                      @click="selectedValues()"
-                      v-on:input="setStaging()"
-                    />
-                    <span
-                      class="checkbox-custom rectangular"
-                      style="margin-top: 11px; margin-left: 5px"
-                    ></span>
-                  </label>
-                  <label style="margin-left: 16px">{{ stage }}</label>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div
+        class="tab-pane fade show active"
+        id="nav-home"
+        role="tabpanel"
+        aria-labelledby="nav-home-tab"
+      >
+        <ul
+          class="list-group list-group-flush list-group-striped"
+          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
+        >
+          <li
+            class="list-group-item"
+            v-for="(stage, index) in Object.keys(stageFourConditions)"
+            :key="index"
+          >
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                v-bind:value="stage"
+                v-model="stateFourValue"
+                @click="selectedValues()"
+                v-on:input="setStaging()"
+              />
+              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
+            </label>
+            <label style="margin-left: 16px">{{ stage }}</label>
+          </li>
+        </ul>
       </div>
-      <div class="tab-pane fade" id="stage_2" role="tabpanel" aria-labelledby="stage_2">
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label style="font-weight: bold">Stage 2</label>
-              <ul
-                class="list-group list-group-flush list-group-striped"
-                style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
-              >
-                <li
-                  class="list-group-item"
-                  v-for="(stage, index) in Object.keys(stageTwoConditions)"
-                  :key="index"
-                >
-                  <label class="checkbox-label">
-                    <input
-                      type="checkbox"
-                      v-bind:value="stage"
-                      v-model="stateTwoValue"
-                      @click="selectedValues()"
-                      v-on:input="setStaging()"
-                    />
-                    <span
-                      class="checkbox-custom rectangular"
-                      style="margin-top: 11px; margin-left: 5px"
-                    ></span>
-                  </label>
-                  <label style="margin-left: 16px">{{ stage }}</label>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane fade" id="stage_1" role="tabpanel" aria-labelledby="stage_1">
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label style="font-weight: bold">Stage 1</label>
-              <ul
-                class="list-group list-group-flush list-group-striped"
-                style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
-              >
-                <li
-                  class="list-group-item"
-                  v-for="(stage, index) in Object.keys(stageOneConditions)"
-                  :key="index"
-                >
-                  <label class="checkbox-label">
-                    <input
-                      type="checkbox"
-                      v-bind:value="stage"
-                      v-model="stateOneValue"
-                      @click="selectedValues()"
-                      v-on:input="setStaging()"
-                    />
-                    <span
-                      class="checkbox-custom rectangular"
-                      style="margin-top: 11px; margin-left: 5px"
-                    ></span>
-                  </label>
-                  <label style="margin-left: 16px">{{ stage }}</label>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="container-fluid">
-      <div class="row"></div>
+      <div
+        class="tab-pane fade"
+        id="nav-profile"
+        role="tabpanel"
+        aria-labelledby="nav-profile-tab"
+      ><ul
+          class="list-group list-group-flush list-group-striped"
+          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
+        >
+          <li
+            class="list-group-item"
+            v-for="(stage, index) in Object.keys(stageThreeConditions)"
+            :key="index"
+          >
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                v-bind:value="stage"
+                v-model="stateThreeValue"
+                @click="selectedValues()"
+                v-on:input="setStaging()"
+              />
+              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
+            </label>
+            <label style="margin-left: 16px">{{ stage }}</label>
+          </li>
+        </ul></div>
+      <div
+        class="tab-pane fade"
+        id="nav-contact"
+        role="tabpanel"
+        aria-labelledby="nav-contact-tab"
+      ><ul
+          class="list-group list-group-flush list-group-striped"
+          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
+        >
+          <li
+            class="list-group-item"
+            v-for="(stage, index) in Object.keys(stageTwoConditions)"
+            :key="index"
+          >
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                v-bind:value="stage"
+                v-model="stateTwoValue"
+                @click="selectedValues()"
+                v-on:input="setStaging()"
+              />
+              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
+            </label>
+            <label style="margin-left: 16px">{{ stage }}</label>
+          </li>
+        </ul></div>
+        <div
+        class="tab-pane fade"
+        id="nav-stage-one" 
+        role="tabpanel"
+        aria-labelledby="stage-one-tab"
+      ><ul
+          class="list-group list-group-flush list-group-striped"
+          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
+        >
+          <li
+            class="list-group-item"
+            v-for="(stage, index) in Object.keys(stageOneConditions)"
+            :key="index"
+          >
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                v-bind:value="stage"
+                v-model="stateOneValue"
+                @click="selectedValues()"
+                v-on:input="setStaging()"
+              />
+              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
+            </label>
+            <label style="margin-left: 16px">{{ stage }}</label>
+          </li>
+        </ul></div>
     </div>
   </div>
 </template>
