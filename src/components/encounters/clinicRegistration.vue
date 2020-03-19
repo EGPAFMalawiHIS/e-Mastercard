@@ -50,7 +50,7 @@
             type="text"
             class="form-control"
             value="Unknown"
-            v-model="yearLastTaken"
+            v-model="estimatedYearLastTaken"
             disabled
           />
         </div>
@@ -337,6 +337,7 @@ export default {
       artStartDate: null,
       yearLastTakenUknown: false,
       yearLastTaken: null,
+      estimatedYearLastTaken: null,
       locationOfInitiation: "Select Location of Initiation",
       locationOfInitiationUnknown: false,
       locationOfConfirmatory: "Select Location Confirmatory",
@@ -604,7 +605,6 @@ export default {
 
     buildObservations() {
       // YEAR LAST TAKEN
-      this.setRegistration()
       const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
       this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = yearLastTaken;
 
@@ -621,6 +621,7 @@ export default {
 
     },
     setRegistration(){
+      this.buildObservations()
       this.$store.commit('setRegistration', this.clinicRegistration)
     },
     getVal(val) {

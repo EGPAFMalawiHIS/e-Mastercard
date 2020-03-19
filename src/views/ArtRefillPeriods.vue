@@ -112,6 +112,7 @@ export default {
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: true,
+        paging: false,
         dom: 'Bfrtip',
         buttons: [
           {
