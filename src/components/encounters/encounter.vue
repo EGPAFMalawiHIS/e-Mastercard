@@ -2,6 +2,7 @@
   <div>
     <!-- <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration> -->
     <vitals v-on:addEncounter="addEncounter" ref="vitals" ></vitals>      
+    <!-- <vitals v-on:addEncounter="addEncounter" ref="vitals1" ></vitals>       -->
     <!-- <reception ref="reception" v-on:addEncounter="addEncounter"></reception> -->
     <!-- <staging/> -->
     <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
@@ -26,6 +27,7 @@ import EncounterService from "../../services/encounter_service";
 import EventBus from "../../services/event-bus.js";
 import { isMoment } from 'moment';
 export default {
+    props: ["date"],
     data: function() {
         return {
             encounters: {},
@@ -46,7 +48,7 @@ export default {
         addEncounter(encounterData) {
             let key = Object.keys(encounterData)[0];
             this.encounters[key] = encounterData[key];
-            
+
         },
         saveEncounter: async function(encounterOb) {
             let observations = [];
@@ -67,7 +69,8 @@ export default {
             const personId = this.$route.params.id;
             const encounter = await EncounterService.createEncounter(
                 personId,
-                encounterOb.encounter_id
+                encounterOb.encounter_id,
+                this.date
             );
             this.successfulOperation = true;
             if (encounter.status === 201 || encounter.status === 200) {

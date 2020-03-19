@@ -386,7 +386,10 @@ export default {
         consultation: {
           encounter_id: 53,
           obs: {
-            tb: this.onTb,
+            tb:  {
+              value_coded: this.currentStatus,
+              concept_id: 7459
+            },
             
           }
         }

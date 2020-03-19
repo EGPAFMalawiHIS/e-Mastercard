@@ -47,18 +47,22 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLongTitle">New Visit</h5>
-                  <div class="input-group" style="width: 50%; margin-left: 10px; ">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="height">Encounter Date</span>
-                    </div>
-                    <input type="date" class="form-control" name="" id="">
-                  </div>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  <encounter/>
+                  <div class="row">
+                    <div class="col" style="text-align:left;">
+                      <label for="">Encounter Date</label>
+                  </div>   
+                    <div class="col">
+                      
+                      <input type="date" class="form-control" name="" id="" v-model="date">
+                    </div>
+                    </div>
+                  </div>
+                  <encounter :date="date"/>
                 </div>
               </div>
             </div>
@@ -115,7 +119,7 @@
       </div>
       <!-- /#page-content-wrapper -->
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -139,6 +143,10 @@ export default {
     "encounter": encounter,
     "outcome": outcome,
     "viral-load": viralLoad
+  }, data: function() {
+    return {
+      date: null,
+    }
   }
 };
 </script>

@@ -125,14 +125,11 @@ export default {
           quantity: this.ARVquantity
         });
       });
-      if(this.prescribeARVs) {
           consultationObs.prescribeARV= {
           concept_id : 1282,
           value_coded : 1085
         }
-      }
       
-      if(this.prescribeCPT) {
         this.CPTRegimens.forEach(element => {
           this.selectedDrugs.push({
             drug_name: element.drug_name,
@@ -147,8 +144,6 @@ export default {
           concept_id : 1282,
           value_coded : 916
         }
-      }
-      if(this.prescribeIPT) {
         this.IPTRegimens.forEach(element => {
           this.selectedDrugs.push({
             drug_name: element.drug_name,
@@ -163,7 +158,6 @@ export default {
           concept_id :1282,
           value_coded : 656
         }
-      }
       for (let i = 0; i < this.selectedDrugs.length; i++) {
         let morning_tabs = parseFloat(this.selectedDrugs[i]["am"]);
         let evening_tabs = parseFloat(this.selectedDrugs[i]["pm"]);
@@ -217,12 +211,11 @@ export default {
       }
     }
     let enc2 = {
-      consultation: {
+      consultation2: {
         encounter_id: 53,
         obs: consultationObs
       }
     }
-      console.log(enc2);
     this.$emit('addEncounter',  enc);
     this.$emit('addEncounter',  enc2);
     },
