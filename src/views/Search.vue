@@ -18,56 +18,50 @@
               v-model.trim="$v.searchText.$model"
               v-on:keyup.enter="searchPatients"
             /> 
-            <div class="input-group-append">
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                @click="searchPatients"
-                style="margin-left: 10px"
-              >search</button>
-            </div>
-          </div>
-
-          <span v-if="$v.searchText.$dirty">
-            <p class="text-danger form-error" v-if="!$v.searchText.required">A name or an ARV number is required</p>
-          </span>
-
-          <div class="justify-content-center" style="width: 80%; margin: auto; margin-left: 60px">
-            <form class="form-inline">
-              <div class="form-group">
-                <label for="gender">Gender:</label>
-                <!-- <input type="password" class="form-control" id="pwd"> -->
+            <div class="">
                 <select
                   name="gender"
                   id="gender"
                   class="form-control form-control"
                   v-model="gender"
                 >
-                  <option value selected disabled>Gender</option>
+                  <option value="" disabled hidden>Select Gender</option>
                   <option value="M">Male</option>
                   <option value="F">Female</option>
                 </select>
               </div>
+              <button
+                class="btn btn-primary"
+                type="button"
+                @click="searchPatients"
+                style="margin-left: 10px"
+              >search</button>
+          </div>
+
+          <span v-if="$v.searchText.$dirty">
+            <p class="text-danger form-error" v-if="!$v.searchText.required">A name or an ARV number is required</p>
+          </span>
+
+          <div class="justify-content-center">
             
-              <div class="form-group" style="margin-left: 20px">
+            
                 <button
                   type="button"
-                  class="btn btn-primary"
+                  class="btn btn-success"
                   @click="redirect('/patient_registration')"
                 >Add New Patient</button>
-              </div>
-            </form>
           </div>
           <br />
           <br />
         </div>
-        <div class="d-flex justify-content-center" v-if="loading">
-          <div class="spinner-border" role="status">
+        <div class="d-flex justify-content-center" >
+          <p> number of results: ({{results.length}})</p>
+          
+          <div class="spinner-border" v-if="loading" role="status">
             <span class="sr-only">Loading...</span>
           </div>
         </div>
         <div class="d-flex justify-content-center">
-          <p> number of results: ({{results.length}})</p>
         </div>
         <div class="container-fluid">
           <div class="row">

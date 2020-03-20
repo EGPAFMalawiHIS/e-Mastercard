@@ -8,9 +8,11 @@ import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@/assets/css/emastercard.css';
+import Toasted from 'vue-toasted';
 
 Vue.config.productionTip = false
 Vue.prototype.moment = moment;
+Vue.use(Toasted)
 ApiClient.setRouter(router);
 
 new Vue({

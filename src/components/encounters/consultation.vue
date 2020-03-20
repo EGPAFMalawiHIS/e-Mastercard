@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isFemale">
+    <div >
     <!-- Pregnant / Breastfeeding Questions -->
     <div class="row" v-if="isFemale">
       <div class="col d-flex justify-content-start">

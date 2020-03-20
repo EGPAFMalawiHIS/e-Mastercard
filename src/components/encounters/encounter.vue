@@ -10,7 +10,7 @@
     <prescription v-on:addEncounter="addEncounter" ref="prescription"/>
     <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
     <!-- <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>       -->
-    <button type="button" class="btn btn-primary" @click="createEncounters">save</button>
+    <button type="button" class="btn btn-primary" @click="createEncounters" :disabled="posting">save</button>
   </div>
 </template>
 
@@ -33,6 +33,7 @@ export default {
             encounters: {},
             numEnc: 0,
             patientPresent: false,
+            posting: false,
         }
     },
     components: {
@@ -80,6 +81,7 @@ export default {
                 if (response.status === 201 || response.status === 200) {
                 this.numEnc++;
                 if(this.numEnc === Object.keys(this.encounters).length) {
+                    this.posting = false;
                     this.$router.go(0);
                 }
                 this.success = true;
@@ -87,17 +89,25 @@ export default {
                 this.postResponse = "Appointment has been set.";
                 // this.$router.go(0);
                 } else {
-                this.success = false;
+                this.posting = false;
+                let toast = this.$toasted.show("Some Observations failed to save !!", { 
+                    theme: "toasted-primary", 
+                    position: "top-right", 
+                    duration : 5000
+                });   
                 this.fail = true;
                 this.postResponse = "Appointment could not be set.";
                 }
             } else {
+                this.posting = false;
                 this.success = false;
                 this.fail = true;
                 this.postResponse = "Appointment could not be set.";
             }
         },
         createEncounters: function() {
+            this.posting = true;
+            
             let encounters = Object.keys(this.$refs);
             encounters.forEach(el => {
                 this.$refs[el].saveEncounter();
@@ -106,6 +116,7 @@ export default {
             keys.forEach(enc => {
                 this.saveEncounter(this.encounters[enc]);
             });
+            this.posting = false;
         },
         getExpected: function(element) {
             let expected = [
