@@ -25,7 +25,7 @@
         <td>{{visit.outcome}}</td>
         <td>{{visit.viralLoad}}</td>
         <td>
-          <button class="btn btn-danger" @click="deleteVisit(index, visit.encounters)" >
+          <button class="btn btn-danger" @click="deleteVisit(index, visit.encounters)" v-if="visit.encounters.length > 0">
             <template v-if="visit.state === 'deleting'">
               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               <span class="sr-only">Loading...</span>

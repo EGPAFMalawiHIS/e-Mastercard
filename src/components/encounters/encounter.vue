@@ -10,7 +10,15 @@
     <prescription v-on:addEncounter="addEncounter" ref="prescription"/>
     <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
     <!-- <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>       -->
-    <button type="button" class="btn btn-primary" @click="createEncounters" :disabled="posting">save</button>
+        <button class="btn btn-primary" @click="createEncounters" >
+            <template v-if="posting === true">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span class="sr-only">Loading...</span>
+            </template>
+            <template v-else>
+              <span>Save</span>
+            </template>
+          </button>
   </div>
 </template>
 
@@ -44,7 +52,7 @@ export default {
         "appointment": appointment,
         "staging": staging,
         "consultation": consultation,
-        "prescription": prescription
+        "prescription": prescription,
     },
     methods: {
         addEncounter(encounterData) {
@@ -105,7 +113,7 @@ export default {
                 this.postResponse = "Appointment has been set.";
                 // this.$router.go(0);
                 } else {
-                this.posting = false;
+                // this.posting = false;
                 let toast = this.$toasted.show("Some Observations failed to save !!", { 
                     theme: "toasted-primary", 
                     position: "top-right", 
@@ -115,7 +123,7 @@ export default {
                 this.postResponse = "Appointment could not be set.";
                 }
             } else {
-                this.posting = false;
+                // this.posting = false;
                 this.success = false;
                 this.fail = true;
                 this.postResponse = "Appointment could not be set.";
@@ -132,7 +140,7 @@ export default {
             keys.forEach(enc => {
                 this.saveEncounter(this.encounters[enc]);
             });
-            this.posting = false;
+            // this.posting = false;
         },
         getExpected: function(element) {
             let expected = [
