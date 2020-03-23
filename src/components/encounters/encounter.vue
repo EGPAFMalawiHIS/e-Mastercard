@@ -34,6 +34,7 @@ export default {
             numEnc: 0,
             patientPresent: false,
             posting: false,
+            verifiedEnc: []
         }
     },
     components: {
@@ -51,26 +52,41 @@ export default {
             this.encounters[key] = encounterData[key];
 
         },
-        saveEncounter: async function(encounterOb) {
+        saveEncounter: function(encounterOb) {
             let observations = [];
             let enc = {
                 url: "observations"
             };
+            console.log(encounterOb);
               if(Object.keys(encounterOb).includes("obs")) {
                 Object.keys(encounterOb.obs).forEach(element => {
-                    observations.push(encounterOb.obs[element]);
+                    let valueKey = encounterOb.obs[element][this.getExpected(encounterOb.obs[element])];
+                    if(valueKey !== null && valueKey !== "") {
+                        observations.push(encounterOb.obs[element]);
+                    }
                 });
                 enc.observations = observations;
+                if(observations.length > 0) {
+                    this.verifiedEnc.push(encounterOb.encounter_id);
+                    this.postEncounter(enc, encounterOb.encounter_id)
+                }
                 
             }else if(Object.keys(encounterOb).includes("drug_orders")) {
                 enc.drug_orders = encounterOb.drug_orders;
                 enc.url = "drug_orders"
+                if(enc.drug_orders.length > 0) {
+                    this.verifiedEnc.push(encounterOb.encounter_id);
+                    this.postEncounter(enc, encounterOb.encounter_id)
+                }
             }
             
+            
+        },
+        postEncounter: async function(enc, encounter_id) {
             const personId = this.$route.params.id;
             const encounter = await EncounterService.createEncounter(
                 personId,
-                encounterOb.encounter_id,
+                encounter_id,
                 this.date
             );
             this.successfulOperation = true;
@@ -80,7 +96,7 @@ export default {
                 const response = await ApiClient.post(enc.url, enc);
                 if (response.status === 201 || response.status === 200) {
                 this.numEnc++;
-                if(this.numEnc === Object.keys(this.encounters).length) {
+                if(this.numEnc === this.verifiedEnc.length) {
                     this.posting = false;
                     this.$router.go(0);
                 }

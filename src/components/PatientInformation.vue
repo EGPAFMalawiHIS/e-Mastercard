@@ -445,7 +445,7 @@ export default {
               sex: this.sex
             };
             this.$store.commit('setPatient', personObj);
-            console.log(moment().diff("2020-02-26", 'days',false))
+            // console.log(moment().diff("2020-02-26", 'days',false))
 
       });
       this.obs.forEach(value => {

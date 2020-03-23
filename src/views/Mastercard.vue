@@ -135,6 +135,7 @@ import clinicRegistration from "@/components/encounters/clinicRegistration.vue";
 import encounter from "@/components/encounters/encounter.vue"
 import outcome from "@/components/outcome.vue"
 import viralLoad from '@/components/encounters/viral_load.vue';
+import moment from 'moment/moment'
 export default {
   name: "home",
   components: {
@@ -148,7 +149,7 @@ export default {
     "viral-load": viralLoad
   }, data: function() {
     return {
-      date: null,
+      date: moment().format('YYYY-MM-DD'),
     }
   }
 };

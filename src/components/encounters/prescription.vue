@@ -115,6 +115,8 @@ export default {
       let consultationObs= {
         
       }
+      if(this.ARVquantity) {
+
       currentDrugs.forEach(element => {
         this.selectedDrugs.push({
           drug_name: element.drug_name,
@@ -129,7 +131,9 @@ export default {
           concept_id : 1282,
           value_coded : 1085
         }
-      
+      }
+
+      if(this.CPTquantity) {
         this.CPTRegimens.forEach(element => {
           this.selectedDrugs.push({
             drug_name: element.drug_name,
@@ -144,6 +148,9 @@ export default {
           concept_id : 1282,
           value_coded : 916
         }
+      }
+
+      if(this.IPTquantity) {
         this.IPTRegimens.forEach(element => {
           this.selectedDrugs.push({
             drug_name: element.drug_name,
@@ -158,6 +165,7 @@ export default {
           concept_id :1282,
           value_coded : 656
         }
+      }
       for (let i = 0; i < this.selectedDrugs.length; i++) {
         let morning_tabs = parseFloat(this.selectedDrugs[i]["am"]);
         let evening_tabs = parseFloat(this.selectedDrugs[i]["pm"]);
