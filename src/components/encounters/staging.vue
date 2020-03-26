@@ -1,156 +1,145 @@
 <template>
-  <div>
-    <nav>
-      <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <a
-          class="nav-item nav-link active"
-          id="nav-home-tab"
-          data-toggle="tab"
-          href="#nav-home"
-          role="tab"
-          aria-controls="nav-home"
-          aria-selected="true"
-        >Stage 4</a>
-        <a
-          class="nav-item nav-link"
-          id="nav-profile-tab"
-          data-toggle="tab"
-          href="#nav-profile"
-          role="tab"
-          aria-controls="nav-profile"
-          aria-selected="false"
-        >Stage 3</a>
-        <a
-          class="nav-item nav-link"
-          id="nav-contact-tab"
-          data-toggle="tab"
-          href="#nav-contact"
-          role="tab"
-          aria-controls="nav-contact"
-          aria-selected="false"
-        >Stage 2</a>
-        <a
-          class="nav-item nav-link"
-          id="stage-one-tab"
-          data-toggle="tab"
-          href="#nav-stage-one"
-          role="tab"
-          aria-controls="nav-stage-one"
-          aria-selected="false"
-        >Stage 1</a>
+  <div class="main-container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float:left; font-weight: bold">Reason for Starting</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <!-- this.person["gender"] == "F" -->
+            <v-select
+              multiple
+              :options="filterReasons(this.person)"
+              v-model="reasonForArtEligibility"
+            ></v-select>
+          </div>
+        </div>
       </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent">
-      <div
-        class="tab-pane fade show active"
-        id="nav-home"
-        role="tabpanel"
-        aria-labelledby="nav-home-tab"
-      >
+    </div>
+    <div class="row">
+      <!-- Stages dropdown -->
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float:left; font-weight: bold">Select Stage</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <v-select
+              :options="Object.keys(whoStageConceptMapHash)"
+              v-model="whoStage"
+              @change="stageSelect(whoStage)"
+            ></v-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-top: 10px">
+      <div class="col-md-12">
+        <span
+          style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic; float: left"
+        >Recent CD4 Count results available?</span>
+        <input
+          @click="c4dCountAvailableCheck()"
+          type="checkbox"
+          style="margin-left: 10px; float: left; margin-top: 6px"
+        />
+      </div>
+    </div>
+    <div v-if="cdCountAvailable" class="row">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float:left; font-weight: bold">CD4 Count date</label>
+            <input
+              type="date"
+              class="form-control"
+              aria-describedby="emailHelp"
+              placeholder="Search condition"
+              v-model="cd4CountDate"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float:left; font-weight: bold">CD4 Count</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-inline">
+              <select name="stage" class="form-control" v-model="cd4CountModifier">
+                <option disabled selected>Select</option>
+                <option value="<">&lt;</option>
+                <option value=">">&gt;</option>
+              </select>
+              <input
+                type="text"
+                class="form-control"
+                aria-describedby="emailHelp"
+                placeholder="Enter Count"
+                v-model="cd4Count"
+                style="margin-left: 5px; width: 81%"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="cdCountAvailable" class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float:left; font-weight: bold">CD4 Count location</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <v-select :options="locations" @search="getlocations" v-model="cd4CountLocation"></v-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <label style="float:left; font-weight: bold; margin-top: 10px">Select Condition(s)</label>
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            aria-describedby="emailHelp"
+            placeholder="Search condition"
+            v-model="search"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
         <ul
           class="list-group list-group-flush list-group-striped"
-          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
+          style="height:150px; overflow:hidden; overflow-y:scroll; text-align:left"
         >
-          <li
-            class="list-group-item"
-            v-for="(stage, index) in Object.keys(stageFourConditions)"
-            :key="index"
-          >
+          <li class="list-group-item" v-for="(stage, index) in filteredList" :key="index">
             <label class="checkbox-label">
               <input
                 type="checkbox"
                 v-bind:value="stage"
-                v-model="stateFourValue"
-                @click="selectedValues()"
-                v-on:input="setStaging()"
+                v-model="stageValue"
+                @change="selectedValues()"
               />
-              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
+              <span class="checkbox-custom rectangular" style="margin-top: 12px; margin-left: 5px"></span>
             </label>
             <label style="margin-left: 16px">{{ stage }}</label>
           </li>
         </ul>
       </div>
-      <div
-        class="tab-pane fade"
-        id="nav-profile"
-        role="tabpanel"
-        aria-labelledby="nav-profile-tab"
-      ><ul
-          class="list-group list-group-flush list-group-striped"
-          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
-        >
-          <li
-            class="list-group-item"
-            v-for="(stage, index) in Object.keys(stageThreeConditions)"
-            :key="index"
-          >
-            <label class="checkbox-label">
-              <input
-                type="checkbox"
-                v-bind:value="stage"
-                v-model="stateThreeValue"
-                @click="selectedValues()"
-                v-on:input="setStaging()"
-              />
-              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
-            </label>
-            <label style="margin-left: 16px">{{ stage }}</label>
-          </li>
-        </ul></div>
-      <div
-        class="tab-pane fade"
-        id="nav-contact"
-        role="tabpanel"
-        aria-labelledby="nav-contact-tab"
-      ><ul
-          class="list-group list-group-flush list-group-striped"
-          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
-        >
-          <li
-            class="list-group-item"
-            v-for="(stage, index) in Object.keys(stageTwoConditions)"
-            :key="index"
-          >
-            <label class="checkbox-label">
-              <input
-                type="checkbox"
-                v-bind:value="stage"
-                v-model="stateTwoValue"
-                @click="selectedValues()"
-                v-on:input="setStaging()"
-              />
-              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
-            </label>
-            <label style="margin-left: 16px">{{ stage }}</label>
-          </li>
-        </ul></div>
-        <div
-        class="tab-pane fade"
-        id="nav-stage-one" 
-        role="tabpanel"
-        aria-labelledby="stage-one-tab"
-      ><ul
-          class="list-group list-group-flush list-group-striped"
-          style="height:450px; overflow:hidden; overflow-y:scroll; text-align:left"
-        >
-          <li
-            class="list-group-item"
-            v-for="(stage, index) in Object.keys(stageOneConditions)"
-            :key="index"
-          >
-            <label class="checkbox-label">
-              <input
-                type="checkbox"
-                v-bind:value="stage"
-                v-model="stateOneValue"
-                @click="selectedValues()"
-                v-on:input="setStaging()"
-              />
-              <span class="checkbox-custom rectangular" style="margin-top: 13px; margin-left: 5px"></span>
-            </label>
-            <label style="margin-left: 16px">{{ stage }}</label>
-          </li>
-        </ul></div>
     </div>
   </div>
 </template>
@@ -159,25 +148,6 @@
 import VueSelect from "vue-select";
 import ApiClient from "../../services/api_client";
 import moment from "moment";
-
-var whoStageConceptMapHash = {
-  "WHO STAGE 1": 9145,
-  "WHO STAGE 2": 9146,
-  "WHO STAGE 3": 2932,
-  "WHO STAGE 4": 2933,
-  "WHO STAGE I ADULT": 7561,
-  "WHO STAGE I ADULT AND PEDS": 7041,
-  "WHO STAGE I PEDS": 7049,
-  "WHO STAGE II ADULT": 7046,
-  "WHO STAGE II ADULT AND PEDS": 7042,
-  "WHO STAGE II PEDS": 7050,
-  "WHO STAGE III ADULT": 7047,
-  "WHO STAGE III ADULT AND PEDS": 7043,
-  "WHO STAGE III PEDS": 7051,
-  "WHO STAGE IV ADULT": 7048,
-  "WHO STAGE IV ADULT AND PEDS": 7044,
-  "WHO STAGE IV PEDS": 7052
-};
 
 export default {
   components: {
@@ -189,24 +159,76 @@ export default {
       languages: [],
       encounterObject: {
         encounter_id: 52,
-        obs: {}
+        obs: {
+          stage: {
+            concept_id: 7562,
+            value_coded: "",
+            value_text: ""
+          },
+          cd4CountDate: {
+            concept_id: 6831,
+            value_datetime: ""
+          },
+          cd4Count: {
+            concept_id: 5497,
+            value_numeric: "",
+            value_modifier: ""
+          },
+          cd4CountLocation: {
+            concept_id: 6830,
+            value_text: "",
+            location_id: ""
+          },
+          cd4250: {
+            concept_id: 8262,
+            value_coded: "",
+            value_text: ""
+          },
+          cd4350: {
+            concept_id: 8207,
+            value_coded: "",
+            value_text: ""
+          },
+          cd4500: {
+            concept_id: 9389,
+            value_coded: "",
+            value_text: ""
+          },
+          cd4750: {
+            concept_id: 8208,
+            value_coded: "",
+            value_text: ""
+          }
+        }
       },
+      stageValue: [],
       stateFourValue: [],
       stateThreeValue: [],
       stateTwoValue: [],
       stateOneValue: [],
-      confirmary: this.$store.state.registration.registration,
+      registrationEncounter: this.$store.state.registration.registration,
       patientAge: null,
       TODAYS_DATE: new Date(),
       whoStage: null,
+      reasonForArtEligibility: [],
+      isPregnant: null,
+      isBreastFeeding: null,
+      presumedSevereHiv: false,
       cd4Count250: null,
       cd4Count350: null,
       cd4Count500: null,
       cd4CountLocation: null,
       cd4CountDate: null,
       cd4Count: null,
+      cd4CountModifier: "",
+      lymphocyteCount: null,
       cd4CountModfier: null,
+      cdCountAvailable: false,
       conditions: [],
+      selectedStage: "Select Stage",
+      stageListing: [],
+      search: null,
+      locations: [],
       // Age groups 0-15
       lymphocyteThresholds: {
         "0-2": 4000,
@@ -215,20 +237,34 @@ export default {
         "6-15": 2000
       },
       person: {},
-      confirmatoryTypes: {
-        1040: {
-          name: "Rapid Antibody Test"
-        },
-        844: {
-          name: "DNA PCR"
-        },
-        1118: {
-          name: "Not Done"
-        }
+      CONCEPTS: {
+        1065: "Yes",
+        1066: "No",
+        1040: "Rapid Antibody Test",
+        844: "DNA PCR",
+        1118: "Not Done"
       },
-
+      whoStageConceptMapHash: {
+        "WHO STAGE 1": 9145,
+        "WHO STAGE 2": 9146,
+        "WHO STAGE 3": 2932,
+        "WHO STAGE 4": 2933,
+        "WHO STAGE I ADULT": 7561,
+        "WHO STAGE I ADULT AND PEDS": 7041,
+        "WHO STAGE I PEDS": 7049,
+        "WHO STAGE II ADULT": 7046,
+        "WHO STAGE II ADULT AND PEDS": 7042,
+        "WHO STAGE II PEDS": 7050,
+        "WHO STAGE III ADULT": 7047,
+        "WHO STAGE III ADULT AND PEDS": 7043,
+        "WHO STAGE III PEDS": 7051,
+        "WHO STAGE IV ADULT": 7048,
+        "WHO STAGE IV ADULT AND PEDS": 7044,
+        "WHO STAGE IV PEDS": 7052
+      },
       stages: ["Stage 4", "Stage 3", "Stage 2", "Stage 1"],
       stageFourConditions: {
+        id: 4,
         "Cryptococcal meningitis or other extrapulmonary cryptococcosis": 7548,
         "Candidiasis of oseophagus, trachea and bronchi or lungs": 5340,
         "Extrapulmonary tuberculosis (EPTB)": 1547,
@@ -246,6 +282,7 @@ export default {
         Other: 6408
       },
       stageThreeConditions: {
+        id: 3,
         Other: 6408,
         "Pneumocystis pneumonia": 882,
         "Candidiasis of oseophagus, trachea and bronchi or lungs": 5340,
@@ -281,6 +318,7 @@ export default {
         "Unspecified stage 3 condition": 7039
       },
       stageTwoConditions: {
+        id: 2,
         "Fever, persistent unexplained, intermittent or constant, >1 month": 5027,
         "Oral hairy leukoplakia": 5337,
         "Pulmonary tuberculosis (current)": 8206,
@@ -306,6 +344,7 @@ export default {
         "Unspecified stage 2 condition": 7038
       },
       stageOneConditions: {
+        id: 1,
         "Respiratory tract infections, recurrent (sinusitis, tonsilitus, otitis media, pharyngitis)": 5012,
         "Herpes zoster": 836,
         "Angular cheilitis": 2575,
@@ -318,62 +357,95 @@ export default {
         "Parotid enlargement, persistent unexplained": 1210,
         "Asymptomatic HIV infection": 5327,
         "Persistent generalized lymphadenopathy": 5328
+      },
+      REASON_FOR_ART: {
+        "PRESUMED SEVERE HIV": 8263,
+        "HIV DNA POLYMERASE CHAIN REACTION": 844,
+        "HIV infected": 1169,
+        "CD4 COUNT LESS THAN OR EQUAL TO 750": 8208,
+        "CD4 COUNT LESS THAN OR EQUAL TO 500": 9389,
+        "CD4 COUNT LESS THAN OR EQUAL TO 350": 8207,
+        "CD4 count less than or equal to 250": 8262,
+        "LYMPHOCYTE COUNT BELOW THRESHOLD WITH WHO STAGE 2": 7559,
+        "PATIENT PREGNANT": 1755,
+        BREASTFEEDING: 5632,
+        Asymptomatic: 5006,
+        "LYMPHOCYTE COUNT BELOW THRESHOLD WITH WHO STAGE 1": 8376,
+        "WHO STAGE IV ADULT": 1207,
+        "WHO STAGE IV PEDS": 1223,
+        "WHO STAGE III ADULT": 1206,
+        "WHO STAGE III PEDS": 1222,
+        "WHO STAGE II ADULT": 1205,
+        "WHO STAGE II PEDS": 1221,
+        "WHO STAGE I ADULT": 1204,
+        "WHO STAGE I PEDS": 1220
       }
     };
   },
+  computed: {
+    filteredList() {
+      if (this.search) {
+        return Object.keys({
+          ...this.stageOneConditions,
+          ...this.stageTwoConditions,
+          ...this.stageThreeConditions,
+          ...this.stageFourConditions
+        })
+          .filter(stage => {
+            return stage != "id"
+              ? stage.toLowerCase().includes(this.search.toLowerCase())
+              : "";
+          })
+          .sort();
+      } else {
+        return Object.keys({
+          ...this.stageOneConditions,
+          ...this.stageTwoConditions,
+          ...this.stageThreeConditions,
+          ...this.stageFourConditions
+        })
+          .filter(stage => {
+            return stage != "id" ? stage : "";
+          })
+          .sort();
+      }
+    }
+  },
   methods: {
     saveEncounter: function() {
+      this.addReason();
+      this.addCd4Count();
+      this.addWhoStages();
       this.addConditions();
-      //this.addCD4()
+      console.log(this.encounterObject);
       this.$emit("addEncounter", { staging: this.encounterObject });
     },
 
     selectedValues() {
-      console.log(this.languages);
+      this.$store.commit("setStaging", this.conditions);
+      this.buildEncounter();
     },
 
-    addConditions() {
-      this.encounterObject.obs = {};
+    buildEncounter() {
+      console.log(this.reasonForArtEligibility);
+      console.log(this.whoStage);
+      console.log(this.stageValue);
+    },
 
-      const CONCEPT_MAP = {
-        ...this.stageOneConditions,
-        ...this.stageTwoConditions,
-        ...this.stageThreeConditions,
-        ...this.stageFourConditions
-      };
-
-      this.conditions = {
-        stageOne: {
-          id: 1,
-          conditions: this.stateOneValue
-        },
-        stagTwo: {
-          id: 2,
-          conditions: this.stateTwoValue
-        },
-        stagThree: {
-          id: 3,
-          conditions: this.stateThreeValue
-        },
-        stagFour: {
-          id: 4,
-          conditions: this.stateFourValue
-        }
-      };
-
-      console.log(this.conditions);
-      console.log("staging....!!!");
-
-      const stages = [
-        ...this.stateOneValue,
-        ...this.stateTwoValue,
-        ...this.stateThreeValue,
-        ...this.stateFourValue
-      ];
-
-      this.encounterObject.obs = stages.map(stage => {
-        return this.buildCondition(CONCEPT_MAP[stage]);
-      });
+    filterReasons(params = {}) {
+      let data = [];
+      if (params.gender === "M") {
+        data = Object.keys(this.REASON_FOR_ART)
+          .filter(data => {
+            return data != "PATIENT PREGNANT" && data != "BREASTFEEDING"
+              ? data
+              : "";
+          })
+          .sort();
+      } else if (this.person.gender === "F") {
+        data = Object.keys(this.REASON_FOR_ART).sort();
+      }
+      return data;
     },
 
     buildCondition(concept = "") {
@@ -381,6 +453,242 @@ export default {
         concept_id: 2743,
         value_coded: concept
       };
+    },
+
+    addConditions() {
+      const CONCEPT_MAP = {
+        ...this.stageOneConditions,
+        ...this.stageTwoConditions,
+        ...this.stageThreeConditions,
+        ...this.stageFourConditions
+      };
+
+      this.stageValue.map((stage, index) => {
+        console.log(stage);
+        return (this.encounterObject.obs[
+          `condition${index}`
+        ] = this.buildCondition(CONCEPT_MAP[stage]));
+      });
+    },
+
+    builReasonForStarting(params = {}) {
+      console.log(params.id)
+      console.log(this.REASON_FOR_ART[params.reason])
+      return {
+        concept_id: params.id,
+        value_coded: this.REASON_FOR_ART[params.reason],
+        value_text: params.reason
+      };
+    },
+
+    addWhoStages() {
+      this.encounterObject.obs.stage.value_coded = this.whoStageConceptMapHash[
+        this.whoStage
+      ];
+      this.encounterObject.obs.stage.value_text = this.whoStage;
+    },
+
+    c4dCountAvailableCheck() {
+      if (this.cdCountAvailable) {
+        this.cdCountAvailable = false;
+      } else if (this.cdCountAvailable == false) {
+        this.cdCountAvailable = true;
+      }
+    },
+
+    addCd4Count() {
+      if (this.cdCountAvailable) {
+        this.encounterObject.obs.cd4CountDate.value_datetime = this.cd4CountDate;
+        this.encounterObject.obs.cd4Count.value_numeric = this.cd4Count;
+        this.encounterObject.obs.cd4Count.value_modifier = this.cd4CountModifier;
+        this.encounterObject.obs.cd4CountLocation.location_id = this.cd4CountLocation.location_id;
+        this.encounterObject.obs.cd4CountLocation.value_text = this.cd4CountLocation.label;
+
+        if (this.cd4Count <= 250) {
+          this.encounterObject.obs.cd4250 = this.buildC4DCountAnswer({
+            id: 8262,
+            coded: 1065,
+            text: "Yes"
+          });
+        } else {
+          this.encounterObject.obs.cd4250 = this.buildC4DCountAnswer({
+            id: 8262,
+            coded: 1066,
+            text: "No"
+          });
+        }
+
+        if (this.cd4Count <= 350) {
+          this.encounterObject.obs.cd4350 = this.buildC4DCountAnswer({
+            id: 8207,
+            coded: 1065,
+            text: "Yes"
+          });
+        } else {
+          this.encounterObject.obs.cd4350 = this.buildC4DCountAnswer({
+            id: 8207,
+            coded: 1066,
+            text: "No"
+          });
+        }
+
+        if (this.cd4Count <= 500) {
+          this.encounterObject.obs.cd4500 = this.buildC4DCountAnswer({
+            id: 9389,
+            coded: 1065,
+            text: "Yes"
+          });
+        } else {
+          this.encounterObject.obs.cd4500 = this.buildC4DCountAnswer({
+            id: 9389,
+            coded: 1066,
+            text: "No"
+          });
+        }
+
+        if (this.cd4Count <= 750) {
+          this.encounterObject.obs.cd4750 = this.buildC4DCountAnswer({
+            id: 8208,
+            coded: 1065,
+            text: "Yes"
+          });
+        } else {
+          this.encounterObject.obs.cd4750 = this.buildC4DCountAnswer({
+            id: 8208,
+            coded: 1066,
+            text: "No"
+          });
+        }
+      } else {
+        delete this.encounterObject.obs.cd4CountDate;
+        delete this.encounterObject.obs.cd4Count;
+        delete this.encounterObject.obs.cd4250 
+        delete this.encounterObject.obs.cd4350
+        delete this.encounterObject.obs.cd4500
+        delete this.encounterObject.obs.cd4750
+        delete this.encounterObject.obs.cd4CountLocation;
+      }
+
+      console.log(this.encounterObject);
+    },
+
+    buildC4DCountAnswer(params = {}) {
+      return {
+        concept_id: params.id,
+        value_coded: params.coded,
+        value_text: params.text
+      };
+    },
+    // encounterObject.consultation.obs[`curr` + el] = {
+    addReason() {
+      this.reasonForArtEligibility.map((reason, index) => {
+        return (this.encounterObject.obs[
+          `reason_coded${index}`
+        ] = this.builReasonForStarting({
+          id: 7563,
+          reason
+        }));
+      });
+    },
+
+    buildReasonForArt() {
+      if (this.patientAge > 14) {
+        console.log("Patient Age");
+        if (this.whoStage >= 3) {
+          console.log("Who stage...");
+          this.reasonForArtEligibility = "";
+        } else if (this.cd4Count < 250) {
+          this.reasonForArtEligibility = "CD4 count less than or equal to 250";
+        } else if (this.cd4Count < 350) {
+          this.reasonForArtEligibility = "CD4 COUNT LESS THAN OR EQUAL TO 350";
+        } else if (this.cd4Count < 500) {
+          this.reasonForArtEligibility = "CD4 COUNT LESS THAN OR EQUAL TO 500";
+        } else {
+          if (this.whoStage == 1 && this.lymphocyteCount < 1200) {
+            this.reasonForArtEligibility =
+              "LYMPHOCYTE COUNT BELOW THRESHOLD WITH WHO STAGE 1";
+          } else if (this.whoStage == 2 && this.lymphocyteCount < 1200) {
+            this.reasonForArtEligibility =
+              "LYMPHOCYTE COUNT BELOW THRESHOLD WITH WHO STAGE 2";
+          } else if (this.isPregnant) {
+            this.reasonForArtEligibility = "PATIENT PREGNANT";
+          } else if (this.isBreastFeeding) {
+            this.reasonForArtEligibility = "BREASTFEEDING";
+          }
+        }
+      } else {
+        console.log("I am here");
+        // registrationEncounter
+        const firstPositiveHivTestType = this.CONCEPTS[
+          this.registrationEncounter["obs"]["confirmatoryTest"]["value_coded"]
+        ];
+
+        console.log(firstPositiveHivTestType);
+        if (firstPositiveHivTestType == "Rapid Antibody Test") {
+          // if the selected conditions contains either one of these
+
+          console.log("Rapid antiboies test");
+
+          const PRESUMED_SEVERE_HIV_CONDITIONS = [
+            "Pneumocystis pneumonia",
+            "Candidiasis of oseophagus, trachea and bronchi or lungs",
+            "Cryptococcal meningitis",
+            "Severe unexplained wasting or malnutrition not responding to treatment (weight-for-height/ -age <70% or MUAC less than 11cm or oedema)",
+            "Toxoplasmosis of the brain (from age 1 month)"
+          ];
+
+          let isConditionFound = false;
+
+          PRESUMED_SEVERE_HIV_CONDITIONS.forEach(value => {
+            this.stageValue.includes(value)
+              ? (isConditionFound = true)
+              : isConditionFound;
+          });
+
+          let candidiasisSepsis =
+            this.stageValue.includes("Oral candidiasis") &&
+            this.stageVAlue.includes("Severe sepsis");
+          let candidiasisPneumonia =
+            this.stageValue.includes("Oral candidiasis") &&
+            this.stageVAlue.includes("Severe pneumonia");
+          let pneumoniaSepsis =
+            this.stageValue.includes("Severe pneumonia") &&
+            this.stageVAlue.includes("Severe sepsis");
+
+          console.log(isConditionFound);
+
+          if (isConditionFound) {
+            this.presumedSevereHiv = true;
+          } else if (
+            candidiasisSepsis ||
+            candidiasisPneumonia ||
+            pneumoniaSepsis
+          ) {
+            this.presumedSevereHiv = true;
+          } else {
+            this.presumedSevereHiv = false;
+          }
+        }
+
+        if (this.reasonForArtEligibility == "NONE") {
+          this.reasonForArtEligibility = "Asymptomatic";
+        }
+        console.log(this.presumedSevereHiv);
+      }
+    },
+
+    // need to specific if an adults or peds
+    buildStage(params = {}) {
+      let conditionsFound = 0;
+      let severeWeightLoss = false;
+
+      //a list of selected stage 3
+      return (
+        "WHO STAGE " +
+        this.NUMERAL_STAGES[params.stage] +
+        " " +
+        params.adult_or_peds
+      );
     },
 
     addCD4() {
@@ -416,6 +724,7 @@ export default {
       await ApiClient.get(`/people/${this.patientId}`).then(response => {
         response.json().then(data => {
           this.person = data;
+          console.log(data);
           this.calculateAge(data);
         });
       });
@@ -437,16 +746,43 @@ export default {
       );
     },
     setStaging() {
-      this.addConditions();
+      //this.addConditions();
       this.$store.commit("setStaging", this.conditions);
     },
     initialize() {
-      return Object.keys(this.stageFourConditions);
+      this.encounterObject;
+      console.log(this.encounterObject);
+    },
+    stageSelect(stage) {
+      console.log(stage);
+      if (stage == 4) {
+        this.stageListing = this.stageFourConditions;
+      } else if (stage == 3) {
+        this.stageListing = this.stageThreeConditions;
+      } else if (stage == 2) {
+        this.stageListing = this.stageTwoConditions;
+      } else if (stage == 1) {
+        this.stageListing = this.stageOneConditions;
+      }
+    },
+    getlocations: async function(val = "") {
+      await ApiClient.get(`/locations?name=` + val).then(res => {
+        res.json().then(ret => {
+          this.locations = ret.map(element => {
+            return {
+              label: element.name,
+              code: element.name,
+              location_id: element.location_id
+            };
+          });
+        });
+      });
     }
   },
   created() {
     this.initialize();
     this.fetchDemographics();
+    this.getlocations();
   },
 
   mounted() {
