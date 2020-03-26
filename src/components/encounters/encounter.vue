@@ -1,15 +1,11 @@
 <template>
   <div>
-    <!-- <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration> -->
     <vitals v-on:addEncounter="addEncounter" ref="vitals" ></vitals>      
-    <!-- <vitals v-on:addEncounter="addEncounter" ref="vitals1" ></vitals>       -->
-    <!-- <reception ref="reception" v-on:addEncounter="addEncounter"></reception> -->
-    <!-- <staging/> -->
     <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
 
     <prescription v-on:addEncounter="addEncounter" ref="prescription"/>
+    <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
     <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
-    <!-- <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>       -->
         <button class="btn btn-primary" @click="createEncounters" >
             <template v-if="posting === true">
               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

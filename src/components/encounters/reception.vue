@@ -2,7 +2,7 @@
   <div>
     <div class="row ">
       <div class="col d-flex justify-content-start">
-        <p>Patient Present</p>
+        <p>Drugs given to patient</p>
       </div>
       <div class="col">
         <fieldset>
@@ -26,10 +26,8 @@
           </div>
         </fieldset>
       </div>
-    </div>
-    <div class="row">
       <div class="col d-flex justify-content-start">
-        <p>Guardian Present</p>
+        <p>Drugs given to guardian</p>
       </div>
       <div class="col">
         <fieldset>

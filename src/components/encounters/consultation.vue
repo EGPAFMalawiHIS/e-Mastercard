@@ -28,10 +28,7 @@
           </div>
         </fieldset>
       </div>
-    </div>
-    <form v-if="isFemale">
-      <div class="row">
-      <div class="col d-flex justify-content-start">
+<div class="col d-flex justify-content-start">
           <p>Breastfeeding</p>
         </div>
         <div class="col">
@@ -54,10 +51,13 @@
             <label class="form-check-label" for="inlineRadio2">No</label>
           </div>
         </div>
-      </div>
-    </form>
-      <form >
-      <div class="row">
+    </div>
+    <div class="row">
+      
+    </div>
+    <!-- /Pregnant / Breastfeeding Questions -->
+<div class="container-fluid">
+    <div class="row">
       <div class="col d-flex justify-content-start">
           <p>TB Status</p>
         </div>
@@ -70,11 +70,6 @@
           </option>
           </select>
           </div>
-        </div>
-    </form>
-    <!-- /Pregnant / Breastfeeding Questions -->
-<div class="container-fluid">
-    <div class="row">
       <div class="col d-flex justify-content-start">
         <label class="form-check-label" for="inlineCheckbox1">Has Side Effects / Contraindications?</label>
         </div>
@@ -140,155 +135,8 @@
         </div>
       </div>
     </div>
-    <!-- <div class="container-fluid">
-      <div class="form-check form-check-inline d-flex justify-content-start">
-      </div>
-     <div class="row">
-      <div class="col d-flex justify-content-start">
-        <label class="form-check-label" for="inlineCheckbox1">Currently on family planning methods?</label>
-        </div>
-        <div class="col">
-          <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="true" v-model="onFP"/>
-        
-          </div>
-          <div class="form-check form-check-inline">
-          </div>
-        </div>
-      </div>
-      <div class="row" v-show="onFP">
-        <div class="col-md-4" :value="fpm[fp]" v-for="(fp, index) in Object.keys(fpm)" :key="index">
-          <div class="form-check">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" :value="fpm[fp]" v-model="currentFPM" />
-              {{fp}}
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
     <br />
-    <div class="container-fluid">
-    <div class="row">
-      <div class="col d-flex justify-content-start">
-        <label class="form-check-label" for="inlineCheckbox1">Prescribe family planning methods?</label>
-        </div>
-        <div class="col">
-          <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="true" v-model="prescribeFP"/>
-        
-          </div>
-          <div class="form-check form-check-inline">
-          </div>
-        </div>
-      </div>
-      <div class="form-check form-check-inline d-flex justify-content-start">
-      </div>
-      <div class="row" v-show="prescribeFP">
-        <div class="col-md-4" v-for="(fp, index) in Object.keys(fpm)" :key="index">
-          <div class="form-check">
-            <label class="form-check-label">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                name
-                id
-                :value="fpm[fp]"
-                v-model="prescribedFPM"
-              />
-              {{fp}}
-            </label>
-          </div>
-        </div>
-      </div>
     </div>
-    </div> -->
-    <br />
-    
-  
-
-  
-    </div>
-<!-- 
-    <form>
-      <div class="row">
-      <div class="col d-flex justify-content-start">
-          <p>On TB Treatment</p>
-        </div>
-        <div class="col">
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              value="1065"
-              v-model="onTb.value_coded"
-            />
-            <label class="form-check-label" for="inlineRadio1">Yes</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              value="1066"
-              v-model="onTb.value_coded"
-            />
-            <label class="form-check-label" for="inlineRadio2">No</label>
-          </div>
-        </div>
-      </div>
-    </form>
-      <div class="row">
-      <div class="col d-flex justify-content-start">
-        <label class="form-check-label" for="inlineCheckbox1">Has TB Associated Symptoms?</label>
-        </div>
-        <div class="col">
-          <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="true" v-model="hasTBSymps"/>
-        
-          </div>
-          <div class="form-check form-check-inline">
-          </div>
-        </div>
-      </div>
-    <div class="container-fluid">
-      <div class="form-check form-check-inline">
-      </div>
-      <div class="row" v-show="hasTBSymps">
-        <div class="col-md-4" v-for="(sideEffect, index) in Object.keys(tbSymptoms)" :key="index">
-          <div class="form-check">
-            <label class="form-check-label">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                :value="tbSymptoms[sideEffect]"
-                v-model="tbSymps"
-              />
-              {{sideEffect}}
-            </label>
-          </div>
-        </div>
-
-      </div>
-    </div>
-    <div class="container-fluid">
-      
-      <div class="row" v-show="hasTBSymps">
-        <div class="col-md-4" v-for="(sideEffect, index) in Object.keys(tbStatus)" :key="index">
-          <div class="form-check">
-            <label class="form-check-label">
-              <input
-                type="radio"
-                class="form-check-input"
-                :value="tbStatus[sideEffect]"
-                v-model="statusTB"
-              />
-              {{sideEffect}}
-            </label>
-          </div>
-        </div>
-
-      </div>
-    </div> -->
   </div>
 </template>
 
