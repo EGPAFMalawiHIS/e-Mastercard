@@ -50,7 +50,8 @@
             type="text"
             class="form-control"
             value="Unknown"
-            v-model="estimatedYearLastTaken"
+            v-model="yearLastTaken"
+            placeholder="Unknown"
             disabled
           />
         </div>
@@ -74,58 +75,6 @@
               </label>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <div v-if="recievedTreatment && yearLastTakenUknown" class="row">
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <label style="float: left; font-weight: bold">ARVs taken 2 months prior?</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <input
-            v-if="!yearLastTakenUknown"
-            type="date"
-            class="form-control"
-            name
-            v-model="yearLastTaken"
-          />
-          <select
-            v-model="arvsTakenTwoMonthsPrior"
-            id="patient-gender"
-            name="patient-gender"
-            class="form-control"
-            v-if="yearLastTakenUknown"
-          >
-            <option disabled>Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-            <option value="Unknown">Unknown</option>
-          </select>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <label style="float: left; font-weight: bold">ARVs taken 2 weeks prior?</label>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <select
-            v-model="arvsTakenTwoWeeksPrior"
-            id="patient-gender"
-            name="patient-gender"
-            class="form-control"
-            v-if="yearLastTakenUknown"
-            :disabled="arvsTakenTwoMonthsPrior != 'Yes'"
-          >
-            <option disabled>Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-            <option value="Unknown">Unknown</option>
-          </select>
         </div>
       </div>
     </div>
@@ -186,19 +135,15 @@
                 name
                 v-model="artStartDate"
               />
-              <select
+              <input
                 v-if="yearStartedKnown"
-                id="patient-gender"
-                name="patient-gender"
+                type="text"
                 class="form-control"
-              >
-                <option disabled>Select</option>
-                <option value="Yes">6 months</option>
-                <option value="No">12 months</option>
-                <option value="Unknown">18 months</option>
-                <option value="No">24 months</option>
-                <option value="Unknown">Over 2 years</option>
-              </select>
+                name
+                v-model="artStartDate"
+                disabled
+                placeholder="Unknown"
+              />
             </div>
           </div>
         </div>
@@ -303,6 +248,7 @@
                 value="Unknown"
                 name
                 v-model="hivTestYear"
+                placeholder="Unknown"
                 disabled
               />
             </div>
@@ -476,10 +422,9 @@ export default {
       this.setRegistration()
       if (this.yearLastTakenUknown == true) {
         const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
-        this.yearLastTaken = "";
         this.yearLastTakenUknown = false;
       } else if (this.yearLastTakenUknown == false) {
-        this.yearLastTaken = "Unknown";
+        this.yearLastTaken = null
         this.clinicRegistration.obs.yearLastTakenARVs.value_datetime =
           "Unknown";
         this.yearLastTakenUknown = true;
@@ -517,7 +462,7 @@ export default {
       if (this.yearStartedKnown == true) {
         this.yearStartedKnown = false;
       } else if (this.yearStartedKnown == false) {
-        this.artStartDate = "Unknown"; // FIX THIS
+        this.artStartDate = null; // FIX THIS
         this.yearStartedKnown = true;
       }
     },
@@ -549,10 +494,9 @@ export default {
     confirmatoryYearCheck() {
       this.setRegistration()
       if (this.hivTestYearUnknown == true) {
-        this.hivTestYear = "";
         this.hivTestYearUnknown = false;
       } else if (this.hivTestYearUnknown == false) {
-        this.hivTestYear = "Unknown";
+        this.hivTestYear = null;
         this.clinicRegistration.obs.testDate.value_datetime = "Unknown";
         this.hivTestYearUnknown = true;
       }
