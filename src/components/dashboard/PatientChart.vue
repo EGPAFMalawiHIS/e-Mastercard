@@ -1,50 +1,35 @@
 
 <template>
-  <div class="chart-wrapper">
-    <canvas ref="myChart" height="120"></canvas>
-    <p hidden class="count-text">Title</p>
+  <div class="row">
+    <div class="col md-12">
+        <canvas ref="myChart" height="180"></canvas>
+    </div>
   </div>
-</template> 
+</template>
 
 <script>
 import Chart from "chart.js"
 
 export default {
-  name: "VisitsStartChart",
-  data() {
-    return {
-      selected: ""
-    }
-  },
-
+  name: "",
   mounted() {
     new Chart(this.$refs.myChart, {
-      type: "line",
+      type: "bar",
       data: {
-        labels: ["Sun", "Mon", "Tue", "Wed", "Thu"],
+        labels: "A, B, C, D, E",
         datasets: [
           {
-            label: "Compete Visits",
-            borderColor: "rgba(222, 187, 240, 0.9)",
-            backgroundColor: "rgba(187, 130, 245, 0.1)",
-            data: [8, 4, 2, 3, 1]
-          },
-          {
-            label: "Incomplete Visits",
-            borderColor: "rgba(174, 225, 242, 0.9)",
-            backgroundColor: "rgba(150, 229, 255, 0.1)",
-            data: [2, 11, 2, 5, 5]
+            label: "Label",
+            backgroundColor: "rgba(143, 143, 201, 0.3)",
+            data: [1, 2, 3, 4, 5, 0]
           }
         ]
       },
       options: {
-        legend: { 
-          display: true,
-          position: 'bottom' 
-          },
+        legend: { display: false },
         title: {
           display: true,
-          text: "Name"
+          text: ""
         },
         tooltips: {
           enabled: true
@@ -73,9 +58,15 @@ export default {
         scales: {
           yAxes: [
             {
-              scaleLabel: {
-                display: true,
-                labelString: "Complete/Incomplete Visits"
+              type: "linear",
+              display: true,
+              position: "left",
+              id: "y-axis-1",
+              gridLines: {
+                display: false
+              },
+              labels: {
+                show: true
               },
               ticks: {
                 beginAtZero: true,
@@ -83,15 +74,9 @@ export default {
                   if (Math.floor(label) === label) {
                     return label
                   }
-                }
-            }
-            }
-          ],
-          xAxes: [
-            {
-              scaleLabel: {
-                display: true,
-                labelString: "Days"
+                },
+                suggestedMin: 0,
+                suggestedMax: 10
               }
             }
           ]
@@ -103,4 +88,30 @@ export default {
 </script>
 
 <style>
+.counter {
+  background-color: #f0f0f0;
+  padding: 12px 0;
+  margin-top: 23px;
+  border-radius: 5px;
+}
+.count-title {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 0;
+  text-align: center;
+}
+.count-text {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 0;
+  text-align: center;
+}
+.fa-2x {
+  margin: 0 auto;
+  float: none;
+  display: table;
+  color: #4ad1e5;
+}
 </style>
