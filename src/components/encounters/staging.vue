@@ -85,7 +85,7 @@
                 aria-describedby="emailHelp"
                 placeholder="Enter Count"
                 v-model="cd4Count"
-                style="margin-left: 5px; width: 81%"
+                style="margin-left: 5px; width: 80%"
               />
             </div>
           </div>
