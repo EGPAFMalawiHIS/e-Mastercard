@@ -78,8 +78,16 @@ export default {
         ? false
         : true;
     }
+  },
+  watch: {
+     weight: {
+     handler(val){
+         this.setWeight();
+     },
+     deep: true
   }
-};
+}
+}
 </script>
 
 <style>

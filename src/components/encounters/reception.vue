@@ -12,6 +12,7 @@
               type="radio"
               value="1065"
               v-model="patient.value_coded"
+              :disabled="hasWeight"
             />
             <label class="form-check-label" for="inlineRadio1">Yes</label>
           </div>
@@ -21,6 +22,7 @@
               type="radio"
               value="1066"
               v-model="patient.value_coded"
+              :disabled="hasWeight"
             />
             <label class="form-check-label" for="inlineRadio2">No</label>
           </div>
@@ -37,6 +39,7 @@
               type="radio"
               value="1065"
               v-model="guardian.value_coded"
+              :disabled="hasWeight"
             />
             <label class="form-check-label" for="inlineRadio1">Yes</label>
           </div>
@@ -46,8 +49,9 @@
               type="radio"
               value="1066"
               v-model="guardian.value_coded"
-              :disabled="patient.value_coded === '1066'"
+              :disabled="hasWeight"
             />
+
             <label class="form-check-label" for="inlineRadio2">No</label>
           </div>
         </fieldset>
@@ -68,7 +72,8 @@ export default {
       guardian: {
         value_coded: null,
         concept_id: 2122
-      }
+      }, 
+      hasWeight: false,
     };
   },
   methods: {
@@ -87,17 +92,48 @@ export default {
     setPresent: function() {
     EventBus.$emit('set-present', this.patient.value_coded);
     if(this.patient.value_coded === "1066") {
-      this.guardian.value_coded = 1065;
+      this.guardian.value_coded = "1065";
     }
+    else if(this.patient.value_coded === "1065"){
+
+      this.guardian.value_coded = "1066";
+    }
+    else if(this.guardian.value_coded === "1066") {
+      this.patient.value_coded = "1065";
+    }
+    else if(this.guardian.value_coded === "1065"){
+
+      this.patient.value_coded = "1066";
+    }
+    
   }
   }, 
   watch: {
-     patient: {
+    patient: {
      handler(val){
        this.setPresent();
      },
      deep: true
-  }
+    },
+    guardian: {
+     handler(val){
+       this.setPresent();
+     },
+     deep: true
+    }
+  }, mounted() {
+    EventBus.$on('set-weight', payload => {
+      if(payload !== null && payload !==  "" && payload !== 0) {
+         this.patient.value_coded = 1065;
+         this.guardian.value_coded = 1066;
+         this.hasWeight = true;
+       }else {
+        this.patient.value_coded = null;
+        this.guardian.value_coded = null;
+         this.hasWeight = false;
+       }
+    
+    });
   }
 };
 </script>
