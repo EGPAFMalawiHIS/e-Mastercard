@@ -200,6 +200,11 @@ const routes = [
     path: "/ipt_coverage",
     name: "IPTcoverage",
     component: () => import("../views/IPTcoverage.vue")
+  },
+  {
+    path: "/moh_disaggregated",
+    name: "MohDisaggregated",
+    component: () => import("../views/MohDisaggregated.vue")
   }
 ]
 
