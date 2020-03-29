@@ -1,22 +1,35 @@
 
 <template>
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="counter">
+  <div class="col-sm-12 shadow p-3 mb-5 bg-white rounded"> 
+    <div class="row">
+      <div class="col-md-3">
         <i class="fa fa-code fa-2x"></i>
-        <p class="count-text">{{stats.name}}</p>
-        <h2 class="timer count-title count-number" data-to="100" data-speed="1500">{{stats.total}}</h2>
+      </div>
+      <div class="col-md-9">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float: left">
+            {{stats.name}}</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label style="font-weight: bold; float: left;">{{stats.count}}</label>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-sm-9">
-      <canvas ref="myChart" height="190"></canvas>
-    </div>
+    
+    <!-- <div class="counter">
+      <i class="fa fa-code fa-2x"></i>
+      <label class="count-text">{{stats.name}}</label>
+      <h2 class="timer count-title count-number" data-to="100" data-speed="1500">{{stats.count}}</h2>
+    </div> -->
   </div>
 </template>
 
 <script>
 import Chart from "chart.js"
-
 export default {
   name: "",
   props: ["stats"],
@@ -27,9 +40,9 @@ export default {
         labels: this.stats.labels,
         datasets: [
           {
-            label: this.stats.label,
-            backgroundColor: this.stats.backgroundColor,
-            data: [...this.stats.data, 0]
+            label: "Label",
+            backgroundColor: rgba(137, 232, 200, 0.3),
+            data: [1, 2, 3, 4, 5, 0]
           }
         ]
       },
@@ -92,27 +105,27 @@ export default {
       }
     })
   }
-}
+};
 </script>
 
 <style>
 .counter {
-  background-color: #f0f0f0;
   padding: 12px 0;
-  margin-top: 23px;
+  margin-top: 0px;
   border-radius: 5px;
 }
 .count-title {
-  font-size: 15px;
+
+  background-color: #f0f0f0;
+  font-size: 50px;
   font-weight: bold;
   margin-top: 10px;
   margin-bottom: 0;
+  padding-top: 50px;
   text-align: center;
 }
 .count-text {
-  font-size: 15px;
-  font-weight: bold;
-  margin-top: 10px;
+  font-size: 20px;
   margin-bottom: 0;
   text-align: center;
 }
