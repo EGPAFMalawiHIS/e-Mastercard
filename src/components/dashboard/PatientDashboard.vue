@@ -1,184 +1,159 @@
 
 <template>
-  <div class="chart-content">
+  <div class>
     <div class="user"></div>
-    <div class="row bar-charts">
-      <div class="charts col-sm shadow p-3 mb-5 bg-white rounded">
-        <EncounterStatsChart v-bind:stats="totalEncounterStats" />
-      </div>
-      <div class="charts col-sm shadow p-3 mb-5 bg-white rounded">
-        <EncounterStatsChart v-bind:stats="maleEncounterStats" />
-      </div>
-      <div class="charts col-sm shadow p-3 mb-5 bg-white rounded">
-        <EncounterStatsChart v-bind:stats="femaleEncounterStats" />
+    <div class="row">
+      <div class="col">
+        <label style="font-weight: bold; font-size: 25px; float: left">Dashboard</label>
       </div>
     </div>
-    <div class="overview-chart shadow-lg p-3 mb-5 bg-white rounded">
-      <VisitsStartChart v-bind:stats="completeIncompleteStats" />
+    <div class="row bar-charts" style="margin-top: 10px">
+      <div class="col-md-3">
+        <EncounterStatsChart v-bind:stats="patientDueForViralLoad" style="height: 100px;" />
+      </div>
+      <div class="col-md-3">
+        <EncounterStatsChart v-bind:stats="patientsWithAppointmentsTomorrow" style="height: 100px" />
+      </div>
+      <div class="col-md-3">
+        <EncounterStatsChart v-bind:stats="patientsWithMissedAppointments" style="height: 100px" />
+      </div>
+      <div class="col-md-3">
+        <EncounterStatsChart v-bind:stats="patientsWithMissedAppointments" style="height: 100px" />
+      </div>
+    </div>
+    <div class="row" style="margin: auto;">
+      <div class="col-md-4">
+        <div style="height: 450px">
+          <div style="background: rgba(164, 150, 242, 0.7); height: 105px; margin-top: 10px">
+            <div class="row">
+              <div class="col-md-12" style="margin-top: 10px">
+                <div style="margin-left: 10px">
+                  <label style="font-weight: bold; float: left;">Patients On DTG </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12" style="margin: auto">
+                <div style="margin-left: 10px">
+                  <label style="font-weight: bold; color: white; font-size: 30px; float: left;">77 </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="background: rgba(164, 150, 242, 0.7); height: 105px; margin-top: 10px">
+            <div class="row">
+              <div class="col-md-12" style="margin-top: 10px">
+                <div style="margin-left: 10px">
+                  <label style="font-weight: bold; float: left;">Patients Defaulted (30 Days) </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12" style="margin: auto">
+               <div style="margin-left: 10px">
+                  <label style="font-weight: bold; color: white; font-size: 30px; float: left;">77 </label>
+               </div>
+              </div>
+            </div>
+          </div>
+          <div style="background: rgba(164, 150, 242, 0.7); height: 105px; margin-top: 10px">
+            <div class="row">
+              <div class="col-md-12" style="margin-top: 10px">
+                <div style="margin-left: 10px">
+                  <label style="font-weight: bold; float: left;">TX Current (60 Days) </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12" style="margin: auto">
+                <div style="margin-left: 10px">
+                  <label style="font-weight: bold; color: white; font-size: 30px; float: left;">77 </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="background: rgba(164, 150, 242, 0.7); height: 105px; margin-top: 10px">
+            <div class="row">
+              <div class="col-md-12" style="margin-top: 10px">
+                <div style="margin-left: 10px">
+                  <label style="font-weight: bold; float: left;">Lipo </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div style="margin-left: 10px">
+                  <label style="font-weight: bold; color: white; font-size: 30px; float: left;">77 </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <PatientChart />
+          <PatientChart /> -->
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="shadow p-3 mb-5 bg-white rounded" style="height: 458px">
+          <VisitsStartChart/>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import EncounterStatsChart from "./EncounterStatsChart.vue"
-import VisitsStartChart from "./VisitsStartChart.vue"
-import moment from "moment"
-import Config from "../../../public/config.json"
-import ApiClient from "../../services/api_client"
+import EncounterStatsChart from "./EncounterStatsChart.vue";
+import VisitsStartChart from "./VisitsStartChart.vue";
+import PatientChart from "./PatientChart.vue";
+import moment from "moment";
+import Config from "../../../public/config.json";
+import ApiClient from "../../services/api_client";
 
 export default {
   name: "PatientDashboard",
   data() {
     return {
       encounterDate: moment(new Date()).format("YYYY-MM-DD"),
-      encountersStats: {},
-      ENCOUNTER_TYPES: {
-        6: "Vitals",
-        7: "Appointment",
-        9: "Registration",
-        25: "Treatment",
-        51: "Reception",
-        52: "Staging",
-        53: "Consultation",
-        54: "Dispensing",
-        68: "Adherence"
+      patientDueForViralLoad: {
+        name: "Due for Viral Load",
+        label: "Number of Patients",
+        count: 123
       },
-      totalEncounterStats: {},
-      maleEncounterStats: {},
-      femaleEncounterStats: {},
-      completeIncompleteStats: {},
-      endDate: moment()
-        .subtract(1, "days")
-        .format("YYYY-MM-DD"),
-      startDate: moment()
-        .subtract(5, "days")
-        .format("YYYY-MM-DD"),
-
-      // API configurations
-      config: {
-        api_base_url: `${Config.apiProtocol}://${Config.apiURL}:${Config.apiPort}/api/${ApiClient.config.apiVersion}`,
-        token: sessionStorage.apiKey
+      patientsWithAppointmentsTomorrow: {
+        name: "Appointments Due",
+        label: "Number of Patients",
+        count: 123
+      },
+      patientsWithMissedAppointments: {
+        name: "Missed appointments",
+        label: "Number of Patients",
+        count: 123
+      },
+      patientsOnDtg: {
+        name: "On DTG",
+        label: "Number of Patients",
+        count: 123
+      },
+      defaulters: {
+        name: "Defaulters(30 Days)",
+        label: "Number of Patients",
+        count: 123
+      },
+      txCurrent: {
+        name: "TX Current(60 Days)",
+        label: "Number of Patients",
+        count: 123
       }
-    }
+    };
   },
   components: {
     EncounterStatsChart,
-    VisitsStartChart
+    VisitsStartChart,
+    PatientChart
   },
-  methods: {
-    fetchEncounterStats() {
-      fetch(
-        `${this.config.api_base_url}/reports/encounters?date=${this.encounterDate}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: this.config.token,
-            "Content-type": "application/json"
-          },
-          body: JSON.stringify({
-            encounter_types: Object.keys(this.ENCOUNTER_TYPES)
-          })
-        }
-      )
-        .then(response => {
-          return response.json()
-        })
-        .then(data => {
-          Object.keys(data).map((key, index) => {
-            this.encountersStats[this.ENCOUNTER_TYPES[key]] = data[key]
-          })
-          this.totalEncounters()
-          this.maleEncounters()
-          this.femaleEncounters()
-        })
-        .catch(err => {
-          console.log("Something went wrong!", err)
-        })
-    },
-
-    totalEncounters() {
-      this.totalEncounterStats = {
-        total: this.encountersStats.Reception.M,
-        name: "Total",
-        label: "Number of Patients",
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
-        labels: Object.keys(this.encountersStats),
-        data: Object.values(this.encountersStats).map(male => male.M + male.F)
-      }
-    },
-
-    maleEncounters() {
-      this.maleEncounterStats = {
-        total: this.encountersStats.Reception.M,
-        name: "Male",
-        label: "Number of Male",
-        backgroundColor: "rgba(143, 143, 201, 0.3)",
-        labels: Object.keys(this.encountersStats),
-        data: Object.values(this.encountersStats).map(male => male.M)
-      }
-    },
-
-    femaleEncounters() {
-      this.femaleEncounterStats = {
-        total: this.encountersStats.Reception.M,
-        name: "Female",
-        label: "Number of Females",
-        backgroundColor: "rgba(137, 232, 200, 0.3)",
-        labels: Object.keys(this.encountersStats),
-        data: Object.values(this.encountersStats).map(male => male.F)
-      }
-    },
-    fetchVisits() {
-      const name = "Complete/Incomplete visits: last five days"
-      const URL = `${this.config.api_base_url}/programs/1/reports/visits?name=visits&start_date=${this.startDate}&end_date=${this.endDate}`
-      fetch(URL, {
-        method: "GET",
-        headers: {
-          Authorization: this.config.token
-        }
-      })
-        .then(response => {
-          if (response.status === 200) {
-            return response.json().then(data => {
-              this.completeIncompleteStats = {
-                name,
-                complete: Object.values(data).map(
-                  d => d.complete + d.incomplete
-                ),
-                incomplete: Object.values(data).map(d => d.incomplete),
-                days: Object.keys(data).map(d => moment(d).format("ddd"))
-              }
-            })
-          } else if (response.status === 204) {
-            this.completeIncompleteStats = {
-              name
-            }
-          }
-        })
-        .catch(err => {
-          console.log("Something went wrong!", err)
-        })
-    }
-  },
-  created() {
-    this.fetchVisits()
-    this.fetchEncounterStats()
-  }
-}
+  created() {}
+};
 </script>
 
 <style>
-.charts {
-  width: 33.3%;
-  margin: auto;
-}
-.chart-content {
-  width: 98%;
-  margin: auto;
-}
-
-.overview-chart {
-  width: 90%;
-  margin: auto;
-}
 </style>
