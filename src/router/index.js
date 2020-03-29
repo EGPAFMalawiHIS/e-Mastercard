@@ -153,11 +153,11 @@ const routes = [
     name: "SurvivalAnalysis",
     component: () => import("../views/SurvivalAnalysis.vue")
   },
-  {
+  /*{
     path: "/registration/:id",
     name: "registration",
     component: () => import("../views/Registration.vue")
-  },
+  },*/
   {
     path: "/tx_rtt",
     name: "txRTT",
@@ -205,6 +205,11 @@ const routes = [
     path: "/moh_disaggregated",
     name: "MohDisaggregated",
     component: () => import("../views/MohDisaggregated.vue")
+  },
+  {
+    path: "/moh_disaggregated_regimen",
+    name: "MohDisaggregatedRegimen",
+    component: () => import("../views/cohortDisaggregatedRegimen.vue")
   }
 ]
 

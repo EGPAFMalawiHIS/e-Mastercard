@@ -17,6 +17,31 @@
                 <th class="disaggregated-numbers">TX curr (receiving ART)</th>
                 <th class="disaggregated-numbers">TX curr (received IPT)</th>
                 <th class="disaggregated-numbers">TX curr (screened for TB)</th>
+                <th class="disaggregated-numbers">0A</th>
+                <th class="disaggregated-numbers">2A</th>
+                <th class="disaggregated-numbers">4A</th>
+                <th class="disaggregated-numbers">5A</th>
+                <th class="disaggregated-numbers">6A</th>
+                <th class="disaggregated-numbers">7A</th>
+                <th class="disaggregated-numbers">8A</th>
+                <th class="disaggregated-numbers">9A</th>
+                <th class="disaggregated-numbers">10A</th>
+                <th class="disaggregated-numbers">11A</th>
+                <th class="disaggregated-numbers">12A</th>
+                <th class="disaggregated-numbers">13A</th>
+                <th class="disaggregated-numbers">14A</th>
+                <th class="disaggregated-numbers">15A</th>
+                <th class="disaggregated-numbers">16A</th>
+                <th class="disaggregated-numbers">17A</th>
+                <th class="disaggregated-numbers">0P</th>
+                <th class="disaggregated-numbers">2P</th>
+                <th class="disaggregated-numbers">4P</th>
+                <th class="disaggregated-numbers">9P</th>
+                <th class="disaggregated-numbers">11P</th>
+                <th class="disaggregated-numbers">14P</th>
+                <th class="disaggregated-numbers">15P</th>
+                <th class="disaggregated-numbers">16P</th>
+                <th class="disaggregated-numbers">17P</th>
               </tr>
             </thead>
             <tbody ref="tableBody">
@@ -36,6 +61,7 @@ require("@/assets/datatable/css/dataTables.bootstrap4.min.css");
 //require("@/assets/datatable/jquery-ui.css");
 require("@/assets/datatable/css/buttons.dataTables.min.css");
 require("@/assets/datatable/css/dataTables.jqueryui.min.css");
+require("@/assets/datatable/css/fixedColumns.dataTables.min.css");
 
 import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
@@ -54,6 +80,7 @@ require("@/assets/datatable/js/pdfmake.min.js");
 require("@/assets/datatable/js/vfs_fonts.js");
 require("@/assets/datatable/js/buttons.html5.min.js");
 require("@/assets/datatable/js/buttons.print.min.js");
+require("@/assets/datatable/js/dataTables.fixedHeader.min.js");
 
 
 export default {
@@ -71,12 +98,18 @@ export default {
     initDataTable(){
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
-        fixedHeader: true,
+        fixedHeader: false,
         searching: false,
         paging: false,
-        Processing: true,
-        ServerSide: true,
+        Processing: false,
+        ServerSide: false,
         scrollY: "50vh",
+        scrollX: true,
+        scrollCollapse: true,
+        fixedColumns:   {
+          leftColumns: 2,
+          rightColumns: 1
+        },
         scroller: {
           loadingIndicator: true
         },
@@ -132,7 +165,7 @@ export default {
           table_body.appendChild(tr);
           let td_count = 0;
 
-          while (td_count < 7) {
+          while (td_count < 32) {
             var td = document.createElement('td');
             tr.appendChild(td);
             if(td_count == 0)
@@ -481,5 +514,13 @@ table {
 
 .show-btn {
   font-size: 14px;
+}
+
+
+/* Ensure that the demo table scrolls */
+th, td { white-space: nowrap; }
+div.dataTables_wrapper {
+   /* width: 800px;*/
+    margin: 0 auto;
 }
 </style>
