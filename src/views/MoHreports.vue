@@ -18,7 +18,16 @@
               <div class="btn-container" @click="redirect('/cohort')">
                 <div class="card">
                   <img src="../assets/report-icons/cohort.png" class="btn-icon"/>
-                  <p>Cohort / Disagreggated</p>
+                  <p>Cohort</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/moh_disaggregated')">
+                <div class="card">
+                  <img src="../assets/report-icons/split.png" class="btn-icon"/>
+                  <p>Cohort Disagreggated</p>
                 </div>
               </div>
             </div>

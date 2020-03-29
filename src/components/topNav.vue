@@ -16,13 +16,10 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-        <!-- <li class="nav-item active">
-          <a class="nav-link" href="#">
-            Home
-            <span class="sr-only">(current)</span>
-          </a>
+        <li class="nav-item active" style="float: left; left: 0px; position: absolute;">
+          <a class="nav-link" href="#">{{location_name}}</a>
         </li>
-        <li class="nav-item">
+        <!--li class="nav-item">
           <a class="nav-link" href="#">Link</a>
         </li> -->
         <li class="nav-item dropdown">
@@ -46,10 +43,31 @@
 </template>
 
 <script>
+import ApiClient from "../services/api_client";
+
 export default {
     data: function() {
         return{
+          location_name: null
         }
+    },
+    methods: {
+      fetchLocationID: async function() {
+        const response = await ApiClient.get("global_properties?property=current_health_center_id", {}, {});
+        if (response.status === 200) {
+          response.json().then((data) => this.fetchLocationName(data.current_health_center_id) );
+        }
+      },
+      fetchLocationName: async function(location_id) {
+        const response = await ApiClient.get("locations/" + location_id, {}, {});
+        if (response.status === 200) {
+          response.json().then((data) => this.setLocationName(data) );
+        }
+      },
+      setLocationName(data){
+        sessionStorage.setItem('location_name', data.name);
+        this.location_name = data.name
+      }
     },
     computed: {
         username() {
@@ -57,8 +75,9 @@ export default {
         }
     }, mounted() {
       if (!sessionStorage.apiKey) {
-          this.$router.push('/login');
-        } 
+        this.$router.push('/login');
+      } 
+      setTimeout(() => this.fetchLocationID(), 300);
     }
 };
 

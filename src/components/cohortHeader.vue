@@ -7,7 +7,7 @@
     <tr>
       <td class="numbers">1.</td>
       <td class="row-title" style="border-right-style: solid; border-bottom: 0px !important; font-weight: bold;">Clinic name</td>
-      <td class="row-title" colspan="3" style="border-bottom-style: solid;">&nbsp;</td>
+      <td class="row-title" colspan="3" style="border-bottom-style: solid;">{{clinic_name}}</td>
     </tr>
     <tr>
       <td class="numbers">2.</td>
@@ -36,7 +36,8 @@ export default {
     return {
       items: ['3.','4.','5.','6.','7.','8.','9.'],
       quarterStr: null,
-      quarterYr: null
+      quarterYr: null,
+      clinic_name: sessionStorage.location_name
     }
   },
   methods: {
