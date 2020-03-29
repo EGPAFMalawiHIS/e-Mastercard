@@ -102,12 +102,10 @@ export default {
       this.guardian.value_coded = "1066";
     }
     else if(this.guardian.value_coded === "1066") {
-      console.log('bbaaa');
       this.patient.value_coded = "1065";
     }
     else if(this.guardian.value_coded === "1065"){
 
-      console.log('aaa');
       this.patient.value_coded = "1066";
     }
     EventBus.$emit('set-present', this.patient.value_coded);

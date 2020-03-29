@@ -7,7 +7,9 @@
             <div class="col-md-6">
               <p>ARV #</p>
             </div>
-            <div class="col-md-6 information">
+            <div class="col-md-6 information" data-toggle="modal"
+            @click="showARVNumber= true"
+            data-target="#arv-number">
               <p>{{arvNumber}}</p>
             </div>
           </div>
@@ -204,17 +206,62 @@
         </div>
       </table>
     </div>
+          <div
+            class="modal fade"
+            id="arv-number"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="viral-load"
+            aria-hidden="true"
+            v-if="showARVNumber "
+          >
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">ARV Number</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                      <label for="exampleFormControlSelect1">ARV-Number</label>
+                    </div>
+                    <div class="col">
+                      <div class="form-group">
+                          <input
+                            type="number"
+                            class="form-control"
+                            v-model="arv_num"
+                            aria-label="Default"
+                            aria-describedby="inputGroup-sizing-default"
+                          />
+                      </div>
+                    </div>
+                    <div class="col">
+                      <button @click="saveARVNumber" class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                  <!-- <viral-load  ref="viral-load"></viral-load>       -->
+                </div>
+              </div>
+            </div>
+            
+          </div>
   </div>
 </template>
 
 <script>
 import ApiClient from "../services/api_client";
 import EventBus from "../services/event-bus.js";
+import GlobalProperties from "@/services/global_properties";
 import moment from "moment";
 export default {
   data: function() {
     return {
       arvNumber: null,
+      arv_num:null,
       name: null,
       age: null,
       sex: null,
@@ -236,6 +283,8 @@ export default {
       kaposisSarcoma: null,
       tbLastTwoYears: null,
       patientID: null,
+      sitePrefix: null,
+      showARVNumber: false,
       obs: [
         {
           conceptID: 5089,
@@ -422,11 +471,42 @@ export default {
               return attr.person_attribute_type_id == person_attribute_type_id;
             });
       return (attribute.length > 0 ? attribute[0].value : "");
+    },
+    getPrefix: async function() {
+      this.sitePrefix = await GlobalProperties.getSitePrefix();
+    },
+    saveARVNumber: async function() {
+      let finalNum = `${this.sitePrefix}-ARV-${this.arv_num}`;
+      let identifier_data = {
+        identifier: finalNum,
+        identifier_type: 4,
+        patient_id: this.$route.params.id
+      }
+    const response = await ApiClient.post(`/patient_identifiers/`, identifier_data);
+      if (response.status === 201 || response.status === 200) {
+        let toast = this.$toasted.show("Successfully saved", { 
+            theme: "toasted-primary", 
+            position: "top-right", 
+            duration : 5000
+        });
+        this.arvNumber = finalNum;
+        console.log("Succesfully done");
+        // this.$router.go(0);
+      } else {
+        console.log("Failed to update");
+      }
     }
-
   },
   mounted() {
+      //  var arv_number = site_prefix + "-ARV-" + value;
 
+      //   var identifier_data = {
+      //       identifier: arv_number,
+      //       identifier_type: identifier_type,
+      //       patient_id: patientID
+      //   }
+      //   var url = "/patient_identifiers/";
+    this.getPrefix();
      this.patientID = this.$route.params.id;
      this.getPatient().then(patient=> {
             this.name = ` ${patient['person'].names[0].given_name} ${patient.person.names[0].family_name} `;
