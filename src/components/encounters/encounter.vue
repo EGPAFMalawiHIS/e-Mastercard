@@ -61,7 +61,6 @@ export default {
             let enc = {
                 url: "observations"
             };
-            console.log(encounterOb);
               if(Object.keys(encounterOb).includes("obs")) {
                 Object.keys(encounterOb.obs).forEach(element => {
                     let valueKey = encounterOb.obs[element][this.getExpected(encounterOb.obs[element])];
@@ -102,7 +101,15 @@ export default {
                 this.numEnc++;
                 if(this.numEnc === this.verifiedEnc.length) {
                     this.posting = false;
-                    this.$router.go(0);
+                    // this.$router.reload();
+                    // this.$router.push(`/patient/mastercard/${this.$route.params.id}`);
+                    EventBus.$emit("reload-visits", "");
+                    let toast = this.$toasted.show("Encounter Saved, close modal", { 
+                    theme: "toasted-primary", 
+                    position: "top-right", 
+                    duration : 5000
+                });
+                    // this.removeModal();
                 }
                 this.success = true;
                 this.fail = false;
@@ -158,6 +165,22 @@ export default {
             });
             return key;
         },
+        removeModal: function() {
+
+                // get modal
+                const modal = document.getElementById("exampleModalCenter");
+
+                // change state like in hidden modal
+                modal.classList.remove('show');
+                modal.setAttribute('aria-hidden', 'true');
+                modal.setAttribute('style', 'display: none');
+
+                // get modal backdrop
+                const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+
+                // remove opened modal backdrop
+                document.body.removeChild(modalBackdrops[0]);
+        }
     },
     mounted() {
     EventBus.$on('set-present', payload => {

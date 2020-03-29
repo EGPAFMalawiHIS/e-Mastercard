@@ -9,6 +9,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.12.1",
     "bootstrap": "^4.4.1",
+    "bootstrap-vue": "^2.9.0",
     "chart.js": "^2.9.3",
     "chartjs": "^0.3.24",
     "core-js": "^3.4.4",
@@ -21,7 +22,7 @@
     "jquery-validation": "^1.19.1",
     "moment": "^2.24.0",
     "popper.js": "^1.16.1",
-    "vue": "^2.6.10",
+    "vue": "^2.6.11",
     "vue-bootstrap4-table": "^1.1.11",
     "vue-date-pick": "^1.2.1",
     "vue-fragment": "^1.5.1",
