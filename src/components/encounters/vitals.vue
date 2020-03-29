@@ -71,15 +71,29 @@ export default {
   computed: {
     showHeight() {
       let patient = this.$store.getters.getPatient;
-      if (patient.height) {
+      try {
+       if (patient.height) {
         this.previousHeight = patient.height;
+        } 
+      } catch (error) {
+        
       }
-      return parseInt(patient.age) >= 18 && this.previousHeight !== null
+      
+      let f = parseInt(patient.age) >= 18 && this.previousHeight !== null
         ? false
         : true;
+      return f;
     }
+  },
+  watch: {
+     weight: {
+     handler(val){
+         this.setWeight();
+     },
+     deep: true
   }
-};
+}
+}
 </script>
 
 <style>
