@@ -224,8 +224,8 @@ export default {
   },
   computed: {
     isFemale() {
-      let gender = this.$store.getters.getPatient;
-      return gender.sex === "F" ? true: false;
+      // let gender = this.$store.getters.getPatient;
+      return  true;
     }
   },
   methods: {
