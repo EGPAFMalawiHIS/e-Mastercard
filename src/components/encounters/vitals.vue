@@ -70,19 +70,7 @@ export default {
   mounted() {},
   computed: {
     showHeight() {
-      let patient = this.$store.getters.getPatient;
-      try {
-       if (patient.height) {
-        this.previousHeight = patient.height;
-        } 
-      } catch (error) {
-        
-      }
-      
-      let f = parseInt(patient.age) >= 18 && this.previousHeight !== null
-        ? false
-        : true;
-      return f;
+     return true; 
     }
   },
   watch: {

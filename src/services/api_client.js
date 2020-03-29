@@ -69,12 +69,12 @@ const ApiClient = (() => {
         getRouter().push('/login')
       } else if (response.status >= 500 && !noRedirectCodes.includes(response.status)) {
         console.error('Internal server error');
-        getRouter().push('/error')
+        // getRouter().push('/error')
       }
       return response
     } catch(e) {
       console.log(e)
-      getRouter().push('/error')
+      // getRouter().push('/error')
     }
   }
 

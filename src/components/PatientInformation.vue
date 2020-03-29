@@ -27,10 +27,10 @@
         <div class="col-md-3">
           <div class="row">
             <div class="col-md-6">
-              <p>AGE</p>
+              <p>DOB and Age at initiation</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{age}}</p>
+              <p>{{age}} ({{initialAge}})</p>
             </div>
           </div>
         </div>
@@ -265,6 +265,7 @@ export default {
       name: null,
       age: null,
       sex: null,
+      dob: null,
       initialWeight: null,
       initialHeight: null,
       bmi: null,
@@ -510,7 +511,8 @@ export default {
      this.patientID = this.$route.params.id;
      this.getPatient().then(patient=> {
             this.name = ` ${patient['person'].names[0].given_name} ${patient.person.names[0].family_name} `;
-            this.age = ` ${moment(patient.person.birthdate).format('DD-MMM-YYYY')} (${moment().diff(patient.person.birthdate, 'years',false)} years old)`;
+            this.dob = patient.person.birthdate;
+            this.age = ` ${moment(patient.person.birthdate).format('DD-MMM-YYYY')}`;
             let identifier = patient.patient_identifiers.filter(function(entry) { return entry.type.name === "ARV Number"; });
             this.arvNumber = identifier.length > 0 ? identifier[0].identifier : "N/A";
             this.sex = patient.person.gender;
@@ -533,7 +535,13 @@ export default {
       });
       this.getGuardian();
   }, computed: {
-    
+    initialAge() {
+      let initAge = "N/A";
+      if(this.startDate !== "N/A") {
+        initAge = moment(this.startDate).diff(this.dob, 'years',false);
+      }
+      return initAge; 
+    }
   }
 };
 </script>
