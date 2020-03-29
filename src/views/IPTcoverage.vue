@@ -133,7 +133,7 @@ export default {
     },
     loadGroupData(data){
       //this.loadXLdata();
-      this.report_title = "IPT coverage (those completed six months: 168 days): " + moment(this.startDate).format('DD/MMM/YYYY')
+      this.report_title = sessionStorage.location_name + "  IPT coverage (those completed six months: 168 days): " + moment(this.startDate).format('DD/MMM/YYYY')
       this.report_title += " - " + moment(this.endtDate).format('DD/MMM/YYYY')
       let counter = 1;
       this.dTable.fnClearTable();

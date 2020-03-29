@@ -91,7 +91,7 @@ export default {
         return;
       }
       
-      this.report_title = 'TX CURR MMD ';
+      this.report_title = sessionStorage.location_name + ' TX CURR MMD ';
       this.report_title += " between " + moment(this.startDate).format('dddd, Do of MMM YYYY');
       this.report_title += " and " + moment(this.endDate).format('dddd, Do of MMM YYYY');
       let url_path = 'arv_refill_periods?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');

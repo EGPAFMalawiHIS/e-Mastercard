@@ -155,7 +155,7 @@ export default {
       setTimeout(() => this.initDataTable(), 300);
     },
     initializeReport: async function() {
-      this.report_title = "PEPFAR Disaggregated report";
+      this.report_title = sessionStorage.location_name + " PEPFAR Disaggregated report";
       let url = 'cohort_disaggregated';
       url += "?date=" + moment().format('YYYY-MM-DD');
       url += "&quarter=pepfar";

@@ -215,7 +215,7 @@ export default {
   },
   data () {
     return {
-      msg: 'MoH cohort report (Survival analysis)',
+      report_title: 'MoH cohort report (Survival analysis)',
       reportQtr: [],
       regenerateReport: false,
       reportData: null,
@@ -223,6 +223,7 @@ export default {
     }
   },
   mounted(){
+    this.report_title  = sessionStorage.location_name +  " " + this.report_title;
     setTimeout(() => this.initDataTable(), 300);
   }
 }

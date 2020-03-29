@@ -65,7 +65,7 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     fetchDates: async function(dates) {
-      this.report_title = "Regimen switch report: ";
+      this.report_title = sessionStorage.location_name + "  Regimen switch report: ";
       this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
       this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
       let url_path = '/regimen_switch?start_date=' + dates[0] + "&date=" + dates[1];
