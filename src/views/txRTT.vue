@@ -133,7 +133,7 @@ export default {
     },
     loadGroupData(data){
       //this.loadXLdata();
-      this.report_title = "TX RTT: " + moment(this.startDate).format('DD/MMM/YYYY')
+      this.report_title = sessionStorage.location_name + " TX RTT: " + moment(this.startDate).format('DD/MMM/YYYY')
       this.report_title += " - " + moment(this.endtDate).format('DD/MMM/YYYY')
       let counter = 1;
       let report_gender = ['F','M'];
