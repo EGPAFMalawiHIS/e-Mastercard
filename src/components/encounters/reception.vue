@@ -11,6 +11,7 @@
               class="form-check-input"
               type="radio"
               value="1065"
+              name="patient"
               v-model="patient.value_coded"
               :disabled="hasWeight"
             />
@@ -21,6 +22,7 @@
               class="form-check-input"
               type="radio"
               value="1066"
+              name="patient"
               v-model="patient.value_coded"
               :disabled="hasWeight"
             />
@@ -38,6 +40,7 @@
               class="form-check-input"
               type="radio"
               value="1065"
+              name="guardian"
               v-model="guardian.value_coded"
               :disabled="hasWeight"
             />
@@ -48,6 +51,7 @@
               class="form-check-input"
               type="radio"
               value="1066"
+              name="guardian"
               v-model="guardian.value_coded"
               :disabled="hasWeight"
             />
@@ -90,7 +94,6 @@ export default {
       this.$emit("addEncounter", encounterObject);
     }, 
     setPresent: function() {
-    EventBus.$emit('set-present', this.patient.value_coded);
     if(this.patient.value_coded === "1066") {
       this.guardian.value_coded = "1065";
     }
@@ -99,13 +102,15 @@ export default {
       this.guardian.value_coded = "1066";
     }
     else if(this.guardian.value_coded === "1066") {
+      console.log('bbaaa');
       this.patient.value_coded = "1065";
     }
     else if(this.guardian.value_coded === "1065"){
 
+      console.log('aaa');
       this.patient.value_coded = "1066";
     }
-    
+    EventBus.$emit('set-present', this.patient.value_coded);
   }
   }, 
   watch: {
@@ -124,8 +129,8 @@ export default {
   }, mounted() {
     EventBus.$on('set-weight', payload => {
       if(payload !== null && payload !==  "" && payload !== 0) {
-         this.patient.value_coded = 1065;
-         this.guardian.value_coded = 1066;
+         this.patient.value_coded = "1065";
+         this.guardian.value_coded = "1066";
          this.hasWeight = true;
        }else {
         this.patient.value_coded = null;
