@@ -149,7 +149,7 @@
               <p>Date of starting first line ARV Regimen</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{startDate}}</p>
+              <p>{{moment(startDate).format("DD-MM-YYYY")}}</p>
             </div>
           </div>
         </div>
@@ -335,7 +335,8 @@ export default {
           conceptID: 2516,
           variableName: "startDate",
           valueType: "value_datetime",
-          secondType: "value_text"
+          secondType: "value_text",
+          format: false,
         },{
           conceptID: 7563,
           variableName: "startReason",
@@ -411,7 +412,7 @@ export default {
           }
           else {
             let val = (res[res.length-1][conceptSet.valueType] ? res[res.length -1][conceptSet.valueType] : res[res.length -1][conceptSet.secondType]);
-            context[conceptSet.variableName] = (conceptSet.valueType === "value_datetime" ? moment(val).format('DD-MMM-YYYY') : val);  
+            context[conceptSet.variableName] = (conceptSet.valueType === "value_datetime" && conceptSet.format !== false ? moment(val).format('DD-MMM-YYYY') : val);  
             if (conceptSet.valueType === "value_coded") {
               this.getConcept(conceptSet, val, context);
             }
