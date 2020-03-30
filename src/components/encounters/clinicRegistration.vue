@@ -1,26 +1,33 @@
 <template>
   <div style="margin: auto; width: 95%">
     <div class="row">
-      <div class="col-md-6" style="height: 37px; float: left">
-        <div style="margin-top: 6px; float: left">
+      <div class="col-md-6" style="float: left">
+        <div style="float: left">
           <span style="font-weight: bold;">Agrees to follow up?</span>
-          <div>
-            <label class="checkbox-label" style="margin-left: 50px">
-              <input type="checkbox" v-model="agreesToFollowUp" style="margin-left: 50px" />
-              <span class="checkbox-custom rectangular" style="margin-left: 180px; margin-top: 6px"></span>
-            </label>
-          </div>
+        </div>
+        <div class="form-group">
+          <select name="stage" class="form-control" @change="agreesToFollowUp">
+            <option disabled selected>Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
         </div>
       </div>
-      <div class="col-md-6" style="height: 37px;">
-        <div style="margin-top: 6px; float: left">
-          <span style="font-weight: bold;">Ever recieved ARVs for treatment or prophylaxis?</span>
-          <div>
-            <label class="checkbox-label" style="margin-left: 50px">
-              <input type="checkbox" style="margin-left: 50px" @click="everRecieved()" />
-              <span class="checkbox-custom rectangular" style="margin-left: 400px; margin-top: 6px"></span>
-            </label>
-          </div>
+      <div class="col-md-6">
+        <span
+          style="font-weight: bold; float: left"
+        >Ever received ARVs for treatment or prophylaxis?</span>
+        <div class="form-group">
+          <select
+            name="stage"
+            class="form-control"
+            v-model="receievedARVTreatmentBefore"
+            @change="everRecieved"
+          >
+            <option disabled selected>Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
         </div>
       </div>
     </div>
@@ -28,7 +35,7 @@
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-6">
-            <label style="float: left; font-weight: bold">Year last taken ARVs</label>
+            <label style="float: left; font-weight: bold">Year last taken ARVs</label> 
           </div>
           <div class="col-md-6">
             <span
@@ -44,6 +51,7 @@
             class="form-control"
             name
             v-model="yearLastTaken"
+            @change="setRegistration"
           />
           <input
             v-if="yearLastTakenUknown"
@@ -59,20 +67,22 @@
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
-            <label style="float: left; font-weight: bold">Registered at a clinic</label>
+            <span style="font-weight: bold; float: left">Ever registered at an ART clinic?</span>
           </div>
         </div>
-        <div class="col-md-12" style="background: rgba(137, 140, 145, 0.2); height: 37px;">
-          <div style="margin-top: 6px; float: left;">
-            <span style="font-weight: bold;">Ever registered at an ART clinic?</span>
-            <div>
-              <label class="checkbox-label" style="margin-left: 50px">
-                <input type="checkbox" style="margin-left: 50px" @click="everRegistered()" />
-                <span
-                  class="checkbox-custom rectangular"
-                  style="margin-left: 275px; margin-top: 6px"
-                ></span>
-              </label>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <select
+                name="stage"
+                class="form-control"
+                v-model="everRegisteredAtClinicValue"
+                @change="everRegistered"
+              >
+                <option disabled selected>Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
             </div>
           </div>
         </div>
@@ -134,6 +144,7 @@
                 class="form-control"
                 name
                 v-model="artStartDate"
+                @change="setRegistration"
               />
               <input
                 v-if="yearStartedKnown"
@@ -168,6 +179,8 @@
             placeholder="Enter ARV Number"
             v-model="arvNumber"
             :disabled="arvNumberUnkown"
+            v-on:input="setRegistration"
+            
           />
         </div>
       </div>
@@ -180,7 +193,12 @@
           </div>
         </div>
         <div class="form-group">
-          <v-select :options="options" v-model="confirmatory" :reduce="option => option.value" v-on:input="setRegistration"></v-select>
+          <v-select
+            :options="options"
+            v-model="confirmatory"
+            :reduce="option => option.value"
+            v-on:input="setRegistration"
+          ></v-select>
         </div>
       </div>
     </div>
@@ -240,6 +258,7 @@
                 class="form-control"
                 name
                 v-model="hivTestYear"
+                @change="setRegistration"
               />
               <input
                 v-if="hivTestYearUnknown"
@@ -275,6 +294,8 @@ export default {
   data: function() {
     return {
       recievedTreatment: false,
+      receievedARVTreatmentBefore: null,
+      everRegisteredAtClinicValue: null,
       agreesToFollowUp: false,
       registered: false,
       yearStartedKnown: false,
@@ -282,7 +303,7 @@ export default {
       arvNumber: null,
       artStartDate: null,
       yearLastTakenUknown: false,
-      yearLastTaken: null,
+      yearLastTaken: "Unknown",
       estimatedYearLastTaken: null,
       locationOfInitiation: "Select Location of Initiation",
       locationOfInitiationUnknown: false,
@@ -383,35 +404,22 @@ export default {
   },
   methods: {
     initial() {
-      this.setRegistration()
+      this.setRegistration();
       this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1066; // No answer
       this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1066; // No answer
       this.clinicRegistration.obs.everReceivedART.value_coded = 1066; // No answer
       this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1066; // No answer
     },
 
-    // Agrees to follow up
-    followUp() {
-      this.setRegistration()
-      if (this.agreesToFollowUp == true) {
-        this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1066;
-        this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1066;
-        this.agreesToFollowUp = false;
-      } else if (this.agreesToFollowUp == false) {
-        this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1065;
-        this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1065;
-        this.agreesToFollowUp = true;
-      }
-    },
-
     // Ever recieved ARVs for treatment
     everRecieved() {
-      this.setRegistration()
-      if (this.recievedTreatment == true) {
+      this.setRegistration();
+      console.log(this.receievedARVTreatmentBefore);
+      if (this.receievedARVTreatmentBefore == "No") {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1066;
         this.registered = false;
         this.recievedTreatment = false;
-      } else if (this.recievedTreatment == false) {
+      } else if (this.receievedARVTreatmentBefore == "Yes") {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1065;
         this.recievedTreatment = true;
       }
@@ -419,12 +427,12 @@ export default {
 
     // Year last taken ARVs
     yearLastTakenUknownCheck() {
-      this.setRegistration()
+      this.setRegistration();
       if (this.yearLastTakenUknown == true) {
         const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
         this.yearLastTakenUknown = false;
       } else if (this.yearLastTakenUknown == false) {
-        this.yearLastTaken = null
+        this.yearLastTaken = null;
         this.clinicRegistration.obs.yearLastTakenARVs.value_datetime =
           "Unknown";
         this.yearLastTakenUknown = true;
@@ -433,11 +441,11 @@ export default {
 
     // Ever registered at an ART Clinic
     everRegistered() {
-      this.setRegistration()
-      if (this.registered == true) {
+      this.setRegistration();
+      if (this.everRegisteredAtClinicValue == "No") {
         this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1066;
         this.registered = false;
-      } else if (this.registered == false) {
+      } else if (this.everRegisteredAtClinicValue == "Yes") {
         this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1065;
         this.registered = true;
       }
@@ -445,8 +453,8 @@ export default {
 
     //Location of ART initiation
     locationOfInitiationCheck() {
-      this.setRegistration()
-      this.estimateYearLastTaken() // REMOVE THIS
+      this.setRegistration();
+      this.estimateYearLastTaken(); // REMOVE THIS
       if (this.locationOfInitiationUnknown == true) {
         this.locationOfInitiation = "Select Location";
         this.locationOfInitiationUnknown = false;
@@ -458,7 +466,7 @@ export default {
     },
 
     startDateUnknown() {
-      this.setRegistration()
+      this.setRegistration();
       if (this.yearStartedKnown == true) {
         this.yearStartedKnown = false;
       } else if (this.yearStartedKnown == false) {
@@ -467,7 +475,7 @@ export default {
       }
     },
     arvNumberUnkownCheckbox() {
-      this.setRegistration()
+      this.setRegistration();
       if (this.arvNumberUnkown == true) {
         this.arvNumber = "";
         this.arvNumberUnkown = false;
@@ -480,7 +488,7 @@ export default {
     },
 
     locationOfConfirmatoryCheck() {
-      this.setRegistration()
+      this.setRegistration();
       if (this.locationOfConfirmatoryUnknown == true) {
         this.locationOfConfirmatory = "Select Location";
         this.locationOfConfirmatoryUnknown = false;
@@ -492,7 +500,7 @@ export default {
     },
 
     confirmatoryYearCheck() {
-      this.setRegistration()
+      this.setRegistration();
       if (this.hivTestYearUnknown == true) {
         this.hivTestYearUnknown = false;
       } else if (this.hivTestYearUnknown == false) {
@@ -503,7 +511,7 @@ export default {
     },
 
     estimateYearLastTaken() {
-      this.setRegistration()
+      this.setRegistration();
       if (this.yearLastTakenUknown) {
         if (this.arvsTakenTwoMonthsPrior == "Yes") {
           if (this.arvsTakenTwoWeeksPrior == "Yes") {
@@ -526,14 +534,14 @@ export default {
           date.setDate(date.getDate() - 90); //3 months
           date = date.toDateString();
           const monthEstimated = moment(date).format("YYYY-MM-DD");
-          this.arvsTakenTwoWeeksPrior = "Select"
+          this.arvsTakenTwoWeeksPrior = "Select";
           console.log(monthEstimated);
         }
       }
     },
 
     getlocations: async function(val = "") {
-      this.setRegistration()
+      this.setRegistration();
       await ApiClient.get(`/locations?name=` + val).then(res => {
         res.json().then(ret => {
           this.locations = ret.map(element => {
@@ -547,40 +555,93 @@ export default {
       });
     },
 
+    buildForRegistrationGlobalState(){
+      if(this.yearLastTaken != null){
+        const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = yearLastTaken;
+      }
+
+      if(this.artStartDate != null){
+        const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
+      }
+
+      if(this.arvNumber != null){
+        this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = this.arvNumber;
+      }
+
+      if(this.confirmatory != null){
+        this.clinicRegistration.obs.confirmatoryTest.value_coded = this.confirmatory;
+      }
+
+      if(this.hivTestYear){
+        const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.testDate.value_datetime = testYear;
+      }
+
+    },
+
     buildObservations() {
       // YEAR LAST TAKEN
-      const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
-      this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = yearLastTaken;
 
-      // ART Number
-      this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = this.arvNumber;
+      // optional
+      if (this.recievedTreatment) {
+        const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = yearLastTaken;
+      } else {
+        delete this.clinicRegistration.obs.yearLastTakenARVs;
+      }
 
-      //ART start date
-      const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
-      this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
-      this.clinicRegistration.obs.confirmatoryTest.value_coded = this.confirmatory;
+      // also location of ART initiation
+      //optional
+      if (this.registered) {
+        // ART Number
+        const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
+        this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = this.arvNumber;
+      } else {
+        //ART start date
+        delete this.clinicRegistration.obs.dateARTStarted;
+        // ART Number
+        delete this.clinicRegistration.obs.artNumberAtPreviousLocation;
 
-      const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
-      this.clinicRegistration.obs.testDate.value_datetime = testYear;
+        delete this.clinicRegistration.obs.ARTStartLocation;
+        delete this.clinicRegistration.obs.ARTStartLocation;
+      }
 
+      //optional
+      if (this.confirmatory == 1040 || this.confirmatory == 844) {
+        this.clinicRegistration.obs.confirmatoryTest.value_coded = this.confirmatory;
+        const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.testDate.value_datetime = testYear;
+      } else {
+        delete this.clinicRegistration.obs.confirmatoryTest;
+        delete this.clinicRegistration.obs.testDate;
+
+        delete this.clinicRegistration.obs.testLocation;
+        delete this.clinicRegistration.obs.testLocation;
+      }
     },
-    setRegistration(){
-      this.buildObservations()
-      this.$store.commit('setRegistration', this.clinicRegistration)
+    setRegistration() {
+      this.buildForRegistrationGlobalState()
+      console.log("Set Registration")
+      this.$store.commit("setRegistration", this.clinicRegistration);
     },
     getVal(val) {
-      this.setRegistration()
+      //location of confirmatory
+      this.setRegistration();
       this.clinicRegistration.obs.testLocation.value_text = val.label;
       this.clinicRegistration.obs.testLocation.location_id = val.location_id;
     },
     getLoc(val) {
-      this.setRegistration()
+      //location of initiation
+      this.setRegistration();
       this.clinicRegistration.obs.ARTStartLocation.value_text = val.label;
       this.clinicRegistration.obs.ARTStartLocation.location_id =
         val.location_id;
     },
     getStuff(val) {
-      this.setRegistration()
+      this.setRegistration();
       this.encounters.push(val);
     },
     saveEncounter() {
