@@ -98,6 +98,10 @@ export default {
       this.initializeReport();
     },
     initDataTable(){
+      this.report_title = sessionStorage.location + " MoH Disaggregated regimen  distribution report. ";
+      this.report_title += " Reporting  period: " + moment(this.startDate).format("DD/MMM/YYYY");
+      this.report_title += " " + moment(this.endDate).format("DD/MMM/YYYY");
+      
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: false,
