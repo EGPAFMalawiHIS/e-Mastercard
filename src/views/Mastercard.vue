@@ -16,113 +16,54 @@
           <button
             type="button"
             class="btn btn-primary"
-            data-toggle="modal"
-            data-target="#exampleModalCenter"
+            @click="$bvModal.show('encounter-modal')"
           >Add Visit</button>
           <button
             type="button"
             class="btn btn-primary"
-            data-toggle="modal"
-            data-target="#outcomeModal"
+            @click="$bvModal.show('outcome-modal')"
           >Update Outcome</button>
           <button
             type="button"
             class="btn btn-primary"
-            data-toggle="modal"
-            data-target="#viral-load"
+            @click="$bvModal.show('viral-load-modal')"
           >Viral Load</button>
           <div class="row" style="margin: 10px; margin-top: 5px;">
             <visit-data></visit-data>
           </div>
 
-          <div
-            class="modal fade"
-            id="exampleModalCenter"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="exampleModalCenterTitle"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">New Visit</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col" style="text-align:left;">
-                      <label for="">Encounter Date</label>
-                  </div>   
-                    <div class="col">
-                      
-                      <input type="date" class="form-control" name="" id="" v-model="date">
-                    </div>
-                    </div>
-                  </div>
-                  <encounter :date="date"/>
-                </div>
+          <b-modal id="encounter-modal" title="encounter" size="xl">
+            <div class="row">
+              <div class="col" style="text-align:left;">
+                <label for>Encounter Date</label>
+              </div>
+              <div class="col">
+                <input type="date" class="form-control" name id v-model="date" />
               </div>
             </div>
-            
-          </div>
-          <div
-            class="modal fade"
-            id="outcomeModal"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="outcomeModal"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">Outcome</h5>
-                  
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <outcome />
-                </div>
-              </div>
-            </div>
-            
-          </div>
-          <div
-            class="modal fade"
-            id="viral-load"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="viral-load"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">Viral Load</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <viral-load  ref="viral-load"></viral-load>      
-                </div>
-              </div>
-            </div>
-            
-          </div>
+            <encounter :date="date" />
+            <template v-slot:modal-footer>
+              <div class="w-100"></div>
+            </template>
+          </b-modal>
 
+          <b-modal id="outcome-modal" title="outcome" size="xl">
+            <outcome />
+            <template v-slot:modal-footer>
+              <div class="w-100"></div>
+            </template>
+          </b-modal>
+
+          <b-modal id="viral-load-modal" title="encounter" size="xl">
+            <viral-load ref="viral-load"></viral-load>
+            <template v-slot:modal-footer>
+              <div class="w-100"></div>
+            </template>
+          </b-modal>
         </div>
-
       </div>
-     
-      <!-- /#page-content-wrapper -->
     </div>
-  <!-- </div> -->
+  </div>
 </template>
 
 <script>
@@ -132,10 +73,10 @@ import Sidebar from "@/components/SideBar.vue";
 import PatientInformation from "@/components/PatientInformation.vue";
 import VisitData from "@/components/VisitData.vue";
 import clinicRegistration from "@/components/encounters/clinicRegistration.vue";
-import encounter from "@/components/encounters/encounter.vue"
-import outcome from "@/components/outcome.vue"
-import viralLoad from '@/components/encounters/viral_load.vue';
-import moment from 'moment/moment'
+import encounter from "@/components/encounters/encounter.vue";
+import outcome from "@/components/outcome.vue";
+import viralLoad from "@/components/encounters/viral_load.vue";
+import moment from "moment/moment";
 export default {
   name: "home",
   components: {
@@ -144,13 +85,14 @@ export default {
     "patient-information": PatientInformation,
     "visit-data": VisitData,
     "clinic-registration": clinicRegistration,
-    "encounter": encounter,
-    "outcome": outcome,
+    encounter: encounter,
+    outcome: outcome,
     "viral-load": viralLoad
-  }, data: function() {
+  },
+  data: function() {
     return {
-      date: moment().format('YYYY-MM-DD'),
-    }
+      date: moment().format("YYYY-MM-DD")
+    };
   }
 };
 </script>

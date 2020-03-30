@@ -43,6 +43,7 @@ import "vue-select/dist/vue-select.css";
 import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
 import VueSelect from "vue-select";
+import EventBus from "../../services/event-bus.js";
 export default {
   components: {
     "v-select": VueSelect
@@ -94,7 +95,14 @@ export default {
         if (response.status === 201 || response.status === 200) {
             const obs = await ApiClient.post("observations", {encounter_id: encounterID, observations: [encounterObject.observation]});
             if (obs.status === 201 || obs.status === 200) {
-              this.$router.go(0);
+              this.posting = false;
+                    EventBus.$emit("reload-visits", "");
+                    let toast = this.$toasted.show("Viral Load Saved", { 
+                    theme: "toasted-primary", 
+                    position: "top-right", 
+                    duration : 2000
+                });
+                this.$root.$emit('bv::hide::modal', 'viral-load-modal', '#btnShow')
             } else {
               this.success = false;
               this.fail = true;

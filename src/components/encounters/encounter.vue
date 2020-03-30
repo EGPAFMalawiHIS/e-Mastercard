@@ -101,22 +101,18 @@ export default {
                 this.numEnc++;
                 if(this.numEnc === this.verifiedEnc.length) {
                     this.posting = false;
-                    // this.$router.reload();
-                    // this.$router.push(`/patient/mastercard/${this.$route.params.id}`);
                     EventBus.$emit("reload-visits", "");
-                    let toast = this.$toasted.show("Encounter Saved, close modal", { 
+                    let toast = this.$toasted.show("Encounter Saved", { 
                     theme: "toasted-primary", 
                     position: "top-right", 
-                    duration : 5000
+                    duration : 2000
                 });
-                    // this.removeModal();
+                this.$root.$emit('bv::hide::modal', 'encounter-modal', '#btnShow')
                 }
                 this.success = true;
                 this.fail = false;
                 this.postResponse = "Appointment has been set.";
-                // this.$router.go(0);
                 } else {
-                // this.posting = false;
                 let toast = this.$toasted.show("Some Observations failed to save !!", { 
                     theme: "toasted-primary", 
                     position: "top-right", 
