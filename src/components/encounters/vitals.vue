@@ -70,7 +70,12 @@ export default {
   mounted() {},
   computed: {
     showHeight() {
-     return true; 
+      let initialHeight = this.$store.state.currentHeight;
+      let patient = this.$store.state.patient.age;
+      let f = parseInt(patient) >= 18 && initialHeight !== null
+        ? false
+        : true;
+      return f;
     }
   },
   watch: {

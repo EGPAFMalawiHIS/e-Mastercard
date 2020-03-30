@@ -418,6 +418,7 @@ export default {
             if(conceptSet.conceptID === 5089) {
               let weight = (res[0][conceptSet.valueType] ? res[0][conceptSet.valueType] : res[0][conceptSet.secondType]);
               EventBus.$emit('set-initial-weight', weight);
+              this.$store.commit('setWeight', weight);
             }
             if(conceptSet.conceptID === 5090) {
               let height = (res[0][conceptSet.valueType] ? res[0][conceptSet.valueType] : res[0][conceptSet.secondType]);
@@ -480,14 +481,6 @@ export default {
     }
   },
   mounted() {
-      //  var arv_number = site_prefix + "-ARV-" + value;
-
-      //   var identifier_data = {
-      //       identifier: arv_number,
-      //       identifier_type: identifier_type,
-      //       patient_id: patientID
-      //   }
-      //   var url = "/patient_identifiers/";
     this.getPrefix();
      this.patientID = this.$route.params.id;
      this.getPatient().then(patient=> {
@@ -508,7 +501,6 @@ export default {
               sex: this.sex
             };
             this.$store.commit('setPatient', personObj);
-            // console.log(moment().diff("2020-02-26", 'days',false))
 
       });
       this.obs.forEach(value => {

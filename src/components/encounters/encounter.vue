@@ -38,7 +38,7 @@ export default {
             numEnc: 0,
             patientPresent: false,
             posting: false,
-            verifiedEnc: []
+            verifiedEnc: [],
         }
     },
     components: {
