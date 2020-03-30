@@ -61,7 +61,6 @@ export default {
             let enc = {
                 url: "observations"
             };
-            console.log(encounterOb);
               if(Object.keys(encounterOb).includes("obs")) {
                 Object.keys(encounterOb.obs).forEach(element => {
                     let valueKey = encounterOb.obs[element][this.getExpected(encounterOb.obs[element])];
@@ -102,14 +101,18 @@ export default {
                 this.numEnc++;
                 if(this.numEnc === this.verifiedEnc.length) {
                     this.posting = false;
-                    this.$router.go(0);
+                    EventBus.$emit("reload-visits", "");
+                    let toast = this.$toasted.show("Encounter Saved", { 
+                    theme: "toasted-primary", 
+                    position: "top-right", 
+                    duration : 2000
+                });
+                this.$root.$emit('bv::hide::modal', 'encounter-modal', '#btnShow')
                 }
                 this.success = true;
                 this.fail = false;
                 this.postResponse = "Appointment has been set.";
-                // this.$router.go(0);
                 } else {
-                // this.posting = false;
                 let toast = this.$toasted.show("Some Observations failed to save !!", { 
                     theme: "toasted-primary", 
                     position: "top-right", 
@@ -158,6 +161,22 @@ export default {
             });
             return key;
         },
+        removeModal: function() {
+
+                // get modal
+                const modal = document.getElementById("exampleModalCenter");
+
+                // change state like in hidden modal
+                modal.classList.remove('show');
+                modal.setAttribute('aria-hidden', 'true');
+                modal.setAttribute('style', 'display: none');
+
+                // get modal backdrop
+                const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+
+                // remove opened modal backdrop
+                document.body.removeChild(modalBackdrops[0]);
+        }
     },
     mounted() {
     EventBus.$on('set-present', payload => {

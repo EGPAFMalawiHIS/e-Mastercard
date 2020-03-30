@@ -6,13 +6,16 @@ import moment from "moment";
 import ApiClient from './services/api_client';
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@/assets/css/emastercard.css';
 import Toasted from 'vue-toasted';
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
 Vue.config.productionTip = false
 Vue.prototype.moment = moment;
 Vue.use(Toasted)
+Vue.use(BootstrapVue)
 ApiClient.setRouter(router);
 
 new Vue({

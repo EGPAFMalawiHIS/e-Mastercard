@@ -8,8 +8,7 @@
               <p>ARV #</p>
             </div>
             <div class="col-md-6 information" data-toggle="modal"
-            @click="showARVNumber= true"
-            data-target="#arv-number">
+            @click="$bvModal.show('arv-number-modal')">
               <p>{{arvNumber}}</p>
             </div>
           </div>
@@ -206,49 +205,30 @@
         </div>
       </table>
     </div>
-          <div
-            class="modal fade"
-            id="arv-number"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="viral-load"
-            aria-hidden="true"
-            v-if="showARVNumber "
-          >
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">ARV Number</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                <div class="row">
-                    <div class="col">
-                      <label for="exampleFormControlSelect1">ARV-Number</label>
-                    </div>
-                    <div class="col">
-                      <div class="form-group">
-                          <input
-                            type="number"
-                            class="form-control"
-                            v-model="arv_num"
-                            aria-label="Default"
-                            aria-describedby="inputGroup-sizing-default"
-                          />
-                      </div>
-                    </div>
-                    <div class="col">
-                      <button @click="saveARVNumber" class="btn btn-primary">Submit</button>
-                    </div>
-                  </div>
-                  <!-- <viral-load  ref="viral-load"></viral-load>       -->
-                </div>
-              </div>
-            </div>
-            
+    <b-modal id="arv-number-modal" title="encounter" size="xl">
+      <div class="row">
+        <div class="col">
+          <label for="exampleFormControlSelect1">ARV-Number</label>
+        </div>
+        <div class="col">
+          <div class="form-group">
+              <input
+                type="number"
+                class="form-control"
+                v-model="arv_num"
+                aria-label="Default"
+                aria-describedby="inputGroup-sizing-default"
+              />
           </div>
+        </div>
+        <div class="col">
+          <button @click="saveARVNumber" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+      <template v-slot:modal-footer>
+        <div class="w-100"></div>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -491,6 +471,7 @@ export default {
             duration : 5000
         });
         this.arvNumber = finalNum;
+        this.$root.$emit('bv::hide::modal', 'arv-number-modal', '#btnShow')
         console.log("Succesfully done");
         // this.$router.go(0);
       } else {

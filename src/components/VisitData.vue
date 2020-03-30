@@ -45,6 +45,7 @@
 
 <script>
 import ApiClient from "../services/api_client";
+import EventBus from "../services/event-bus.js";
 import moment from "moment";
 export default {
   data: function() {
@@ -242,6 +243,12 @@ export default {
   },
   mounted() {
     this.getVisits();
+    EventBus.$on('reload-visits', payload => {
+      this.patientVisits = [];
+      this.encountersToDelete = [];
+      this.getVisits();
+    });
+
     // this.getEncounters('2020-02-24');
   }
 };

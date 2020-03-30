@@ -46,6 +46,7 @@ import ApiClient from "../services/api_client";
 import "vue-select/dist/vue-select.css";
 import VueSelect from "vue-select";
 import moment from "moment";
+import EventBus from "../services/event-bus.js";
 export default {
   components: {
     "v-select": VueSelect,
@@ -90,8 +91,13 @@ export default {
           let patientID = this.$route.params.id;
           const response = await ApiClient.post(`programs/1/patients/${patientID}/states`, outcomeData);
           if (response.status === 201 || response.status === 200) {
-              console.log('Succesfully done')
-              this.$router.go(0);
+                  EventBus.$emit("reload-visits", "");
+                  let toast = this.$toasted.show("Outcome Saved", { 
+                  theme: "toasted-primary", 
+                  position: "top-right", 
+                  duration : 2000
+                });
+                this.$root.$emit('bv::hide::modal', 'outcome-modal', '#btnShow')
           } else {
               console.log('Failed to update')
           }
