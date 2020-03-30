@@ -17,7 +17,7 @@
               name="next"
               class="btn btn-primary clinical action-button"
               value="Next Step"
-              style="position: absolute; bottom: 30px; right: 45%"
+              style="position: absolute; bottom: 17px; right: 45%"
               @click="registrationObject"
             />
             <div class="errorTxt" style="margin-top: 10px; text-align: center; font-weight: bold"></div>
@@ -64,7 +64,10 @@
                 <h5 style="font-weight: bold; margin: auto; margin-bottom: 10px">Summary</h5>
               </div>
             </div>
-            <div v-if="registrationEncounter && stagingEncounter" class="row">
+            <div
+              v-if="Object.entries(registrationEncounter).length > 0 && Object.entries(stagingEncounter).length > 0"
+              class="row"
+            >
               <div class="col-md-6" style="text-align: left">
                 <label style="font-weight: bold">HIV Clinic Registration</label>
                 <table class="table table-striped">
@@ -77,7 +80,7 @@
                   <tbody>
                     <tr>
                       <td>Year Last Taken ARVs</td>
-                      <td>{{registrationEncounter['obs']['yearLastTakenARVs']['value_datetime'] || "N/A"}}</td>
+                      <td>{{registrationEncounter['obs']['yearLastTakenARVs']['value_datetime'] == 'Invalid date' ? "Unknown" : registrationEncounter['obs']['yearLastTakenARVs']['value_datetime'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Ever registered at a clinic</td>
@@ -110,18 +113,45 @@
                   </tbody>
                 </table>
               </div>
-              <div class="col-md-6" style="height: 500px; overflow-y: auto; text-align: left">
+              <div class="col-md-6" style="text-align: left">
                 <label style="font-weight: bold">Staging</label>
                 <table class="table table-striped">
                   <thead>
                     <tr>
                       <th scope="col">Name</th>
+                      <th scope="col">Value</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(stage, index) in Object.values(stagingEncounter)" :key="index">
-                      <td v-if="Object.entries(stage.conditions).length > 0"> 
-                        <label v-for="(item, index) in Object.values(stage.conditions)" :key="index"> {{item}} - Stage {{stage.id}}</label> 
+                    <tr>
+                      <td>Reason for Starting</td>
+                      <td>{{stagingEncounter['obs']['reason']['value_text'] || "N/A"}}</td>
+                    </tr>
+                    <tr>
+                      <td>Stage</td>
+                      <td>{{stagingEncounter['obs']['stage']['value_text'] || "N/A"}}</td>
+                    </tr>
+                    <tr>
+                      <td>CD4 Count Date</td>
+                      <td>{{stagingEncounter['obs']['cd4CountDate']['value_datetime'] || "N/A"}}</td>
+                    </tr>
+                    <tr>
+                      <td>CD4 Count</td>
+                      <td>{{ Object.entries(stagingEncounter['obs']['cd4Count']['value_numeric']).length > 0 ? stagingEncounter['obs']['cd4Count']['value_modifier'] +"" + stagingEncounter['obs']['cd4Count']['value_numeric'] : "N/A"}}</td>
+                    </tr>
+                    <tr>
+                      <td>CD4 Count Location</td>
+                      <td>{{stagingEncounter['obs']['cd4CountLocation']['value_text'] || "N/A"}}</td>
+                    </tr>
+                    <tr>
+                      <!-- make this fields scrollable -->
+                      <td>Condition(s)</td>
+                      <td>
+                        <ul
+                          style="height:150px; overflow:hidden; overflow-y:scroll; list-style-type: decimal;"
+                        >
+                          <li v-for="name in conditionList" :key="name" class="condtions">{{ name || 'NA' }}</li>
+                        </ul>
                       </td>
                     </tr>
                   </tbody>
@@ -196,17 +226,29 @@ export default {
     return {
       encounters: {},
       PATIENT_ID: this.$route.params.id,
-      registrationEncounter: null,
-      stagingEncounter: null,
+      registrationEncounter: {},
+      stagingEncounter: {},
       CONCEPTS: {
         1065: "Yes",
         1066: "No",
         1040: "Rapid Antibody Test",
         844: "DNA PCR",
         1118: "Not Done"
-
       }
     };
+  },
+  computed: {
+    conditionList() {
+      const conditionsKeysFilters = Object.keys(
+        this.stagingEncounter["obs"]
+      ).filter(reason => reason.match(/condition/));
+
+      const conditions = conditionsKeysFilters.map(
+        filter => this.stagingEncounter["obs"][filter]
+      );
+
+      return conditions.map(name => name["value_text"]);
+    }
   },
   components: {
     "clinic-registration": clinicRegistration,
@@ -261,7 +303,7 @@ export default {
     },
     createEncounters: function() {
       let encounters = Object.keys(this.$refs);
-      console.log(encounters)
+      console.log(encounters);
       encounters.forEach(el => {
         //    console.log(el);
         this.$refs[el].saveEncounter();
@@ -269,12 +311,11 @@ export default {
       // console.log()
       let keys = Object.keys(this.encounters);
       keys.forEach(enc => {
-        console.log(this.encounters[enc])
+        console.log(this.encounters[enc]);
         this.saveEncounter(this.encounters[enc]);
       });
       // patient/mastercard/
-      this.redirect(`/patient/mastercard/${this.PATIENT_ID}`)
-      
+      this.redirect(`/patient/mastercard/${this.PATIENT_ID}`);
     },
     redirect: function(url) {
       this.$router.push(url);
@@ -464,11 +505,13 @@ export default {
         });
       });
     },
-    registrationObject(){
-      this.registrationEncounter = this.$store.state.registration.registration
+    registrationObject() {
+      this.registrationEncounter = this.$store.state.registration.registration;
+      console.log(this.registrationEncounter);
     },
-    stagingObject(){
-      this.stagingEncounter = this.$store.state.staging.staging
+    stagingObject() {
+      this.stagingEncounter = this.$store.state.staging.staging;
+      console.log(this.stagingEncounter);
     }
   },
   mounted() {
@@ -681,5 +724,8 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+.condtions:nth-child(even) {
+  background-color: #f2f2f2;
 }
 </style>

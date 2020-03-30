@@ -11,9 +11,9 @@
           <div class="col-md-12">
             <!-- this.person["gender"] == "F" -->
             <v-select
-              multiple
               :options="filterReasons(this.person)"
               v-model="reasonForArtEligibility"
+              v-on:input="setStaging"
             ></v-select>
           </div>
         </div>
@@ -32,7 +32,7 @@
             <v-select
               :options="Object.keys(whoStageConceptMapHash)"
               v-model="whoStage"
-              @change="stageSelect(whoStage)"
+              v-on:input="setStaging"
             ></v-select>
           </div>
         </div>
@@ -61,6 +61,7 @@
               aria-describedby="emailHelp"
               placeholder="Search condition"
               v-model="cd4CountDate"
+              @change="setStaging"
             />
           </div>
         </div>
@@ -74,7 +75,12 @@
         <div class="row">
           <div class="col-md-12">
             <div class="form-inline">
-              <select name="stage" class="form-control" v-model="cd4CountModifier">
+              <select
+                name="stage"
+                class="form-control"
+                v-model="cd4CountModifier"
+                @change="setStaging"
+              >
                 <option disabled selected>Select</option>
                 <option value="<">&lt;</option>
                 <option value=">">&gt;</option>
@@ -86,6 +92,7 @@
                 placeholder="Enter Count"
                 v-model="cd4Count"
                 style="margin-left: 5px; width: 80%"
+                v-on:input="setStaging"
               />
             </div>
           </div>
@@ -101,7 +108,12 @@
         </div>
         <div class="row">
           <div class="col-md-12">
-            <v-select :options="locations" @search="getlocations" v-model="cd4CountLocation"></v-select>
+            <v-select
+              :options="locations"
+              @search="getlocations"
+              v-model="cd4CountLocation"
+              v-on:input="setStaging"
+            ></v-select>
           </div>
         </div>
       </div>
@@ -128,12 +140,7 @@
         >
           <li class="list-group-item" v-for="(stage, index) in filteredList" :key="index">
             <label class="checkbox-label">
-              <input
-                type="checkbox"
-                v-bind:value="stage"
-                v-model="stageValue"
-                @change="selectedValues()"
-              />
+              <input type="checkbox" v-bind:value="stage" v-model="stageValue" @change="setStaging" />
               <span class="checkbox-custom rectangular" style="margin-top: 12px; margin-left: 5px"></span>
             </label>
             <label style="margin-left: 16px">{{ stage }}</label>
@@ -198,6 +205,11 @@ export default {
             concept_id: 8208,
             value_coded: "",
             value_text: ""
+          },
+          reason: {
+            concept_id: 7563,
+            value_coded: "",
+            value_text: ""
           }
         }
       },
@@ -210,17 +222,17 @@ export default {
       patientAge: null,
       TODAYS_DATE: new Date(),
       whoStage: null,
-      reasonForArtEligibility: [],
+      reasonForArtEligibility: null,
       isPregnant: null,
       isBreastFeeding: null,
       presumedSevereHiv: false,
       cd4Count250: null,
       cd4Count350: null,
       cd4Count500: null,
-      cd4CountLocation: null,
+      cd4CountLocation: {},
       cd4CountDate: null,
       cd4Count: null,
-      cd4CountModifier: "",
+      cd4CountModifier: null,
       lymphocyteCount: null,
       cd4CountModfier: null,
       cdCountAvailable: false,
@@ -413,16 +425,65 @@ export default {
   },
   methods: {
     saveEncounter: function() {
-      this.addReason();
-      this.addCd4Count();
-      this.addWhoStages();
-      this.addConditions();
       console.log(this.encounterObject);
+      this.buildObservations();
       this.$emit("addEncounter", { staging: this.encounterObject });
     },
 
+    buildObservations() {
+      // required
+      if (this.reasonForArtEligibility != null) {
+        this.addReason();
+      }
+
+      //optional fields
+      this.addCd4Count(); // need to fix this
+
+      //required
+      if (this.whoStage != null) {
+        this.addWhoStages();
+      }
+
+      //optional fields
+      if (this.stageValue != null) {
+        this.addConditions();
+      }
+    },
+
+    buildForStagingGlobalState() {
+      //Reason
+      this.addReason();
+
+      //CD4 Count
+      if (this.cd4CountDate != null) {
+        this.encounterObject.obs.cd4CountDate.value_datetime = this.cd4CountDate;
+      }
+
+      if (this.cd4Count != null) {
+        this.encounterObject.obs.cd4Count.value_numeric = this.cd4Count;
+        this.cd4CountRanges();
+      }
+
+      if (this.cd4CountModifier != null) {
+        this.encounterObject.obs.cd4Count.value_modifier = this.cd4CountModifier;
+      }
+
+      if (Object.entries(this.cd4CountLocation).length > 0) {
+        this.encounterObject.obs.cd4CountLocation.location_id = this.cd4CountLocation.location_id;
+        this.encounterObject.obs.cd4CountLocation.value_text = this.cd4CountLocation.label;
+      }
+
+      if (this.whoStage != null) {
+        //Stage
+        this.addWhoStages();
+      }
+      //Conditions
+      if (this.stageValue != null) {
+        this.addConditions();
+      }
+    },
+
     selectedValues() {
-      this.$store.commit("setStaging", this.conditions);
       this.buildEncounter();
     },
 
@@ -449,31 +510,31 @@ export default {
     },
 
     buildCondition(concept = "") {
-      return {
-        concept_id: 2743,
-        value_coded: concept
-      };
-    },
-
-    addConditions() {
       const CONCEPT_MAP = {
         ...this.stageOneConditions,
         ...this.stageTwoConditions,
         ...this.stageThreeConditions,
         ...this.stageFourConditions
       };
+      return {
+        concept_id: 2743,
+        value_coded: CONCEPT_MAP[concept],
+        value_text: concept
+      };
+    },
 
+    addConditions() {
       this.stageValue.map((stage, index) => {
         console.log(stage);
         return (this.encounterObject.obs[
           `condition${index}`
-        ] = this.buildCondition(CONCEPT_MAP[stage]));
+        ] = this.buildCondition(stage));
       });
     },
 
     builReasonForStarting(params = {}) {
-      console.log(params.id)
-      console.log(this.REASON_FOR_ART[params.reason])
+      console.log(params.id);
+      console.log(this.REASON_FOR_ART[params.reason]);
       return {
         concept_id: params.id,
         value_coded: this.REASON_FOR_ART[params.reason],
@@ -489,6 +550,7 @@ export default {
     },
 
     c4dCountAvailableCheck() {
+      this.setStaging();
       if (this.cdCountAvailable) {
         this.cdCountAvailable = false;
       } else if (this.cdCountAvailable == false) {
@@ -496,76 +558,85 @@ export default {
       }
     },
 
+    cd4CountRanges() {
+      if (this.cd4Count <= 250) {
+        this.encounterObject.obs.cd4250 = this.buildC4DCountAnswer({
+          id: 8262,
+          coded: 1065,
+          text: "Yes"
+        });
+      } else {
+        this.encounterObject.obs.cd4250 = this.buildC4DCountAnswer({
+          id: 8262,
+          coded: 1066,
+          text: "No"
+        });
+      }
+
+      if (this.cd4Count <= 350) {
+        this.encounterObject.obs.cd4350 = this.buildC4DCountAnswer({
+          id: 8207,
+          coded: 1065,
+          text: "Yes"
+        });
+      } else {
+        this.encounterObject.obs.cd4350 = this.buildC4DCountAnswer({
+          id: 8207,
+          coded: 1066,
+          text: "No"
+        });
+      }
+
+      if (this.cd4Count <= 500) {
+        this.encounterObject.obs.cd4500 = this.buildC4DCountAnswer({
+          id: 9389,
+          coded: 1065,
+          text: "Yes"
+        });
+      } else {
+        this.encounterObject.obs.cd4500 = this.buildC4DCountAnswer({
+          id: 9389,
+          coded: 1066,
+          text: "No"
+        });
+      }
+
+      if (this.cd4Count <= 750) {
+        this.encounterObject.obs.cd4750 = this.buildC4DCountAnswer({
+          id: 8208,
+          coded: 1065,
+          text: "Yes"
+        });
+      } else {
+        this.encounterObject.obs.cd4750 = this.buildC4DCountAnswer({
+          id: 8208,
+          coded: 1066,
+          text: "No"
+        });
+      }
+    },
+
     addCd4Count() {
+
+      console.log("Adding CD4 Count....")
+
+      console.log(this.cdCountAvailable)
+
       if (this.cdCountAvailable) {
         this.encounterObject.obs.cd4CountDate.value_datetime = this.cd4CountDate;
         this.encounterObject.obs.cd4Count.value_numeric = this.cd4Count;
         this.encounterObject.obs.cd4Count.value_modifier = this.cd4CountModifier;
         this.encounterObject.obs.cd4CountLocation.location_id = this.cd4CountLocation.location_id;
         this.encounterObject.obs.cd4CountLocation.value_text = this.cd4CountLocation.label;
-
-        if (this.cd4Count <= 250) {
-          this.encounterObject.obs.cd4250 = this.buildC4DCountAnswer({
-            id: 8262,
-            coded: 1065,
-            text: "Yes"
-          });
-        } else {
-          this.encounterObject.obs.cd4250 = this.buildC4DCountAnswer({
-            id: 8262,
-            coded: 1066,
-            text: "No"
-          });
-        }
-
-        if (this.cd4Count <= 350) {
-          this.encounterObject.obs.cd4350 = this.buildC4DCountAnswer({
-            id: 8207,
-            coded: 1065,
-            text: "Yes"
-          });
-        } else {
-          this.encounterObject.obs.cd4350 = this.buildC4DCountAnswer({
-            id: 8207,
-            coded: 1066,
-            text: "No"
-          });
-        }
-
-        if (this.cd4Count <= 500) {
-          this.encounterObject.obs.cd4500 = this.buildC4DCountAnswer({
-            id: 9389,
-            coded: 1065,
-            text: "Yes"
-          });
-        } else {
-          this.encounterObject.obs.cd4500 = this.buildC4DCountAnswer({
-            id: 9389,
-            coded: 1066,
-            text: "No"
-          });
-        }
-
-        if (this.cd4Count <= 750) {
-          this.encounterObject.obs.cd4750 = this.buildC4DCountAnswer({
-            id: 8208,
-            coded: 1065,
-            text: "Yes"
-          });
-        } else {
-          this.encounterObject.obs.cd4750 = this.buildC4DCountAnswer({
-            id: 8208,
-            coded: 1066,
-            text: "No"
-          });
-        }
-      } else {
+        this.cd4CountRanges();
+      } else if (this.cdCountAvailable == false) {
         delete this.encounterObject.obs.cd4CountDate;
         delete this.encounterObject.obs.cd4Count;
-        delete this.encounterObject.obs.cd4250 
-        delete this.encounterObject.obs.cd4350
-        delete this.encounterObject.obs.cd4500
-        delete this.encounterObject.obs.cd4750
+        delete this.encounterObject.obs.cd4CountLocation;
+        delete this.encounterObject.obs.cd4250;
+        delete this.encounterObject.obs.cd4350;
+        delete this.encounterObject.obs.cd4500;
+        delete this.encounterObject.obs.cd4750;
         delete this.encounterObject.obs.cd4CountLocation;
       }
 
@@ -581,14 +652,10 @@ export default {
     },
     // encounterObject.consultation.obs[`curr` + el] = {
     addReason() {
-      this.reasonForArtEligibility.map((reason, index) => {
-        return (this.encounterObject.obs[
-          `reason_coded${index}`
-        ] = this.builReasonForStarting({
-          id: 7563,
-          reason
-        }));
-      });
+      this.encounterObject.obs.reason.value_coded = this.REASON_FOR_ART[
+        this.reasonForArtEligibility
+      ];
+      this.encounterObject.obs.reason.value_text = this.reasonForArtEligibility;
     },
 
     buildReasonForArt() {
@@ -747,7 +814,9 @@ export default {
     },
     setStaging() {
       //this.addConditions();
-      this.$store.commit("setStaging", this.conditions);
+      console.log("Set Staging...");
+      this.buildForStagingGlobalState();
+      this.$store.commit("setStaging", this.encounterObject);
     },
     initialize() {
       this.encounterObject;
