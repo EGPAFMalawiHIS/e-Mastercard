@@ -1,5 +1,5 @@
 <template>
-  <div class="border-right side-bar" id="sidebar-wrapper">
+  <div class="border-right side-bar" id="sidebar-wrapper" style="text-align:left">
       <div class="sidebar-heading">e-Mastercard </div>
       <div class="list-group list-group-flush">
         <a href="/" class="side-list list-group-item list-group-item-action ">Dashboard</a>
