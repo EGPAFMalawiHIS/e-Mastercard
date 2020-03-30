@@ -6,7 +6,7 @@
           <span style="font-weight: bold;">Agrees to follow up?</span>
         </div>
         <div class="form-group">
-          <select name="stage" class="form-control" @change="agreesToFollowUp">
+          <select name="stage" class="form-control" v-model="shouldFollowUp" @change="followUp">
             <option disabled selected>Select</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
@@ -35,7 +35,7 @@
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-6">
-            <label style="float: left; font-weight: bold">Year last taken ARVs</label> 
+            <label style="float: left; font-weight: bold">Year last taken ARVs</label>
           </div>
           <div class="col-md-6">
             <span
@@ -180,7 +180,6 @@
             v-model="arvNumber"
             :disabled="arvNumberUnkown"
             v-on:input="setRegistration"
-            
           />
         </div>
       </div>
@@ -275,6 +274,95 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <label style="float: left; font-weight: bold">Initial TB Status</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <select class="form-control" name id v-model="initialTbStatus">
+                <option
+                  v-for="(status, index) in Object.keys(TB_STATUS)"
+                  :key="index"
+                  :value="TB_STATUS[status]"
+                >{{status}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-12">
+                <label style="float: left; font-weight: bold">Initial Weight & Height (Vitals)</label>
+                <span
+                  style="float: left; font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic; margin-left: 38px"
+                >Initial Vitals Unknown?</span>
+                <input
+                  type="checkbox"
+                  @click="initialVitalsCheck()"
+                  style="margin-left: 10px; float:left; margin-top: 6px"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input
+                    v-if="!initialVitalsUnknown"
+                    type="text"
+                    class="form-control"
+                    name
+                    v-model="initialWeight"
+                    placeholder="Enter Weight"
+                  />
+                  <input
+                    v-if="initialVitalsUnknown"
+                    type="text"
+                    class="form-control"
+                    name
+                    v-model="initialWeight"
+                    placeholder="Unknown"
+                    disabled
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input
+                    v-if="!initialVitalsUnknown"
+                    type="text"
+                    class="form-control"
+                    name
+                    v-model="initialHeight"
+                    placeholder="Enter Height"
+                  />
+                  <input
+                    v-if="initialVitalsUnknown"
+                    type="text"
+                    class="form-control"
+                    name
+                    v-model="initialHeight"
+                    placeholder="Unknown"
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -297,6 +385,7 @@ export default {
       receievedARVTreatmentBefore: null,
       everRegisteredAtClinicValue: null,
       agreesToFollowUp: false,
+      shouldFollowUp: null,
       registered: false,
       yearStartedKnown: false,
       arvNumberUnkown: false,
@@ -314,7 +403,16 @@ export default {
       hivTestYearUnknown: false,
       arvsTakenTwoMonthsPrior: "Select",
       arvsTakenTwoWeeksPrior: "Select",
-
+      initialWeight: null,
+      initialHeight: null,
+      initialVitalsUnknown: false,
+      initialTbStatus: null,
+      TB_STATUS: {
+        "TB NOT suspected": 7454,
+        "TB suspected": 7455,
+        "Confirmed TB NOT on treatment": 7456,
+        "Confirmed TB on treatment": 7458
+      },
       options: [
         {
           label: "Rapid Antibody Test",
@@ -396,6 +494,25 @@ export default {
           testDate: {
             concept_id: 7882,
             value_datetime: null
+          },
+          initialTbStatus: {
+            concept_id: 7459,
+            value_coded: null
+          }
+        }
+      },
+
+      // make vitals optional
+      vitalsEncounter: {
+        encounter_id: 6,
+        obs: {
+          weight: {
+            concept_id: 5089,
+            value_numeric: null
+          },
+          height: {
+            concept_id: 5090,
+            value_numeric: null
           }
         }
       },
@@ -409,6 +526,21 @@ export default {
       this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1066; // No answer
       this.clinicRegistration.obs.everReceivedART.value_coded = 1066; // No answer
       this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1066; // No answer
+    },
+
+    followUp() {
+      this.setRegistration();
+      if (this.shouldFollowUp == "No") {
+        console.log("No");
+        this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1066; // No answer
+        this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1066; // No answer
+        this.agreesToFollowUp = false;
+      } else if (this.shouldFollowUp == "Yes") {
+        console.log("Yes");
+        this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1065; // No answer
+        this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1065; // No answer
+        this.agreesToFollowUp = true;
+      }
     },
 
     // Ever recieved ARVs for treatment
@@ -510,6 +642,15 @@ export default {
       }
     },
 
+    initialVitalsCheck() {
+      this.setRegistration();
+      if (this.initialVitalsUnknown == true) {
+        this.initialVitalsUnknown = false;
+      } else if (this.initialVitalsUnknown == false) {
+        this.initialVitalsUnknown = true;
+      }
+    },
+
     estimateYearLastTaken() {
       this.setRegistration();
       if (this.yearLastTakenUknown) {
@@ -555,30 +696,29 @@ export default {
       });
     },
 
-    buildForRegistrationGlobalState(){
-      if(this.yearLastTaken != null){
+    buildForRegistrationGlobalState() {
+      if (this.yearLastTaken != null) {
         const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
         this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = yearLastTaken;
       }
 
-      if(this.artStartDate != null){
+      if (this.artStartDate != null) {
         const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
         this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
       }
 
-      if(this.arvNumber != null){
+      if (this.arvNumber != null) {
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = this.arvNumber;
       }
 
-      if(this.confirmatory != null){
+      if (this.confirmatory != null) {
         this.clinicRegistration.obs.confirmatoryTest.value_coded = this.confirmatory;
       }
 
-      if(this.hivTestYear){
+      if (this.hivTestYear) {
         const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
         this.clinicRegistration.obs.testDate.value_datetime = testYear;
       }
-
     },
 
     buildObservations() {
@@ -621,10 +761,18 @@ export default {
         delete this.clinicRegistration.obs.testLocation;
         delete this.clinicRegistration.obs.testLocation;
       }
+
+      this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
     },
+
+    buildVitalsObservations() {
+      this.vitalsEncounter.obs.height.value_numeric = this.initialHeight;
+      this.vitalsEncounter.obs.weight.value_numeric = this.initialWeight;
+    },
+
     setRegistration() {
-      this.buildForRegistrationGlobalState()
-      console.log("Set Registration")
+      this.buildForRegistrationGlobalState();
+      console.log("Set Registration");
       this.$store.commit("setRegistration", this.clinicRegistration);
     },
     getVal(val) {
@@ -650,6 +798,15 @@ export default {
       this.$emit("addEncounter", {
         clinicRegistration: this.clinicRegistration
       });
+
+      //submit vitals if Vitals are known
+      if (!this.initialVitalsUnknown) {
+        this.buildVitalsObservations();
+        console.log(this.vitalsEncounter);
+        this.$emit("addEncounter", {
+          initialVitals: this.vitalsEncounter
+        });
+      }
     }
   },
   created() {
