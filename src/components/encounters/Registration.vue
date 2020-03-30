@@ -17,7 +17,7 @@
               name="next"
               class="btn btn-primary clinical action-button"
               value="Next Step"
-              style="position: absolute; bottom: 30px; right: 45%"
+              style="position: absolute; bottom: 17px; right: 45%"
               @click="registrationObject"
             />
             <div class="errorTxt" style="margin-top: 10px; text-align: center; font-weight: bold"></div>
