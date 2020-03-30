@@ -29,15 +29,52 @@
         </div>
       </div>
       
+    <div class="col" v-if="state.name === 'Patient transferred out'">
+
+    <div class="form-group" >
+      <v-select :options="locations" @search="getlocations" @input="getVal" placeholder="test location"></v-select>
     </div>
-    <div class="form-group" v-if="state.name === 'Patient transferred out'">
-      <label for="exampleFormControlSelect1">Test Location</label>
-      <v-select :options="locations" @search="getlocations" @input="getVal"></v-select>
+    </div>
+    <div class="col" >
+
+    <button @click="postOutcome" class="btn btn-primary">Submit</button>
+    </div>
     </div>
    <div class="text-center">
     <p v-for="(error, index) in errors" :key="index" style="color: red;"> {{error}}</p>
     </div>
-    <button @click="postOutcome" class="btn btn-primary">Submit</button>
+    <table class="table table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th>Outcome</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(outcome, index) in outcomes" :key="index">
+        <td>{{outcome.name}}</td>
+        <td>{{moment(outcome.start_date).format("DD-MMM-YYYY")}}</td>
+        <td v-if="outcome.end_date">{{moment(outcome.end_date).format("DD-MMM-YYYY")}}</td>
+        <td v-else> </td>
+        <!-- <td>{{moment(visit.visitDate).format("DD-MMM-YYYY")}}</td> -->
+        <td>
+          <button class="btn btn-danger" @click="voidState(outcome.patient_state_id, index)" >
+            <template v-if="voiding">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span class="sr-only">Loading...</span>
+            </template>
+
+            
+            <template v-else>
+              <span>X</span>
+            </template>
+          </button>
+        </td>
+      </tr>
+     
+    </tbody>
+  </table>
   </div>
 </template>
 
@@ -56,9 +93,11 @@ export default {
         states: [],
         errors: [],
         state: {},
+        outcomes: [],
         date: null,
         locations: [],
-        location: null
+        location: null,
+        voiding: false,
 
     };
   }, methods: {
@@ -68,6 +107,34 @@ export default {
             this.states = f[0].states;
         })
       });
+    },
+    getPatientOutcomes: async function() {
+      await ApiClient.get(`/patients/${this.$route.params.id}/programs`).then(res => {
+        res.json().then(f => {
+            this.outcomes = f.filter(y =>  {
+              return y.program_id === 1;
+            })[0]["patient_states"];
+        })
+      });
+    },
+    voidState: async function(id, index) {
+      this.voiding = true;
+      let url = `/programs/1/patients/${this.$route.params.id}/states/${id}?reason='duplicate / system error'`;
+      const response = await ApiClient.remove(url);
+          if (response.status === 201 || response.status === 204) {
+                  EventBus.$emit("reload-visits", "");
+                  let toast = this.$toasted.show("Outcome deleted", { 
+                  theme: "toasted-primary", 
+                  position: "top-right", 
+                  duration : 2000
+                });
+                this.voiding = false;
+                this.outcomes.splice(index, 1);
+                // this.$root.$emit('bv::hide::modal', 'outcome-modal', '#btnShow')
+          } else {
+              console.log(response.status);
+              console.log('Failed to update')
+          }
     },
     postOutcome: async function() {
       this.errors = [];
@@ -120,6 +187,7 @@ export default {
     },
   }, mounted() {
       this.getOutcomes();
+      this.getPatientOutcomes();
   }
 };
 </script>
