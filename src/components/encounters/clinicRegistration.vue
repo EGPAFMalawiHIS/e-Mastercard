@@ -34,40 +34,28 @@
     <div v-if="recievedTreatment" class="row">
       <div class="col-md-6">
         <div class="row">
-          <div class="col-md-6">
-            <label style="float: left; font-weight: bold">Year last taken ARVs</label>
-          </div>
-          <div class="col-md-6">
-            <span
-              style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic;"
-            >Year Unknown?</span>
-            <input type="checkbox" @click="yearLastTakenUknownCheck()" style="margin-left: 10px" />
+          <div class="col-md-12">
+            <label style="float: left; font-weight: bold">Date last taken ARVs</label>
           </div>
         </div>
-        <div class="form-group">
-          <input
-            v-if="!yearLastTakenUknown"
-            type="date"
-            class="form-control"
-            name
-            v-model="yearLastTaken"
-            @change="setRegistration"
-          />
-          <input
-            v-if="yearLastTakenUknown"
-            type="text"
-            class="form-control"
-            value="Unknown"
-            v-model="yearLastTaken"
-            placeholder="Unknown"
-            disabled
-          />
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <input
+                type="date"
+                class="form-control"
+                name
+                v-model="yearLastTaken"
+                @change="setRegistration"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
-            <span style="font-weight: bold; float: left">Ever registered at an ART clinic?</span>
+            <label style="float: left; font-weight: bold">Ever registered at an ART clinic?</label>
           </div>
         </div>
         <div class="row">
@@ -128,32 +116,16 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-6">
-                <label style="float: left; font-weight: bold">Year started ART</label>
-              </div>
-              <div class="col-md-6">
-                <span
-                  style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
-                >Year Unknown?</span>
-                <input type="checkbox" @click="startDateUnknown()" style="margin-left: 10px" />
+                <label style="float: left; font-weight: bold">Date started ART</label>
               </div>
             </div>
             <div class="form-group">
               <input
-                v-if="!yearStartedKnown"
                 type="date"
                 class="form-control"
                 name
                 v-model="artStartDate"
                 @change="setRegistration"
-              />
-              <input
-                v-if="yearStartedKnown"
-                type="text"
-                class="form-control"
-                name
-                v-model="artStartDate"
-                disabled
-                placeholder="Unknown"
               />
             </div>
           </div>
@@ -239,35 +211,18 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-6">
-                <label style="float: left; font-weight: bold">Confirmatory HIV test year</label>
-              </div>
-              <div class="col-md-6">
-                <span
-                  style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
-                >Year Unknown?</span>
-                <input type="checkbox" @click="confirmatoryYearCheck()" style="margin-left: 10px" />
+                <label style="float: left; font-weight: bold">Confirmatory HIV test date</label>
               </div>
             </div>
           </div>
           <div class="col-md-12">
             <div class="form-group">
               <input
-                v-if="!hivTestYearUnknown"
                 type="date"
                 class="form-control"
                 name
                 v-model="hivTestYear"
                 @change="setRegistration"
-              />
-              <input
-                v-if="hivTestYearUnknown"
-                type="text"
-                class="form-control"
-                value="Unknown"
-                name
-                v-model="hivTestYear"
-                placeholder="Unknown"
-                disabled
               />
             </div>
           </div>
@@ -302,7 +257,7 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-12">
-                <label style="float: left; font-weight: bold">Initial Weight & Height (Vitals)</label>
+                <label style="float: left; font-weight: bold">Initial Weight & Height0 (Vitals)</label>
                 <span
                   style="float: left; font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic; margin-left: 38px"
                 >Initial Vitals Unknown?</span>
@@ -387,11 +342,9 @@ export default {
       agreesToFollowUp: false,
       shouldFollowUp: null,
       registered: false,
-      yearStartedKnown: false,
       arvNumberUnkown: false,
       arvNumber: null,
       artStartDate: null,
-      yearLastTakenUknown: false,
       yearLastTaken: "Unknown",
       estimatedYearLastTaken: null,
       locationOfInitiation: "Select Location of Initiation",
@@ -400,7 +353,6 @@ export default {
       locationOfConfirmatoryUnknown: false,
       confirmatory: "Select Confirmatory Test",
       hivTestYear: null,
-      hivTestYearUnknown: false,
       arvsTakenTwoMonthsPrior: "Select",
       arvsTakenTwoWeeksPrior: "Select",
       initialWeight: null,
@@ -557,20 +509,6 @@ export default {
       }
     },
 
-    // Year last taken ARVs
-    yearLastTakenUknownCheck() {
-      this.setRegistration();
-      if (this.yearLastTakenUknown == true) {
-        const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
-        this.yearLastTakenUknown = false;
-      } else if (this.yearLastTakenUknown == false) {
-        this.yearLastTaken = null;
-        this.clinicRegistration.obs.yearLastTakenARVs.value_datetime =
-          "Unknown";
-        this.yearLastTakenUknown = true;
-      }
-    },
-
     // Ever registered at an ART Clinic
     everRegistered() {
       this.setRegistration();
@@ -586,7 +524,6 @@ export default {
     //Location of ART initiation
     locationOfInitiationCheck() {
       this.setRegistration();
-      this.estimateYearLastTaken(); // REMOVE THIS
       if (this.locationOfInitiationUnknown == true) {
         this.locationOfInitiation = "Select Location";
         this.locationOfInitiationUnknown = false;
@@ -597,15 +534,6 @@ export default {
       }
     },
 
-    startDateUnknown() {
-      this.setRegistration();
-      if (this.yearStartedKnown == true) {
-        this.yearStartedKnown = false;
-      } else if (this.yearStartedKnown == false) {
-        this.artStartDate = null; // FIX THIS
-        this.yearStartedKnown = true;
-      }
-    },
     arvNumberUnkownCheckbox() {
       this.setRegistration();
       if (this.arvNumberUnkown == true) {
@@ -628,17 +556,6 @@ export default {
         this.locationOfConfirmatory = "Unknown";
         this.clinicRegistration.obs.testLocation.value_text = "Unknown";
         this.locationOfConfirmatoryUnknown = true;
-      }
-    },
-
-    confirmatoryYearCheck() {
-      this.setRegistration();
-      if (this.hivTestYearUnknown == true) {
-        this.hivTestYearUnknown = false;
-      } else if (this.hivTestYearUnknown == false) {
-        this.hivTestYear = null;
-        this.clinicRegistration.obs.testDate.value_datetime = "Unknown";
-        this.hivTestYearUnknown = true;
       }
     },
 
