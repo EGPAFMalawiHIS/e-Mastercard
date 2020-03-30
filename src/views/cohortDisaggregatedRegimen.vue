@@ -42,6 +42,8 @@
                 <th class="disaggregated-numbers">15P</th>
                 <th class="disaggregated-numbers">16P</th>
                 <th class="disaggregated-numbers">17P</th>
+                <th class="disaggregated-numbers">Unknown</th>
+                <th class="disaggregated-numbers">Total (regimen)</th>
               </tr>
             </thead>
             <tbody ref="tableBody">
@@ -165,7 +167,7 @@ export default {
           table_body.appendChild(tr);
           let td_count = 0;
 
-          while (td_count < 32) {
+          while (td_count < 34) {
             var td = document.createElement('td');
             tr.appendChild(td);
             if(td_count == 0)
@@ -272,7 +274,6 @@ export default {
       url += "&start_date=" + this.startDate;
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
-      console.log(url);
      
       const response = await ApiClient.get(url, {}, {});
 
@@ -342,7 +343,7 @@ export default {
     },
     allMales() {
       this.dTable.fnAddData([ "31", "All", "Male", this.totalMales[0],
-        this.totalMales[1], this.totalMales[2], this.totalMales[3] ]);
+        this.totalMales[1], this.totalMales[2], this.totalMales[3], 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0 ]);
       
       this.getAllFemale("Pregnant");
     },
@@ -376,7 +377,7 @@ export default {
 
           if(age_group == 'Pregnant'){
             let newRow = this.dTable.fnAddData([ "32", "All", "FP", tx_new,
-              tx_curr, tx_given_ipt, tx_screened_for_tb ]);
+              tx_curr, tx_given_ipt, tx_screened_for_tb, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0,0 ]);
 
             let oSettings = this.dTable.fnSettings();
             let nTr = oSettings.aoData[ newRow[0] ].nTr;
@@ -385,7 +386,7 @@ export default {
             this.getAllFemale('Breastfeeding');
           } else {
             let newRow = this.dTable.fnAddData([ "33", "All", "Fbf", tx_new,
-              tx_curr, tx_given_ipt, tx_screened_for_tb ]);
+              tx_curr, tx_given_ipt, tx_screened_for_tb, 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0 ]);
             
             let oSettings = this.dTable.fnSettings();
             let nTr = oSettings.aoData[ newRow[0] ].nTr;
@@ -442,10 +443,139 @@ export default {
         }
       }
       this.dTable.fnAddData([ "34", "All", "FNP", this.totalFemales[0],
-        this.totalFemales[1], this.totalFemales[2], this.totalFemales[3] ]);
+        this.totalFemales[1], this.totalFemales[2], this.totalFemales[3], 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0]);
       
       this.dTable.fnDestroy();
       this.initDataTable();
+
+      /*............ Here ......................... */
+      rows = this.$refs.tableBody.children;
+      for(var i =  0; i < rows.length; i++){
+        let tds = rows[i].children; 
+        let innerHTML  = tds[2].innerHTML;
+        if(innerHTML == 'Female' || innerHTML == 'Male' || innerHTML == 'FP' || innerHTML == 'FNP' || innerHTML == 'Fbf') 
+          this.allRows.push(rows[i]);
+      
+      }
+
+      this.getRegimenInfo(this.allRows[0]);
+      /*............ Here ......................... */
+    },
+    getRegimenInfo: async function(row){
+      let tds = row.children;
+      let  age_group = tds[1].innerHTML;
+      let gender  = tds[2].innerHTML;
+
+      let url = "disaggregated_regimen_distribution";
+      url += "?date=" + moment().format('YYYY-MM-DD');
+      url += "&start_date=" + this.startDate;
+      url += "&end_date=" + this.endDate;
+      url += "&gender=" + gender;
+      url += "&age_group=" + age_group;
+      url += "&outcome_table=temp_patient_outcomes";
+      url += '&program_id=1';
+     
+      const response = await ApiClient.get(url, {}, {});
+      if (response.status === 200) {
+        response.json().then((data) =>  this.addRegimen(data, tds) );
+      }
+
+    },
+    addRegimen(data, tds){
+      this.allRows.shift();
+      let total = 0;
+
+      for(let regimen in  data){
+        if(regimen == '0A')
+          tds[7].innerHTML = data[regimen].length;
+
+        if(regimen == '2A')
+          tds[8].innerHTML = data[regimen].length;
+
+        if(regimen == '4A')
+          tds[9].innerHTML = data[regimen].length;
+
+        if(regimen == '5A')
+          tds[10].innerHTML = data[regimen].length;
+
+        if(regimen == '6A')
+          tds[11].innerHTML = data[regimen].length;
+
+        if(regimen == '7A')
+          tds[12].innerHTML = data[regimen].length;
+
+        if(regimen == '8A')
+          tds[13].innerHTML = data[regimen].length;
+
+        if(regimen == '9A')
+          tds[14].innerHTML = data[regimen].length;
+
+        if(regimen == '10A')
+          tds[15].innerHTML = data[regimen].length;
+
+        if(regimen == '11A')
+          tds[16].innerHTML = data[regimen].length;
+
+        if(regimen == '12A')
+          tds[17].innerHTML = data[regimen].length;
+
+        if(regimen == '13A')
+          tds[18].innerHTML = data[regimen].length;
+
+        if(regimen == '14A')
+          tds[19].innerHTML = data[regimen].length;
+
+        if(regimen == '15A')
+          tds[20].innerHTML = data[regimen].length;
+
+        if(regimen == '16A')
+          tds[21].innerHTML = data[regimen].length;
+
+        if(regimen == '17A')
+          tds[22].innerHTML = data[regimen].length;
+
+        if(regimen == '0P')
+          tds[23].innerHTML = data[regimen].length;
+
+        if(regimen == '2P')
+          tds[24].innerHTML = data[regimen].length;
+
+        if(regimen == '4P')
+          tds[25].innerHTML = data[regimen].length;
+
+        if(regimen == '9P')
+          tds[26].innerHTML = data[regimen].length;
+
+        if(regimen == '11P')
+          tds[27].innerHTML = data[regimen].length;
+
+        if(regimen == '14P')
+          tds[28].innerHTML = data[regimen].length;
+
+        if(regimen == '15P')
+          tds[29].innerHTML = data[regimen].length;
+
+        if(regimen == '16P')
+          tds[30].innerHTML = data[regimen].length;
+
+        if(regimen == '17P')
+          tds[31].innerHTML = data[regimen].length;
+
+        if(regimen == 'N/A')
+          tds[32].innerHTML = data[regimen].length;
+
+      
+        total += data[regimen].length;
+      }
+      tds[33].innerHTML = total;
+
+      if(this.allRows.length > 0){
+        this.getRegimenInfo(this.allRows[0]);
+      }else{
+        this.dTable.api().destroy();
+        this.initDataTable();
+      }
+
     }
   },
   mounted() {
@@ -466,6 +596,7 @@ export default {
         totalFemales: [0, 0, 0, 0],
         fpRow: null,
         fbfRow: null,
+        allRows: [],
         initialize: false,
         ageGroups: [
           '0-5 months', '6-11 months','12-23 months',
