@@ -12,7 +12,9 @@ const vuexPersist = new VuexPersist({key: 'eMastercard', storage: window.session
 export default new Vuex.Store({
   state: {
     user: null,
-    patient: null
+    patient: null,
+    currentWeight: null,
+    currentHeight: null,
   },
   getters: {
     userIs(state) {
@@ -37,7 +39,10 @@ export default new Vuex.Store({
       state.patient = patient;
     },
     setHeight(state, height) {
-      state.patient.height = height;
+      state.currentHeight = height;
+    },
+    setWeight(state, weight) {
+      state.currentWeight = weight;
     }
   },
   actions: {

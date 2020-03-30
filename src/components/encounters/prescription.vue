@@ -230,8 +230,10 @@ export default {
     
   },
   mounted() {
-    this.getRegimens();
     let currentWeight = null;
+    this.latestWeight = this.$store.state.currentWeight;
+    this.weight = this.latestWeight;
+    this.getRegimens();
     EventBus.$on('set-weight', payload => {
       this.selectedRegimen = null;
       if(payload.trim() === "") {

@@ -153,11 +153,11 @@ const routes = [
     name: "SurvivalAnalysis",
     component: () => import("../views/SurvivalAnalysis.vue")
   },
-  /*{
+  {
     path: "/registration/:id",
     name: "registration",
     component: () => import("../views/Registration.vue")
-  },*/
+  },
   {
     path: "/tx_rtt",
     name: "txRTT",

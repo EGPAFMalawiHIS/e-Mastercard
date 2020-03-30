@@ -145,6 +145,7 @@ import EventBus from "../../services/event-bus.js";
 export default {
   data: function() {
     return {
+      gender: null,
       pregnant: {
         value_coded: null,
         concept_id: 6131
@@ -224,8 +225,7 @@ export default {
   },
   computed: {
     isFemale() {
-      // let gender = this.$store.getters.getPatient;
-      return  true;
+      return this.$store.state.patient.sex === "F" ? true: false;;
     }
   },
   methods: {
