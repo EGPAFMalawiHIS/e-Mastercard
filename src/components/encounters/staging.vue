@@ -451,8 +451,10 @@ export default {
         this.addConditions();
       }
 
-      if (this.encounterDatetime != null || this.encounterDatetime != undefined || this.encounterDatetime != "") {
-        const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
+      const datetime = this.encounterDatetime.vitals.encounter_datetime
+
+      if (datetime != null || datetime!= undefined || datetime!= "") {
+        const dateStarted = moment(new Date(datetime)).format("YYYY-MM-DD");
         this.encounterObject.encounter_datetime = dateStarted;
       }else{
         const todaysDate = moment(new Date()).format("YYYY-MM-DD");
@@ -491,6 +493,16 @@ export default {
       //Conditions
       if (this.stageValue != null) {
         this.addConditions();
+      }
+
+      const datetime = this.encounterDatetime.vitals.encounter_datetime
+
+      if (datetime != null || datetime!= undefined || datetime!= "") {
+        const dateStarted = moment(new Date(datetime)).format("YYYY-MM-DD");
+        this.encounterObject.encounter_datetime = dateStarted;
+      }else{
+        const todaysDate = moment(new Date()).format("YYYY-MM-DD");
+        this.encounterObject.encounter_datetime = todaysDate;
       }
     },
 
