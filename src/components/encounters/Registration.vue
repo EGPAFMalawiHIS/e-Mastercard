@@ -419,21 +419,26 @@ export default {
           //Confirmatory Test
           const confirmatoryTest = registration["confirmatory_test"];
 
-          const test = confirmatoryTest["test"] != null;
+          const test = confirmatoryTest["test"];
 
           const gotConfirmatoryTest = () => {
             return (
-              confirmatoryTest["location"] != "Select Option" &&
-              confirmatoryTest["test_date"] != null
+              confirmatoryTest["test_date"] != null &&
+              confirmatoryTest["location"] != "Select Option"
             );
           };
 
-          if (test == 1040 || test == 844) {
-            if (gotConfirmatoryTest()) {
-              this.formValidations.push(true);
-            } else {
-              this.formValidations.push(false);
+          if (test != null) {
+            this.formValidations.push(true);
+            if (test == 1040 || test == 844) {
+              if (gotConfirmatoryTest()) {
+                this.formValidations.push(true);
+              } else {
+                this.formValidations.push(false);
+              }
             }
+          }else{
+            this.formValidations.push(false);
           }
 
           const initialTbStatus =
@@ -458,9 +463,7 @@ export default {
             this.formValidations.push(false);
           }
 
-          console.log(this.formValidations);
-
-          if (true) {
+          if (!this.formValidations.includes(false)) {
             $(".errorTxt").html("");
             current_fs = $(this).parent();
             next_fs = $(this)
