@@ -202,7 +202,7 @@ export default {
           auto_expire_date: moment().add((this.quantity/equivalent_daily_dose) + 2, 'days').format("YYYY-MM-DD"),
           instructions: instructions,
           units: this.selectedDrugs[i].units,
-          quantity: this.selectedDrugs[i].quantity
+          qty: this.selectedDrugs[i].quantity
         };
         if(this.selectedDrugs[i].drug_name === "Cotrimoxazole (480mg tablet)") {
 
@@ -230,8 +230,10 @@ export default {
     
   },
   mounted() {
-    this.getRegimens();
     let currentWeight = null;
+    this.latestWeight = this.$store.state.currentWeight;
+    this.weight = this.latestWeight;
+    this.getRegimens();
     EventBus.$on('set-weight', payload => {
       this.selectedRegimen = null;
       if(payload.trim() === "") {

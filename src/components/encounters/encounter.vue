@@ -38,7 +38,7 @@ export default {
             numEnc: 0,
             patientPresent: false,
             posting: false,
-            verifiedEnc: []
+            verifiedEnc: [],
         }
     },
     components: {
@@ -98,6 +98,20 @@ export default {
                 enc.encounter_id = encounterID;
                 const response = await ApiClient.post(enc.url, enc);
                 if (response.status === 201 || response.status === 200) {
+                    if(enc.url === "drug_orders") {
+                        let orders = await response.json();
+                        let dispensations  = [];
+                        orders.forEach(element => {
+                            let qty = enc.drug_orders.filter(stage => {
+                                return stage.drug_inventory_id === element.drug_inventory_id;
+                            })
+                                dispensations.push({date: this.date, 
+                                drug_order_id: element.order_id, 
+                                quantity: qty[0]["qty"]})
+                        });
+                        const respo = await ApiClient.post('/dispensations', {dispensations: dispensations, program_id: 1});
+
+                    }
                 this.numEnc++;
                 if(this.numEnc === this.verifiedEnc.length) {
                     this.posting = false;

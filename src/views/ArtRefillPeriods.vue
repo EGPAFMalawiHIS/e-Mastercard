@@ -148,13 +148,13 @@ export default {
         let info =  data[person_id];
         let prescribed_days = info.prescribed_days;
 
-        if(prescribed_days < 90)
+        if(prescribed_days < 60)
           column_3 += 1
 
-        if(prescribed_days >= 90 && prescribed_days <= 179)
+        if(prescribed_days >= 60 && prescribed_days <= 150)
           column_4 += 1
 
-        if(prescribed_days >= 180)
+        if(prescribed_days > 150)
           column_5 += 1
 
       }
