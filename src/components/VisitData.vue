@@ -267,8 +267,8 @@ export default {
             element.pregnant = "Yes";
             tempob.pregnant = "Yes";
           }else {
-            element.pregnant = "No";
-            tempob.pregnant = "No";
+            element.pregnant = "";
+            tempob.pregnant = "";
           }
         })
         this.getObs({conceptID: 7965, params: "value_coded=1065"}, element).then(el=> {
@@ -276,8 +276,8 @@ export default {
             element.breastfeeding = "Yes";
             tempob.breastfeeding = "Yes";
           }else {
-            tempob.breastfeeding = "No";
-            element.breastfeeding = "No";
+            tempob.breastfeeding = "";
+            element.breastfeeding = "";
           }
         })
         this.getEncounters(element.visitDate).then(el => {
