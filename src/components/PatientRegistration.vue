@@ -457,8 +457,8 @@
                   <tbody>
                     <tr>
                       <th scope="row">Name</th>
-                      <td>{{firstname}} {{middlename}} {{lastname}}</td>
-                      <td>{{registerGuardian ? (guardianFirstname + " " + guardianMiddlename + " " + guardianLastname) : 'N/A'}}</td>
+                      <td>{{firstname}} {{middlename == null || middlename == "" ? middlename : ''}} {{lastname}}</td>
+                      <td>{{registerGuardian ? (guardianFirstname + " " + guardianMiddlename == null || guardianMiddlename == "" ? guardianMiddlename : '' + " " + guardianLastname) : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Birthdate</th>
@@ -1533,7 +1533,8 @@ export default {
       });
     },
     redirect: function(url) {
-      this.$router.push(url);
+      this.$router.push(url)
+      //if (this.$router.path !== url) this.$router.push(url)
     }
   },
   created() {

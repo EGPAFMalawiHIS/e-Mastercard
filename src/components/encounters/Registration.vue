@@ -368,7 +368,10 @@ export default {
 
           this.formValidations = [];
 
-          if (registration["agrees_to_follow"] != "Select Option") {
+          if (
+            registration["agrees_to_follow"] != "Select Option" &&
+            registration["agrees_to_follow"] != ""
+          ) {
             this.formValidations.push(true);
           } else {
             this.formValidations.push(false);
@@ -378,7 +381,7 @@ export default {
           console.log(treatment);
           const everReceivedART = treatment["ever_received"];
 
-          if (everReceivedART != "Select Option") {
+          if (everReceivedART != "Select Option" || everReceivedART != "") {
             this.formValidations.push(true);
           } else {
             this.formValidations.push(false);
@@ -387,7 +390,9 @@ export default {
           const gotTreatment = () => {
             return (
               treatment["last_date_received"] != null &&
-              treatment["ever_registered"] != "Select Option"
+              treatment["last_date_received"] != "" &&
+              treatment["ever_registered"] != "Select Option" &&
+              treatment["ever_registered"] != ""
             );
           };
 
@@ -397,7 +402,9 @@ export default {
             return (
               artReg["location"] != "Select Option" &&
               artReg["start_date"] != null &&
-              artReg["arv_number"] != null
+              artReg["start_date"] != "" &&
+              artReg["arv_number"] != null &&
+              artReg["arv_number"] != ""
             );
           };
 
@@ -424,7 +431,9 @@ export default {
           const gotConfirmatoryTest = () => {
             return (
               confirmatoryTest["test_date"] != null &&
-              confirmatoryTest["location"] != "Select Option"
+              confirmatoryTest["test_date"] != "" &&
+              confirmatoryTest["location"] != "Select Option" &&
+              confirmatoryTest["location"] != ""
             );
           };
 
@@ -437,16 +446,14 @@ export default {
                 this.formValidations.push(false);
               }
             }
-          }else{
+          } else {
             this.formValidations.push(false);
           }
 
           const initialTbStatus =
-            registration["encounter"]["obs"]["initialTbStatus"][
-              "value_coded"
-            ] != "Select Option";
+            registration["encounter"]["obs"]["initialTbStatus"]["value_coded"];
 
-          if (initialTbStatus) {
+          if (initialTbStatus != "Select Option" && initialTbStatus != "") {
             this.formValidations.push(true);
           } else {
             this.formValidations.push(false);
@@ -454,8 +461,8 @@ export default {
 
           //Vitals
           const vitals = registration["vitals"]["obs"];
-          const weight = vitals["weight"]["value_numeric"] != null;
-          const height = vitals["height"]["value_numeric"] != null;
+          const weight = vitals["weight"]["value_numeric"] != null && vitals["weight"]["value_numeric"] != "";
+          const height = vitals["height"]["value_numeric"] != null && vitals["height"]["value_numeric"] != "";
 
           if (weight && height) {
             this.formValidations.push(true);
