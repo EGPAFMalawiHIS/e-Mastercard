@@ -3,11 +3,11 @@
     <div class="row">
       <div class="col-md-6" style="float: left">
         <div style="float: left">
-          <span style="font-weight: bold;">Agrees to follow up?</span>
+          <span style="font-weight: bold;">Agrees to follow up? (*)</span>
         </div>
         <div class="form-group">
           <select name="stage" class="form-control" v-model="shouldFollowUp" @change="followUp">
-            <option disabled selected>Select</option>
+            <option disabled selected>Select Option</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
@@ -16,7 +16,7 @@
       <div class="col-md-6">
         <span
           style="font-weight: bold; float: left"
-        >Ever received ARVs for treatment or prophylaxis?</span>
+        >Ever received ARVs for treatment or prophylaxis? (*)</span>
         <div class="form-group">
           <select
             name="stage"
@@ -24,7 +24,7 @@
             v-model="receievedARVTreatmentBefore"
             @change="everRecieved"
           >
-            <option disabled selected>Select</option>
+            <option disabled selected>Select Option</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
@@ -35,7 +35,7 @@
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
-            <label style="float: left; font-weight: bold">Date last taken ARVs</label>
+            <label style="float: left; font-weight: bold">Date last taken ARVs (*)</label>
           </div>
         </div>
         <div class="row">
@@ -55,7 +55,7 @@
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
-            <label style="float: left; font-weight: bold">Ever registered at an ART clinic?</label>
+            <label style="float: left; font-weight: bold">Ever registered at an ART clinic? (*)</label>
           </div>
         </div>
         <div class="row">
@@ -67,7 +67,7 @@
                 v-model="everRegisteredAtClinicValue"
                 @change="everRegistered"
               >
-                <option disabled selected>Select</option>
+                <option disabled selected>Select Option</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
               </select>
@@ -82,7 +82,7 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-3">
-                <label style="float: left; font-weight: bold">Location of ART Initiation</label>
+                <label style="float: left; font-weight: bold">Location of ART Initiation (*)</label>
               </div>
               <div class="col-md-3">
                 <span
@@ -116,7 +116,7 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-6">
-                <label style="float: left; font-weight: bold">Date started ART</label>
+                <label style="float: left; font-weight: bold">Date started ART (*)</label>
               </div>
             </div>
             <div class="form-group">
@@ -134,7 +134,7 @@
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-6">
-            <label style="float: left; font-weight: bold">ARV Number</label>
+            <label style="float: left; font-weight: bold">ARV Number (*)</label>
           </div>
           <div class="col-md-6">
             <span
@@ -160,7 +160,7 @@
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-12">
-            <label style="float: left; font-weight: bold">Confirmatory Test</label>
+            <label style="float: left; font-weight: bold">Confirmatory Test (*)</label>
           </div>
         </div>
         <div class="form-group">
@@ -179,7 +179,7 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-6">
-                <label style="float: left; font-weight: bold">Location of confirmatory</label>
+                <label style="float: left; font-weight: bold">Location of confirmatory (*)</label>
               </div>
               <div class="col-md-6">
                 <span
@@ -210,8 +210,8 @@
         <div class="row">
           <div class="col-md-12">
             <div class="row">
-              <div class="col-md-6">
-                <label style="float: left; font-weight: bold">Confirmatory HIV test date</label>
+              <div class="col-md-12">
+                <label style="float: left; font-weight: bold">Confirmatory HIV test date (*)</label>
               </div>
             </div>
           </div>
@@ -235,13 +235,14 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-6">
-                <label style="float: left; font-weight: bold">Initial TB Status</label>
+                <label style="float: left; font-weight: bold">Initial TB Status (*)</label>
               </div>
             </div>
           </div>
           <div class="col-md-12">
             <div class="form-group">
-              <select class="form-control" name id v-model="initialTbStatus">
+              <select class="form-control" name id v-model="initialTbStatus" @change="setRegistration">
+                <option disabled selected>Select Option</option>
                 <option
                   v-for="(status, index) in Object.keys(TB_STATUS)"
                   :key="index"
@@ -257,10 +258,10 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-12">
-                <label style="float: left; font-weight: bold">Initial Weight & Height0 (Vitals)</label>
+                <label style="float: left; font-weight: bold">Initial Weight & Height (Vitals) (*)</label>
                 <span
                   style="float: left; font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic; margin-left: 38px"
-                >Initial Vitals Unknown?</span>
+                >Vitals Unknown?</span>
                 <input
                   type="checkbox"
                   @click="initialVitalsCheck()"
@@ -280,6 +281,7 @@
                     name
                     v-model="initialWeight"
                     placeholder="Enter Weight"
+                    v-on:input="setRegistration"
                   />
                   <input
                     v-if="initialVitalsUnknown"
@@ -301,6 +303,7 @@
                     name
                     v-model="initialHeight"
                     placeholder="Enter Height"
+                    v-on:input="setRegistration"
                   />
                   <input
                     v-if="initialVitalsUnknown"
@@ -337,28 +340,28 @@ export default {
   data: function() {
     return {
       recievedTreatment: false,
-      receievedARVTreatmentBefore: null,
-      everRegisteredAtClinicValue: null,
+      receievedARVTreatmentBefore: "Select Option",
+      everRegisteredAtClinicValue: "Select Option",
       agreesToFollowUp: false,
-      shouldFollowUp: null,
+      shouldFollowUp: "Select Option",
       registered: false,
       arvNumberUnkown: false,
       arvNumber: null,
       artStartDate: null,
-      yearLastTaken: "Unknown",
+      yearLastTaken: null,
       estimatedYearLastTaken: null,
-      locationOfInitiation: "Select Location of Initiation",
+      locationOfInitiation: "Select Option",
       locationOfInitiationUnknown: false,
-      locationOfConfirmatory: "Select Location Confirmatory",
+      locationOfConfirmatory: "Select Option",
       locationOfConfirmatoryUnknown: false,
-      confirmatory: "Select Confirmatory Test",
+      confirmatory: "Select Option",
       hivTestYear: null,
-      arvsTakenTwoMonthsPrior: "Select",
-      arvsTakenTwoWeeksPrior: "Select",
+      arvsTakenTwoMonthsPrior: "Select Option",
+      arvsTakenTwoWeeksPrior: "Select Option",
       initialWeight: null,
       initialHeight: null,
       initialVitalsUnknown: false,
-      initialTbStatus: null,
+      initialTbStatus: "Select Option",
       TB_STATUS: {
         "TB NOT suspected": 7454,
         "TB suspected": 7455,
@@ -457,6 +460,7 @@ export default {
       // make vitals optional
       vitalsEncounter: {
         encounter_id: 6,
+        encounter_datetime: null,
         obs: {
           weight: {
             concept_id: 5089,
@@ -636,6 +640,37 @@ export default {
         const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
         this.clinicRegistration.obs.testDate.value_datetime = testYear;
       }
+
+      if (this.initialTbStatus) {
+        const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.testDate.value_datetime = testYear;
+      }
+
+      if (this.initialWeight != null) {
+        this.vitalsEncounter.obs.height.value_numeric = this.initialWeight;
+      }
+
+      if (this.initialHeight != null) {
+        this.vitalsEncounter.obs.weight.value_numeric = this.initialHeight;
+      }
+
+      if(this.initialTbStatus != null){
+        this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
+      }
+
+      if(this.artStartDate != null){
+        const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
+        this.vitalsEncounter.encounter_datetime = this.dateStarted;
+      }
+
+      if (this.registered) {
+        const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
+        this.vitalsEncounter.encounter_datetime = dateStarted;
+      }else{
+        const todaysDate = moment(new Date()).format("YYYY-MM-DD");
+        this.vitalsEncounter.encounter_datetime = todaysDate;
+      }
+
     },
 
     buildObservations() {
@@ -656,6 +691,7 @@ export default {
         const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
         this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = this.arvNumber;
+
       } else {
         //ART start date
         delete this.clinicRegistration.obs.dateARTStarted;
@@ -685,12 +721,44 @@ export default {
     buildVitalsObservations() {
       this.vitalsEncounter.obs.height.value_numeric = this.initialHeight;
       this.vitalsEncounter.obs.weight.value_numeric = this.initialWeight;
+
+      if (this.registered) {
+        const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
+        this.vitalsEncounter.encounter_datetime = dateStarted;
+      }else{
+        const todaysDate = moment(new Date()).format("YYYY-MM-DD");
+        this.vitalsEncounter.encounter_datetime = todaysDate;
+      }
     },
 
     setRegistration() {
       this.buildForRegistrationGlobalState();
       console.log("Set Registration");
-      this.$store.commit("setRegistration", this.clinicRegistration);
+      const registration = {
+        encounter: this.clinicRegistration,
+        agrees_to_follow: this.shouldFollowUp,
+        receieved_treatment: {
+          ever_received: this.receievedARVTreatmentBefore,
+          last_date_received: this.yearLastTaken,
+          ever_registered: this.everRegisteredAtClinicValue
+        },
+        art_registration: {
+          ever_registered: this.everRegisteredAtClinicValue,
+          location: this.everRegisteredAtClinicValue,
+          start_date: this.artStartDate,
+          arv_number: this.arvNumber
+        },
+        confirmatory_test: {
+          test: this.confirmatory,
+          location: this.locationOfConfirmatory,
+          test_date: this.hivTestYear
+        },
+        vitals: this.vitalsEncounter
+
+      }
+
+      console.log(registration)
+      this.$store.commit("setRegistration", registration);
     },
     getVal(val) {
       //location of confirmatory

@@ -43,7 +43,7 @@
             <input
               type="button"
               name="next"
-              class="btn btn-primary reception action-button"
+              class="btn btn-primary staging action-button"
               value="Next Step"
               style="position: absolute; bottom: 30px; right: 40%"
               @click="stagingObject"
@@ -80,35 +80,35 @@
                   <tbody>
                     <tr>
                       <td>Year Last Taken ARVs</td>
-                      <td>{{registrationEncounter['obs']['yearLastTakenARVs']['value_datetime'] == 'Invalid date' ? "Unknown" : registrationEncounter['obs']['yearLastTakenARVs']['value_datetime'] || "N/A"}}</td>
+                      <td>{{registrationEncounter['encounter']['obs']['yearLastTakenARVs']['value_datetime'] == 'Invalid date' ? "Unknown" : registrationEncounter['encounter']['obs']['yearLastTakenARVs']['value_datetime'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Ever registered at a clinic</td>
-                      <td>{{CONCEPTS[registrationEncounter['obs']['everRegisteredAtClinic']['value_coded']] || "N/A"}}</td>
+                      <td>{{CONCEPTS[registrationEncounter['encounter']['obs']['everRegisteredAtClinic']['value_coded']] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>ART # at previous location</td>
-                      <td>{{registrationEncounter['obs']['artNumberAtPreviousLocation']['value_text'] || "N/A"}}</td>
+                      <td>{{registrationEncounter['encounter']['obs']['artNumberAtPreviousLocation']['value_text'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Confirmatory Test</td>
-                      <td>{{CONCEPTS[registrationEncounter['obs']['confirmatoryTest']['value_coded']] || "N/A"}}</td>
+                      <td>{{CONCEPTS[registrationEncounter['encounter']['obs']['confirmatoryTest']['value_coded']] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>ART Start Location</td>
-                      <td>{{registrationEncounter['obs']['ARTStartLocation']['value_text'] || "N/A"}}</td>
+                      <td>{{registrationEncounter['encounter']['obs']['ARTStartLocation']['value_text'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Date ART Started</td>
-                      <td>{{registrationEncounter['obs']['dateARTStarted']['value_datetime'] || "N/A"}}</td>
+                      <td>{{registrationEncounter['encounter']['obs']['dateARTStarted']['value_datetime'] == null || registrationEncounter['encounter']['obs']['dateARTStarted']['value_datetime'] == "Invalid date" ? "N/A" : registrationEncounter['encounter']['obs']['dateARTStarted']['value_datetime'] }}</td>
                     </tr>
                     <tr>
                       <td>Test Location</td>
-                      <td>{{registrationEncounter['obs']['testLocation']['value_text'] || "N/A"}}</td>
+                      <td>{{registrationEncounter['encounter']['obs']['testLocation']['value_text'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Date of Test</td>
-                      <td>{{registrationEncounter['obs']['testDate']['value_datetime'] || "N/A"}}</td>
+                      <td>{{registrationEncounter['encounter']['obs']['testDate']['value_datetime'] == "Invalid date" ? "N/A" : registrationEncounter['encounter']['obs']['testDate']['value_datetime'] }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -150,7 +150,11 @@
                         <ul
                           style="height:150px; overflow:hidden; overflow-y:scroll; list-style-type: decimal;"
                         >
-                          <li v-for="name in conditionList" :key="name" class="condtions">{{ name || 'NA' }}</li>
+                          <li
+                            v-for="name in conditionList"
+                            :key="name"
+                            class="condtions"
+                          >{{ name || 'NA' }}</li>
                         </ul>
                       </td>
                     </tr>
@@ -234,7 +238,8 @@ export default {
         1040: "Rapid Antibody Test",
         844: "DNA PCR",
         1118: "Not Done"
-      }
+      },
+      formValidations: []
     };
   },
   computed: {
@@ -278,7 +283,8 @@ export default {
       // pass params
       const encounter = await EncounterService.createEncounter(
         this.PATIENT_ID,
-        encounterOb.encounter_id
+        encounterOb.encounter_id,
+        encounterOb.encounter_datetime
       );
       this.successfulOperation = true;
       if (encounter.status === 201 || encounter.status === 200) {
@@ -340,17 +346,124 @@ export default {
       });
       return key;
     },
-    initileWizard() {
+    initileWizard(registration) {
+      console.log(registration);
+      let Registration = this;
       $(document).ready(function() {
         let current_fs, next_fs, previous_fs; //fieldsets
         let opacity;
+
+        console.log(registration);
+        console.log(registration["agrees_to_follow"]);
 
         let pDetails = $("#pDetails");
         const message =
           "<label style='color:red'> All required fields (*) must be completed before proceeding. </label>";
 
+        // CLINICAL
+
         $(".clinical").click(function() {
-          if (true) {
+          console.log(Registration.registrationEncounter);
+          const registration = Registration.registrationEncounter;
+
+          this.formValidations = [];
+
+          if (registration["agrees_to_follow"] != "Select Option") {
+            this.formValidations.push(true);
+          } else {
+            this.formValidations.push(false);
+          }
+
+          const treatment = registration["receieved_treatment"];
+          console.log(treatment);
+          const everReceivedART = treatment["ever_received"];
+
+          if (everReceivedART != "Select Option") {
+            this.formValidations.push(true);
+          } else {
+            this.formValidations.push(false);
+          }
+
+          const gotTreatment = () => {
+            return (
+              treatment["last_date_received"] != null &&
+              treatment["ever_registered"] != "Select Option"
+            );
+          };
+
+          const artReg = registration["art_registration"];
+
+          const gotRegistered = () => {
+            return (
+              artReg["location"] != "Select Option" &&
+              artReg["start_date"] != null &&
+              artReg["arv_number"] != null
+            );
+          };
+
+          if (everReceivedART === "Yes") {
+            if (gotTreatment()) {
+              this.formValidations.push(true);
+              if (treatment["ever_registered"] === "Yes") {
+                if (gotRegistered()) {
+                  this.formValidations.push(true);
+                } else {
+                  this.formValidations.push(false);
+                }
+              }
+            } else {
+              this.formValidations.push(false);
+            }
+          }
+
+          //Confirmatory Test
+          const confirmatoryTest = registration["confirmatory_test"];
+
+          const test = confirmatoryTest["test"];
+
+          const gotConfirmatoryTest = () => {
+            return (
+              confirmatoryTest["test_date"] != null &&
+              confirmatoryTest["location"] != "Select Option"
+            );
+          };
+
+          if (test != null) {
+            this.formValidations.push(true);
+            if (test == 1040 || test == 844) {
+              if (gotConfirmatoryTest()) {
+                this.formValidations.push(true);
+              } else {
+                this.formValidations.push(false);
+              }
+            }
+          }else{
+            this.formValidations.push(false);
+          }
+
+          const initialTbStatus =
+            registration["encounter"]["obs"]["initialTbStatus"][
+              "value_coded"
+            ] != "Select Option";
+
+          if (initialTbStatus) {
+            this.formValidations.push(true);
+          } else {
+            this.formValidations.push(false);
+          }
+
+          //Vitals
+          const vitals = registration["vitals"]["obs"];
+          const weight = vitals["weight"]["value_numeric"] != null;
+          const height = vitals["height"]["value_numeric"] != null;
+
+          if (weight && height) {
+            this.formValidations.push(true);
+          } else {
+            this.formValidations.push(false);
+          }
+
+          if (!this.formValidations.includes(false)) {
             $(".errorTxt").html("");
             current_fs = $(this).parent();
             next_fs = $(this)
@@ -386,9 +499,9 @@ export default {
           }
         });
 
-        // GUARDIAN
+        // STAGING
 
-        $(".reception").click(function() {
+        $(".staging").click(function() {
           // validate if checkbox checked to register
           if (true) {
             $(".guardianError").html("");
@@ -508,6 +621,7 @@ export default {
     registrationObject() {
       this.registrationEncounter = this.$store.state.registration.registration;
       console.log(this.registrationEncounter);
+      this.initileWizard(this.registrationEncounter);
     },
     stagingObject() {
       this.stagingEncounter = this.$store.state.staging.staging;
@@ -516,7 +630,7 @@ export default {
   },
   mounted() {
     console.log(this.$route.params.id);
-    this.initileWizard();
+    this.initileWizard(this.$store.state.registration.registration);
   }
 };
 </script> 

@@ -166,6 +166,7 @@ export default {
       languages: [],
       encounterObject: {
         encounter_id: 52,
+        encounter_datetime: null,
         obs: {
           stage: {
             concept_id: 7562,
@@ -213,6 +214,7 @@ export default {
           }
         }
       },
+      encounterDatetime: null,
       stageValue: [],
       stateFourValue: [],
       stateThreeValue: [],
@@ -448,6 +450,17 @@ export default {
       if (this.stageValue != null) {
         this.addConditions();
       }
+
+      const datetime = this.encounterDatetime.vitals.encounter_datetime
+
+      if (datetime != null || datetime!= undefined || datetime!= "") {
+        const dateStarted = moment(new Date(datetime)).format("YYYY-MM-DD");
+        this.encounterObject.encounter_datetime = dateStarted;
+      }else{
+        const todaysDate = moment(new Date()).format("YYYY-MM-DD");
+        this.encounterObject.encounter_datetime = todaysDate;
+      }
+
     },
 
     buildForStagingGlobalState() {
@@ -480,6 +493,16 @@ export default {
       //Conditions
       if (this.stageValue != null) {
         this.addConditions();
+      }
+
+      const datetime = this.encounterDatetime.vitals.encounter_datetime
+
+      if (datetime != null || datetime!= undefined || datetime!= "") {
+        const dateStarted = moment(new Date(datetime)).format("YYYY-MM-DD");
+        this.encounterObject.encounter_datetime = dateStarted;
+      }else{
+        const todaysDate = moment(new Date()).format("YYYY-MM-DD");
+        this.encounterObject.encounter_datetime = todaysDate;
       }
     },
 
@@ -815,6 +838,7 @@ export default {
     setStaging() {
       //this.addConditions();
       console.log("Set Staging...");
+      this.encounterDatetime = this.$store.state.registration.registration
       this.buildForStagingGlobalState();
       this.$store.commit("setStaging", this.encounterObject);
     },
