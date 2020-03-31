@@ -491,7 +491,7 @@ export default {
             let identifier = patient.patient_identifiers.filter(function(entry) { return entry.type.name === "ARV Number"; });
             this.arvNumber = identifier.length > 0 ? identifier[0].identifier : "N/A";
             this.sex = patient.person.gender;
-            this.location = patient.person.addresses[0].city_village;
+            this.location = patient.person.addresses.length > 0 ? patient.person.addresses[0].city_village : "";
             this.landmark = this.getAtribute(patient, 19);
             this.occupation = this.getAtribute(patient, 13);
             let personObj = {
