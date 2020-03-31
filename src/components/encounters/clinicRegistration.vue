@@ -7,7 +7,7 @@
         </div>
         <div class="form-group">
           <select name="stage" class="form-control" v-model="shouldFollowUp" @change="followUp">
-            <option disabled selected>Select</option>
+            <option disabled selected>Select Option</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
@@ -24,7 +24,7 @@
             v-model="receievedARVTreatmentBefore"
             @change="everRecieved"
           >
-            <option disabled selected>Select</option>
+            <option disabled selected>Select Option</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
@@ -67,7 +67,7 @@
                 v-model="everRegisteredAtClinicValue"
                 @change="everRegistered"
               >
-                <option disabled selected>Select</option>
+                <option disabled selected>Select Option</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
               </select>
@@ -242,6 +242,7 @@
           <div class="col-md-12">
             <div class="form-group">
               <select class="form-control" name id v-model="initialTbStatus" @change="setRegistration">
+                <option disabled selected>Select Option</option>
                 <option
                   v-for="(status, index) in Object.keys(TB_STATUS)"
                   :key="index"
@@ -339,28 +340,28 @@ export default {
   data: function() {
     return {
       recievedTreatment: false,
-      receievedARVTreatmentBefore: null,
-      everRegisteredAtClinicValue: null,
+      receievedARVTreatmentBefore: "Select Option",
+      everRegisteredAtClinicValue: "Select Option",
       agreesToFollowUp: false,
-      shouldFollowUp: null,
+      shouldFollowUp: "Select Option",
       registered: false,
       arvNumberUnkown: false,
       arvNumber: null,
       artStartDate: null,
-      yearLastTaken: "Unknown",
+      yearLastTaken: null,
       estimatedYearLastTaken: null,
-      locationOfInitiation: "Select Location of Initiation",
+      locationOfInitiation: "Select Option",
       locationOfInitiationUnknown: false,
-      locationOfConfirmatory: "Select Location Confirmatory",
+      locationOfConfirmatory: "Select Option",
       locationOfConfirmatoryUnknown: false,
-      confirmatory: "Select Confirmatory Test",
+      confirmatory: "Select Option",
       hivTestYear: null,
-      arvsTakenTwoMonthsPrior: "Select",
-      arvsTakenTwoWeeksPrior: "Select",
+      arvsTakenTwoMonthsPrior: "Select Option",
+      arvsTakenTwoWeeksPrior: "Select Option",
       initialWeight: null,
       initialHeight: null,
       initialVitalsUnknown: false,
-      initialTbStatus: null,
+      initialTbStatus: "Select Option",
       TB_STATUS: {
         "TB NOT suspected": 7454,
         "TB suspected": 7455,
