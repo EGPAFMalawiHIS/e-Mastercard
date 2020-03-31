@@ -6,6 +6,9 @@
         <th>Given To</th>
         <th>Weight</th>
         <th>Height</th>
+        <th>Preg</th>
+        <th>B/F</th>
+        <th>TB status</th>
         <th>Side Effects</th>
         <th>ART Regimen</th>
         <th>Next Appointment</th>
@@ -19,6 +22,9 @@
         <td>{{visit.givenTo}}</td>
         <td>{{visit.weight}}</td>
         <td>{{visit.height}}</td>
+        <td>{{visit.pregnant}}</td>
+        <td>{{visit.breastfeeding}}</td>
+        <td>{{visit.tbStatus}}</td>
         <td>{{visit.sideEffects}}</td>
         <td>{{visit.ARTRegimen}}</td>
         <td>{{visit.nextAppointment}}</td>
@@ -62,7 +68,10 @@ export default {
         viralLoad: null,
         outcoume: null,
         encounters: [],
-        state: null
+        state: null,
+        tbStatus: null,
+        pregnant: null,
+        breastfeeding: null,
       },
       encountersToDelete: [],
       obs: [
@@ -83,6 +92,18 @@ export default {
           variableName: "nextAppointment",
           valueType: "value_datetime",
           secondType: "value_text"
+        },
+        {
+          conceptID: 7459,
+          variableName: "tbStatus",
+          valueType: "value_coded",
+          secondType: "value_text",
+          conceptNames: {
+            7454: "TB NOT suspected",
+            7455: "TB suspected",
+            7456: "Confirmed TB NOT on treatment",
+            7458: "Confirmed TB on treatment"
+          }
         },
         {
           conceptID: 856,
@@ -161,6 +182,11 @@ export default {
       let observations = await ApiClient.get(url);
       return await observations.json();
     },
+    getConcept: async function(results) {
+      let concepts = await ApiClient.get(`/concepts/${results}`);
+      return await concepts.json();
+      
+    },
     createOb: function(visits) {
       let m = [];
       visits.forEach(element => {
@@ -187,7 +213,15 @@ export default {
                   ? moment(val).format("DD-MMM-YYYY")
                   : val;
               if (innerElement.valueType === "value_coded") {
-                this.getConcept(element, val, context);
+                if(innerElement.conceptNames) {
+                    tempob[innerElement.variableName] = innerElement.conceptNames[val]; 
+                }else {
+                  this.getConcept(val).then(con => {
+                    tempob[innerElement.variableName] =  con.concept_names[0].name;
+                  });
+                }
+                
+                
               }
               if(innerElement.prepend) {
                 tempob[innerElement.variableName]= res[res.length - 1][innerElement.prepend] + " " + val;
@@ -228,6 +262,24 @@ export default {
             tempob.givenTo = "Guardian";
           }
         })
+        this.getObs({conceptID: 6131, params: "value_coded=1065"}, element).then(el=> {
+          if(el.length > 0) {
+            element.pregnant = "Yes";
+            tempob.pregnant = "Yes";
+          }else {
+            element.pregnant = "No";
+            tempob.pregnant = "No";
+          }
+        })
+        this.getObs({conceptID: 7965, params: "value_coded=1065"}, element).then(el=> {
+          if(el.length > 0) {
+            element.breastfeeding = "Yes";
+            tempob.breastfeeding = "Yes";
+          }else {
+            tempob.breastfeeding = "No";
+            element.breastfeeding = "No";
+          }
+        })
         this.getEncounters(element.visitDate).then(el => {
             let j = [];
             el.forEach(f => {
@@ -240,6 +292,9 @@ export default {
         
         // this.setVisits(m);
         // this.$forceUpdate();
+    },
+    returnConcept: async function() {
+      
     }
   },
   mounted() {
