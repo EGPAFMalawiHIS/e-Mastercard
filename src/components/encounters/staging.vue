@@ -166,6 +166,7 @@ export default {
       languages: [],
       encounterObject: {
         encounter_id: 52,
+        encounter_datetime: null,
         obs: {
           stage: {
             concept_id: 7562,
@@ -213,6 +214,7 @@ export default {
           }
         }
       },
+      encounterDatetime: null,
       stageValue: [],
       stateFourValue: [],
       stateThreeValue: [],
@@ -448,6 +450,15 @@ export default {
       if (this.stageValue != null) {
         this.addConditions();
       }
+
+      if (this.encounterDatetime != null || this.encounterDatetime != undefined || this.encounterDatetime != "") {
+        const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
+        this.encounterObject.encounter_datetime = dateStarted;
+      }else{
+        const todaysDate = moment(new Date()).format("YYYY-MM-DD");
+        this.encounterObject.encounter_datetime = todaysDate;
+      }
+
     },
 
     buildForStagingGlobalState() {
@@ -815,6 +826,7 @@ export default {
     setStaging() {
       //this.addConditions();
       console.log("Set Staging...");
+      this.encounterDatetime = this.$store.state.registration.registration
       this.buildForStagingGlobalState();
       this.$store.commit("setStaging", this.encounterObject);
     },
