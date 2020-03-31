@@ -215,6 +215,7 @@ export default {
           let sideEffects = el.filter(function(curr, index) {
             return el[index].children[0].value_coded == 1065;
           }).length;
+          sideEffects = sideEffects === 0 ? "No" : "Yes";
           element.sideEffects = sideEffects;
           tempob.sideEffects = sideEffects;
         })
