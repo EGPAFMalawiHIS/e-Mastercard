@@ -86,7 +86,7 @@
                 <option value=">">&gt;</option>
               </select>
               <input
-                type="text"
+                type="number"
                 class="form-control"
                 aria-describedby="emailHelp"
                 placeholder="Enter Count"
@@ -223,8 +223,8 @@ export default {
       registrationEncounter: this.$store.state.registration.registration,
       patientAge: null,
       TODAYS_DATE: new Date(),
-      whoStage: null,
-      reasonForArtEligibility: null,
+      whoStage: "Select Option",
+      reasonForArtEligibility: "Select Option",
       isPregnant: null,
       isBreastFeeding: null,
       presumedSevereHiv: false,
@@ -234,7 +234,7 @@ export default {
       cd4CountLocation: {},
       cd4CountDate: null,
       cd4Count: null,
-      cd4CountModifier: null,
+      cd4CountModifier: "Select Option",
       lymphocyteCount: null,
       cd4CountModfier: null,
       cdCountAvailable: false,
@@ -573,12 +573,12 @@ export default {
     },
 
     c4dCountAvailableCheck() {
-      this.setStaging();
       if (this.cdCountAvailable) {
         this.cdCountAvailable = false;
       } else if (this.cdCountAvailable == false) {
         this.cdCountAvailable = true;
       }
+      this.setStaging();
     },
 
     cd4CountRanges() {
@@ -840,7 +840,17 @@ export default {
       console.log("Set Staging...");
       this.encounterDatetime = this.$store.state.registration.registration
       this.buildForStagingGlobalState();
-      this.$store.commit("setStaging", this.encounterObject);
+
+      console.log(this.cdCountAvailable)
+
+      const staging = {
+        encounter: this.encounterObject,
+        cd4_available: this.cdCountAvailable
+      }
+
+      console.log(staging)
+
+      this.$store.commit("setStaging", staging);
     },
     initialize() {
       this.encounterObject;

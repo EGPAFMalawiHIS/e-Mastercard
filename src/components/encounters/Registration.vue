@@ -125,23 +125,24 @@
                   <tbody>
                     <tr>
                       <td>Reason for Starting</td>
-                      <td>{{stagingEncounter['obs']['reason']['value_text'] || "N/A"}}</td>
+                      <td>{{stagingEncounter['encounter']['obs']['reason']['value_text'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>Stage</td>
-                      <td>{{stagingEncounter['obs']['stage']['value_text'] || "N/A"}}</td>
+                      <td>{{stagingEncounter['encounter']['obs']['stage']['value_text'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>CD4 Count Date</td>
-                      <td>{{stagingEncounter['obs']['cd4CountDate']['value_datetime'] || "N/A"}}</td>
+                      <td>{{stagingEncounter['encounter']['obs']['cd4CountDate']['value_datetime'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>CD4 Count</td>
-                      <td>{{ Object.entries(stagingEncounter['obs']['cd4Count']['value_numeric']).length > 0 ? stagingEncounter['obs']['cd4Count']['value_modifier'] +"" + stagingEncounter['obs']['cd4Count']['value_numeric'] : "N/A"}}</td>
+                      <!-- ["encounter"]["obs"] -->
+                      <td>{{ Object.entries(stagingEncounter['encounter']['obs']['cd4Count']['value_numeric']).length > 0 ? stagingEncounter['encounter']['obs']['cd4Count']['value_modifier'] +"" + stagingEncounter['encounter']['obs']['cd4Count']['value_numeric'] : "N/A"}}</td>
                     </tr>
                     <tr>
                       <td>CD4 Count Location</td>
-                      <td>{{stagingEncounter['obs']['cd4CountLocation']['value_text'] || "N/A"}}</td>
+                      <td>{{stagingEncounter['encounter']['obs']['cd4CountLocation']['value_text'] || "N/A"}}</td>
                     </tr>
                     <tr>
                       <!-- make this fields scrollable -->
@@ -239,17 +240,18 @@ export default {
         844: "DNA PCR",
         1118: "Not Done"
       },
-      formValidations: []
+      clinicRegistrationFormValidations: [],
+      stagingFormValidations: []
     };
   },
   computed: {
     conditionList() {
       const conditionsKeysFilters = Object.keys(
-        this.stagingEncounter["obs"]
+        this.stagingEncounter['encounter']["obs"]
       ).filter(reason => reason.match(/condition/));
 
       const conditions = conditionsKeysFilters.map(
-        filter => this.stagingEncounter["obs"][filter]
+        filter => this.stagingEncounter['encounter']["obs"][filter]
       );
 
       return conditions.map(name => name["value_text"]);
@@ -366,15 +368,15 @@ export default {
           console.log(Registration.registrationEncounter);
           const registration = Registration.registrationEncounter;
 
-          this.formValidations = [];
+          this.clinicRegistrationFormValidations = [];
 
           if (
             registration["agrees_to_follow"] != "Select Option" &&
             registration["agrees_to_follow"] != ""
           ) {
-            this.formValidations.push(true);
+            this.clinicRegistrationFormValidations.push(true);
           } else {
-            this.formValidations.push(false);
+            this.clinicRegistrationFormValidations.push(false);
           }
 
           const treatment = registration["receieved_treatment"];
@@ -382,9 +384,9 @@ export default {
           const everReceivedART = treatment["ever_received"];
 
           if (everReceivedART != "Select Option" || everReceivedART != "") {
-            this.formValidations.push(true);
+            this.clinicRegistrationFormValidations.push(true);
           } else {
-            this.formValidations.push(false);
+            this.clinicRegistrationFormValidations.push(false);
           }
 
           const gotTreatment = () => {
@@ -410,16 +412,16 @@ export default {
 
           if (everReceivedART === "Yes") {
             if (gotTreatment()) {
-              this.formValidations.push(true);
+              this.clinicRegistrationFormValidations.push(true);
               if (treatment["ever_registered"] === "Yes") {
                 if (gotRegistered()) {
-                  this.formValidations.push(true);
+                  this.clinicRegistrationFormValidations.push(true);
                 } else {
-                  this.formValidations.push(false);
+                  this.clinicRegistrationFormValidations.push(false);
                 }
               }
             } else {
-              this.formValidations.push(false);
+              this.clinicRegistrationFormValidations.push(false);
             }
           }
 
@@ -438,39 +440,44 @@ export default {
           };
 
           if (test != null) {
-            this.formValidations.push(true);
+            this.clinicRegistrationFormValidations.push(true);
             if (test == 1040 || test == 844) {
               if (gotConfirmatoryTest()) {
-                this.formValidations.push(true);
+                this.clinicRegistrationFormValidations.push(true);
               } else {
-                this.formValidations.push(false);
+                this.clinicRegistrationFormValidations.push(false);
               }
             }
           } else {
-            this.formValidations.push(false);
+            this.clinicRegistrationFormValidations.push(false);
           }
 
           const initialTbStatus =
             registration["encounter"]["obs"]["initialTbStatus"]["value_coded"];
 
           if (initialTbStatus != "Select Option" && initialTbStatus != "") {
-            this.formValidations.push(true);
+            this.clinicRegistrationFormValidations.push(true);
           } else {
-            this.formValidations.push(false);
+            this.clinicRegistrationFormValidations.push(false);
           }
 
           //Vitals
           const vitals = registration["vitals"]["obs"];
-          const weight = vitals["weight"]["value_numeric"] != null && vitals["weight"]["value_numeric"] != "";
-          const height = vitals["height"]["value_numeric"] != null && vitals["height"]["value_numeric"] != "";
+          const weight =
+            vitals["weight"]["value_numeric"] != null &&
+            vitals["weight"]["value_numeric"] != "";
+          const height =
+            vitals["height"]["value_numeric"] != null &&
+            vitals["height"]["value_numeric"] != "";
 
           if (weight && height) {
-            this.formValidations.push(true);
+            this.clinicRegistrationFormValidations.push(true);
           } else {
-            this.formValidations.push(false);
+            this.clinicRegistrationFormValidations.push(false);
           }
 
-          if (!this.formValidations.includes(false)) {
+          //!this.clinicRegistrationFormValidations.includes(false)
+          if (true) {
             $(".errorTxt").html("");
             current_fs = $(this).parent();
             next_fs = $(this)
@@ -509,8 +516,80 @@ export default {
         // STAGING
 
         $(".staging").click(function() {
+          this.stagingFormValidations = [];
+          console.log(Registration.stagingEncounter["encounter"]["obs"]);
+          const staging = Registration.stagingEncounter["encounter"]["obs"];
+
+          if (
+            staging["stage"]["value_text"] != null &&
+            staging["stage"]["value_text"] != "" &&
+            staging["stage"]["value_text"] != "Select Option"
+          ) {
+            this.stagingFormValidations.push(true);
+          } else {
+            this.stagingFormValidations.push(false);
+          }
+
+          if (
+            staging["reason"]["value_text"] != null &&
+            staging["reason"]["value_text"] != "" &&
+            staging["reason"]["value_text"] != "Select Option"
+          ) {
+            this.stagingFormValidations.push(true);
+          } else {
+            this.stagingFormValidations.push(false);
+          }
+
+          // if CD4Count available
+          const cd4Available = Registration.stagingEncounter["cd4_available"];
+
+          console.log(staging["cd4Count"])
+
+          if (cd4Available) {
+            if (
+              staging["cd4CountDate"]["value_datetime"] != null &&
+              staging["cd4CountDate"]["value_datetime"] != ""
+            ) {
+              this.stagingFormValidations.push(true);
+            } else {
+              this.stagingFormValidations.push(false);
+            }
+
+            //console.log(staging["cd4Count"])
+
+            if (
+              staging["cd4Count"]["value_numeric"] != null &&
+              staging["cd4Count"]["value_numeric"] != ""
+            ) {
+              this.stagingFormValidations.push(true);
+            } else {
+              this.stagingFormValidations.push(false);
+            }
+
+            if (
+              staging["cd4Count"]["value_modifier"] != null &&
+              staging["cd4Count"]["value_modifier"] != ""
+            ) {
+              this.stagingFormValidations.push(true);
+            } else {
+              this.stagingFormValidations.push(false);
+            }
+
+            if (
+              staging["cd4CountLocation"]["value_text"] != null &&
+              staging["cd4CountLocation"]["value_text"] != "" &&
+              staging["cd4CountLocation"]["value_text"] != "Select Option"
+            ) {
+              this.stagingFormValidations.push(true);
+            } else {
+              this.stagingFormValidations.push(false);
+            }
+          }
+
+          console.log(this.stagingFormValidations)
+
           // validate if checkbox checked to register
-          if (true) {
+          if (!this.stagingFormValidations.includes(false)) {
             $(".guardianError").html("");
             current_fs = $(this).parent();
             next_fs = $(this)
