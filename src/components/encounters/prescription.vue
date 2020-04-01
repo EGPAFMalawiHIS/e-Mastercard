@@ -116,7 +116,7 @@ export default {
       let consultationObs= {
         
       }
-      if(this.ARVquantity) {
+      if(this.ARVquantity && this.selectedRegimen) {
 
       currentDrugs.forEach(element => {
         this.selectedDrugs.push({
@@ -237,6 +237,7 @@ export default {
     this.getRegimens();
     EventBus.$on('set-weight', payload => {
       this.selectedRegimen = null;
+      this.ARVquantity = null;
       if(payload.trim() === "") {
         this.weight = this.latestWeight;
       }else {
@@ -253,15 +254,7 @@ export default {
       this.getCPT();
       this.getIPT();
     });
-    EventBus.$on('set-present', payload => {
-      this.selectedRegimen = null;
-        if (payload === "1066") {
-          this.weight = this.latestWeight;
-          this.getRegimens();
-          this.getCPT();
-          this.getIPT();
-        }  
-    });
+ 
     EventBus.$on('set-tb', payload => {
         if (payload === "1065") {
           this.onTb = true;
