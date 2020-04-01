@@ -57,6 +57,7 @@ import ApiClient from "../../services/api_client";
 import EventBus from "../../services/event-bus.js";
 import moment from "moment";
 export default {
+  props: ["date"],
   data: function() {
     return {
       regimens: [],
@@ -198,8 +199,8 @@ export default {
           dose: dose,
           equivalent_daily_dose: equivalent_daily_dose,
           frequency: frequency,
-          start_date: moment().format("YYYY-MM-DD"),
-          auto_expire_date: moment().add((this.quantity/equivalent_daily_dose) + 2, 'days').format("YYYY-MM-DD"),
+          start_date: moment(this.date).format("YYYY-MM-DD"),
+          auto_expire_date: moment(this.date).add((this.quantity/equivalent_daily_dose) + 2, 'days').format("YYYY-MM-DD"),
           instructions: instructions,
           units: this.selectedDrugs[i].units,
           qty: this.selectedDrugs[i].quantity

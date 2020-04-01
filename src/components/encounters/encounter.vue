@@ -3,8 +3,9 @@
     <vitals v-on:addEncounter="addEncounter" ref="vitals" ></vitals>      
     <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
 
-    <prescription v-on:addEncounter="addEncounter" ref="prescription"/>
+    <prescription v-on:addEncounter="addEncounter" ref="prescription" :date="date"/>
     <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
+    <adherence v-on:addEncounter="addEncounter" ref="adherence" :date="date"></adherence>      
     <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
         <button class="btn btn-primary" @click="createEncounters" >
             <template v-if="posting === true">
@@ -26,6 +27,7 @@ import staging from '@/components/encounters/staging.vue';
 import appointment from '@/components/encounters/appointment.vue';
 import consultation from '@/components/encounters/consultation.vue';
 import prescription from '@/components/encounters/prescription.vue';
+import adherence from '@/components/encounters/adherence.vue';
 import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
 import EventBus from "../../services/event-bus.js";
@@ -49,6 +51,7 @@ export default {
         "staging": staging,
         "consultation": consultation,
         "prescription": prescription,
+        "adherence": adherence
     },
     methods: {
         addEncounter(encounterData) {

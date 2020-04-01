@@ -1,9 +1,7 @@
 <template>
   <div>
     <div class="d-flex" id="wrapper">
-      <!-- Sidebar -->
       <side-bar />
-      <!-- /#sidebar-wrapper -->
 
       <!-- Page Content -->
       <div id="page-content-wrapper">
@@ -42,36 +40,30 @@
             <p class="text-danger form-error" v-if="!$v.searchText.required">A name or an ARV number is required</p>
           </span>
 
-          <div class="justify-content-center">
-            
-            
-                <button
-                  type="button"
-                  class="btn btn-success"
-                  @click="redirect('/patient_registration')"
-                >Add New Patient</button>
-          </div>
-          <br />
-          <br />
-        </div>
-        <div class="d-flex justify-content-center" >
-          <p> number of results: ({{results.length}})</p>
           
-          <div class="spinner-border" v-if="loading" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
         </div>
-        <div class="d-flex justify-content-center">
-        </div>
+       
         <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-4" v-for="(result, index) in results" v-bind:key="index">
-              <patient-card :patient="result" />
-            </div>
-          </div>
+          <vue-bootstrap4-table
+          :rows="rows"
+          :columns="columns"
+          :config="config"
+          :show-loader="showLoader"
+          :actions="actions"
+          @redirect="onRedirect"
+        >
+          <template slot="arv_number" slot-scope="props">
+            <b>{{formatARVNumber(props.cell_value)}}</b>
+          </template>
+          <template slot="birthdate" slot-scope="props">
+            <b>{{moment(props.cell_value).format("DD/MMM/YYYY") }} ({{moment().diff(props.cell_value, 'years',false)}})</b>
+          </template>
+          <template slot="patient_id" slot-scope="props">
+            <button type="button" class="btn btn-primary" @click="redirect('/patient/mastercard/'+props.cell_value)">select</button>
+          </template>
+        </vue-bootstrap4-table>
         </div>
       </div>
-      <!-- /#page-content-wrapper -->
     </div>
   </div>
 </template>
@@ -86,6 +78,7 @@ import PatientService from "../services/patient_service";
 
 import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
+import VueBootstrap4Table from "vue-bootstrap4-table";
 
 export default {
   name: "home",
@@ -93,7 +86,8 @@ export default {
   components: {
     "top-nav": TopNav,
     "side-bar": Sidebar,
-    "patient-card": PatientCard
+    "patient-card": PatientCard,
+    VueBootstrap4Table,
   },
   data: function() {
     return {
@@ -101,7 +95,61 @@ export default {
       showAdvanced: false,
       results: [],
       gender: null,
-      loading: false
+      loading: false,
+      showLoader: false,
+      rows: [],
+      columns: [
+        {
+          label: "ARV Number",
+          name: "patient_identifiers",
+          slot_name: "arv_number",
+          sort: true
+        },
+        {
+          label: "First Name",
+          name: "person.names[0].given_name",
+
+          sort: true
+        },
+        {
+          label: "Last Name",
+          name: "person.names[0].family_name",
+          sort: true
+        },
+        {
+          label: "Gender",
+          name: "person.gender",
+          sort: true
+        },
+        {
+          label: "date of Birth",
+          name: "person.birthdate",
+          slot_name: "birthdate",
+          sort: true
+        },
+        {
+          label: "Action",
+          name: "patient_id",
+          slot_name: "patient_id"
+        }
+      ],
+      config: {
+        show_refresh_button: false,
+        show_reset_button: false,
+        global_search: {
+          visibility: false,
+        }
+      },
+      actions: [
+        {
+          btn_text: "Add New Patient",
+          event_name: "redirect",
+          class: "btn btn-success",
+          event_payload: {
+            url: "/patient_registration"
+          }
+        }
+      ]
     };
   },
   validations() {
@@ -113,14 +161,14 @@ export default {
     async searchPatients() {
       if (!this.validateForm()) return;
 
-      this.loading = true;
+      this.showLoader = true;
 
-      this.results = await PatientService.searchPatients({
+      this.rows = await PatientService.searchPatients({
         searchText: this.searchText,
         gender: this.gender
       });
 
-      this.loading = false;
+      this.showLoader = false;
     },
     toggleAdvanced: function() {
       this.showAdvanced = this.showAdvanced == false ? true : false;
@@ -128,9 +176,15 @@ export default {
     redirect: function(url) {
       this.$router.push(url);
     },
+    onRedirect: function(url) {
+      this.$router.push(url.event_payload.url);
+    },
     validateForm() {
       this.$v.$touch();
       return !this.$v.$invalid;
+    }, formatARVNumber: function(patient_identifiers) {
+        let identifier = patient_identifiers.filter(function(entry) { return entry.type.name === "ARV Number"; });
+        return identifier.length > 0 ? identifier[0].identifier : "N/A";
     } 
   }
 };
