@@ -14,8 +14,6 @@ export default {
 
 <style scoped>
 #loader {
-  position: relative;
-  left: 50%;
-  top: 50%;
+  margin: auto;
 }
 </style>

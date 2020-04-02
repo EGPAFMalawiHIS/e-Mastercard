@@ -11,21 +11,30 @@
         </button>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-5 offset-md-1">
+    <div class="row" style="margin: 0">
+      <div class="col-md-5">
+        <h5>Primary Patient</h5>
         <PatientList @on-search="searchTargetPatients"
                      @on-patient-selected="onSelectTargetPatient"
                      :patients="targetPatients" /> 
       </div>
 
+      <div class="col-md-1">
+        <div style="margin: auto; position: relative; top: 45%">
+          <Loader :loading="isMerging" />
+          <i v-if="!isMerging" class="fas fa-chevron-left fa-3x"></i>
+        </div>
+      </div>
+
       <div class="col-md-5">
+        <h5>Secondary Patient</h5>
         <PatientList @on-search="searchSourcePatients"
                      @on-patient-selected="onSelectSourcePatient"
                      :patients="sourcePatients" />
       </div>
     </div>
 
-    <button id="merge-button" class="btn btn-primary btn-lg shadow" @click="mergeSelectedPatients">
+    <button id="merge-button" class="btn btn-primary btn-lg shadow" @click="mergeSelectedPatients" :disabled="isMerging">
       Merge
     </button>
   </PageView>
@@ -35,11 +44,12 @@
 import ApiClient from "@/services/api_client";
 import PatientService from "@/services/patient_service";
 
+import Loader from "@/components/Loader";
 import PatientList from "@/components/PatientList";
 import PageView from "@/components/PageView";
 
 export default {
-  components: {PatientList, PageView},
+  components: {Loader, PatientList, PageView},
   props: ['patients'],
   data() {
     return {
@@ -49,7 +59,8 @@ export default {
       sourcePatients: [],  // Pool of patiens from which a source is to be chosen
       sourceName: null,
       sourcePatientId: null,
-      errors: []
+      errors: [],
+      isMerging: false
     };
   },
   methods: {
@@ -79,6 +90,8 @@ export default {
     async mergeSelectedPatients() {
       if (!this.validateSelection()) return;
 
+      this.isMerging = true;
+
       const secondary = [{doc_id: null, patient_id: this.sourcePatientId}]; // TODO: Allow selection of multiple sources
       const primary = {doc_id:null, patient_id: this.targetPatientId};
 
@@ -86,12 +99,14 @@ export default {
       if (response.status !== 200) {
         const apiError = await response.text();
         this.errors = [`Merge failed: API responded: ${apiError}`];
+        this.isMerging = false;
         return;
       }
 
       this.sourcePatients = this.sourcePatients.filter(({patient_id}) => patient_id != this.sourcePatientId);
       this.targetPatients = this.targetPatients.filter(({patient_id}) => patient_id != this.sourcePatientId);
       this.sourcePatientId = null;
+      this.isMerging = false;
     },
     validateSelection() {
       if (!this.targetPatientId) {
@@ -124,9 +139,13 @@ export default {
 #merge-button {
   position: fixed;
   border: none;
-  bottom: 20px;
-  right: 20px;
+  bottom: 1%;
+  right: 8%;
   /* border-radius: 50%;
   background-color: rgba(64, 64, 64, 0.2); */
+}
+
+.ready-to-merge {
+  color: blue;
 }
 </style>

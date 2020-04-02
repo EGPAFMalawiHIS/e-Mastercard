@@ -1,14 +1,21 @@
 <template>
   <div class="card mb-2 shadow-lg card-hover" :class="selected && 'card-selected'" style="width: 100%;" @click="triggerOnClick">
         <div class="row">
-            <div class="col-md-4">
-                <img :src="imageType" class="card-img rounded-circle" alt="avatar"  style="padding: 10%;">
+            <div class="col-md-3" style="margin: auto">
+                <img :src="imageType" class="card-img rounded-circle" alt="avatar">
             </div>
             <div class="col-md-8">
                 <div class="card-body">
-                    <h5 class="card-title" style="float: left">{{full_name}}</h5>
-                    <p class="card-text" style="float: left">{{formatted_age}}</p>
-                    <p class="card-text" style="float: left">ARV Number: {{arvNumber}}</p>
+                    <h5 class="card-title" style="text-align: left">{{fullName}} - {{arvNumber}}</h5>
+                    <table class="table patient-details">
+                        <tbody>
+                            <tr><td>DoB:</td><td>{{formattedAge}}</td></tr>
+                            <tr><td>Phone #:</td><td>{{ phoneNumber }}</td></tr>
+                            <tr><td>Address:</td><td>{{ address }}</td></tr>
+                            <tr><td>Visits:</td><td>{{ visitsCount }}</td></tr>
+                        </tbody>
+                    </table>
+                    <!-- <router-link :to="{name: 'patient_mastercard', id: patient.patient_id}">See more</router-link> -->
                 </div>
             </div>
         </div>
@@ -17,19 +24,31 @@
 
 <script>
 import moment from "moment";
+
+import ApiClient from "@/services/api_client";
+import PersonService from "@/services/person_service";
+
+
 export default {
     props: ["patient", "selected"],
-    data: function() {
+    created() {
+        ApiClient.get(`patients/${this.patient.patient_id}/visits`)
+                 .then(response => response.json())
+                 .then(visits => this.visits = visits);
+    },
+    data() {
         return {
-            ARV_number: 1,
+            visits: []
         }
     },
-    mounted() {
-    },computed: {
-        full_name() {
-            return ` ${this.patient['person'].names[0].given_name} ${this.patient.person.names[0].family_name} `;
-        }, formatted_age() {
-            return ` ${moment(this.patient.person.birthdate).format('DD-MMM-YYYY')} (${moment().diff(this.patient.person.birthdate, 'years',false)} years old)`;
+    computed: {
+        fullName() {
+            const {given_name, family_name} = this.patient.person.names[0];
+
+            return ` ${given_name} ${family_name}`;
+        },
+        formattedAge() {
+            return `${moment(this.patient.person.birthdate).format('DD-MMM-YYYY')} (${moment().diff(this.patient.person.birthdate, 'years',false)} years old)`;
         },
         imageType() {
             return this.patient.person.gender === "M" ? require("../assets/male-1.png") : require("../assets/female-2.png");
@@ -37,6 +56,15 @@ export default {
         arvNumber() {
             let identifier = this.patient.patient_identifiers.filter(function(entry) { return entry.type.name === "ARV Number"; });
             return identifier.length > 0 ? identifier[0].identifier : "N/A";
+        },
+        address() {
+            return PersonService.getPersonAttribute(this.patient.person, PersonService.ATTR_LANDMARK) || 'Unknown';
+        },
+        phoneNumber() {
+            return PersonService.getPersonAttribute(this.patient.person, PersonService.ATTR_CELLPHONE_NUMBER) || 'Unknown';
+        },
+        visitsCount() {
+            return this.visits.length;
         }
     },
     methods: {
@@ -73,5 +101,11 @@ export default {
 
 .card-selected {
     border: 2px solid blue;
+}
+
+.patient-details td {
+    font-size: 10pt;
+    text-align: left;
+    padding: .3rem 0 .3rem 0;
 }
 </style>
