@@ -843,7 +843,9 @@ export default {
 
       console.log(this.cdCountAvailable)
 
-      const staging = {
+      let staging = {}
+
+      staging = {
         encounter: this.encounterObject,
         cd4_available: this.cdCountAvailable
       }
