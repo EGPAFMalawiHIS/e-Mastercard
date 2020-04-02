@@ -105,12 +105,12 @@
           </div>
         </div>
         <div class="col-md-3">
-          <div class="row">
+          <div class="row" @click="$bvModal.show('guardian-info-modal')">
             <div class="col-md-6">
               <p>Name of Guardian</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{nameOfGuardian}}</p>
+              <p>{{guardianFirstName + " " + guardianLastName + " (" + guardianRelation + ")" + " (" + guardianNumber + ")"}}</p>
             </div>
           </div>
         </div>
@@ -196,21 +196,15 @@
         </div>
       </table>
     </div>
-    <b-modal id="arv-number-modal" title="encounter" size="xl">
+    <b-modal id="arv-number-modal" title="Edit ARV number" size="xl">
       <div class="row">
         <div class="col">
-          <label for="exampleFormControlSelect1">ARV-Number</label>
+          <label for="exampleFormControlSelect1">{{arvNumber}} -> </label>
         </div>
         <div class="col">
-          <div class="form-group">
-              <input
-                type="number"
-                class="form-control"
-                v-model="arv_num"
-                aria-label="Default"
-                aria-describedby="inputGroup-sizing-default"
-              />
-          </div>
+          <b-input-group :prepend="sitePrefix + '-ARV-'" class="mb-2 mr-sm-2 mb-sm-0">
+            <b-input id="inline-form-input-username" v-model="arv_num" type="number"></b-input>
+          </b-input-group>
         </div>
         <div class="col">
           <button @click="saveARVNumber" class="btn btn-primary">Submit</button>
@@ -239,6 +233,23 @@
           
           <div class="row justify-content-center">
           <b-button variant="primary" @click="updateDetails">Save</b-button>
+          </div>
+        </b-form>
+      </div>
+      <template v-slot:modal-footer>
+        <div class="w-100"></div>
+      </template>
+    </b-modal>
+    <b-modal id="guardian-info-modal" title="guardian detials" size="xl">
+      <div>
+        <b-form>
+          
+          <label for="text-name">First Name</label> <b-input type="text" id="text-name" v-model="updatedguardianFirstName"></b-input> 
+          <label for="text-last-name">Last Name</label> <b-input type="text" id="text-last-name" v-model="updatedguardianLastName"></b-input>
+          <label for="text-phone-number">Phone Number</label> <b-input type="text" id="text-phone-number" v-model="updatedguardianNumber"></b-input>
+          
+          <div class="row justify-content-center">
+          <b-button variant="primary" @click="updateGuardianDetails">Save</b-button>
           </div>
         </b-form>
       </div>
@@ -290,6 +301,15 @@ export default {
       showARVNumber: false,
       phoneNumber: null,
       updatedPhoneNumber: null,
+      guardianID: null,
+      guardianFirstName: null,
+      guardianLastName: null,
+      guardianRelation: null,
+      guardianNumber: null,
+      updatedguardianFirstName: null,
+      updatedguardianLastName: null,
+      updatedguardianRelation: null,
+      updatedguardianNumber: null,
       obs: [
         {
           conceptID: 5089,
@@ -399,8 +419,17 @@ export default {
           let guardian = await ApiClient.get(`/people/${this.patientID}/relationships`).then(res => {
              res.json().then(ret => {
                if(ret.length > 0) {
+                this.guardianID = ret[0].person_b;
                 let person_name = ret[0]["relation"]["names"][0];
                 let relationship_type = (ret[0]["type"]["b_is_to_a"]);
+                this.guardianFirstName = person_name["given_name"];
+                this.guardianLastName = person_name["family_name"];
+                this.guardianRelation = relationship_type;
+                this.updatedguardianFirstName = person_name["given_name"];
+                this.updatedguardianLastName = person_name["family_name"];
+                this.updatedguardianRelation = relationship_type;
+                this.guardianNumber = this.getAtribute(ret[0].relation.person_attributes, 12);
+                this.updatedguardianNumber = this.getAtribute(ret[0].relation.person_attributes, 12);
                 this.nameOfGuardian = person_name["given_name"] + " " + person_name["family_name"] + " (" + relationship_type + ")";
                }
              })
@@ -473,8 +502,8 @@ export default {
           break;
       }
     }, 
-    getAtribute: function (patient, person_attribute_type_id) {
-     let attribute = patient.person.person_attributes.filter(attr =>  {
+    getAtribute: function (person_attributes, person_attribute_type_id) {
+     let attribute = person_attributes.filter(attr =>  {
               return attr.person_attribute_type_id == person_attribute_type_id;
             });
       return (attribute.length > 0 ? attribute[0].value : "");
@@ -491,18 +520,20 @@ export default {
       }
     const response = await ApiClient.post(`/patient_identifiers/`, identifier_data);
       if (response.status === 201 || response.status === 200) {
-        let toast = this.$toasted.show("Successfully saved", { 
+        
+        this.showMessage('ARV number updated');
+        this.arvNumber = finalNum;
+        this.$root.$emit('bv::hide::modal', 'arv-number-modal', '#btnShow')
+      } else if(response.status === 400){
+        this.showMessage('ARV number already in use');
+      }
+    },
+    showMessage: function(message) {
+        let toast = this.$toasted.show(message, { 
             theme: "toasted-primary", 
             position: "top-right", 
             duration : 5000
         });
-        this.arvNumber = finalNum;
-        this.$root.$emit('bv::hide::modal', 'arv-number-modal', '#btnShow')
-        console.log("Succesfully done");
-        // this.$router.go(0);
-      } else {
-        console.log("Failed to update");
-      }
     },
     updateDetails: async function() {
       let params = {};
@@ -518,7 +549,7 @@ export default {
         params.gender = this.updatedSex;
       }
       if(this.updatedPhoneNumber !== this.phoneNumber) {
-        params.cellphone = this.updatedPhoneNumber;
+        params.cell_phone_number = this.updatedPhoneNumber;
       }
       if(this.updatedAddress !== this.landmark) {
         params.landmark = this.updatedAddress;
@@ -526,11 +557,7 @@ export default {
       if(Object.keys(params).length > 0 ) {
         const response = await ApiClient.put(`/people/${this.$route.params.id}`, params);
         if (response.status === 201 || response.status === 200) {
-          let toast = this.$toasted.show("Successfully saved", { 
-              theme: "toasted-primary", 
-              position: "top-right", 
-              duration : 5000
-          });
+          this.showMessage("Successfully saved");
           if (`${this.firstName} ${this.lastName}` !== this.name) {
             this.name = `${this.firstName} ${this.lastName}`;
           }
@@ -554,6 +581,38 @@ export default {
       }else {
         this.$root.$emit('bv::hide::modal', 'patient-info-modal', '#btnShow')
       }
+    },updateGuardianDetails: async function() {
+      let params = {};
+      if (this.guardianFirstName !== this.updatedguardianFirstName) {
+        params.given_name = this.updatedguardianFirstName;
+      }
+      if (this.guardianLastName !== this.updatedguardianLastName) {
+        params.family_name = this.updatedguardianLastName;
+      }
+      if(this.updatedguardianNumber !== this.guardianNumber) {
+        params.cell_phone_number = this.updatedguardianNumber;
+      }
+      
+      if(Object.keys(params).length > 0 ) {
+        const response = await ApiClient.put(`/people/${this.guardianID}`, params);
+        if (response.status === 201 || response.status === 200) {
+          this.showMessage("Successfully saved");
+          if (this.guardianFirstName !== this.updatedguardianFirstName) {
+            this.guardianFirstName = this.updatedguardianFirstName;
+          }
+          if (this.guardianLastName !== this.updatedguardianLastName) {
+            this.guardianLastName = this.updatedguardianLastName;
+          }
+          if(this.updatedguardianNumber !== this.guardianNumber) {
+            this.guardianNumber = this.updatedguardianNumber;
+          }
+          this.$root.$emit('bv::hide::modal', 'guardian-info-modal', '#btnShow')
+        } else {
+          console.log("Failed to update");
+        }
+      }else {
+        this.$root.$emit('bv::hide::modal', 'guardian-info-modal', '#btnShow')
+      }
     }
   },
   mounted() {
@@ -571,11 +630,11 @@ export default {
             this.sex = patient.person.gender;
             this.updatedSex = patient.person.gender;
             this.location = patient.person.addresses.length > 0 ? patient.person.addresses[0].city_village : "";
-            this.landmark = this.getAtribute(patient, 19);
-            this.updatedAddress = this.getAtribute(patient, 19);
-            this.occupation = this.getAtribute(patient, 13);
-            this.phoneNumber = this.getAtribute(patient, 12);
-            this.updatedPhoneNumber = this.getAtribute(patient, 12);
+            this.landmark = this.getAtribute(patient.person.person_attributes, 19);
+            this.updatedAddress = this.getAtribute(patient.person.person_attributes, 19);
+            this.occupation = this.getAtribute(patient.person.person_attributes, 13);
+            this.phoneNumber = this.getAtribute(patient.person.person_attributes, 12);
+            this.updatedPhoneNumber = this.getAtribute(patient.person.person_attributes, 12);
             let personObj = {
               name: this.name,
               dob: patient.person.birthdate,
