@@ -843,12 +843,12 @@ export default {
 
       console.log(this.cdCountAvailable)
 
-      const staging = {
+      let staging = {}
+
+      staging = {
         encounter: this.encounterObject,
         cd4_available: this.cdCountAvailable
       }
-
-      console.log(staging)
 
       this.$store.commit("setStaging", staging);
     },
