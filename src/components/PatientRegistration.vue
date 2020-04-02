@@ -1016,7 +1016,7 @@ export default {
         .then(response => {
           if (response.status === 201) {
             return response.json().then(data => {
-              this.redirect(`/registration/${patientId}`)
+              this.redirect(`/registration/${patientId}/true`)
               console.log(data);
             });
           }
@@ -1230,7 +1230,7 @@ export default {
         .then(response => {
           if (response.status === 201) {
             return response.json().then(data => {
-              this.redirect(`/registration/${params.patient_id}`)
+              this.redirect(`/registration/${params.patient_id}/true`)
               console.log(data);
             });
           }
