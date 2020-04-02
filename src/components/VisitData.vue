@@ -31,8 +31,8 @@
         <td>{{visit.outcome}}</td>
         <td>{{visit.viralLoad}}</td>
         <td>
-          <click-confirm v-if="visit.encounters.length > 0">
-          <button class="btn btn-danger" @click="deleteVisit(index, visit.encounters)">
+          <click-confirm :disabled="visit.encounters.length === 0">
+          <button class="btn btn-danger" @click="deleteVisit(index, visit.encounters)" :disabled="visit.encounters.length === 0">
             <template v-if="visit.state === 'deleting'">
               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               <span class="sr-only">Loading...</span>
