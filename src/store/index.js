@@ -43,6 +43,15 @@ export default new Vuex.Store({
     },
     setWeight(state, weight) {
       state.currentWeight = weight;
+    },
+    setInitialRegistration(state, encounter) {
+      state.initialRegistration = encounter
+    },
+    setInitialVitals(state, encounter) {
+      state.initialVitals = encounter
+    },
+    setInitialStaging(state, encounter) {
+      state.initialStaging = encounter
     }
   },
   actions: {
