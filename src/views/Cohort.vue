@@ -91,7 +91,7 @@ export default {
       this.validationData = data;
     },
     printReport(){
-      //code here ...
+      print();
     }
   },
   data () {
@@ -108,3 +108,24 @@ export default {
 }
 
 </script>
+
+<style>
+@media print {
+  body {
+    overflow-y: visible !important;
+    display: block;
+  }
+
+  div#wrapper {
+    display: block !important;
+  }
+
+  .cohort > div {
+    display: none;
+  }
+
+  .cohort #printReport {
+    display: block;
+  }
+}
+</style>
