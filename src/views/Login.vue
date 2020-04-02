@@ -16,7 +16,7 @@
             <h1>E-Mastercard</h1>
 
             <h4>
-              <small>V 2.0</small>
+              <small>{{ appVersion() }}</small>
               <br />
             </h4>
             <h3>
@@ -113,6 +113,9 @@ export default {
     };
   },
   methods: {
+    appVersion() {
+      return ApiClient.config.version || '2.0-dev';
+    },
     checkForm: async function(event) {
       this.loading = true;
       event.preventDefault();
@@ -154,10 +157,9 @@ export default {
       }
     }
   },
-  created: function() {
+  created() {
     sessionStorage.clear();
     this.$store.user = null;
-    ApiClient.getConfig();
   }
 };
 </script>
