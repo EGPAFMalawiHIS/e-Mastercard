@@ -13,12 +13,13 @@
 
         <div class="cohort">
           <report-date-picker :onSubmit="fetchData"></report-date-picker>
-          <cohortvalidation :dataparams="validationData"/>
-          <cohortheader :reportparams="reportData"/>
-          <cohort-ft :params="cohortData" :reportid="reportID"/>
+          <div id="printReport">
+            <cohortvalidation :dataparams="validationData"/>
+            <cohortheader :reportparams="reportData"/>
+            <cohort-ft :params="cohortData" :reportid="reportID"/>
+          </div>
+          <cohort-print :onPrint="printReport" />
         </div>
-
-
 
         <!-- Page Content end -->
       </div>
@@ -46,10 +47,8 @@ import reportDatePicker from '@/components/reportDatePicker.vue';
 import cohortValidation from '@/components/cohortReportValidation.vue';
 import cohortHeader from '@/components/cohortHeader.vue';
 import cohortFT from '@/components/cohortFT.vue';
-
 import ApiClient from "../services/api_client";
-import cohortFTVue from '../components/cohortFT.vue';
-
+import cohortPrint from "@/components/cohortPrint.vue";
 
 export default {
   name: "reports",
@@ -59,7 +58,8 @@ export default {
     'report-date-picker': reportDatePicker,
     'cohortheader': cohortHeader,
     'cohort-ft': cohortFT,
-    'cohortvalidation': cohortValidation
+    'cohortvalidation': cohortValidation,
+    'cohort-print': cohortPrint
   }, methods: {
     redirect: function () {
       this.$router.push('/moh');
@@ -89,6 +89,9 @@ export default {
       this.reportID = cohort_data.id;
       this.cohortData = data;
       this.validationData = data;
+    },
+    printReport(){
+      //code here ...
     }
   },
   data () {
@@ -99,6 +102,8 @@ export default {
       reportData: null,
       reportID: null
     }
+  },
+  mounted(){
   }
 }
 
