@@ -231,6 +231,7 @@ export default {
     return {
       encounters: {},
       PATIENT_ID: this.$route.params.id,
+      NEW_REGISTER: this.$route.params.new,
       registrationEncounter: {},
       stagingEncounter: {},
       CONCEPTS: {
@@ -247,11 +248,11 @@ export default {
   computed: {
     conditionList() {
       const conditionsKeysFilters = Object.keys(
-        this.stagingEncounter['encounter']["obs"]
+        this.stagingEncounter["encounter"]["obs"]
       ).filter(reason => reason.match(/condition/));
 
       const conditions = conditionsKeysFilters.map(
-        filter => this.stagingEncounter['encounter']["obs"][filter]
+        filter => this.stagingEncounter["encounter"]["obs"][filter]
       );
 
       return conditions.map(name => name["value_text"]);
@@ -310,6 +311,11 @@ export default {
       }
     },
     createEncounters: function() {
+
+      //void encounters if patient is not being newly registered
+      if (!this.NEW_REGISTER || this.NEW_REGISTER == "false") {
+        this.voidFirstVisitEncounters();
+      }
       let encounters = Object.keys(this.$refs);
       console.log(encounters);
       encounters.forEach(el => {
@@ -410,6 +416,9 @@ export default {
             );
           };
 
+          const initialTbStatus =
+            registration["encounter"]["obs"]["initialTbStatus"]["value_coded"];
+
           if (everReceivedART === "Yes") {
             if (gotTreatment()) {
               this.clinicRegistrationFormValidations.push(true);
@@ -419,6 +428,25 @@ export default {
                 } else {
                   this.clinicRegistrationFormValidations.push(false);
                 }
+              }
+              if (initialTbStatus != "Select Option" && initialTbStatus != "") {
+                this.clinicRegistrationFormValidations.push(true);
+              } else {
+                this.clinicRegistrationFormValidations.push(false);
+              }
+
+              const vitals = registration["vitals"]["obs"];
+              const weight =
+                vitals["weight"]["value_numeric"] != null &&
+                vitals["weight"]["value_numeric"] != "";
+              const height =
+                vitals["height"]["value_numeric"] != null &&
+                vitals["height"]["value_numeric"] != "";
+
+              if (weight && height) {
+                this.clinicRegistrationFormValidations.push(true);
+              } else {
+                this.clinicRegistrationFormValidations.push(false);
               }
             } else {
               this.clinicRegistrationFormValidations.push(false);
@@ -439,7 +467,7 @@ export default {
             );
           };
 
-          if (test != null) {
+          if (test != null && test != "Select Option") {
             this.clinicRegistrationFormValidations.push(true);
             if (test == 1040 || test == 844) {
               if (gotConfirmatoryTest()) {
@@ -452,32 +480,8 @@ export default {
             this.clinicRegistrationFormValidations.push(false);
           }
 
-          const initialTbStatus =
-            registration["encounter"]["obs"]["initialTbStatus"]["value_coded"];
-
-          if (initialTbStatus != "Select Option" && initialTbStatus != "") {
-            this.clinicRegistrationFormValidations.push(true);
-          } else {
-            this.clinicRegistrationFormValidations.push(false);
-          }
-
-          //Vitals
-          const vitals = registration["vitals"]["obs"];
-          const weight =
-            vitals["weight"]["value_numeric"] != null &&
-            vitals["weight"]["value_numeric"] != "";
-          const height =
-            vitals["height"]["value_numeric"] != null &&
-            vitals["height"]["value_numeric"] != "";
-
-          if (weight && height) {
-            this.clinicRegistrationFormValidations.push(true);
-          } else {
-            this.clinicRegistrationFormValidations.push(false);
-          }
-
           //!this.clinicRegistrationFormValidations.includes(false)
-          if (true) {
+          if (!this.clinicRegistrationFormValidations.includes(false)) {
             $(".errorTxt").html("");
             current_fs = $(this).parent();
             next_fs = $(this)
@@ -543,7 +547,6 @@ export default {
           // if CD4Count available
           const cd4Available = Registration.stagingEncounter["cd4_available"];
 
-          console.log(staging["cd4Count"])
 
           if (cd4Available) {
             if (
@@ -586,7 +589,6 @@ export default {
             }
           }
 
-          console.log(this.stagingFormValidations)
 
           // validate if checkbox checked to register
           if (!this.stagingFormValidations.includes(false)) {
@@ -711,27 +713,34 @@ export default {
     },
     stagingObject() {
       this.stagingEncounter = this.$store.state.staging.staging;
+      this.initileWizard(this.registrationEncounter);
       console.log(this.stagingEncounter);
     },
-    voidFirstVisitEncounters(){
+    removeEncounter: async function(encounter = "") {
+      return await ApiClient.remove(`encounters/${encounter}`);
+    },
+    voidEncounters: function(encounters = []) {
+      encounters.forEach(encounter => {
+        this.removeEncounter(encounter).then(data => {
+          console.log(data);
+        });
+      });
+    },
+    voidFirstVisitEncounters() {
 
-      console.log(this.$store.state.initialRegistration['encounter_id'])
-      console.log(this.$store.state.initialVitals['encounter_id'])
-      console.log(this.$store.state.initialStaging['encounter_id'])
+      let encounters = [];
 
-      this.$store.state.initialRegistration['encounter_id'];
-      this.$store.state.initialVitals['encounter_id'];
-      this.$store.state.initialStaging['encounter_id'];
+      encounters.push(this.$store.state.initialRegistration["encounter_id"]);
+      encounters.push(this.$store.state.initialVitals["encounter_id"]);
+      encounters.push(this.$store.state.initialStaging["encounter_id"]);
 
-      
-      // get the 
-      // NEW_REGISTER
+      this.voidEncounters(encounters);
     }
   },
   mounted() {
-    this.voidFirstVisitEncounters()
     console.log(this.$route.params.id);
     this.initileWizard(this.$store.state.registration.registration);
+    this.initileWizard(this.$store.state.staging.staging);
   }
 };
 </script> 
