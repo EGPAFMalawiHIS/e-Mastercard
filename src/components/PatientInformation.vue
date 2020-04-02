@@ -148,7 +148,7 @@
               <p>Date of starting first line ARV Regimen</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{moment(startDate).format("DD-MM-YYYY")}}</p>
+              <p>{{startDate !== "N/A"? moment(startDate).format("DD-MM-YYYY") : startDate}}</p>
             </div>
           </div>
         </div>

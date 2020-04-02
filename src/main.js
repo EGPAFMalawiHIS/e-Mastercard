@@ -11,7 +11,9 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import '@/assets/css/emastercard.css';
 import Toasted from 'vue-toasted';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import ClickConfirm from 'click-confirm/dist/click-confirm'
 
+Vue.component('clickConfirm', ClickConfirm);
 Vue.config.productionTip = false
 Vue.prototype.moment = moment;
 Vue.use(Toasted)
