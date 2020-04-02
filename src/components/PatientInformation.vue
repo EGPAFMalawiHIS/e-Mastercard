@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="col-md-3">
-          <div class="row">
+          <div class="row" @click="$bvModal.show('patient-info-modal')">
             <div class="col-md-6">
               <p>Name</p>
             </div>
@@ -24,7 +24,7 @@
           </div>
         </div>
         <div class="col-md-3">
-          <div class="row">
+          <div class="row" @click="$bvModal.show('patient-info-modal')">
             <div class="col-md-6">
               <p>DOB and Age at initiation</p>
             </div>
@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="col-md-3">
-          <div class="row">
+          <div class="row" @click="$bvModal.show('patient-info-modal')">
             <div class="col-md-6">
               <p>Sex</p>
             </div>
@@ -83,20 +83,11 @@
             </div>
           </div>
         </div>
+        
         <div class="col-md-3">
-          <div class="row">
+          <div class="row" @click="$bvModal.show('patient-info-modal')">
             <div class="col-md-6">
-              <p>Location</p>
-            </div>
-            <div class="col-md-6 information">
-              <p>{{location}}</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="row">
-            <div class="col-md-6">
-              <p>Landmark</p>
+              <p>Physical Address</p>
             </div>
             <div class="col-md-6 information">
               <p>{{landmark}}</p>
@@ -104,12 +95,12 @@
           </div>
         </div>
         <div class="col-md-3">
-          <div class="row">
+          <div class="row" @click="$bvModal.show('patient-info-modal')">
             <div class="col-md-6">
-              <p>Occupation</p>
+              <p>Phone Number</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{occupation}}</p>
+              <p>{{phoneNumber}}</p>
             </div>
           </div>
         </div>
@@ -229,6 +220,32 @@
         <div class="w-100"></div>
       </template>
     </b-modal>
+    <b-modal id="patient-info-modal" title="patient detials" size="xl">
+      <div>
+        <b-form>
+          
+          <label for="text-name">First Name</label> <b-input type="text" id="text-name" v-model="firstName"></b-input> 
+          <label for="text-last-name">Last Name</label> <b-input type="text" id="text-last-name" v-model="lastName"></b-input>
+          <label for="text-phone-number">Phone Number</label> <b-input type="text" id="text-phone-number" v-model="updatedPhoneNumber"></b-input>
+          <label for="text-address">Physical Address</label> <b-input type="text" id="text-address" v-model="updatedAddress"></b-input>
+          <label for="input-sex">Sex</label><b-form-select
+            id="inline-form-custom-select-pref"
+            class="mb-2 mr-sm-2 mb-sm-0"
+            :options="[{ text: 'Male', value: 'M' }, { text: 'Female', value: 'F' }]"
+            v-model="updatedSex"
+          ></b-form-select>
+          <label for="example-datepicker">Date of birth</label>
+          <b-form-datepicker id="example-datepicker" class="mb-2" v-model="updatedDOB"></b-form-datepicker>
+          
+          <div class="row justify-content-center">
+          <b-button variant="primary" @click="updateDetails">Save</b-button>
+          </div>
+        </b-form>
+      </div>
+      <template v-slot:modal-footer>
+        <div class="w-100"></div>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -243,11 +260,16 @@ export default {
       arvNumber: null,
       arv_num:null,
       name: null,
+      firstName: null,
+      lastName: null,
       age: null,
       sex: null,
+      updatedDOB: null,
+      updatedSex: null,
       dob: null,
       initialWeight: null,
       initialHeight: null,
+      updatedAddress: null,
       bmi: null,
       ti: null,
       location: null,
@@ -266,6 +288,8 @@ export default {
       patientID: null,
       sitePrefix: null,
       showARVNumber: false,
+      phoneNumber: null,
+      updatedPhoneNumber: null,
       obs: [
         {
           conceptID: 5089,
@@ -479,21 +503,79 @@ export default {
       } else {
         console.log("Failed to update");
       }
+    },
+    updateDetails: async function() {
+      let params = {};
+      if (`${this.firstName} ${this.lastName}` !== this.name) {
+        params.given_name = this.firstName;
+        params.family_name =  this.lastName;
+      }
+      if(this.updatedDOB !== this.dob) {
+        params.birthdate = this.updatedDOB;
+        params.birthdate_estimated = 0;
+      }
+      if(this.updatedSex !== this.sex) {
+        params.gender = this.updatedSex;
+      }
+      if(this.updatedPhoneNumber !== this.phoneNumber) {
+        params.cellphone = this.updatedPhoneNumber;
+      }
+      if(this.updatedAddress !== this.landmark) {
+        params.landmark = this.updatedAddress;
+      }
+      if(Object.keys(params).length > 0 ) {
+        const response = await ApiClient.put(`/people/${this.$route.params.id}`, params);
+        if (response.status === 201 || response.status === 200) {
+          let toast = this.$toasted.show("Successfully saved", { 
+              theme: "toasted-primary", 
+              position: "top-right", 
+              duration : 5000
+          });
+          if (`${this.firstName} ${this.lastName}` !== this.name) {
+            this.name = `${this.firstName} ${this.lastName}`;
+          }
+          if(this.updatedDOB !== this.dob) {
+            this.dob = this.updatedDOB;
+            this.age = ` ${moment(this.dob).format('DD-MMM-YYYY')}`;
+          }
+          if(this.updatedSex !== this.sex) {
+            this.sex = this.updatedSex;
+          }
+          if(this.updatedPhoneNumber !== this.phoneNumber) {
+             this.phoneNumber = this.updatedPhoneNumber;
+          }
+          if(this.updatedAddress !== this.landmark) {
+             this.landmark = this.updatedAddress;
+          }
+          this.$root.$emit('bv::hide::modal', 'patient-info-modal', '#btnShow')
+        } else {
+          console.log("Failed to update");
+        }
+      }else {
+        this.$root.$emit('bv::hide::modal', 'patient-info-modal', '#btnShow')
+      }
     }
   },
   mounted() {
     this.getPrefix();
      this.patientID = this.$route.params.id;
      this.getPatient().then(patient=> {
-            this.name = ` ${patient['person'].names[0].given_name} ${patient.person.names[0].family_name} `;
+            this.name = `${patient['person'].names[0].given_name} ${patient.person.names[0].family_name}`;
+            this.firstName = patient['person'].names[0].given_name;
+            this.lastName = patient['person'].names[0].family_name;
             this.dob = patient.person.birthdate;
+            this.updatedDOB = patient.person.birthdate;
             this.age = ` ${moment(patient.person.birthdate).format('DD-MMM-YYYY')}`;
             let identifier = patient.patient_identifiers.filter(function(entry) { return entry.type.name === "ARV Number"; });
             this.arvNumber = identifier.length > 0 ? identifier[0].identifier : "N/A";
             this.sex = patient.person.gender;
+            this.updatedSex = patient.person.gender;
             this.location = patient.person.addresses.length > 0 ? patient.person.addresses[0].city_village : "";
             this.landmark = this.getAtribute(patient, 19);
+            this.updatedAddress = this.getAtribute(patient, 19);
             this.occupation = this.getAtribute(patient, 13);
+            this.phoneNumber = this.getAtribute(patient, 12);
+            this.updatedPhoneNumber = this.getAtribute(patient, 12);
             let personObj = {
               name: this.name,
               dob: patient.person.birthdate,

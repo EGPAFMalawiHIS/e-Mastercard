@@ -61,6 +61,15 @@ export default {
       if (this.showHeight) {
         encounterObject.vitals.obs.height = this.height;
       }
+      if(this.weight.value_numeric && (this.height.value_numeric || this.previousHeight)) {
+        let height = this.previousHeight ? this.previousHeight : this.height.value_numeric; 
+        let currentBmi = (this.weight.value_numeric / (height * height) * 10000).toFixed(1)
+        encounterObject.vitals.obs.bmi = {
+                concept_id: 2137, 
+                value_numeric: currentBmi
+          }
+      }
+      
       this.$emit("addEncounter", encounterObject);
     },
     setWeight: function() {
@@ -71,6 +80,7 @@ export default {
   computed: {
     showHeight() {
       let initialHeight = this.$store.state.currentHeight;
+      this.previousHeight = initialHeight;
       let patient = this.$store.state.patient.age;
       let f = parseInt(patient) >= 18 && initialHeight !== null
         ? false

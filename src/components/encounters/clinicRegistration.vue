@@ -77,14 +77,14 @@
       </div>
     </div>
     <div v-if="recievedTreatment && registered" class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
             <div class="row">
-              <div class="col-md-3">
+              <div class="col-md-6">
                 <label style="float: left; font-weight: bold">Location of ART Initiation (*)</label>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-6">
                 <span
                   style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
                 >Location Unknown?</span>
@@ -109,8 +109,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div v-if="recievedTreatment && registered" class="row">
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
@@ -131,6 +129,8 @@
           </div>
         </div>
       </div>
+    </div>
+    <div v-if="recievedTreatment && registered" class="row">
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-6">
@@ -152,6 +152,106 @@
             v-model="arvNumber"
             :disabled="arvNumberUnkown"
             v-on:input="setRegistration"
+          />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <label style="float: left; font-weight: bold">Initial TB Status (*)</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <select
+                class="form-control"
+                name
+                id
+                v-model="initialTbStatus"
+                @change="setRegistration"
+              >
+                <option disabled selected>Select Option</option>
+                <option
+                  v-for="(status, index) in Object.keys(TB_STATUS)"
+                  :key="index"
+                  :value="TB_STATUS[status]"
+                >{{status}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="recievedTreatment && registered" class="row">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-12">
+                <label style="float: left; font-weight: bold">Initial Weigh (Vitals) (*)</label>
+                <span
+                  style="float: left; font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic; margin-left: 38px"
+                >Vitals Unknown?</span>
+                <input
+                  type="checkbox"
+                  @click="initialVitalsCheck()"
+                  style="margin-left: 10px; float:left; margin-top: 6px"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <input
+                v-if="!initialVitalsUnknown"
+                type="number"
+                class="form-control"
+                name
+                v-model="initialWeight"
+                placeholder="Enter Weight"
+                v-on:input="setRegistration"
+              />
+              <input
+                v-if="initialVitalsUnknown"
+                type="text"
+                class="form-control"
+                name
+                v-model="initialWeight"
+                placeholder="Unknown"
+                disabled
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <label style="float: left; font-weight: bold">Initial Height (Vitals) (*)</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <input
+            v-if="!initialVitalsUnknown"
+            type="number"
+            class="form-control"
+            name
+            v-model="initialHeight"
+            placeholder="Enter Height"
+            v-on:input="setRegistration"
+          />
+          <input
+            v-if="initialVitalsUnknown"
+            type="text"
+            class="form-control"
+            name
+            v-model="initialHeight"
+            placeholder="Unknown"
+            disabled
           />
         </div>
       </div>
@@ -229,98 +329,6 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-6">
-                <label style="float: left; font-weight: bold">Initial TB Status (*)</label>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="form-group">
-              <select class="form-control" name id v-model="initialTbStatus" @change="setRegistration">
-                <option disabled selected>Select Option</option>
-                <option
-                  v-for="(status, index) in Object.keys(TB_STATUS)"
-                  :key="index"
-                  :value="TB_STATUS[status]"
-                >{{status}}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-12">
-                <label style="float: left; font-weight: bold">Initial Weight & Height (Vitals) (*)</label>
-                <span
-                  style="float: left; font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic; margin-left: 38px"
-                >Vitals Unknown?</span>
-                <input
-                  type="checkbox"
-                  @click="initialVitalsCheck()"
-                  style="margin-left: 10px; float:left; margin-top: 6px"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <input
-                    v-if="!initialVitalsUnknown"
-                    type="text"
-                    class="form-control"
-                    name
-                    v-model="initialWeight"
-                    placeholder="Enter Weight"
-                    v-on:input="setRegistration"
-                  />
-                  <input
-                    v-if="initialVitalsUnknown"
-                    type="text"
-                    class="form-control"
-                    name
-                    v-model="initialWeight"
-                    placeholder="Unknown"
-                    disabled
-                  />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <input
-                    v-if="!initialVitalsUnknown"
-                    type="text"
-                    class="form-control"
-                    name
-                    v-model="initialHeight"
-                    placeholder="Enter Height"
-                    v-on:input="setRegistration"
-                  />
-                  <input
-                    v-if="initialVitalsUnknown"
-                    type="text"
-                    class="form-control"
-                    name
-                    v-model="initialHeight"
-                    placeholder="Unknown"
-                    disabled
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -384,6 +392,7 @@ export default {
       ],
       clinicRegistration: {
         encounter_id: 9,
+        encounter_datetime: null,
         obs: {
           phoneFollowUp: {
             // DONE
@@ -628,6 +637,11 @@ export default {
         this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
       }
 
+      if (this.registered) {
+        const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
+        this.clinicRegistration.encounter_datetime = dateStarted;
+      }
+
       if (this.arvNumber != null) {
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = this.arvNumber;
       }
@@ -654,19 +668,19 @@ export default {
         this.vitalsEncounter.obs.weight.value_numeric = this.initialHeight;
       }
 
-      if(this.initialTbStatus != null){
+      if (this.initialTbStatus != null) {
         this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
       }
 
-      if(this.artStartDate != null){
+      if (this.artStartDate != null) {
         const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
-        this.vitalsEncounter.encounter_datetime = this.dateStarted;
+        this.vitalsEncounter.encounter_datetime = dateStarted;
       }
 
       if (this.registered) {
         const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = dateStarted;
-      }else{
+      } else {
         const todaysDate = moment(new Date()).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = todaysDate;
       }
@@ -691,7 +705,7 @@ export default {
         const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
         this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = this.arvNumber;
-
+        this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
       } else {
         //ART start date
         delete this.clinicRegistration.obs.dateARTStarted;
@@ -700,6 +714,7 @@ export default {
 
         delete this.clinicRegistration.obs.ARTStartLocation;
         delete this.clinicRegistration.obs.ARTStartLocation;
+        delete this.clinicRegistration.obs.initialTbStatus
       }
 
       //optional
@@ -715,7 +730,6 @@ export default {
         delete this.clinicRegistration.obs.testLocation;
       }
 
-      this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
     },
 
     buildVitalsObservations() {
@@ -725,7 +739,7 @@ export default {
       if (this.registered) {
         const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = dateStarted;
-      }else{
+      } else {
         const todaysDate = moment(new Date()).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = todaysDate;
       }
@@ -734,7 +748,8 @@ export default {
     setRegistration() {
       this.buildForRegistrationGlobalState();
       console.log("Set Registration");
-      const registration = {
+      let registration = {};
+      registration = {
         encounter: this.clinicRegistration,
         agrees_to_follow: this.shouldFollowUp,
         receieved_treatment: {
@@ -754,10 +769,8 @@ export default {
           test_date: this.hivTestYear
         },
         vitals: this.vitalsEncounter
+      };
 
-      }
-
-      console.log(registration)
       this.$store.commit("setRegistration", registration);
     },
     getVal(val) {
