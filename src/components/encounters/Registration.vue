@@ -712,9 +712,24 @@ export default {
     stagingObject() {
       this.stagingEncounter = this.$store.state.staging.staging;
       console.log(this.stagingEncounter);
+    },
+    voidFirstVisitEncounters(){
+
+      console.log(this.$store.state.initialRegistration['encounter_id'])
+      console.log(this.$store.state.initialVitals['encounter_id'])
+      console.log(this.$store.state.initialStaging['encounter_id'])
+
+      this.$store.state.initialRegistration['encounter_id'];
+      this.$store.state.initialVitals['encounter_id'];
+      this.$store.state.initialStaging['encounter_id'];
+
+      
+      // get the 
+      // NEW_REGISTER
     }
   },
   mounted() {
+    this.voidFirstVisitEncounters()
     console.log(this.$route.params.id);
     this.initileWizard(this.$store.state.registration.registration);
   }

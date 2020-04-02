@@ -7,7 +7,7 @@ import staging from './modules/staging';
 
 Vue.use(Vuex)
 
-const vuexPersist = new VuexPersist({key: 'eMastercard', storage: window.sessionStorage});
+const vuexPersist = new VuexPersist({ key: 'eMastercard', storage: window.sessionStorage });
 
 export default new Vuex.Store({
   state: {
@@ -26,7 +26,7 @@ export default new Vuex.Store({
         const userRoles = state.user.roles;
         return userRoles.findIndex(userRole => userRole.role.toLowerCase() === role.toLowerCase()) >= 0;
       }
-    }, 
+    },
     getPatient(state) {
       return state.patient;
     }
@@ -43,6 +43,15 @@ export default new Vuex.Store({
     },
     setWeight(state, weight) {
       state.currentWeight = weight;
+    },
+    setInitialRegistration(state, encounter) {
+      state.initialRegistration = encounter
+    },
+    setInitialVitals(state, encounter) {
+      state.initialVitals = encounter
+    },
+    setInitialStaging(state, encounter) {
+      state.initialStaging = encounter
     }
   },
   actions: {
