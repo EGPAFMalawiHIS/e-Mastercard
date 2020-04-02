@@ -17,6 +17,7 @@
                 <th class="center-text" scope="col">DOB</th>
                 <th class="center-text" scope="col">Date missed</th>
                 <th class="center-text" scope="col">Outcome</th>
+                <th class="center-text" scope="col">Contact <br />Deatils</th>
                 <th class="center-text" scope="col">&nbsp;</th>
               </tr>
             </thead>
@@ -69,14 +70,12 @@ export default {
       this.report_title = sessionStorage.location_name + "  Appointment missed";
       this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
       this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
-      let url_path = '/missed_appointments?start_date=' + dates[0] + "&date=" + dates[1];
-      url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=false"; 
+      let url_path = "/missed_appointments?start_date=" + dates[0] + "&end_date=" + dates[1]
+      url_path += "&program_id=1&date=" +  moment().format('YYYY-MM-DD');
       const response = await ApiClient.get(url_path, {}, {});
 
       if (response.status === 200) {
-        response.json().then((data) => this.checkResult(data) );
-      }else{
-        setTimeout(() => this.fetchData(), 5000);
+        response.json().then((data) => this.datatableEnable(data) );
       }
     },
     initDataTable(){
@@ -104,20 +103,15 @@ export default {
           }
         ],
         columnDefs: [
+          {"className": "center-arv", "targets": 0},
           {"className": "center-text", "targets": 3},
           {"className": "center-text", "targets": 4},
           {"className": "center-text", "targets": 5},
           {"className": "center-text", "targets": 6},
           {"className": "center-text", "targets": 7},
+          {"className": "center-left", "targets": 8}
         ]
       });
-    },
-    checkResult(data){
-      const url_string = window.location;
-      const parsedURL = new URL(url_string);
-      const resource_id = parsedURL.searchParams.get("resource_id");
-      this.reportData = data;
-      setTimeout(() => this.datatableEnable(data), 10);
     },
     datatableEnable(data){
       this.formatedData = []; 
@@ -131,10 +125,33 @@ export default {
         }catch(e) {
           birthdate = 'N/A';
         }
+
+        let contact = [];
+        if(data[i].cell_number)
+          contact.push("CELL: " + data[i].cell_number);
+
+        if(data[i].district)
+          contact.push("District: " + data[i].district);
+
+        if(data[i].ta)
+          contact.push("TA: " + data[i].ta);
+
+        if(data[i].village)
+          contact.push("Village: " + data[i].village);
+
+        let contact_details = '';
+        for(let j = 0; j < contact.length; j++) {
+          if(j > 0)
+            contact_details += '<br />';
+
+          contact_details += contact[j];   
+        }
+
+
         this.formatedData.push( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
           data[i].gender, birthdate, data[i].appointment_date, 
-          data[i].current_outcome, this.createdShowBTN(data[i].person_id)] );
+          data[i].current_outcome, contact_details, this.createdShowBTN(data[i].person_id)] );
       }
       this.dTable.api().destroy();
       this.initDataTable();
@@ -196,4 +213,15 @@ table {
 .show-btn {
   font-size: 14px;
 }
+
+.center-left {
+    text-align: left;
+    padding-left: 5px;
+}
+
+.center-arv {
+    text-align: center;
+    width: 150px;
+}
+
 </style>
