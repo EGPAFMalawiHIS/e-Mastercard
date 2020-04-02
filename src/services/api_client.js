@@ -6,7 +6,8 @@ const ApiClient = (() => {
     apiVersion: 'v1',
     username: null,
     password: null,
-    router: null
+    router: null,
+    version: null
   }
 
   function expandPath(resourcePath) {
@@ -38,6 +39,7 @@ const ApiClient = (() => {
           config.port = data.apiPort;
           sessionStorage.setItem("apiProtocol", data.apiProtocol);
           config.protocol = data.apiProtocol;
+          config.version = data.version;
         });
       }
     )
