@@ -154,7 +154,7 @@ const routes = [
     component: () => import("../views/SurvivalAnalysis.vue")
   },
   {
-    path: "/registration/:id",
+    path: "/registration/:id/:new",
     name: "registration",
     component: () => import("../views/Registration.vue")
   },
