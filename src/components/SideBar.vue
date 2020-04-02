@@ -3,7 +3,7 @@
       <div class="sidebar-heading">e-Mastercard </div>
       <div class="list-group list-group-flush">
         <a href="/" class="side-list list-group-item list-group-item-action ">Dashboard</a>
-        <a href="/search" class="side-list list-group-item list-group-item-action ">Search</a>
+        <a href="/search" class="side-list list-group-item list-group-item-action ">Search / Create client</a>
         <a href="/reports" class="side-list list-group-item list-group-item-action ">Reports</a>
         <a href="/cleaning_tools" class="side-list list-group-item list-group-item-action ">Data cleaning tools</a>
         <a v-if="this.$store.getters.userIs('Superuser')" href="/users" class="side-list list-group-item list-group-item-action">users</a>
