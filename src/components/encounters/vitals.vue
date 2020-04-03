@@ -34,6 +34,7 @@
 
 <script>
 import EventBus from "../../services/event-bus.js";
+import ApiClient from "../../services/api_client";
 export default {
   data: function() {
     return {
@@ -74,15 +75,30 @@ export default {
     },
     setWeight: function() {
       EventBus.$emit("set-weight", this.weight.value_numeric);
-    }
+    },
+    getObs: async function() {
+      let url = `/observations?person_id=${this.$route.params.id}&&concept_id=5090`;
+      await ApiClient.get(url).then(
+        res => {
+          res.json().then(ret => {
+            if(ret.length > 0) {
+
+              this.previousHeight = ret[ret.length - 1]["value_numeric"]
+                ? ret[ret.length - 1]["value_numeric"]
+                : ret[ret.length - 1]["value_text"];
+            }
+          });
+        }
+      );
+    },
   },
-  mounted() {},
+  mounted() {
+    this.getObs();
+  },
   computed: {
     showHeight() {
-      let initialHeight = this.$store.state.currentHeight;
-      this.previousHeight = initialHeight;
       let patient = this.$store.state.patient.age;
-      let f = parseInt(patient) >= 18 && initialHeight !== null
+      let f = parseInt(patient) >= 18 && this.previousHeight !== null
         ? false
         : true;
       return f;

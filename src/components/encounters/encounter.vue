@@ -119,6 +119,7 @@ export default {
                 if(this.numEnc === this.verifiedEnc.length) {
                     this.posting = false;
                     EventBus.$emit("reload-visits", "");
+                    EventBus.$emit("reload-first-visits", "");
                     let toast = this.$toasted.show("Encounter Saved", { 
                     theme: "toasted-primary", 
                     position: "top-right", 

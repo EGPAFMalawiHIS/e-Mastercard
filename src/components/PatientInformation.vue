@@ -117,7 +117,7 @@
             <div class="col-md-6">
               <p>Name of Guardian</p>
             </div>
-            <div class="col-md-6 information">
+            <div class="col-md-6 information" v-if="guardianFirstName">
               <p>{{guardianFirstName + " " + guardianLastName + " (" + guardianRelation + ")" + " (" + guardianNumber + ")"}}</p>
             </div>
           </div>
@@ -148,7 +148,7 @@
               <p>Date of starting first line ARV Regimen</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{startDate !== "N/A"? moment(startDate).format("DD-MM-YYYY") : startDate}}</p>
+              <p>{{parseStartDate}}</p>
             </div>
           </div>
         </div>
@@ -165,20 +165,31 @@
         <div class="col-md-3">
           <div class="row">
             <div class="col-md-6">
-              <p>Extra Pulmonary Tuberculosis</p>
+              <p>Pregnant at initiation</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{EPTB}}</p>
+              <p>{{pregnant}}</p>
             </div>
           </div>
         </div>
         <div class="col-md-3">
           <div class="row">
             <div class="col-md-6">
-              <p>Pulmonary Tuberculosis</p>
+              <p>Breastfeeding at initiation</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{PTB}}</p>
+              <p>{{breastfeeding}}</p>
+            </div>
+          </div>
+        </div>
+      
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-6">
+              <p>TB Status at initiation</p>
+            </div>
+            <div class="col-md-6 information">
+              <p>{{tbLastTwoYears}}</p>
             </div>
           </div>
         </div>
@@ -189,16 +200,6 @@
             </div>
             <div class="col-md-6 information">
               <p>{{kaposisSarcoma}}</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="row">
-            <div class="col-md-6">
-              <p>Tuberculosis withing the last 2 year</p>
-            </div>
-            <div class="col-md-6 information">
-              <p>{{tbLastTwoYears}}</p>
             </div>
           </div>
         </div>
@@ -252,7 +253,7 @@
         <div class="w-100"></div>
       </template>
     </b-modal>
-    <b-modal id="guardian-info-modal" title="guardian detials" size="xl">
+    <b-modal id="guardian-info-modal" title="guardian detials" size="xl" v-if="guardianFirstName">
       <div>
         <b-form>
           <label for="text-name">First Name</label>
@@ -295,6 +296,8 @@ export default {
       initialWeight: null,
       initialHeight: null,
       updatedAddress: null,
+      pregnant: null,
+      breastfeeding:  null,
       bmi: null,
       ti: null,
       location: null,
@@ -375,6 +378,24 @@ export default {
           }
         },
         {
+          conceptID: 6131,
+          variableName: "pregnant",
+          valueType: "value_coded",
+          secondType: "value_text",
+          returnValue: "Yes",
+          default: "No",
+          params: "value_coded=1065",
+        },
+        {
+          conceptID: 7965,
+          variableName: "breastfeeding",
+          valueType: "value_coded",
+          secondType: "value_text",
+          returnValue: "Yes",
+          default: "No",
+          params: "value_coded=1065",
+        },
+        {
           conceptID: 2552,
           variableName: "followUp",
           valueType: "value_coded",
@@ -400,11 +421,16 @@ export default {
           }
         },
         {
-          conceptID: 2516,
-          variableName: "startDate",
-          valueType: "value_datetime",
+          conceptID: 7459,
+          variableName: "tbLastTwoYears",
+          valueType: "value_coded",
           secondType: "value_text",
-          format: false
+          conceptNames: {
+            7454: "TB NOT suspected",
+            7455: "TB suspected",
+            7456: "Confirmed TB NOT on treatment",
+            7458: "Confirmed TB on treatment"
+          }
         },
         {
           conceptID: 7563,
@@ -418,21 +444,11 @@ export default {
             507: {
               variableName: "kaposisSarcoma",
               returnValue: "Yes"
-            },
-            1547: {
-              variableName: "EPTB",
-              returnValue: "Yes"
-            },
-            7539: {
-              variableName: "tbLastTwoYears",
-              returnValue: "Yes"
-            },
-            8206: {
-              variableName: "PTB",
-              returnValue: "Yes"
             }
           }
         }
+      ], initialObs: [
+
       ]
     };
   },
@@ -442,6 +458,7 @@ export default {
       let f = await ApiClient.get(`/patients/${this.patientID}`);
       return await f.json();
     },
+
     getGuardian: async function() {
       let guardian = await ApiClient.get(
         `/people/${this.patientID}/relationships`
@@ -476,9 +493,10 @@ export default {
         });
       });
     },
-    getObs: async function(conceptSet) {
+    getObs: async function(conceptSet, startDate) {
       let url = `/observations?person_id=${this.patientID}&&concept_id=${conceptSet.conceptID}`;
       url = conceptSet.params ? url + `&&` + conceptSet.params : url;
+      url = startDate ? url + `&&obs_datetime=`+ startDate : url;
       let observations = await ApiClient.get(url);
       return await observations.json();
     },
@@ -489,7 +507,9 @@ export default {
         });
       });
     },
-    createOb: function(conceptSet, context) {
+    createOb: function(conceptSet, context, startDate) {
+
+    this.$store.state.currentHeight = null;
       this.getObs(conceptSet).then(res => {
         if (res.length > 0) {
           if (conceptSet.returnValue) {
@@ -511,7 +531,15 @@ export default {
                 ? moment(val).format("DD-MMM-YYYY")
                 : val;
             if (conceptSet.valueType === "value_coded") {
-              this.getConcept(conceptSet, val, context);
+                if(conceptSet.conceptNames) {
+                    context[conceptSet.variableName] = conceptSet.conceptNames[val]; 
+                }else {
+
+                 this.getConcept(conceptSet, val, context);
+                  
+                }
+                
+                
             }
             if (conceptSet.conceptID === 5089) {
               let weight = res[0][conceptSet.valueType]
@@ -688,6 +716,47 @@ export default {
     },
     redirect: function(url) {
       this.$router.push(url);
+    }, 
+    parseObs: function(startDate) {
+      this.obs.forEach(value => {
+        this.createOb(value, this, startDate);
+      });
+    },
+    getStartDate: async function (){
+    this.$store.state.currentHeight = null;
+      let startDateSet = {
+          conceptID: 2516,
+          variableName: "startDate",
+          valueType: "value_datetime",
+          secondType: "value_text",
+          format: false
+        };
+
+      this.getObs(startDateSet).then(res => {
+        if(res.length > 0) {
+
+        this[startDateSet.variableName] = res[res.length - 1][startDateSet.valueType]
+              ? res[res.length - 1][startDateSet.valueType]
+              : res[res.length - 1][startDateSet.secondType];
+        this.parseObs(this[startDateSet.variableName]);
+        }else {
+
+          this.retrieveStarDate().then(orders => {
+              if(orders.length > 0) {
+                this[startDateSet.variableName] = orders[orders.length -1].order.start_date;
+                this.parseObs(this[startDateSet.variableName]);
+              }else {
+                this[startDateSet.variableName] = "N/A";
+                this.parseObs(null);
+              }
+          });
+        }
+      });
+    },
+    retrieveStarDate: async function() {
+      let url = `/patients/${this.$route.params.id}/drugs_orders_by_program?program_id=1`;
+      let observations = await ApiClient.get(url);
+      return await observations.json();
     }
   },
   mounted() {
@@ -730,10 +799,13 @@ export default {
       };
       this.$store.commit("setPatient", personObj);
     });
-    this.obs.forEach(value => {
-      this.createOb(value, this);
-    });
+    
     this.getGuardian();
+    this.getStartDate();
+    EventBus.$on('reload-first-visits', payload => {
+      this.getStartDate();
+    });
+   
   },
   computed: {
     initialAge() {
@@ -742,6 +814,15 @@ export default {
         initAge = moment(this.startDate).diff(this.dob, "years", false);
       }
       return initAge;
+    }, 
+    parseStartDate() {
+      let dateofStarting = null;
+      if(this.startDate !== "N/A" && this.startDate !== null) {
+        dateofStarting = moment(this.startDate).format("DD-MMM-YYYY");
+      }else {
+        dateofStarting = "N/A";
+      }
+      return dateofStarting;
     }
   }
 };

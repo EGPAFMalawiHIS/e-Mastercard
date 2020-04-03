@@ -137,6 +137,7 @@ export default {
             itemsProcessed -= 1;
             if(itemsProcessed === 0) {
               this.patientVisits.splice(index, 1)
+              EventBus.$emit("reload-first-visits", "");
             }
           }else {
             console.log("not deleted")
