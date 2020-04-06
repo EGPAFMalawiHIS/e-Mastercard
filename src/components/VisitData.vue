@@ -26,7 +26,7 @@
         <td>{{visit.breastfeeding}}</td>
         <td>{{visit.tbStatus}}</td>
         <td>{{visit.sideEffects}}</td>
-        <td>{{visit.ARTRegimen}}</td>
+        <td>{{visit.ARTRegimen}} ({{visit.dispensed}})</td>
         <td>{{visit.nextAppointment}}</td>
         <td>{{visit.outcome}}</td>
         <td>{{visit.viralLoad}}</td>
@@ -74,6 +74,8 @@ export default {
         tbStatus: null,
         pregnant: null,
         breastfeeding: null,
+        dispensed: null,
+        adherence: null
       },
       encountersToDelete: [],
       obs: [
@@ -113,6 +115,12 @@ export default {
           valueType: "value_numeric",
           secondType: "value_text",
           prepend: "value_text"
+        },
+        {
+          conceptID: 2540,
+          variableName: "adherence",
+          valueType: "value_numeric",
+          secondType: "value_text",
         }
       ]
     };
@@ -146,6 +154,11 @@ export default {
       })
       
     },
+    getLastOrder: async function(encounterDate) {
+    let patientID = this.$route.params.id;
+    let response =  await ApiClient.get(`/programs/1/patients/${patientID}/last_drugs_received?date=`+encounterDate);
+    return await response.json();
+  },
     removeEncounter: async function(encounter) {
       let response = await ApiClient.remove('encounters/'+encounter);
       return response;
@@ -289,6 +302,12 @@ export default {
               j.push(f.encounter_id);
             })
             tempob.encounters = [...j];
+        });
+        this.getLastOrder(element.visitDate).then(el => {
+              if(el.length > 0) {
+                element.dispensed = el[0].quantity;            
+                tempob.dispensed = el[0].quantity;            
+              }
         });
         this.patientVisits.push(tempob);
       });

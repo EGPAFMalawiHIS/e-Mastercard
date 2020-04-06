@@ -34,11 +34,11 @@
 
           <b-modal id="encounter-modal" title="encounter" size="xl">
             <div class="row">
-              <div class="col" style="text-align:left;">
-                <label for>Encounter Date</label>
-              </div>
+              
               <div class="col">
-                <input type="date" class="form-control" name id v-model="date" />
+                <label for="encounter-datepicker">Choose a visit date</label>
+                <b-form-datepicker id="encounter-datepicker" class="mb-2" v-model="date"></b-form-datepicker>
+                <!-- <input type="date" class="form-control" name id v-model="date" /> -->
               </div>
             </div>
             <encounter :date="date" />
