@@ -466,7 +466,6 @@ export default {
             // DONE
             concept_id: 6981,
             value_text: null
-            
           },
           confirmatoryTest: {
             value_coded: null,
@@ -677,7 +676,7 @@ export default {
 
       if (this.arvNumber != null) {
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.arvNumber}`;
-        this.saveARVNumber()
+        this.saveARVNumber();
       }
 
       if (this.confirmatory != null) {
@@ -738,7 +737,7 @@ export default {
         const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
         this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.arvNumber}`;
-        this.saveARVNumber()
+        this.saveARVNumber();
         this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
       } else {
         //ART start date
@@ -766,8 +765,12 @@ export default {
     },
 
     buildVitalsObservations() {
-      this.vitalsEncounter.obs.height.value_numeric = this.initialHeight;
-      this.vitalsEncounter.obs.weight.value_numeric = this.initialWeight;
+      if (this.initialHeight != null && this.initialWeight != null) {
+        this.vitalsEncounter.obs.height.value_numeric = this.initialHeight;
+        this.vitalsEncounter.obs.weight.value_numeric = this.initialWeight;
+      }else{
+        delete this.vitalsEncounter.obs
+      }
 
       if (this.registered) {
         const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
@@ -857,11 +860,11 @@ export default {
         identifier_data
       );
       if (response.status === 201 || response.status === 200) {
-        console.log("ARV number OK")
+        console.log("ARV number OK");
       } else if (response.status === 400) {
-        console.log("ARV number already taken")
+        console.log("ARV number already taken");
       }
-    },
+    }
   },
   created() {
     this.getPrefix();
