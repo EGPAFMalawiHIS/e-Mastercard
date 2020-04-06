@@ -57,85 +57,60 @@
     </div>
     <!-- /Pregnant / Breastfeeding Questions -->
 <div class="container-fluid">
-    <div class="row">
-      <div class="col d-flex justify-content-start">
-          <p>TB Status</p>
-        </div>
-        <div class="col">
-          <select class="form-control" name="" id="" v-model="currentStatus">
+ 
+          <b-row>
+            <b-col>
+    <b-form-group
+        label-cols-sm="3"
+        label="TB Status:"
+        label-align-sm="left"
+        label-for="tb-status"
+      >
+<select class="form-control" name="" id="tb-status" v-model="currentStatus">
             <option v-for="(status, index) in Object.keys(tb_status)"
           :key="index"
           :value="tb_status[status]">
             {{status}}
           </option>
           </select>
-          </div>
-      <div class="col d-flex justify-content-start">
-        <label class="form-check-label" for="inlineCheckbox1">Has Side Effects / Contraindications?</label>
-        </div>
-        <div class="col">
-          <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="true" v-model="hasSE"/>
-        
-          </div>
-          <div class="form-check form-check-inline">
-          </div>
-        </div>
-      </div>
-      <div class="row" v-show="hasSE">
-        <div class="col-md-4" v-for="(sideEffect, index) in Object.keys(sideEffects)" :key="index">
-          <div class="form-check">
-            <label class="form-check-label">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                :value="sideEffects[sideEffect]"
-                v-model="sides"
-              />
-              {{sideEffect}}
-            </label>
-          </div>
-        </div>
-        <div class="col-md-4" >
-          <div class="form-check">
-            <label class="form-check-label">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                value="true"
-                v-model="otherSE"
-              />
-              Other
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-    <br>
-    <div class="container-fluid" v-show="otherSE">
+        <!-- <b-form-input id="nested-street"></b-form-input> -->
+      </b-form-group>            
+            </b-col>
+            
+            <b-col>
+            <b-form-checkbox  v-model="hasSE" name="check-button" switch>
+                   Has Side Effects / Contraindications?
+            </b-form-checkbox>
 
-      <p>Other Side Effects / Contraindications</p>
-      <div class="row" >
-        <div
-          class="col-md-4"
-          v-for="(sideEffect, index) in Object.keys(otherSideEffects)"
-          :key="index"
-        >
-          <div class="form-check">
-            <label class="form-check-label">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                :value="otherSideEffects[sideEffect]"
-                v-model="otherSides"
-              />
-              {{sideEffect}}
-            </label>
-          </div>
-        </div>
+            <b-collapse id="collapse-1" class="mt-2" v-model="hasSE">
+              <b-card>
+                 <b-form-group label="Side Effects:">
+                <b-form-checkbox-group
+                  id="checkbox-group-1"
+                  v-model="sides"
+                  :options="sideEffects"
+                  name="flavour-1"
+                ></b-form-checkbox-group>
+              </b-form-group>
+                  <b-form-checkbox  v-model="otherSE" name="check-button"  switch>
+                   Other
+                      
+                </b-form-checkbox>               
+                <b-collapse id="collapse-1-inner" class="mt-2" v-model="otherSE">
+                  <b-card>
+                  <b-form-checkbox-group
+                      v-model="otherSides"
+                      :options="otherSideEffects"
+                    ></b-form-checkbox-group>
+                    
+                    </b-card>
+                </b-collapse>
+
+              </b-card>
+            </b-collapse>
+          </b-col>
+          </b-row>
       </div>
-    </div>
-    <br />
     </div>
   </div>
 </template>
@@ -188,27 +163,27 @@ export default {
         "night sweats": 6029,
         "Weight loss / Failure to thrive / malnutritionweight loss": 8260
       },
-      sideEffects: {
-        "peripheral neuropathy": 821,
-        jaundice: 215,
-        lipodystrophy: 2148,
-        "kidney failure": 9242,
-        psychosis: 219,
-        gynaecomastia: 9440,
-        anemia: 3,
-        "skin rash": 512,
-        insomnia: 867
-      },
-      otherSideEffects: {
-        fever: 5945,
-        vomiting: 5980,
-        dizziness: 877,
-        headache: 620,
-        nausea: 5978,
-        "weight loss": 8260,
-        "lactic acidosis": 1458,
-        cough: 107
-      },
+      sideEffects: [
+          { text: 'peripheral neuropaphy', value: 821 },
+          { text: 'jaundince', value: 215 },
+          { text: 'lipodostrophy', value: 2148 },
+          { text: 'kidney failure', value: 9242 },
+          { text: 'psychosis', value: 219 },
+          { text: 'gynaecomastia', value: 9440 },
+          { text: 'anemia', value: 3 },
+          { text: 'skin rash', value: 512 },
+          { text: 'insomnia', value: 867 },
+      ],
+      otherSideEffects: [
+          { text: 'fever', value: 5945 },
+          { text: 'vomiting', value: 5980 },
+          { text: 'dizziness', value: 877 },
+          { text: 'headache', value: 620 },
+          { text: 'nausea', value: 5978 },
+          { text: 'weight loss', value: 8260 },
+          { text: 'lactic acidosis', value: 1458 },
+          { text: 'cough', value: 107 },
+      ],
       prescribedFPM: [],
       currentFPM: [],
       sides: [],
@@ -265,30 +240,31 @@ export default {
           encounterObject.consultation.obs.onFP.value_coded = 1065;
         }
       }
-      Object.keys(this.sideEffects).forEach(el => {
-        encounterObject.consultation.obs[el] = {
+      this.sideEffects.forEach(el => {
+        encounterObject.consultation.obs[el.text] = {
           concept_id: 7755,
-          value_coded: this.sideEffects[el],
+          value_coded: el.value,
           child: {
-            concept_id: this.sideEffects[el],
-            value_coded: this.getCoded(this.sides, this.sideEffects[el])
+            concept_id: el.value,
+            value_coded: this.getCoded(this.sides, el.value)
           }
         };
       });
-      Object.keys(this.otherSideEffects).forEach(el => {
-        encounterObject.consultation.obs[el] = {
-          concept_id: 7951,
-          value_coded: this.otherSideEffects[el],
-          child: {
-            concept_id: this.otherSideEffects[el],
-            value_coded: this.getCoded(
-              this.otherSides,
-              this.otherSideEffects[el]
-            )
-          }
-        };
-      });
-      
+      if(this.otherSE) {
+        this.otherSideEffects.forEach(el => {
+          encounterObject.consultation.obs[el.text] = {
+            concept_id: 7951,
+            value_coded: el.value,
+            child: {
+              concept_id: el.value,
+              value_coded: this.getCoded(
+                this.otherSides,
+                el.value
+              )
+            }
+          };
+        });
+      }
       Object.keys(this.tbSymptoms).forEach(el => {
         encounterObject.consultation.obs[el] = {
           concept_id: this.tbSymptoms[el],
