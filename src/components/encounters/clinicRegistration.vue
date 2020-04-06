@@ -136,23 +136,23 @@
           <div class="col-md-6">
             <label style="float: left; font-weight: bold">ARV Number (*)</label>
           </div>
-          <div class="col-md-6">
-            <span
-              style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
-            >Number Unknown?</span>
-            <input type="checkbox" style="margin-left: 10px" @click="arvNumberUnkownCheckbox()" />
-          </div>
         </div>
-        <div class="form-group">
-          <input
-            type="text"
-            class="form-control"
-            name
-            placeholder="Enter ARV Number"
-            v-model="arvNumber"
-            :disabled="arvNumberUnkown"
-            v-on:input="setRegistration"
-          />
+        <div class="form-group" style="font-weight: bold;">
+          <div style="float: left; margin-top: 7px; color: rgba(300, 149, 100, 1); ">
+            <label style=" display: inline-block">{{`${sitePrefix}-ARV-`}}</label>
+          </div>
+          <div style="float: right; width: 80%; margin: auto">
+            <input
+              type="number"
+              class="form-control"
+              name
+              placeholder="Enter ARV Number"
+              v-model="arvNumber"
+              :disabled="arvNumberUnkown"
+              v-on:input="setRegistration"
+              style="display: inline"
+            />
+          </div>
         </div>
       </div>
       <div class="col-md-6">
@@ -256,6 +256,35 @@
         </div>
       </div>
     </div>
+    <div
+      v-if="everRegisteredAtClinicValue == 'No' || receievedARVTreatmentBefore == 'No'"
+      class="row"
+    >
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-6">
+            <label style="float: left; font-weight: bold;">ARV Number (*)</label>
+          </div>
+        </div>
+        <div class="form-group" style="font-weight: bold; color: rgba(300, 149, 100, 1);">
+          <div style="float: left; margin-top: 7px">
+            <label style=" display: inline-block">{{`${sitePrefix}-ARV-`}}</label>
+          </div>
+          <div style="float: right; width: 90%; margin: auto">
+            <input
+              type="number"
+              class="form-control"
+              name
+              placeholder="Enter ARV Number"
+              v-model="arvNumber"
+              :disabled="arvNumberUnkown"
+              v-on:input="setRegistration"
+              style="display: inline"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-md-12">
         <div class="row">
@@ -341,10 +370,12 @@ import "vue-select/dist/vue-select.css";
 import VueSelect from "vue-select";
 import vitals from "@/components/encounters/vitals.vue";
 import moment from "moment";
+import GlobalProperties from "@/services/global_properties";
 export default {
   components: {
     "v-select": VueSelect
   },
+  props: ["patientId"],
   data: function() {
     return {
       recievedTreatment: false,
@@ -370,6 +401,7 @@ export default {
       initialHeight: null,
       initialVitalsUnknown: false,
       initialTbStatus: "Select Option",
+      sitePrefix: null,
       TB_STATUS: {
         "TB NOT suspected": 7454,
         "TB suspected": 7455,
@@ -434,6 +466,7 @@ export default {
             // DONE
             concept_id: 6981,
             value_text: null
+            
           },
           confirmatoryTest: {
             value_coded: null,
@@ -643,7 +676,8 @@ export default {
       }
 
       if (this.arvNumber != null) {
-        this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = this.arvNumber;
+        this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.arvNumber}`;
+        this.saveARVNumber()
       }
 
       if (this.confirmatory != null) {
@@ -684,7 +718,6 @@ export default {
         const todaysDate = moment(new Date()).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = todaysDate;
       }
-
     },
 
     buildObservations() {
@@ -704,7 +737,8 @@ export default {
         // ART Number
         const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
         this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
-        this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = this.arvNumber;
+        this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.arvNumber}`;
+        this.saveARVNumber()
         this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
       } else {
         //ART start date
@@ -714,7 +748,7 @@ export default {
 
         delete this.clinicRegistration.obs.ARTStartLocation;
         delete this.clinicRegistration.obs.ARTStartLocation;
-        delete this.clinicRegistration.obs.initialTbStatus
+        delete this.clinicRegistration.obs.initialTbStatus;
       }
 
       //optional
@@ -729,7 +763,6 @@ export default {
         delete this.clinicRegistration.obs.testLocation;
         delete this.clinicRegistration.obs.testLocation;
       }
-
     },
 
     buildVitalsObservations() {
@@ -805,9 +838,33 @@ export default {
           initialVitals: this.vitalsEncounter
         });
       }
-    }
+    },
+    getPrefix: async function() {
+      this.sitePrefix = await GlobalProperties.getSitePrefix();
+
+      console.log("Site Prefix: " + this.sitePrefix);
+    },
+    //find site prefix
+    saveARVNumber: async function() {
+      let finalNum = `${this.sitePrefix}-ARV-${this.arvNumber}`;
+      let identifier_data = {
+        identifier: finalNum,
+        identifier_type: 4,
+        patient_id: this.patientId
+      };
+      const response = await ApiClient.post(
+        `/patient_identifiers/`,
+        identifier_data
+      );
+      if (response.status === 201 || response.status === 200) {
+        console.log("ARV number OK")
+      } else if (response.status === 400) {
+        console.log("ARV number already taken")
+      }
+    },
   },
   created() {
+    this.getPrefix();
     this.getlocations();
   },
   mounted() {
