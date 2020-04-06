@@ -59,15 +59,50 @@
             </div>
             <div class="form-row">
               <div v-if="!estimageAge" class="form-group col-md-6 input-column">
-                <label class="input-label" for="dobInput">Date Of Birth (*)</label>
-                <input
-                  v-model="dateOfBirth"
-                  type="date"
-                  class="form-control"
-                  id="patient-date-of-birth"
-                  name="patient-date-of-birth"
-                  placeholder="Date of Birth"
-                />
+                <div class="row">
+                  <div class="col-md-12">
+                    <label class="input-label" for="dobInput">Date Of Birth (*)</label>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <input
+                      v-model="dateOfBirthDay"
+                      type="number"
+                      class="form-control"
+                      id="patient-date-of-birth-day"
+                      name="patient-date-of-birth-day"
+                      placeholder="DD"
+                      maxlength="2"
+                      minlength="2"
+                    />
+                  </div>
+                  <div class="col-md-4">
+                    <input
+                      v-model="dateOfBirthMonth"
+                      type="number"
+                      class="form-control"
+                      id="patient-date-of-birth-month"
+                      name="patient-date-of-birth-month"
+                      placeholder="MM"
+                      maxlength="2"
+                      minlength="2"
+                    />
+                  </div>
+                  <div class="col-md-4">
+                    <input
+                      v-model="dateOfBirthYear"
+                      type="number"
+                      class="form-control"
+                      id="patient-date-of-birth-year"
+                      name="patient-date-of-birth-year"
+                      placeholder="YYYY"
+                      maxlength="4"
+                      minlength="4"
+                    />
+                  </div>
+                </div>
               </div>
               <div v-if="estimageAge" class="form-group col-md-6 input-column">
                 <label class="input-label" for="dobInput">Estimage Age (*)</label>
@@ -190,10 +225,7 @@
               @click="sampleClicked"
               style="margin-top: 95px"
             />
-            <div
-              class="errorTxt"
-              style="margin-top: 10px; text-align: center; font-weight: bold"
-            ></div>
+            <div class="errorTxt" style="margin-top: 10px; text-align: center; font-weight: bold"></div>
           </form>
 
           <!-- GUARDIAN -->
@@ -287,15 +319,49 @@
             </div>
             <div class="form-row">
               <div v-if="!guardianEstimageAge" class="form-group col-md-6 input-column">
-                <label class="input-label" for="dobInput">Date Of Birth (*)</label>
-                <input
-                  v-model="guardianDateOfBirth"
-                  type="date"
-                  class="form-control"
-                  id="guardian-date-of-birth"
-                  placeholder="Date of Birth"
-                  :disabled="!registerGuardian"
-                />
+                <div class="row">
+                  <div class="col-md-12">
+                    <label class="input-label" for="dobInput">Date Of Birth (*)</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <input
+                      v-model="dateOfBirthDayGuardian"
+                      type="number"
+                      class="form-control"
+                      id="guardian-date-of-birth-day"
+                      name="guardian-date-of-birth-day"
+                      placeholder="DD"
+                      maxlength="2"
+                      minlength="2"
+                    />
+                  </div>
+                  <div class="col-md-4">
+                    <input
+                      v-model="dateOfBirthMonthGuardian"
+                      type="number"
+                      class="form-control"
+                      id="guardian-date-of-birth-month"
+                      name="guardian-date-of-birth-month"
+                      placeholder="MM"
+                      maxlength="2"
+                      minlength="2"
+                    />
+                  </div>
+                  <div class="col-md-4">
+                    <input
+                      v-model="dateOfBirthYearGuardian"
+                      type="number"
+                      class="form-control"
+                      id="guardian-date-of-birth-year"
+                      name="guardian-date-of-birth-year"
+                      placeholder="YYYY"
+                      maxlength="4"
+                      minlength="4"
+                    />
+                  </div>
+                </div>
               </div>
               <div v-if="guardianEstimageAge" class="form-group col-md-6 input-column">
                 <label class="input-label" for="dobInput">Estimate Age (*)</label>
@@ -462,8 +528,8 @@
                     </tr>
                     <tr>
                       <th scope="row">Birthdate</th>
-                      <td>{{dateOfBirth || estimateBirthdate(estimatedAge)}}</td>
-                      <td>{{registerGuardian ? guardianDateOfBirth || estimateBirthdate(guardianEstimatedAge) : 'N/A'}}</td>
+                      <td>{{`${dateOfBirthDay}-${dateOfBirthMonth}-${dateOfBirthYear}` || estimateBirthdate(estimatedAge)}}</td>
+                      <td>{{registerGuardian ? `${dateOfBirthDayGuardian}-${dateOfBirthMonthGuardian}-${dateOfBirthYearGuardian}` || estimateBirthdate(guardianEstimatedAge) : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Gender</th>
@@ -587,6 +653,9 @@ export default {
       lastname: null,
       gender: "Select Gender",
       dateOfBirth: null,
+      dateOfBirthDay: null,
+      dateOfBirthMonth: null,
+      dateOfBirthYear: null,
       estimatedAge: null,
       estimageAge: false,
       guardianFirstname: null,
@@ -594,6 +663,9 @@ export default {
       guardianLastname: null,
       guardianGender: "Select Gender",
       guardianDateOfBirth: null,
+      dateOfBirthDayGuardian: null,
+      dateOfBirthMonthGuardian: null,
+      dateOfBirthYearGuardian: null,
       guardianEstimatedAge: null,
       guardianEstimageAge: false,
       homeDistrict: null,
@@ -983,7 +1055,10 @@ export default {
               if (this.registerGuardian) {
                 this.submitGuardianCreate(patientId);
               }
-              this.createPatientTypeObs(this.buildPatientTypeObs(ob), patientId);
+              this.createPatientTypeObs(
+                this.buildPatientTypeObs(ob),
+                patientId
+              );
             });
           }
         })
@@ -1016,7 +1091,7 @@ export default {
         .then(response => {
           if (response.status === 201) {
             return response.json().then(data => {
-              this.redirect(`/registration/${patientId}/true`)
+              this.redirect(`/registration/${patientId}/true`);
               console.log(data);
             });
           }
@@ -1103,6 +1178,10 @@ export default {
     },
 
     submitPersonCreate() {
+      const dobInput = `${this.dateOfBirthYear}-${this.dateOfBirthMonth}-${this.dateOfBirthDay}`;
+
+      const dob = moment(new Date(dobInput)).format("YYYY-MM-DD");
+
       this.person = {
         given_name: this.firstname,
         middle_name: this.middlename || "",
@@ -1110,7 +1189,7 @@ export default {
         gender: this.gender,
         birthdate: this.estimageAge
           ? this.estimateBirthdate(this.estimatedAge)
-          : this.dateOfBirth,
+          : dob,
         birthdate_estimated: this.estimageAge ? "Yes" : "No",
         home_district: this.homeDistrict,
         home_traditional_authority: this.homeTA,
@@ -1134,7 +1213,7 @@ export default {
 
       console.log(this.person);
 
-      this.guardian = this.person
+      this.guardian = this.person;
 
       this.person["isPatient"] = true;
 
@@ -1142,6 +1221,9 @@ export default {
     },
 
     submitGuardianCreate(patientId = "") {
+      const dobInput = `${this.dateOfBirthYear}-${this.dateOfBirthMonth}-${this.dateOfBirthDay}`;
+      const dob = moment(new Date(dobInput)).format("YYYY-MM-DD");
+
       this.person = {
         given_name: this.guardianFirstname,
         middle_name: this.guardianMiddlename || "",
@@ -1149,7 +1231,7 @@ export default {
         gender: this.guardianGender,
         birthdate: this.guardianEstimageAge
           ? this.estimateBirthdate(this.guardianEstimatedAge)
-          : this.guardianDateOfBirth,
+          : dob,
         birthdate_estimated: this.guardianEstimageAge ? "Yes" : "No",
         home_district: this.guardianHomeDistrict,
         home_traditional_authority: this.guardianHomeTA,
@@ -1171,7 +1253,7 @@ export default {
         facility_name: null
       };
 
-      this.guardian = this.person
+      this.guardian = this.person;
 
       this.person["isPatient"] = false;
       this.person["patient_id"] = patientId;
@@ -1230,7 +1312,7 @@ export default {
         .then(response => {
           if (response.status === 201) {
             return response.json().then(data => {
-              this.redirect(`/registration/${params.patient_id}/true`)
+              this.redirect(`/registration/${params.patient_id}/true`);
               console.log(data);
             });
           }
@@ -1260,8 +1342,14 @@ export default {
             let lastname = $("#patient-lastname")
               .val()
               .trim().length;
-            let dob = $("#patient-date-of-birth").val()
-              ? $("#patient-date-of-birth").val().length
+            let dobDay = $("#patient-date-of-birth-day").val()
+              ? $("#patient-date-of-birth-day").val().length
+              : 0;
+            let dobMonth = $("#patient-date-of-birth-month").val()
+              ? $("#patient-date-of-birth-month").val().length
+              : 0;
+            let dobYear = $("#patient-date-of-birth-year").val()
+              ? $("#patient-date-of-birth-year").val().length
               : 0;
             let age = $("#patient-age-estimate").val()
               ? $("#patient-age-estimate").val().length
@@ -1290,7 +1378,7 @@ export default {
             return (
               firstname > 0 &&
               lastname > 0 &&
-              (dob > 0 || age > 0) &&
+              ((dobDay > 0 && dobMonth > 0 && dobYear > 0) || age > 0) &&
               phone > 0 &&
               gender > 0 &&
               gender != "Select Gender" &&
@@ -1360,10 +1448,15 @@ export default {
               .val()
               .trim().length;
             console.log(lastname);
-            let dob = $("#guardian-date-of-birth").val()
-              ? $("#guardian-date-of-birth").val().length
+            let dobDay = $("#guardian-date-of-birth-day").val()
+              ? $("#guardian-date-of-birth-day").val().length
               : 0;
-            console.log(dob);
+            let dobMonth = $("#guardian-date-of-birth-month").val()
+              ? $("#guardian-date-of-birth-month").val().length
+              : 0;
+            let dobYear = $("#guardian-date-of-birth-year").val()
+              ? $("#guardian-date-of-birth-year").val().length
+              : 0;
             let age = $("#guardian-estimated-age").val()
               ? $("#guardian-estimated-age").val().length
               : 0;
@@ -1401,7 +1494,7 @@ export default {
               relationship != "Select Relationship" &&
               firstname > 0 &&
               lastname > 0 &&
-              (dob > 0 || age > 0) &&
+              ((dobDay > 0 && dobMonth > 0 && dobYear > 0 ) || age > 0) &&
               phone > 0 &&
               gender > 0 &&
               gender != "Select Gender" &&
@@ -1533,7 +1626,7 @@ export default {
       });
     },
     redirect: function(url) {
-      this.$router.push(url)
+      this.$router.push(url);
       //if (this.$router.path !== url) this.$router.push(url)
     }
   },
