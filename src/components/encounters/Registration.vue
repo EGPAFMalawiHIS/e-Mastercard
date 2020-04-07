@@ -10,7 +10,7 @@
           >
             <h5 style="font-weight: bold">HIV Clinic Registration</h5>
 
-            <clinic-registration v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration>
+            <clinic-registration v-bind:patientId="PATIENT_ID" v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration>
 
             <input
               type="button"
@@ -717,7 +717,7 @@ export default {
     removeEncounter: async function(encounter = "") {
       return await ApiClient.remove(`encounters/${encounter}`);
     },
-    voidEncounters: function(encounters = []) {
+    voidEncounters: function(encounters = []) { 
       encounters.forEach(encounter => {
         this.removeEncounter(encounter).then(data => {
           console.log(data);
