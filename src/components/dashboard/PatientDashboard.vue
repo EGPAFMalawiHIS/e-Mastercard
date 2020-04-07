@@ -73,6 +73,8 @@ import VisitsStartChart from "./VisitsStartChart.vue";
 import ApiClient from "../../services/api_client";
 import DateUtils from "../../services/date_utils";
 
+const REPORT_POLL_INTERVAL = 1000; // In millis
+
 export default {
   name: "PatientDashboard",
   created() {
@@ -164,16 +166,17 @@ export default {
 
       // This report runs in the background, have to keep probing
       // until it is available.
-      for(;;) {
+      const pollReport = async () => {
         const [status, visits] = await this.getReport(reportUrl);
 
-        if (status !== 'ok') {
-          break;
-        } else if (visits) {
+        if (status === 'ok' && visits) {
           this.setCompleteAndIncompleteVisits(visits);
-          break;
+        } else {
+          setInterval(pollReport, REPORT_POLL_INTERVAL);
         }
       }
+
+      pollReport();
     }
   }
 };
