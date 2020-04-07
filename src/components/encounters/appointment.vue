@@ -1,10 +1,12 @@
 <template>
-<div class="input-group mb-3">
-  <div class="input-group-prepend">
-    <span class="input-group-text" id="height">Appointment Date</span>
-  </div>
-  <input type="date" class="form-control" name="" id="" v-model="date.value_datetime">
-</div>
+  <!-- <input type="date" class="form-control" name="" id="" v-model="date.value_datetime"> -->
+  <b-row>
+    <b-col>
+
+  <label for="appointment-datepicker">Choose an appointment date</label>
+  <b-form-datepicker  id="appointment-datepicker" class="mb-2" v-model="date.value_datetime"></b-form-datepicker>
+    </b-col>
+  </b-row>
 </template>
 
 <script>
