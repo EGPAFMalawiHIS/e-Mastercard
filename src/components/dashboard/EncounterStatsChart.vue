@@ -1,110 +1,117 @@
 
 <template>
-  <div class="col-sm-12 shadow p-3 mb-5 bg-white rounded"> 
-    <div class="row">
-      <div class="col-md-3">
-        <i class="fa fa-code fa-2x"></i>
-      </div>
-      <div class="col-md-9">
-        <div class="row">
-          <div class="col-md-12">
-            <label style="float: left">
-            {{stats.name}}</label>
-          </div>
+  <b-overlay :show="loading">
+    <div class="col-sm-12 shadow p-3 mb-5 bg-white rounded"> 
+      <div class="row">
+        <div class="col-md-3">
+          <i class="fa fa-code fa-2x"></i>
         </div>
-        <div class="row">
-          <div class="col-md-12">
-            <label style="font-weight: bold; float: left;">{{stats.count}}</label>
+        <div class="col-md-9">
+          <div class="row">
+            <div class="col-md-12">
+              <label style="float: left"><slot></slot></label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label style="font-weight: bold; float: left;">{{value}}</label>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- <div class="counter">
-      <i class="fa fa-code fa-2x"></i>
-      <label class="count-text">{{stats.name}}</label>
-      <h2 class="timer count-title count-number" data-to="100" data-speed="1500">{{stats.count}}</h2>
-    </div> -->
-  </div>
+      
+      <!-- <div class="counter">
+        <i class="fa fa-code fa-2x"></i>
+        <label class="count-text">{{stats.name}}</label>
+        <h2 class="timer count-title count-number" data-to="100" data-speed="1500">{{stats.count}}</h2>
+      </div> -->
+    <!-- </div> -->
+  </b-overlay>
 </template>
 
 <script>
 import Chart from "chart.js"
 export default {
   name: "",
-  props: ["stats"],
-  updated() {
-    new Chart(this.$refs.myChart, {
-      type: "bar",
-      data: {
-        labels: this.stats.labels,
-        datasets: [
-          {
-            label: "Label",
-            backgroundColor: rgba(137, 232, 200, 0.3),
-            data: [1, 2, 3, 4, 5, 0]
-          }
-        ]
-      },
-      options: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: ""
-        },
-        tooltips: {
-          enabled: true
-        },
-        hover: {
-          animationDuration: 1
-        },
-        animation: {
-          duration: 1,
-          onComplete: function() {
-            let chartInstance = this.chart,
-              ctx = chartInstance.ctx
-            ctx.textAlign = "center"
-            ctx.fillStyle = "rgba(0, 0, 0, 1)"
-            ctx.textBaseline = "bottom"
-
-            this.data.datasets.forEach(function(dataset, i) {
-              let meta = chartInstance.controller.getDatasetMeta(i)
-              meta.data.forEach(function(bar, index) {
-                let data = dataset.data[index]
-                ctx.fillText(data, bar._model.x, bar._model.y - 5)
-              })
-            })
-          }
-        },
-        scales: {
-          yAxes: [
-            {
-              type: "linear",
-              display: true,
-              position: "left",
-              id: "y-axis-1",
-              gridLines: {
-                display: false
-              },
-              labels: {
-                show: true
-              },
-              ticks: {
-                beginAtZero: true,
-                userCallback: function(label, index, labels) {
-                  if (Math.floor(label) === label) {
-                    return label
-                  }
-                },
-                suggestedMin: 0,
-                suggestedMax: this.stats.total + 1
-              }
-            }
-          ]
-        }
-      }
-    })
+  props: ['value'],
+  computed: {
+    loading() {
+      return this.value == -1;
+    }
   }
+  // updated() {
+  //   new Chart(this.$refs.myChart, {
+  //     type: "bar",
+  //     data: {
+  //       labels: this.stats.labels,
+  //       datasets: [
+  //         {
+  //           label: "Label",
+  //           backgroundColor: 'rgba(137, 232, 200, 0.3)',
+  //           data: [1, 2, 3, 4, 5, 0]
+  //         }
+  //       ]
+  //     },
+  //     options: {
+  //       legend: { display: false },
+  //       title: {
+  //         display: true,
+  //         text: ""
+  //       },
+  //       tooltips: {
+  //         enabled: true
+  //       },
+  //       hover: {
+  //         animationDuration: 1
+  //       },
+  //       animation: {
+  //         duration: 1,
+  //         onComplete: function() {
+  //           let chartInstance = this.chart,
+  //             ctx = chartInstance.ctx
+  //           ctx.textAlign = "center"
+  //           ctx.fillStyle = "rgba(0, 0, 0, 1)"
+  //           ctx.textBaseline = "bottom"
+
+  //           this.data.datasets.forEach(function(dataset, i) {
+  //             let meta = chartInstance.controller.getDatasetMeta(i)
+  //             meta.data.forEach(function(bar, index) {
+  //               let data = dataset.data[index]
+  //               ctx.fillText(data, bar._model.x, bar._model.y - 5)
+  //             })
+  //           })
+  //         }
+  //       },
+  //       scales: {
+  //         yAxes: [
+  //           {
+  //             type: "linear",
+  //             display: true,
+  //             position: "left",
+  //             id: "y-axis-1",
+  //             gridLines: {
+  //               display: false
+  //             },
+  //             labels: {
+  //               show: true
+  //             },
+  //             ticks: {
+  //               beginAtZero: true,
+  //               userCallback: function(label, index, labels) {
+  //                 if (Math.floor(label) === label) {
+  //                   return label
+  //                 }
+  //               },
+  //               suggestedMin: 0,
+  //               suggestedMax: this.stats.total + 1
+  //             }
+  //           }
+  //         ]
+  //       }
+  //     }
+  //   })
+  // }
 };
 </script>
 
