@@ -868,7 +868,7 @@ export default {
   },
   created() {
     this.getPrefix();
-    this.getlocations();
+    this.getlocations(sessionStorage.location_name);
   },
   mounted() {
     this.initial();

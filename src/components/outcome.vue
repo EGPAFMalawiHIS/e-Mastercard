@@ -187,6 +187,7 @@ export default {
     },
   }, mounted() {
       this.getOutcomes();
+      this.getlocations(sessionStorage.location_name);
       this.getPatientOutcomes();
   }
 };

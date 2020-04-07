@@ -887,7 +887,7 @@ export default {
   created() {
     this.initialize();
     this.fetchDemographics();
-    this.getlocations();
+    this.getlocations(sessionStorage.location_name);
   },
 
   mounted() {

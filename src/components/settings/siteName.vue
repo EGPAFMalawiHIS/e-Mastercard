@@ -64,6 +64,9 @@ export default {
         console.log("Failed to update");
       }
     }
+  }, 
+  mounted() {
+    this.getlocations(sessionStorage.location_name);
   }
 };
 </script>
