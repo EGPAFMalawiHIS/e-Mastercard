@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist';
+
+import dashboard from './modules/dashboard';
 import registration from './modules/registration';
 import staging from './modules/staging';
 
@@ -57,8 +59,9 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
+    dashboard,
     registration,
-    staging
+    staging,
   },
   plugins: [vuexPersist.plugin]
 })

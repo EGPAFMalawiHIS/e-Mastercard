@@ -2,10 +2,10 @@
   <div>
     <div class="form-row" >
       <div class="form-group col-md-6">
-        <label for="inputState">Pill Count</label>
+        <label for="inputState">Pill Count: Last dispensation({{ previousDispensation }})</label>
       </div>
-      <div class="form-group col-md-6">
-        <input type="number" class="form-control" id="pill-count" v-model="pillCount" />
+      <div class="form-group col-md-6" >
+        <input type="number" class="form-control" id="pill-count" v-model="pillCount" v-if="previousDispensation > 0"/>
       </div>
     </div>
   </div>
@@ -71,12 +71,16 @@ methods: {
   calculateAdherence: function(given, pill_count, expected) {
         return Math.round(100 * (given - pill_count) / (given - expected));
   },
-  getLastOrder: async function() {
+  getLastOrder: async function(encounterDate) {
+    this.lastDrugs = [];
     let patientID = this.$route.params.id;
-      await ApiClient.get(`/programs/1/patients/${patientID}/last_drugs_received`).then(
+      await ApiClient.get(`/programs/1/patients/${patientID}/last_drugs_received?date=`+encounterDate).then(
         res => {
           res.json().then(ret => {
-            this.lastDrugs = ret;            
+            if(ret.length > 0) {
+
+              this.lastDrugs = ret;            
+            }
           });
         }
       );
@@ -88,8 +92,21 @@ methods: {
   }
 
 }, mounted() {
-  this.getLastOrder();
-}
+  this.getLastOrder(this.date);
+  EventBus.$on('change-date', payload => {
+    // his.getLastOrder();
+  });
+},
+watch: { 
+      	date: function(newVal, oldVal) { // watch it
+          this.getLastOrder(newVal);
+        }
+      },
+  computed: {
+   previousDispensation() {
+     return this.lastDrugs.length > 0 ? this.lastDrugs[0].quantity : 0;
+   } 
+  }
 }
 </script>
 

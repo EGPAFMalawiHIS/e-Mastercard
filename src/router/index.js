@@ -1,21 +1,15 @@
+import errors from './errors';
+import users from './users';
+
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 
-import Store from "@/store";
-
 Vue.use(VueRouter);
 
-function authSuperuser(to, from, next) {
-    if (Store.getters.userIs('Superuser')) {
-      next();
-      return;
-    }
-
-    next('/');
-}
-
 const routes = [
+  ...errors,
+  ...users,
   {
     path: '/',
     name: 'dashboard',
@@ -179,24 +173,6 @@ const routes = [
     component: () => import("../views/cleaning_tools/Merging.vue")
   },
   {
-    path: "/users",
-    name: "ListUsers",
-    component: () => import("../views/Users/list.vue"),
-    beforeEnter: authSuperuser,
-  },
-  {
-    path: "/users/create",
-    name: "CreateUser",
-    component: () => import("../views/Users/create.vue"),
-    beforeEnter: authSuperuser
-  },
-  {
-    path: "/users/edit/:userId",
-    name: "EditUser",
-    component: () => import("../views/Users/edit.vue"),
-    beforeEnter: authSuperuser
-  },
-  {
     path: "/ipt_coverage",
     name: "IPTcoverage",
     component: () => import("../views/IPTcoverage.vue")
@@ -218,5 +194,13 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login' || sessionStorage.apiKey) {
+    return next();
+  }
+
+  return next('/login');
+});
 
 export default router;
