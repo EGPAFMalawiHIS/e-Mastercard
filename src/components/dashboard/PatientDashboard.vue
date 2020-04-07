@@ -54,7 +54,7 @@
       </div>
       <div class="col-md-8">
         <div class="shadow p-3 mb-5 bg-white rounded" style="height: 458px">
-          <VisitsStartChart/>
+          <VisitsStartChart :visits="completeAndIncompleteVisits" />
         </div>
       </div>
     </div>
@@ -82,8 +82,10 @@ export default {
     this.loadDefaulters(startDate, endDate);
     this.loadMissedAppointments(startDate, endDate);
     this.loadAppointmentsDue(startDate, endDate);
+    this.loadCompleteAndIncompleteVisits(startDate, endDate);
   },
   computed: mapState({
+    completeAndIncompleteVisits: state => state.dashboard.completeAndIncompleteVisits,
     defaulters: state => state.dashboard.defaulters,
     lipo: state => state.dashboard.lipo,
     patientsDueForViralLoad: state => state.dashboard.patientsDueForViralLoad,
@@ -99,7 +101,8 @@ export default {
     VisitsStartChart
   },
   methods: {
-    ...mapMutations(['setDefaulter',
+    ...mapMutations(['setCompleteAndIncompleteVisits',
+                     'setDefaulters',
                      'setPatientsOnDtg',
                      'setPatientsWithMissedAppointments',
                      'setPatientsWithAppointmentsTomorrow']),
@@ -109,43 +112,69 @@ export default {
 
         if (!response.ok) {
           const {status, error, exception} = await response.json();
-          throw new Error(`Failed to pull patients on DTG report: ${status} - ${error} (${exception})`);
+          throw new Error(`Failed to pull (reportUrl): ${status} - ${error} (${exception})`);
         }
 
-        return await response.json();
+        if (response.status === 204) return ['ok', null];
+
+        return ['ok', await response.json()];
       } catch (error) {
         this.$router.push({name: 'error', params: {message: error.message}});
+        return ['error', null];
       }
     },
     async loadPatientsOnDtg(startDate, endDate) {
       const reportUrl = `programs/1/reports/patients_on_dtg?start_date=${startDate}&end_date=${endDate}`;
-      const patients = await this.getReport(reportUrl);
+      const [status, patients] = await this.getReport(reportUrl);
+
+      if (status !== 'ok') return;
 
       this.setPatientsOnDtg(patients);
     },
     async loadDefaulters(startDate, endDate) {
-      const today = DateUtils.isoDate(new Date());
+      const today = moment(new Date()).format(DateUtils.ISO_FORMAT);
       const reportUrl = `defaulter_list?date=${today}&start_date=${startDate}&end_date=${endDate}&pepfar=true&program_id=1`;
-      const patients = await this.getReport(reportUrl);
+      const [status, patients] = await this.getReport(reportUrl);
 
+      if (status !== 'ok') return;
+      
       this.setDefaulters(patients);
     },
     async loadMissedAppointments(startDate, endDate) {
-      const today = DateUtils.isoDate(new Date());
+      const today = moment(new Date()).format(DateUtils.ISO_FORMAT);
       const reportUrl = `missed_appointments?date=${today}&start_date=${startDate}&end_date=${endDate}&program_id=1`;
-      const patients = await this.getReport(reportUrl);
+      const [status, patients] = await this.getReport(reportUrl);
+
+      if (status !== 'ok') return;
       
       this.setPatientsWithMissedAppointments(patients);
     },
     async loadAppointmentsDue(_startDate, _endDate) {
-      const tomorrow = moment(new Date()).add(1, 'days').format('YYYY-MM-DD');
-      const patients = await this.getReport(`programs/1/booked_appointments?date=${tomorrow}`);
+      const tomorrow = moment(new Date()).add(1, 'days').format(DateUtils.ISO_FORMAT);
+      const [status, patients] = await this.getReport(`programs/1/booked_appointments?date=${tomorrow}`);
+
+      if (status !== 'ok') return;
 
       this.setPatientsWithAppointmentsTomorrow(patients);
+    },
+    async loadCompleteAndIncompleteVisits(_startDate, _endDate) {
+      const endDate = moment(new Date()).format(DateUtils.ISO_FORMAT);
+      const startDate = moment(endDate).subtract(7, 'days').format(DateUtils.ISO_FORMAT);
+      const reportUrl = `programs/1/reports/visits?start_date=${startDate}&end_date=${endDate}`;
+
+      // This report runs in the background, have to keep probing
+      // until it is available.
+      for(;;) {
+        const [status, visits] = await this.getReport(reportUrl);
+
+        if (status !== 'ok') {
+          break;
+        } else if (visits) {
+          this.setCompleteAndIncompleteVisits(visits);
+          break;
+        }
+      }
     }
   }
 };
 </script>
-
-<style>
-</style>
