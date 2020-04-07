@@ -1,9 +1,11 @@
 
 <template>
-  <div class="chart-wrapper">
-    <canvas ref="myChart" height="120"></canvas>
-    <p hidden class="count-text">Title</p>
-  </div>
+  <b-overlay :show="loading">
+    <div class="chart-wrapper">
+      <canvas ref="myChart" height="120"></canvas>
+      <p hidden class="count-text">Title</p>
+    </div>
+  </b-overlay>
 </template> 
 
 <script>
@@ -11,29 +13,47 @@ import Chart from "chart.js"
 
 export default {
   name: "VisitsStartChart",
+  props: ['visits'],
   data() {
     return {
       selected: ""
     }
   },
+  computed: {
+    destructuredVisits() {
+      function visitsReducer([days, completeVisits, incompleteVisits], [day, {complete, incomplete}]) {
+        days.push(day);
+        completeVisits.push(complete);
+        incompleteVisits.push(incomplete);
 
+        return [days, completeVisits, incompleteVisits];
+      }
+
+      return Object.entries(this.visits || {}).reduce(visitsReducer, [[], [], []]);    
+    },
+    loading() {
+      return !this.visits;
+    }
+  },
   mounted() {
+    const [days, completeVisits, incompleteVisits] = this.destructuredVisits;
+
     new Chart(this.$refs.myChart, {
       type: "line",
       data: {
-        labels: ["Sun", "Mon", "Tue", "Wed", "Thu"],
+        labels: days,
         datasets: [
           {
-            label: "Compete Visits",
+            label: "Complete Visits",
             borderColor: "rgba(222, 187, 240, 0.9)",
             backgroundColor: "rgba(187, 130, 245, 0.1)",
-            data: [8, 4, 2, 3, 1]
+            data: completeVisits
           },
           {
             label: "Incomplete Visits",
             borderColor: "rgba(174, 225, 242, 0.9)",
             backgroundColor: "rgba(150, 229, 255, 0.1)",
-            data: [2, 11, 2, 5, 5]
+            data: incompleteVisits
           }
         ]
       },

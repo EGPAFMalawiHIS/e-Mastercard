@@ -26,7 +26,8 @@ const state = {
   txCurrent: {
     count: -1,
     patients: []
-  }
+  },
+  completeAndIncompleteVisits: null
 };
 
 const actions = {};
@@ -53,6 +54,9 @@ const mutations = {
   setPatientsWithAppointmentsTomorrow(state, patients) {
     state.patientsWithAppointmentsTomorrow.patients = patients;
     state.patientsWithAppointmentsTomorrow.count = patients.length;
+  },
+  setCompleteAndIncompleteVisits(state, visits) {
+    state.completeAndIncompleteVisits = visits;
   }
 }
 

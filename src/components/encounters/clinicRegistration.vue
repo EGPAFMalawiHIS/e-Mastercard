@@ -39,16 +39,38 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12">
-            <div class="form-group">
-              <input
-                type="date"
-                class="form-control"
-                name
-                v-model="yearLastTaken"
-                @change="setRegistration"
-              />
-            </div>
+          <div class="col-md-4">
+            <input
+              v-model="dateLastTakenARVday"
+              type="number"
+              class="form-control"
+              placeholder="DD"
+              maxlength="2"
+              minlength="2"
+              v-on:input="setRegistration"
+            />
+          </div>
+          <div class="col-md-4">
+            <input
+              v-model="dateLastTakenARVmonth"
+              type="number"
+              class="form-control"
+              placeholder="MM"
+              maxlength="2"
+              minlength="2"
+              v-on:input="setRegistration"
+            />
+          </div>
+          <div class="col-md-4">
+            <input
+              v-model="dateLastTakenARVyear"
+              type="number"
+              class="form-control"
+              placeholder="YYYY"
+              maxlength="4"
+              minlength="4"
+              v-on:input="setRegistration"
+            />
           </div>
         </div>
       </div>
@@ -117,14 +139,40 @@
                 <label style="float: left; font-weight: bold">Date started ART (*)</label>
               </div>
             </div>
-            <div class="form-group">
-              <input
-                type="date"
-                class="form-control"
-                name
-                v-model="artStartDate"
-                @change="setRegistration"
-              />
+            <div class="row">
+              <div class="col-md-4">
+                <input
+                  v-model="artStartDateDay"
+                  type="number"
+                  class="form-control"
+                  placeholder="DD"
+                  maxlength="2"
+                  minlength="2"
+                  v-on:input="setRegistration"
+                />
+              </div>
+              <div class="col-md-4">
+                <input
+                  v-model="artStartDateMonth"
+                  type="number"
+                  class="form-control"
+                  placeholder="MM"
+                  maxlength="2"
+                  minlength="2"
+                  v-on:input="setRegistration"
+                />
+              </div>
+              <div class="col-md-4">
+                <input
+                  v-model="artStartDateYear"
+                  type="number"
+                  class="form-control"
+                  placeholder="YYYY"
+                  maxlength="4"
+                  minlength="4"
+                  v-on:input="setRegistration"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -345,14 +393,40 @@
             </div>
           </div>
           <div class="col-md-12">
-            <div class="form-group">
-              <input
-                type="date"
-                class="form-control"
-                name
-                v-model="hivTestYear"
-                @change="setRegistration"
-              />
+            <div class="row">
+              <div class="col-md-4">
+                <input
+                  v-model="hivTestDateDay"
+                  type="number"
+                  class="form-control"
+                  placeholder="DD"
+                  maxlength="2"
+                  minlength="2"
+                  v-on:input="setRegistration"
+                />
+              </div>
+              <div class="col-md-4">
+                <input
+                  v-model="hivTestDateMonth"
+                  type="number"
+                  class="form-control"
+                  placeholder="MM"
+                  maxlength="2"
+                  minlength="2"
+                  v-on:input="setRegistration"
+                />
+              </div>
+              <div class="col-md-4">
+                <input
+                  v-model="hivTestDateYear"
+                  type="number"
+                  class="form-control"
+                  placeholder="YYYY"
+                  maxlength="4"
+                  minlength="4"
+                  v-on:input="setRegistration"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -386,7 +460,9 @@ export default {
       registered: false,
       arvNumberUnkown: false,
       arvNumber: null,
-      artStartDate: null,
+      artStartDateDay: null,
+      artStartDateMonth: null,
+      artStartDateYear: null,
       yearLastTaken: null,
       estimatedYearLastTaken: null,
       locationOfInitiation: "Select Option",
@@ -394,7 +470,9 @@ export default {
       locationOfConfirmatory: "Select Option",
       locationOfConfirmatoryUnknown: false,
       confirmatory: "Select Option",
-      hivTestYear: null,
+      hivTestDateDay: null,
+      hivTestDateMonth: null,
+      hivTestDateYear: null,
       arvsTakenTwoMonthsPrior: "Select Option",
       arvsTakenTwoWeeksPrior: "Select Option",
       initialWeight: null,
@@ -402,6 +480,9 @@ export default {
       initialVitalsUnknown: false,
       initialTbStatus: "Select Option",
       sitePrefix: null,
+      dateLastTakenARVday: null,
+      dateLastTakenARVmonth: null,
+      dateLastTakenARVyear: null,
       TB_STATUS: {
         "TB NOT suspected": 7454,
         "TB suspected": 7455,
@@ -659,38 +740,51 @@ export default {
     },
 
     buildForRegistrationGlobalState() {
-      if (this.yearLastTaken != null) {
-        const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
-        this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = yearLastTaken;
+      if (
+        this.dateLastTakenARVyear != null &&
+        this.dateLastTakenARVmonth != null &&
+        this.dateLastTakenARVday != null
+      ) {
+        const dateInput = `${this.dateLastTakenARVyear}-${this.dateLastTakenARVmonth}-${this.dateLastTakenARVday}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = date;
       }
 
-      if (this.artStartDate != null) {
-        const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
-        this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
+      if (
+        this.artStartDateYear != null &&
+        this.artStartDateMonth != null &&
+        this.artStartDateDay != null
+      ) {
+        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.dateARTStarted.value_datetime = date;
       }
 
       if (this.registered) {
-        const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
-        this.clinicRegistration.encounter_datetime = dateStarted;
+        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.clinicRegistration.encounter_datetime = date;
       }
 
       if (this.arvNumber != null) {
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.arvNumber}`;
-        this.saveARVNumber();
       }
 
       if (this.confirmatory != null) {
         this.clinicRegistration.obs.confirmatoryTest.value_coded = this.confirmatory;
       }
 
-      if (this.hivTestYear) {
-        const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
-        this.clinicRegistration.obs.testDate.value_datetime = testYear;
+      if (this.hivTestDateYear != null && this.hivTestDateMonth !=  null && this.hivTestDateDay) {
+        const dateInput = `${this.hivTestDateYear}-${this.hivTestDateMonth}-${this.hivTestDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        
+        this.clinicRegistration.obs.testDate.value_datetime = date;
       }
 
       if (this.initialTbStatus) {
-        const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
-        this.clinicRegistration.obs.testDate.value_datetime = testYear;
+        const dateInput = `${this.hivTestDateYear}-${this.hivTestDateMonth}-${this.hivTestDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.testDate.value_datetime = date;
       }
 
       if (this.initialWeight != null) {
@@ -705,14 +799,20 @@ export default {
         this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
       }
 
-      if (this.artStartDate != null) {
-        const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
-        this.vitalsEncounter.encounter_datetime = dateStarted;
+      if (
+        this.artStartDateYear != null &&
+        this.artStartDateMonth != null &&
+        this.artStartDateDay != null
+      ) {
+        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.vitalsEncounter.encounter_datetime = date;
       }
 
       if (this.registered) {
-        const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
-        this.vitalsEncounter.encounter_datetime = dateStarted;
+        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.vitalsEncounter.encounter_datetime = date;
       } else {
         const todaysDate = moment(new Date()).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = todaysDate;
@@ -724,8 +824,9 @@ export default {
 
       // optional
       if (this.recievedTreatment) {
-        const yearLastTaken = moment(this.yearLastTaken).format("YYYY-MM-DD");
-        this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = yearLastTaken;
+        const dateInput = `${this.dateLastTakenARVyear}-${this.dateLastTakenARVmonth}-${this.dateLastTakenARVday}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = date;
       } else {
         delete this.clinicRegistration.obs.yearLastTakenARVs;
       }
@@ -734,8 +835,9 @@ export default {
       //optional
       if (this.registered) {
         // ART Number
-        const startDate = moment(this.artStartDate).format("YYYY-MM-DD");
-        this.clinicRegistration.obs.dateARTStarted.value_datetime = startDate; // this looks ok
+        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.dateARTStarted.value_datetime = date; // this looks ok
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.arvNumber}`;
         this.saveARVNumber();
         this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
@@ -753,8 +855,9 @@ export default {
       //optional
       if (this.confirmatory == 1040 || this.confirmatory == 844) {
         this.clinicRegistration.obs.confirmatoryTest.value_coded = this.confirmatory;
-        const testYear = moment(this.hivTestYear).format("YYYY-MM-DD");
-        this.clinicRegistration.obs.testDate.value_datetime = testYear;
+        const dateInput = `${this.hivTestDateYear}-${this.hivTestDateMonth}-${this.hivTestDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.clinicRegistration.obs.testDate.value_datetime = date;
       } else {
         delete this.clinicRegistration.obs.confirmatoryTest;
         delete this.clinicRegistration.obs.testDate;
@@ -768,13 +871,14 @@ export default {
       if (this.initialHeight != null && this.initialWeight != null) {
         this.vitalsEncounter.obs.height.value_numeric = this.initialHeight;
         this.vitalsEncounter.obs.weight.value_numeric = this.initialWeight;
-      }else{
-        delete this.vitalsEncounter.obs
+      } else {
+        delete this.vitalsEncounter.obs;
       }
 
       if (this.registered) {
-        const dateStarted = moment(this.artStartDate).format("YYYY-MM-DD");
-        this.vitalsEncounter.encounter_datetime = dateStarted;
+        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.vitalsEncounter.encounter_datetime = date;
       } else {
         const todaysDate = moment(new Date()).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = todaysDate;
@@ -782,6 +886,15 @@ export default {
     },
 
     setRegistration() {
+      const dateInput = `${this.dateLastTakenARVyear}-${this.dateLastTakenARVmonth}-${this.dateLastTakenARVday}`;
+      const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+
+      const startDateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+      const startDate = moment(new Date(startDateInput)).format("YYYY-MM-DD");
+
+      const testDateInput = `${this.hivTestDateYear}-${this.hivTestDateMonth}-${this.hivTestDateDay}`;
+      const testDate = moment(new Date(testDateInput)).format("YYYY-MM-DD");
+
       this.buildForRegistrationGlobalState();
       console.log("Set Registration");
       let registration = {};
@@ -790,19 +903,19 @@ export default {
         agrees_to_follow: this.shouldFollowUp,
         receieved_treatment: {
           ever_received: this.receievedARVTreatmentBefore,
-          last_date_received: this.yearLastTaken,
+          last_date_received: date,
           ever_registered: this.everRegisteredAtClinicValue
         },
         art_registration: {
           ever_registered: this.everRegisteredAtClinicValue,
           location: this.everRegisteredAtClinicValue,
-          start_date: this.artStartDate,
+          start_date: startDate,
           arv_number: this.arvNumber
         },
         confirmatory_test: {
           test: this.confirmatory,
           location: this.locationOfConfirmatory,
-          test_date: this.hivTestYear
+          test_date: testDate
         },
         vitals: this.vitalsEncounter
       };

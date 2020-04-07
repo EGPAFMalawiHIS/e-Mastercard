@@ -1,6 +1,8 @@
 import moment from 'moment';
 
 export default (() => {
+  const ISO_FORMAT = 'YYYY-MM-DD';
+
   /**
    * Returns quarter in which date belongs.
    * 
@@ -40,5 +42,5 @@ export default (() => {
     return moment(date).isoDate;
   }
 
-  return {dateQuarter, dateQuarterStr, isoDate};
+  return {ISO_FORMAT, dateQuarter, dateQuarterStr, isoDate};
 })();
