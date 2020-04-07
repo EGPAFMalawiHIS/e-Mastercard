@@ -9,85 +9,45 @@
     </div>
     <div class="row bar-charts" style="margin-top: 10px">
       <div class="col-md-3">
-        <EncounterStatsChart v-bind:stats="patientDueForViralLoad" style="height: 100px;" />
+        <EncounterStatsChart :value="patientsDueForViralLoad.count"
+                             style="height: 100px;">
+          Due for Viral Load
+        </EncounterStatsChart>
       </div>
       <div class="col-md-3">
-        <EncounterStatsChart v-bind:stats="patientsWithAppointmentsTomorrow" style="height: 100px" />
+        <EncounterStatsChart :value="patientsWithAppointmentsTomorrow.count"
+                             style="height: 100px">
+          Appointments Due
+        </EncounterStatsChart>
       </div>
       <div class="col-md-3">
-        <EncounterStatsChart v-bind:stats="patientsWithMissedAppointments" style="height: 100px" />
+        <EncounterStatsChart :value="patientsWithMissedAppointments.count"
+                             style="height: 100px">
+          Missed Appointments
+        </EncounterStatsChart>
       </div>
       <div class="col-md-3">
-        <EncounterStatsChart v-bind:stats="patientsWithMissedAppointments" style="height: 100px" />
+        <EncounterStatsChart :value="patientsWithMissedAppointments.count"
+                             style="height: 100px">
+          Missed Appointments
+        </EncounterStatsChart>
       </div>
     </div>
     <div class="row" style="margin: auto;">
       <div class="col-md-4">
         <div style="height: 450px">
-          <div style="background: rgba(164, 150, 242, 0.7); height: 105px; margin-top: 10px">
-            <div class="row">
-              <div class="col-md-12" style="margin-top: 10px">
-                <div style="margin-left: 10px">
-                  <label style="font-weight: bold; float: left;">Patients On DTG </label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12" style="margin: auto">
-                <div style="margin-left: 10px">
-                  <label style="font-weight: bold; color: white; font-size: 30px; float: left;">77 </label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style="background: rgba(164, 150, 242, 0.7); height: 105px; margin-top: 10px">
-            <div class="row">
-              <div class="col-md-12" style="margin-top: 10px">
-                <div style="margin-left: 10px">
-                  <label style="font-weight: bold; float: left;">Patients Defaulted (30 Days) </label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12" style="margin: auto">
-               <div style="margin-left: 10px">
-                  <label style="font-weight: bold; color: white; font-size: 30px; float: left;">77 </label>
-               </div>
-              </div>
-            </div>
-          </div>
-          <div style="background: rgba(164, 150, 242, 0.7); height: 105px; margin-top: 10px">
-            <div class="row">
-              <div class="col-md-12" style="margin-top: 10px">
-                <div style="margin-left: 10px">
-                  <label style="font-weight: bold; float: left;">TX Current (60 Days) </label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12" style="margin: auto">
-                <div style="margin-left: 10px">
-                  <label style="font-weight: bold; color: white; font-size: 30px; float: left;">77 </label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style="background: rgba(164, 150, 242, 0.7); height: 105px; margin-top: 10px">
-            <div class="row">
-              <div class="col-md-12" style="margin-top: 10px">
-                <div style="margin-left: 10px">
-                  <label style="font-weight: bold; float: left;">Lipo </label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div style="margin-left: 10px">
-                  <label style="font-weight: bold; color: white; font-size: 30px; float: left;">77 </label>
-                </div>
-              </div>
-            </div>
-          </div>
+          <DashboardCard :value="patientsOnDtg.count">
+            Patients on DTG
+          </DashboardCard>
+          <DashboardCard :value="defaulters.count">
+            Patients Default (30 Days)
+          </DashboardCard>
+          <DashboardCard :value="txCurrent.count">
+            TX Current (60 Days)
+          </DashboardCard>
+          <DashboardCard :value="lipo.count">
+            Lipo
+          </DashboardCard>
           <!-- <PatientChart />
           <PatientChart /> -->
         </div>
@@ -102,56 +62,88 @@
 </template>
 
 <script>
-import EncounterStatsChart from "./EncounterStatsChart.vue";
-import VisitsStartChart from "./VisitsStartChart.vue";
-import PatientChart from "./PatientChart.vue";
+import {mapState, mapMutations} from "vuex";
 import moment from "moment";
-import Config from "../../../public/config.json";
+
+import DashboardCard from "./DashboardCard.vue";
+import EncounterStatsChart from "./EncounterStatsChart.vue";
+import PatientChart from "./PatientChart.vue";
+import VisitsStartChart from "./VisitsStartChart.vue";
+
 import ApiClient from "../../services/api_client";
+import DateUtils from "../../services/date_utils";
 
 export default {
   name: "PatientDashboard",
-  data() {
-    return {
-      encounterDate: moment(new Date()).format("YYYY-MM-DD"),
-      patientDueForViralLoad: {
-        name: "Due for Viral Load",
-        label: "Number of Patients",
-        count: 123
-      },
-      patientsWithAppointmentsTomorrow: {
-        name: "Appointments Due",
-        label: "Number of Patients",
-        count: 123
-      },
-      patientsWithMissedAppointments: {
-        name: "Missed appointments",
-        label: "Number of Patients",
-        count: 123
-      },
-      patientsOnDtg: {
-        name: "On DTG",
-        label: "Number of Patients",
-        count: 123
-      },
-      defaulters: {
-        name: "Defaulters(30 Days)",
-        label: "Number of Patients",
-        count: 123
-      },
-      txCurrent: {
-        name: "TX Current(60 Days)",
-        label: "Number of Patients",
-        count: 123
-      }
-    };
+  created() {
+    const [startDate, endDate] = DateUtils.dateQuarter(new Date());
+
+    this.loadPatientsOnDtg(startDate, endDate);
+    this.loadDefaulters(startDate, endDate);
+    this.loadMissedAppointments(startDate, endDate);
+    this.loadAppointmentsDue(startDate, endDate);
   },
+  computed: mapState({
+    defaulters: state => state.dashboard.defaulters,
+    lipo: state => state.dashboard.lipo,
+    patientsDueForViralLoad: state => state.dashboard.patientsDueForViralLoad,
+    patientsOnDtg: state => state.dashboard.patientsOnDtg,
+    patientsWithAppointmentsTomorrow: state => state.dashboard.patientsWithAppointmentsTomorrow,
+    patientsWithMissedAppointments: state => state.dashboard.patientsWithMissedAppointments,
+    txCurrent: state => state.dashboard.txCurrent
+  }),
   components: {
+    DashboardCard,
     EncounterStatsChart,
-    VisitsStartChart,
-    PatientChart
+    PatientChart,
+    VisitsStartChart
   },
-  created() {}
+  methods: {
+    ...mapMutations(['setDefaulter',
+                     'setPatientsOnDtg',
+                     'setPatientsWithMissedAppointments',
+                     'setPatientsWithAppointmentsTomorrow']),
+    async getReport(reportUrl) {
+      try {
+        const response = await ApiClient.get(reportUrl);
+
+        if (!response.ok) {
+          const {status, error, exception} = await response.json();
+          throw new Error(`Failed to pull patients on DTG report: ${status} - ${error} (${exception})`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        this.$router.push({name: 'error', params: {message: error.message}});
+      }
+    },
+    async loadPatientsOnDtg(startDate, endDate) {
+      const reportUrl = `programs/1/reports/patients_on_dtg?start_date=${startDate}&end_date=${endDate}`;
+      const patients = await this.getReport(reportUrl);
+
+      this.setPatientsOnDtg(patients);
+    },
+    async loadDefaulters(startDate, endDate) {
+      const today = DateUtils.isoDate(new Date());
+      const reportUrl = `defaulter_list?date=${today}&start_date=${startDate}&end_date=${endDate}&pepfar=true&program_id=1`;
+      const patients = await this.getReport(reportUrl);
+
+      this.setDefaulters(patients);
+    },
+    async loadMissedAppointments(startDate, endDate) {
+      const today = DateUtils.isoDate(new Date());
+      const reportUrl = `missed_appointments?date=${today}&start_date=${startDate}&end_date=${endDate}&program_id=1`;
+      const patients = await this.getReport(reportUrl);
+      
+      this.setPatientsWithMissedAppointments(patients);
+    },
+    async loadAppointmentsDue(_startDate, _endDate) {
+      const tomorrow = moment(new Date()).add(1, 'days').format('YYYY-MM-DD');
+      const patients = await this.getReport(`programs/1/booked_appointments?date=${tomorrow}`);
+
+      this.setPatientsWithAppointmentsTomorrow(patients);
+    }
+  }
 };
 </script>
 
