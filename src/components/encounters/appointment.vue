@@ -1,8 +1,11 @@
 <template>
   <!-- <input type="date" class="form-control" name="" id="" v-model="date.value_datetime"> -->
   <b-row>
+    <b-col>
+
   <label for="appointment-datepicker">Choose an appointment date</label>
-  <b-form-datepicker size="sm" id="appointment-datepicker" class="mb-2" v-model="date.value_datetime"></b-form-datepicker>
+  <b-form-datepicker  id="appointment-datepicker" class="mb-2" v-model="date.value_datetime"></b-form-datepicker>
+    </b-col>
   </b-row>
 </template>
 

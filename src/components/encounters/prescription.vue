@@ -1,20 +1,5 @@
 <template>
   <div>
-  <!-- <div class="form-check form-check-inline">
-    <label class="form-check-label">
-      <input class="form-check-input" type="checkbox" name="" id="" value="true" v-model="prescribeCPT"> CPT
-    </label>
-  </div>
-  <div class="form-check form-check-inline" v-if="!onTb">
-    <label class="form-check-label">
-      <input class="form-check-input" type="checkbox" name="" id="" value="true" v-model="prescribeIPT"> IPT
-    </label>
-  </div>
-  <div class="form-check form-check-inline">
-    <label class="form-check-label">
-      <input class="form-check-input" type="checkbox" name="" id="" value="true" v-model="prescribeARVs"> ARVs
-    </label>
-  </div> -->
     <div class="form-row" >
       <div class="form-group col-md-6">
         <label for="inputState">Regimen</label>
@@ -33,19 +18,12 @@
     </div>
     <div class="form-row" >
       <div class="form-group col-md-6">
-        <label for="inputState">CPT</label>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="inputZip">Quantity</label>
+        <label for="inputZip">CPT Quantity</label>
         <input type="number" class="form-control" id="inputZip" v-model="CPTquantity" />
       </div>
-    </div>
-     <div class="form-row" >
+    
       <div class="form-group col-md-6">
-        <label for="inputState">IPT</label>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="inputZip">Quantity</label>
+        <label for="inputZip">IPT Quantity</label>
         <input type="number" class="form-control" id="inputZip" v-model="IPTquantity" />
       </div>
     </div>
