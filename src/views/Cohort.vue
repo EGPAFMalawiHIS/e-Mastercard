@@ -13,12 +13,21 @@
 
         <div class="cohort">
           <report-date-picker :onSubmit="fetchData"></report-date-picker>
-          <div id="printReport">
-            <cohortvalidation :dataparams="validationData"/>
-            <cohortheader :reportparams="reportData"/>
-            <cohort-ft :params="cohortData" :reportid="reportID"/>
-          </div>
-          <cohort-print :onPrint="printReport" />
+          <b-overlay :show="hideReport" :no-center="true" spinner-type="grow" spinner-variant="primary">
+            <template v-slot:overlay>
+              <div style="display: block; min-height: 720px; width: 100%; padding-top: 20%">
+                <h1 v-if="!reportSelected">No Report Selected</h1>
+                <b-spinner v-if="reportSelected" type="grow" variant="primary"></b-spinner>
+              </div>
+            </template>
+            <div id="printReport">
+              <cohortvalidation :dataparams="validationData"/>
+              <cohortheader :reportparams="reportData"/>
+              <cohort-ft :params="cohortData" :reportid="reportID"/>
+            </div>
+
+            <cohort-print :onPrint="printReport" />
+          </b-overlay>
         </div>
 
         <!-- Page Content end -->
@@ -73,10 +82,14 @@ export default {
       if(qtr == 'Select cohort quarter')
         return;
 
+      this.reportSelected = true;
+      this.reportLoading = true;
+
       const response = await ApiClient.get("programs/1/reports/cohort?name=" + qtr + "&regenerate=" + regenerate, {}, {});
 
       if (response.status === 200) {
         //response.json.then(function(data) { this.checkResult(data.values) });
+        this.reportLoading = false;
         this.reportData = qtr;
         response.json().then((data) => this.checkResult(data) );
       }else{
@@ -100,7 +113,14 @@ export default {
       cohortData: [],
       validationData: [],
       reportData: null,
-      reportID: null
+      reportID: null,
+      reportSelected: false,
+      reportLoading: false
+    }
+  },
+  computed: {
+    hideReport() {
+      return this.reportLoading || !this.reportSelected;
     }
   },
   mounted(){
