@@ -230,8 +230,14 @@
           <b-input type="text" id="text-name" v-model="firstName"></b-input>
           <label for="text-last-name">Last Name</label>
           <b-input type="text" id="text-last-name" v-model="lastName"></b-input>
-          <label for="text-phone-number">Phone Number</label><b-form-checkbox v-model="phoneNumberUnknown" name="check-button" switch>Unknown </b-form-checkbox>
-          <b-input :type="inputType" id="text-phone-number" v-model="updatedPhoneNumber" :state="numberState" :disabled="phoneNumberUnknown"></b-input>
+
+          <label for="text-phone-number">Phone Number</label>
+            <b-input-group class="mb-2">
+            <b-input-group-prepend is-text>
+              <b-form-checkbox v-model="phoneNumberUnknown" name="check-button" switch>Unknown </b-form-checkbox>
+            </b-input-group-prepend>
+              <b-input :type="inputType" id="text-phone-number" v-model="updatedPhoneNumber" :state="numberState" :disabled="phoneNumberUnknown"></b-input>
+            </b-input-group>
           <label for="text-address">Physical Address</label>
           <b-input type="text" id="text-address" v-model="updatedAddress"></b-input>
           <label for="input-sex">Sex</label>
@@ -260,8 +266,13 @@
           <b-input type="text" id="text-name" v-model="updatedguardianFirstName"></b-input>
           <label for="text-last-name">Last Name</label>
           <b-input type="text" id="text-last-name" v-model="updatedguardianLastName"></b-input>
-          <label for="text-phone-number">Phone Number</label><b-form-checkbox v-model="guardianphoneNumberUnknown" name="guardian-check" switch>Unknown </b-form-checkbox>
-          <b-input :type="guardianinputType" id="guardian-phone-number" v-model="updatedguardianNumber" :state="guardianNumberState"></b-input>
+          <label for="text-phone-number">Phone Number</label>
+            <b-input-group class="mb-2">
+            <b-input-group-prepend is-text>
+              <b-form-checkbox v-model="guardianphoneNumberUnknown" name="guardian-check" switch>Unknown </b-form-checkbox>
+            </b-input-group-prepend>
+          <b-input :type="guardianinputType" id="guardian-phone-number" v-model="updatedguardianNumber" :state="guardianNumberState" :disabled="guardianphoneNumberUnknown"></b-input>
+          </b-input-group>
 
           <div class="row justify-content-center">
             <b-button variant="primary" @click="updateGuardianDetails">Save</b-button>
