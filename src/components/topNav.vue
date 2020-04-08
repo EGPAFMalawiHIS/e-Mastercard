@@ -17,7 +17,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
         <li class="nav-item active" style="float: left; left: 0px; position: absolute;">
-          <a class="nav-link" href="#">{{location_name}}</a>
+          <a class="nav-link" href="#">{{location.name}}</a>
         </li>
         <!--li class="nav-item">
           <a class="nav-link" href="#">Link</a>
@@ -44,32 +44,26 @@
 
 <script>
 import ApiClient from "../services/api_client";
+import { mapState, mapMutations } from 'vuex';
 
 export default {
-    data: function() {
-        return{
-          location_name: null
-        }
-    },
     methods: {
+      ...mapMutations(['setLocation']),
       fetchLocationID: async function() {
         const response = await ApiClient.get("global_properties?property=current_health_center_id", {}, {});
         if (response.status === 200) {
           response.json().then((data) => this.fetchLocationName(data.current_health_center_id) );
         }
       },
-      fetchLocationName: async function(location_id) {
+      async fetchLocationName(location_id) {
         const response = await ApiClient.get("locations/" + location_id, {}, {});
         if (response.status === 200) {
-          response.json().then((data) => this.setLocationName(data) );
+          this.setLocation(await response.json());
         }
-      },
-      setLocationName(data){
-        sessionStorage.setItem('location_name', data.name);
-        this.location_name = data.name
       }
     },
     computed: {
+        ...mapState(['location']),
         username() {
             return (this.$store.user ? this.$store.user.username : sessionStorage.username);  
         }
