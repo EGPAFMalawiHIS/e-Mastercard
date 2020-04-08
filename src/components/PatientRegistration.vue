@@ -177,220 +177,52 @@
                 ></v-select>
               </div>
             </div>
-            <div class="row">
-              <label
-                class="form-check-label"
-                for="exampleCheck1"
-                style="font-size: 14px; margin-left: 15px; margin-top: 10px; font-style: italic; font-weight: bold; color: rgba(67, 149, 204, 1)"
-              >Current address same as Home address?</label>
 
-              <input
-                @click="homeCurrentAddressCheck($event)"
-                type="checkbox"
-                class="form-check-input"
-                id="exampleCheck1"
-                style="margin-left:295px; margin-top:14px"
-              />
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6 input-column">
-                <label style="font-weight: bold">Current Village (*)</label>
-                <v-select
-                  v-model="autoCompletedVillage"
-                  :options="villages"
-                  @search="fetchVillages"
-                  @input="buildPatientCurrentAddress"
-                  :disabled="homeCurrentAddress"
-                  id="patient-current-village"
-                  name="patient-current-village"
-                ></v-select>
-              </div>
-              <div class="form-group col-md-6 input-column">
-                <label style="font-weight: bold">Closest Land Mark or Plot Number (*)</label>
-                <v-select
-                  v-model="autoCompletedLandMark"
-                  :options="LANDMARKS"
-                  :disabled="homeCurrentAddress"
-                  id="current-landmark"
-                  name="current-landmark"
-                ></v-select>
-              </div>
-            </div>
-
-            <input
-              type="button"
-              name="next"
-              class="btn btn-primary personal action-button"
-              value="Next Step"
-              @click="sampleClicked"
-              style="margin-top: 95px"
-            />
-            <div class="errorTxt" style="margin-top: 10px; text-align: center; font-weight: bold"></div>
-          </form>
-
-          <!-- GUARDIAN -->
-
-          <form
-            id="gDetails"
-            class="content-tab tab-pane fade show active shadow-lg p-3 mb-5 bg-white rounded form-template tab"
-          >
-            <h5 style="font-weight: bold">
-              Guardian Details
-              <span
-                style="font-size: 14px; margin-left: 15px; font-style: italic; font-weight: bold; color: rgba(67, 149, 204, 1)"
-              >Register a guardian?</span>
-              <input
-                @click="registerGuardianCheck($event)"
-                v-model="registerGuardian"
-                type="checkbox"
-                class="form-check-input"
-                id="register-guardian"
-                name="register-guardian"
-                style="margin-left:10px; margin-top:7px; text-size: 30px"
-              />
-            </h5>
             <div class="row">
-              <div class="col-md-4">
-                <label style="font-weight: bold; float:left">Patient to Guardian relationship (*)</label>
+              <div class="col-md-12">
+                <label style="font-weight: bold">
+                  Guardian Details
+                  <span
+                    style="font-size: 14px; margin-left: 15px; margin-top: 10px; font-style: italic; font-weight: bold; color: rgba(67, 149, 204, 1)"
+                  >Guardian Details Unknown?</span>
+                  <input
+                    @click="guardianDetailsUnkownCheck($event)"
+                    type="checkbox"
+                    class="form-check-input"
+                    id="exampleCheck1"
+                    style="margin-left:6px; margin-top:7px"
+                  />
+                </label>
               </div>
-            </div>
-            <div class="row">
-              <div class="form-group col-md-12 input-column">
-                <v-select
-                  v-model="patientGuardianRelationship"
-                  :options="relationships"
-                  @search="fetchRelationships"
-                  id="relationship"
-                  name="relationship"
-                ></v-select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-4 input-column">
-                <label class="input-label" for="firstNameInput">First Name (*)</label>
-                <input
-                  v-model="guardianFirstname"
-                  type="text"
-                  class="form-control"
-                  id="guardian-firstname"
-                  name="guardian-firstname"
-                  placeholder="First Name"
-                  :disabled="!registerGuardian"
-                />
-              </div>
-              <div class="form-group col-md-4 input-column">
-                <label class="input-label" for="middleNameInput">Middle Name (*)</label>
-                <input
-                  v-model="guardianMiddlename"
-                  type="text"
-                  class="form-control"
-                  id="guardian-middlename"
-                  name="guardian-middlename"
-                  placeholder="Middle Name"
-                  :disabled="!registerGuardian"
-                />
-              </div>
-              <div class="form-group col-md-4 input-column">
-                <label class="input-label" for="lastNameInput">Last Name (*)</label>
-                <input
-                  v-model="guardianLastname"
-                  type="text"
-                  class="form-control"
-                  id="guardian-lastname"
-                  name="guardian-lastname"
-                  placeholder="Last Name"
-                  :disabled="!registerGuardian"
-                />
-              </div>
-            </div>
-            <div class="row">
-              <span
-                style="font-size: 14px; margin-left: 15px; margin-top: 10px; font-style: italic; font-weight: bold; color: rgba(67, 149, 204, 1)"
-              >Estimate Date of Birth?</span>
-              <input
-                @click="estimateGuarianAge($event)"
-                v-model="guardianEstimageAge"
-                type="checkbox"
-                class="form-check-input"
-                id="exampleCheck1"
-                style="margin-left:175px; margin-top:14px"
-                :disabled="!registerGuardian"
-              />
-            </div>
-            <div class="form-row">
-              <div v-if="!guardianEstimageAge" class="form-group col-md-6 input-column">
+              <div class="col md-6">
                 <div class="row">
-                  <div class="col-md-12">
-                    <label class="input-label" for="dobInput">Date Of Birth (*)</label>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-6">
+                    <label class="input-label" for="firstNameInput">First Name (*)</label>
                     <input
-                      v-model="dateOfBirthDayGuardian"
-                      type="number"
+                      v-model="guardianFirstname"
+                      type="text"
                       class="form-control"
-                      id="guardian-date-of-birth-day"
-                      name="guardian-date-of-birth-day"
-                      placeholder="DD"
-                      maxlength="2"
-                      minlength="2"
+                      id="guardian-firstname"
+                      name="guardian-firstname"
+                      placeholder="First Name"
+                      :disabled="disableGuardianDetails"
                     />
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-6">
+                    <label class="input-label" for="firstNameInput">Last Name (*)</label>
                     <input
-                      v-model="dateOfBirthMonthGuardian"
-                      type="number"
+                      v-model="guardianLastname"
+                      type="text"
                       class="form-control"
-                      id="guardian-date-of-birth-month"
-                      name="guardian-date-of-birth-month"
-                      placeholder="MM"
-                      maxlength="2"
-                      minlength="2"
-                    />
-                  </div>
-                  <div class="col-md-4">
-                    <input
-                      v-model="dateOfBirthYearGuardian"
-                      type="number"
-                      class="form-control"
-                      id="guardian-date-of-birth-year"
-                      name="guardian-date-of-birth-year"
-                      placeholder="YYYY"
-                      maxlength="4"
-                      minlength="4"
+                      id="guardian-lastname"
+                      name="guardian-lastname"
+                      placeholder="Last Name"
+                      :disabled="disableGuardianDetails"
                     />
                   </div>
                 </div>
               </div>
-              <div v-if="guardianEstimageAge" class="form-group col-md-6 input-column">
-                <label class="input-label" for="dobInput">Estimate Age (*)</label>
-                <input
-                  v-model="guardianEstimatedAge"
-                  type="text"
-                  class="form-control"
-                  id="guardian-estimated-age"
-                  placeholder="Estimage Age"
-                  :disabled="!registerGuardian"
-                />
-              </div>
-              <div class="form-group col-md-6 input-column">
-                <label class="input-label" for="gender">Gender (*)</label>
-                <select
-                  v-model="guardianGender"
-                  id="guardian-gender"
-                  name="guardian-gender"
-                  class="form-control"
-                  :disabled="!registerGuardian"
-                >
-                  <option disabled>Select Gender</option>
-                  <option value="F">Female</option>
-                  <option value="M">Male</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-12 input-column">
+              <div class="col-md-6">
                 <label class="input-label" for="firstNameInput">
                   Cellphone Number (*)
                   <span
@@ -405,99 +237,37 @@
                   />
                 </label>
                 <input
+                  v-if="!disableGuardianDetails && !guardianPhoneNumber"
+                  v-model="guardianPhoneNumber"
+                  type="number"
+                  class="form-control"
+                  id="guardian-phonenumber"
+                  name="guardian-phonenumber"
+                  placeholder="Phone Number"
+                  :disabled="disableGuardianDetails || disabledGuardianPhoneNumber"
+                />
+                <input
+                  v-if="disableGuardianDetails || guardianPhoneNumber"
                   v-model="guardianPhoneNumber"
                   type="text"
                   class="form-control"
                   id="guardian-phonenumber"
                   name="guardian-phonenumber"
-                  placeholder="Cellphone Number"
-                  :disabled="!registerGuardian || disabledGuardianPhoneNumber"
+                  placeholder="Phone Number"
+                  :disabled="disableGuardianDetails || disabledGuardianPhoneNumber" 
                 />
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-group col-md-6 input-column">
-                <label style="font-weight: bold">Home Village (*)</label>
-                <v-select
-                  v-model="guardianHomeVillage"
-                  :options="villages"
-                  @search="fetchVillages"
-                  @input="buildGuardianAddress"
-                  :disabled="!registerGuardian"
-                  id="guardian-home-village"
-                  name="guardian-home-village"
-                ></v-select>
-              </div>
-              <div class="form-group col-md-6 input-column">
-                <label style="font-weight: bold">Closest Land Mark or Plot Number (*)</label>
-                <v-select
-                  :options="LANDMARKS"
-                  v-model="guardianLandMark"
-                  :disabled="!registerGuardian"
-                  id="guardian-landmark"
-                  name="guardian-landmark"
-                ></v-select>
-              </div>
-            </div>
-            <div class="row">
-              <label
-                class="form-check-label"
-                for="exampleCheck1"
-                style="font-size: 14px; margin-left: 15px; margin-top: 10px; font-style: italic; font-weight: bold; color: rgba(67, 149, 204, 1)"
-              >Current address same as Home address?</label>
 
-              <input
-                @click="guardianHomeCurrentAddressCheck($event)"
-                type="checkbox"
-                class="form-check-input"
-                id="exampleCheck1"
-                style="margin-left:295px; margin-top:14px"
-                :disabled="!registerGuardian"
-              />
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6 input-column">
-                <label style="font-weight: bold">Current Village (*)</label>
-                <v-select
-                  v-model="guardianCurrentVillage"
-                  :options="villages"
-                  @search="fetchVillages"
-                  @input="buildGuardianCurrentAddress"
-                  :disabled="guardianHomeCurrentAddress || !registerGuardian"
-                  id="guardian-current-village"
-                  name="guardian-current-village"
-                ></v-select>
-              </div>
-              <div class="form-group col-md-6 input-column">
-                <label style="font-weight: bold">Closest Land Mark or Plot Number (*)</label>
-                <v-select
-                  v-model="guardianAutoCompletedLandMark"
-                  :options="LANDMARKS"
-                  :disabled="guardianHomeCurrentAddress || !registerGuardian"
-                  id="guardian-landmark"
-                  name="guardian-landmark"
-                ></v-select>
-              </div>
-            </div>
-            <input
-              type="button"
-              name="previous"
-              class="btn btn-primary previous action-button-previous"
-              value="Previous"
-              style="margin-right: 5px; margin-top: 20px"
-            />
             <input
               type="button"
               name="next"
-              class="btn btn-primary guardian action-button"
+              class="btn btn-primary personal action-button"
               value="Next Step"
               @click="sampleClicked"
-              style=" margin-top: 20px"
+              style="margin-top: 95px"
             />
-            <div
-              class="guardianError"
-              style="margin-top: 10px; height: 1px; text-align: center; font-weight: bold"
-            ></div>
+            <div class="errorTxt" style="margin-top: 10px; text-align: center; font-weight: bold"></div>
           </form>
 
           <!-- SUMMARY -->
@@ -517,54 +287,40 @@
                     <td rowspan="2"></td>
                   </tr>
                   <tr>
-                    <th scope="col">Patient</th>
-                    <th scope="col">Guardian</th>
+                    <th scope="col">Value</th>
                   </tr>
                   <tbody>
                     <tr>
                       <th scope="row">Name</th>
                       <td>{{firstname}} {{middlename == null || middlename == "" ? middlename : ''}} {{lastname}}</td>
-                      <td>{{registerGuardian ? (guardianFirstname + " " + guardianMiddlename == null || guardianMiddlename == "" ? guardianMiddlename : '' + " " + guardianLastname) : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Birthdate</th>
                       <td>{{`${dateOfBirthDay}-${dateOfBirthMonth}-${dateOfBirthYear}` || estimateBirthdate(estimatedAge)}}</td>
-                      <td>{{registerGuardian ? `${dateOfBirthDayGuardian}-${dateOfBirthMonthGuardian}-${dateOfBirthYearGuardian}` || estimateBirthdate(guardianEstimatedAge) : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Gender</th>
                       <td>{{gender}}</td>
-                      <td>{{registerGuardian ? guardianGender : 'N/A'}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Cellphone</th>
                       <td>{{phoneNumber}}</td>
-                      <td>{{registerGuardian ? guardianPhoneNumber : 'N/A'}}</td>
                     </tr>
                     <tr>
-                      <th scope="row">Home Village</th>
+                      <th scope="row">Physical Address - Village</th>
                       <td>{{homeVillage.code}}</td>
-                      <td>{{registerGuardian ? guardianHomeVillage.code : 'N/A'}}</td>
                     </tr>
                     <tr>
-                      <th scope="row">Closest Landmaark</th>
+                      <th scope="row">Physical Address - Closest Landmaark</th>
                       <td>{{landmark.code}}</td>
-                      <td>{{registerGuardian ? guardianLandMark.code : 'N/A'}}</td>
                     </tr>
                     <tr>
-                      <th scope="row">Current Village</th>
-                      <td>{{autoCompletedVillage.code}}</td>
-                      <td>{{registerGuardian ? guardianCurrentVillage.code : 'N/A'}}</td>
+                      <th scope="row">Guardian Name</th>
+                      <td>{{`${guardianFirstname} ${guardianLastname}`}}</td>
                     </tr>
                     <tr>
-                      <th scope="row">Current Closest Landmark</th>
-                      <td>{{autoCompletedLandMark.code}}</td>
-                      <td>{{registerGuardian ? guardianAutoCompletedLandMark.code : 'N/A'}}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Patient to Guardian Relationship</th>
-                      <td>{{registerGuardian ? patientGuardianRelationship.code : 'N/A'}}</td>
-                      <td>{{registerGuardian ? patientGuardianRelationship.code : 'N/A'}}</td>
+                      <th scope="row">Guardian Phonenumber</th>
+                      <td>{{guardianPhoneNumber}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -614,9 +370,6 @@
           <ul id="progressbar">
             <li class="active" id="account">
               <strong>Personal Details</strong>
-            </li>
-            <li id="payment">
-              <strong>Guardian Details</strong>
             </li>
             <li id="confirm">
               <strong>Summary</strong>
@@ -711,6 +464,7 @@ export default {
       relationships: [],
       personalDetailsValid: false,
       guardianDetailsValid: false,
+      disableGuardianDetails: false,
       person: {},
       patient: {},
       guardian: {},
@@ -1127,6 +881,8 @@ export default {
         this.guardianPhoneNumber = "";
         this.disabledGuardianPhoneNumber = false;
       }
+      
+      console.log(this.guardianPhoneNumber)
     },
 
     estimateGuarianAge() {
@@ -1221,34 +977,23 @@ export default {
     },
 
     submitGuardianCreate(patientId = "") {
-      const dobInput = `${this.dateOfBirthYear}-${this.dateOfBirthMonth}-${this.dateOfBirthDay}`;
-      const dob = moment(new Date(dobInput)).format("YYYY-MM-DD");
-
       this.person = {
         given_name: this.guardianFirstname,
-        middle_name: this.guardianMiddlename || "",
+        middle_name: "",
         family_name: this.guardianLastname,
-        gender: this.guardianGender,
-        birthdate: this.guardianEstimageAge
-          ? this.estimateBirthdate(this.guardianEstimatedAge)
-          : dob,
-        birthdate_estimated: this.guardianEstimageAge ? "Yes" : "No",
-        home_district: this.guardianHomeDistrict,
-        home_traditional_authority: this.guardianHomeTA,
-        home_village: this.guardianHomeVillage,
-        current_district: this.guardianHomeCurrentAddress
-          ? this.guardianHomeDistrict
-          : this.guardianCurrentDistrict,
-        current_traditional_authority: this.guardianHomeCurrentAddress
-          ? this.guardianHomeTA
-          : this.guardianCurrentTA,
-        current_village: this.guardianHomeCurrentAddress
-          ? this.guardianHomeVillage
-          : this.guardianHomeCurrentAddress,
-        landmark: this.guardianLandMark.code,
+        gender: "N/A",
+        birthdate: moment(new Date("1970-01-01")).format("YYYY-MM-DD"),
+        birthdate_estimated: "N/A",
+        home_district: "N/A",
+        home_traditional_authority: "N/A",
+        home_village: "N/A",
+        current_district: "N/A",
+        current_traditional_authority: "N/A",
+        current_village: "N/A",
+        landmark: "N/A",
         cell_phone_number: this.guardianPhoneNumber,
         occupation: null,
-        relationship: this.registerGuardian ? "Yes" : "No",
+        relationship: "N/A",
         patient_type: "",
         facility_name: null
       };
@@ -1292,9 +1037,8 @@ export default {
     },
 
     createRelationship(params = {}) {
-      console.log(this.patientGuardianRelationship.id);
       const relationship = {
-        relationship_type_id: this.patientGuardianRelationship.id,
+        relationship_type_id: 13,
         relation_id: params.guardian_id
       };
 
@@ -1320,6 +1064,22 @@ export default {
         .catch(err => {
           console.log("Something went wrong!", err);
         });
+    },
+
+    guardianDetailsUnkownCheck() {
+      if (this.disableGuardianDetails == false) {
+        this.guardianFirstname = "Unknown";
+        this.guardianLastname = "Unknown";
+        this.guardianPhoneNumber = "Unknown";
+        this.disableGuardianDetails = true;
+        this.registerGuardian = false;
+      } else if (this.disableGuardianDetails == true) {
+        this.guardianFirstname = "";
+        this.guardianLastname = "";
+        this.guardianPhoneNumber = "";
+        this.disableGuardianDetails = false;
+        this.registerGuardian = true;
+      }
     },
 
     landmarkSelected(landmark) {
@@ -1366,14 +1126,17 @@ export default {
               .text()
               .trim()
               .replace("Loading...", "").length;
-            let currentVillage = $("#patient-current-village")
-              .text()
-              .trim()
-              .replace("Loading...", "").length;
-            let guardianLandmark = $("#current-landmark")
-              .text()
-              .trim()
-              .replace("Loading...", "").length;
+            let guardianFirstname = $("#guardian-firstname")
+              .val()
+              .trim().length;
+            let guardianLastname = $("#guardian-lastname")
+              .val()
+              .trim().length;
+            let guardianPhoneNumber = $("#guardian-phonenumber")
+              .val()
+              .trim().length;
+
+            console.log(guardianPhoneNumber);
 
             return (
               firstname > 0 &&
@@ -1384,12 +1147,11 @@ export default {
               gender != "Select Gender" &&
               homeVillage > 0 &&
               homeVillage != "Select Home Village" &&
-              currentVillage > 0 &&
-              currentVillage != "Select Current Village" &&
               patientLandmark > 0 &&
               patientLandmark != "Select Landmark" &&
-              guardianLandmark > 0 &&
-              guardianLandmark != "Select Current Landmark"
+              guardianFirstname > 0 &&
+              guardianLastname > 0 &&
+              guardianPhoneNumber > 0
             );
           };
 
@@ -1425,123 +1187,6 @@ export default {
             );
           } else {
             $(".errorTxt").html(message);
-            return;
-          }
-        });
-
-        // GUARDIAN
-
-        $(".guardian").click(function() {
-          const detilsValid = () => {
-            let register = $("#register-guardian").is(":checked");
-            console.log(register);
-            let relationship = $("#relationship")
-              .text()
-              .trim()
-              .replace("Loading...", "").length;
-            console.log(relationship);
-            let firstname = $("#guardian-firstname")
-              .val()
-              .trim().length;
-            console.log(firstname);
-            let lastname = $("#guardian-lastname")
-              .val()
-              .trim().length;
-            console.log(lastname);
-            let dobDay = $("#guardian-date-of-birth-day").val()
-              ? $("#guardian-date-of-birth-day").val().length
-              : 0;
-            let dobMonth = $("#guardian-date-of-birth-month").val()
-              ? $("#guardian-date-of-birth-month").val().length
-              : 0;
-            let dobYear = $("#guardian-date-of-birth-year").val()
-              ? $("#guardian-date-of-birth-year").val().length
-              : 0;
-            let age = $("#guardian-estimated-age").val()
-              ? $("#guardian-estimated-age").val().length
-              : 0;
-            console.log(age);
-            let phone = $("#guardian-phonenumber")
-              .val()
-              .trim().length;
-            console.log(phone);
-            let gender = $("#guardian-gender :selected").text().length;
-            console.log(gender);
-            let homeVillage = $("#guardian-home-village")
-              .text()
-              .trim()
-              .replace("Loading...", "").length;
-            console.log(homeVillage);
-            let patientLandmark = $("#guardian-landmark")
-              .text()
-              .trim()
-              .replace("Loading...", "").length;
-            console.log(patientLandmark);
-            let currentVillage = $("#guardian-current-village")
-              .text()
-              .trim()
-              .replace("Loading...", "").length;
-            console.log(currentVillage);
-            let guardianLandmark = $("#guardian-landmark")
-              .text()
-              .trim()
-              .replace("Loading...", "").length;
-            console.log(guardianLandmark);
-
-            return (
-              register &&
-              relationship > 0 &&
-              relationship != "Select Relationship" &&
-              firstname > 0 &&
-              lastname > 0 &&
-              ((dobDay > 0 && dobMonth > 0 && dobYear > 0 ) || age > 0) &&
-              phone > 0 &&
-              gender > 0 &&
-              gender != "Select Gender" &&
-              homeVillage > 0 &&
-              homeVillage != "Select Home Village" &&
-              currentVillage > 0 &&
-              currentVillage != "Select Current Village" &&
-              patientLandmark > 0 &&
-              patientLandmark != "Select Landmark" &&
-              guardianLandmark > 0 &&
-              guardianLandmark != "Select Current Landmark"
-            );
-          };
-
-          // validate if checkbox checked to register
-          if (detilsValid() || !$("#register-guardian").is(":checked")) {
-            $(".guardianError").html("");
-            current_fs = $(this).parent();
-            next_fs = $(this)
-              .parent()
-              .next();
-            //Add Class Active
-            $("#progressbar li")
-              .eq($(".content-tab").index(next_fs))
-              .addClass("active");
-
-            //show the next fieldset
-            next_fs.show();
-
-            current_fs.animate(
-              { opacity: 0 },
-              {
-                step: function(now) {
-                  // for making fielset appear animation
-                  opacity = 1 - now;
-
-                  current_fs.css({
-                    display: "none",
-                    position: "relative"
-                  });
-                  next_fs.css({ opacity: opacity });
-                },
-                duration: 600
-              }
-            );
-          } else {
-            $(".guardianError").html(message);
             return;
           }
         });
@@ -1707,7 +1352,7 @@ select.list-dt:focus {
 #progressbar li {
   list-style-type: none;
   font-size: 12px;
-  width: 24%;
+  width: 31%;
   float: left;
   position: relative;
 }
@@ -1729,12 +1374,12 @@ select.list-dt:focus {
 
 #progressbar #confirm:before {
   font-family: FontAwesome;
-  content: "3";
+  content: "2";
 }
 
 #progressbar #success:before {
   font-family: FontAwesome;
-  content: "4";
+  content: "3";
 }
 
 #progressbar li:before {
