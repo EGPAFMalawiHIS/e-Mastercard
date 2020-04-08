@@ -230,8 +230,8 @@
           <b-input type="text" id="text-name" v-model="firstName"></b-input>
           <label for="text-last-name">Last Name</label>
           <b-input type="text" id="text-last-name" v-model="lastName"></b-input>
-          <label for="text-phone-number">Phone Number</label>
-          <b-input type="text" id="text-phone-number" v-model="updatedPhoneNumber"></b-input>
+          <label for="text-phone-number">Phone Number</label><b-form-checkbox v-model="phoneNumberUnknown" name="check-button" switch>Unknown </b-form-checkbox>
+          <b-input :type="inputType" id="text-phone-number" v-model="updatedPhoneNumber" :state="numberState" :disabled="phoneNumberUnknown"></b-input>
           <label for="text-address">Physical Address</label>
           <b-input type="text" id="text-address" v-model="updatedAddress"></b-input>
           <label for="input-sex">Sex</label>
@@ -260,8 +260,8 @@
           <b-input type="text" id="text-name" v-model="updatedguardianFirstName"></b-input>
           <label for="text-last-name">Last Name</label>
           <b-input type="text" id="text-last-name" v-model="updatedguardianLastName"></b-input>
-          <label for="text-phone-number">Phone Number</label>
-          <b-input type="text" id="text-phone-number" v-model="updatedguardianNumber"></b-input>
+          <label for="text-phone-number">Phone Number</label><b-form-checkbox v-model="guardianphoneNumberUnknown" name="guardian-check" switch>Unknown </b-form-checkbox>
+          <b-input :type="guardianinputType" id="guardian-phone-number" v-model="updatedguardianNumber" :state="guardianNumberState"></b-input>
 
           <div class="row justify-content-center">
             <b-button variant="primary" @click="updateGuardianDetails">Save</b-button>
@@ -327,6 +327,8 @@ export default {
       updatedguardianLastName: null,
       updatedguardianRelation: null,
       updatedguardianNumber: null,
+      phoneNumberUnknown: false,
+      guardianphoneNumberUnknown: false,
       obs: [
         {
           conceptID: 2552
@@ -452,7 +454,9 @@ export default {
       ]
     };
   },
-  computed: {},
+  computed: {
+    
+  },
   methods: {
     getPatient: async function() {
       let f = await ApiClient.get(`/patients/${this.patientID}`);
@@ -482,6 +486,9 @@ export default {
               ret[0].relation.person_attributes,
               12
             );
+            if(this.guardianphoneNumber === "Unknown") {
+              this.guardianphoneNumberUnknown = true;
+            }
             this.nameOfGuardian =
               person_name["given_name"] +
               " " +
@@ -626,6 +633,7 @@ export default {
     },
     updateDetails: async function() {
       let params = {};
+      let errors = [];
       if (`${this.firstName} ${this.lastName}` !== this.name) {
         params.given_name = this.firstName;
         params.family_name = this.lastName;
@@ -638,12 +646,18 @@ export default {
         params.gender = this.updatedSex;
       }
       if (this.updatedPhoneNumber !== this.phoneNumber) {
+        if(!this.numberState) {
+          errors.push("fix phone number");
+        }
+        if(this.phoneNumberUnknown) {
+         params.cell_phone_number = "Unknown"; 
+        }
         params.cell_phone_number = this.updatedPhoneNumber;
       }
       if (this.updatedAddress !== this.landmark) {
         params.landmark = this.updatedAddress;
       }
-      if (Object.keys(params).length > 0) {
+      if (Object.keys(params).length > 0 && errors.length === 0) {
         const response = await ApiClient.put(
           `/people/${this.$route.params.id}`,
           params
@@ -671,11 +685,15 @@ export default {
           console.log("Failed to update");
         }
       } else {
-        this.$root.$emit("bv::hide::modal", "patient-info-modal", "#btnShow");
+          errors.forEach(element => {
+            this.showMessage(element);
+          });
+        // this.$root.$emit("bv::hide::modal", "patient-info-modal", "#btnShow");
       }
     },
     updateGuardianDetails: async function() {
       let params = {};
+      let errors = [];
       if (this.guardianFirstName !== this.updatedguardianFirstName) {
         params.given_name = this.updatedguardianFirstName;
       }
@@ -683,6 +701,12 @@ export default {
         params.family_name = this.updatedguardianLastName;
       }
       if (this.updatedguardianNumber !== this.guardianNumber) {
+        if(!this.guardianNumberState) {
+          errors.push("fix phone number");
+        }
+        if(this.guardianphoneNumberUnknown) {
+         params.cell_phone_number = "Unknown"; 
+        }
         params.cell_phone_number = this.updatedguardianNumber;
       }
 
@@ -790,6 +814,9 @@ export default {
         patient.person.person_attributes,
         12
       );
+      if(this.phoneNumber === "Unknown") {
+        this.phoneNumberUnknown = true;
+      }
       let personObj = {
         name: this.name,
         dob: patient.person.birthdate,
@@ -823,6 +850,46 @@ export default {
         dateofStarting = "N/A";
       }
       return dateofStarting;
+    },numberState() {
+      let state = true;
+      if(!this.phoneNumberUnknown) {
+        state =  `${this.updatedPhoneNumber}`.match(/^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/) === null ? false : true ;
+      }
+      return state;
+    }, inputType: function() {
+      let type = "number";
+      if(this.phoneNumberUnknown) {
+        type = "text";
+        this.updatedPhoneNumber = "Unknown";
+      }else {
+        if(this.phoneNumber === "Unknown") {
+          this.updatedPhoneNumber = null;
+        }else {
+          this.updatedPhoneNumber = this.phoneNumber;
+        }
+      }
+      
+      return type;
+    },guardianNumberState() {
+      let state = true;
+      if(!this.guardianphoneNumberUnknown) {
+        state =  `${this.updatedguardianNumber}`.match(/^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/) === null ? false : true ;
+      }
+      return state;
+    }, guardianinputType: function() {
+      let type = "number";
+      if(this.guardianphoneNumberUnknown) {
+        type = "text";
+        this.updatedguardianNumber = "Unknown";
+      }else {
+        if(this.guardianphoneNumber === "Unknown") {
+          this.updatedguardianNumber = null;
+        }else {
+          this.updatedguardianNumber = this.guardianNumber;
+        }
+      }
+      
+      return type;
     }
   }
 };
