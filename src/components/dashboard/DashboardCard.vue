@@ -1,5 +1,5 @@
 <template>
-  <b-overlay :show="loading">
+  <b-overlay :show="loading" spinner-type="grow" spinner-variant="primary" :spinner-small="true">
     <div style="background: rgba(164, 150, 242, 0.7); height: 105px; margin-top: 10px">
       <div class="row">
         <div class="col-md-12" style="margin-top: 10px">

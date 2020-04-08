@@ -1,6 +1,6 @@
 
 <template>
-  <b-overlay :show="loading">
+  <b-overlay :show="loading" spinner-type="grow" spinner-variant="primary" :spinner-small="true">
     <div class="chart-wrapper">
       <canvas ref="myChart" height="120"></canvas>
       <p hidden class="count-text">Title</p>
