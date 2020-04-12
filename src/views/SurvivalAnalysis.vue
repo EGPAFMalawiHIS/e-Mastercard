@@ -21,26 +21,27 @@
                 <option value="Option B+">Option B+</option>
             </select>
         </div>
-        <table id="example" class="display" width="100%">
-            <thead>
-              <tr>
-                <th>Reg cohort</th>
-                <th>Interval (months)</th>
-                <th>Sub group</th>
-                <th class="disaggregated-numbers">Total Reg (database)</th>
-                <th class="disaggregated-numbers">Total Reg (confirmed)</th>
-                <th class="disaggregated-numbers count-separator">Alive</th>
-                <th class="disaggregated-numbers">Died</th>
-                <th class="disaggregated-numbers">Defaulted</th>
-                <th class="disaggregated-numbers">Stopped</th>
-                <th class="disaggregated-numbers">TO</th>
-                <th class="disaggregated-numbers">Unknown</th>
-              </tr>
-            </thead>
-            <tbody id="table-body">
-            </tbody>
-          </table>
-
+        <report-overlay :reportLoading="reportLoading" :reportSelected="reportSelected">
+          <table id="example" class="display" width="100%">
+              <thead>
+                <tr>
+                  <th>Reg cohort</th>
+                  <th>Interval (months)</th>
+                  <th>Sub group</th>
+                  <th class="disaggregated-numbers">Total Reg (database)</th>
+                  <th class="disaggregated-numbers">Total Reg (confirmed)</th>
+                  <th class="disaggregated-numbers count-separator">Alive</th>
+                  <th class="disaggregated-numbers">Died</th>
+                  <th class="disaggregated-numbers">Defaulted</th>
+                  <th class="disaggregated-numbers">Stopped</th>
+                  <th class="disaggregated-numbers">TO</th>
+                  <th class="disaggregated-numbers">Unknown</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+              </tbody>
+            </table>
+        </report-overlay>
 
         <!-- Page Content end -->
       </div>
@@ -52,10 +53,12 @@
 
 <script>
 // @ is an alias to /src
-import TopNav from "@/components/topNav.vue";
-import Sidebar from "@/components/SideBar.vue";
-
+import ReportOverlay from "../components/reports/ReportOverlay";
 import reportDatePicker from '@/components/reportDatePicker.vue';
+import Sidebar from "@/components/SideBar.vue";
+import TopNav from "@/components/topNav.vue";
+import { mapState } from "vuex";
+
 import moment from 'moment'
 import ApiClient from "../services/api_client";
 
@@ -84,6 +87,7 @@ require("@/assets/datatable/js/buttons.print.min.js");
 export default {
   name: "reports",
   components: {
+    ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
     'report-date-picker': reportDatePicker
@@ -91,19 +95,25 @@ export default {
     redirect: function () {
       this.$router.push('/moh');
     },
-    fetchData (report_parameters) {
-      if(!report_parameters)
-        return;
+    async fetchData (report_parameters) {
+      try {
+        if(!report_parameters)
+          return;
 
-      this.reportQtr = report_parameters[0];
-      this.regenerateReport = report_parameters[1];
-      if(this.reportQtr == 'Select cohort quarter')
-        return;
+        this.reportQtr = report_parameters[0];
+        this.regenerateReport = report_parameters[1];
+        if(this.reportQtr == 'Select cohort quarter')
+          return;
 
-      if(this.$refs.subgroup.value == 'Select sub group')
-        return;
+        if(this.$refs.subgroup.value == 'Select sub group')
+          return;
 
-        this.fetchSurvivalAnalysisData();
+        this.reportLoading = true;
+        this.reportSelected = true;
+        await this.fetchSurvivalAnalysisData();
+      } finally {
+        this.reportLoading = false;
+      }
 
     },
     fetchSurvivalAnalysisData: async function(){
@@ -119,10 +129,10 @@ export default {
       }
 
       console.log(url)
-      const response = await ApiClient.get(url, {}, {});
+      const response = await ApiClient.get(url);
 
       if (response.status === 200) {
-        response.json().then((data) => this.loadData(data, this.$refs.subgroup.value) );
+        this.loadData(await response.json(), this.$refs.subgroup.value);
       }else{
         //code
       }
@@ -192,19 +202,19 @@ export default {
         buttons: [
           {
             extend: 'copy',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'csv',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'pdf',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'print',
-            title:  this.report_title
+            title:  this.reportTitle
           }
         ],
         columnDefs: [
@@ -215,15 +225,21 @@ export default {
   },
   data () {
     return {
-      report_title: 'MoH cohort report (Survival analysis)',
       reportQtr: [],
       regenerateReport: false,
       reportData: null,
-      reportID: null
+      reportID: null,
+      reportLoading: false,
+      reportSelected: false
+    }
+  },
+  computed: {
+    ...mapState(['location']),
+    reportTitle() {
+      return `${this.location.name} MoH cohort report (Survival analysis)`;
     }
   },
   mounted(){
-    this.report_title  = sessionStorage.location_name +  " " + this.report_title;
     setTimeout(() => this.initDataTable(), 300);
   }
 }

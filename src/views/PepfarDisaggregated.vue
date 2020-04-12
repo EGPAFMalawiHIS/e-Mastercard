@@ -4,24 +4,34 @@
       <div id="page-content-wrapper">
          <top-nav />
         <!-- Page Content -->
-        <div id="main-container" class="col-12 table-col">
-          <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-           <sdPicker :onSubmit="fetchDates"></sdPicker>
-          <table class="table table-striped report" id="cohort-clients">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Age group</th>
-                <th>Gender</th>
-                <th class="disaggregated-numbers">Tx new (new on ART)</th>
-                <th class="disaggregated-numbers">TX curr (receiving ART)</th>
-                <th class="disaggregated-numbers">TX curr (received IPT)</th>
-                <th class="disaggregated-numbers">TX curr (screened for TB)</th>
-              </tr>
-            </thead>
-            <tbody ref="tableBody">
-            </tbody>
-          </table>
+        <div id="main-container">
+          <div class="row">
+            <div class="col-sm-12" style="z-index: 30">
+              <span>{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+              <sdPicker :onSubmit="fetchDates"></sdPicker>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+             <ReportOverlay :reportLoading="reportLoading" :reportSelected="reportSelected">
+              <table class="table table-striped report" id="cohort-clients">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Age group</th>
+                    <th>Gender</th>
+                    <th class="disaggregated-numbers">Tx new (new on ART)</th>
+                    <th class="disaggregated-numbers">TX curr (receiving ART)</th>
+                    <th class="disaggregated-numbers">TX curr (received IPT)</th>
+                    <th class="disaggregated-numbers">TX curr (screened for TB)</th>
+                  </tr>
+                </thead>
+                <tbody ref="tableBody">
+                </tbody>
+              </table>
+             </ReportOverlay>
+            </div>
+          </div>
         </div>
         <!-- Page Content end -->
     </div>
@@ -40,8 +50,10 @@ require("@/assets/datatable/css/dataTables.jqueryui.min.css");
 import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
+import { mapState } from "vuex";
 import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
+import ReportOverlay from "../components/reports/ReportOverlay";
 
 import jQuery from 'jquery';
 import datatable from 'datatables';
@@ -59,14 +71,27 @@ require("@/assets/datatable/js/buttons.print.min.js");
 export default {
   name: "reports",
   components: {
+    ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
   },methods: {
-    fetchDates: function(dates) {
-      this.startDate = dates[0];
-      this.endDate = dates[1];
-      this.initializeReport();
+    async fetchDates(dates) {
+      try {
+        [this.startDate, this.endDate] = dates;
+
+        const isValidDate = date => date && date !== 'Invalid date';
+
+        if (!(isValidDate(this.startDate) && isValidDate(this.endDate))) return;
+
+        this.reportLoading = true;
+        this.reportSelected = true;
+        await this.initializeReport();
+      } catch (e) {
+        this.$router.push({name: 'error', params: {message: e.message}});
+      } finally {
+        this.reportLoading = false;
+      }
     },
     initDataTable(){
       this.dTable = jQuery("#cohort-clients").dataTable({
@@ -83,19 +108,19 @@ export default {
         buttons: [
           {
             extend: 'copy',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'csv',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'pdf',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'print',
-            title:  this.report_title
+            title:  this.reportTitle
           }
         ]
       });
@@ -155,7 +180,6 @@ export default {
       setTimeout(() => this.initDataTable(), 300);
     },
     initializeReport: async function() {
-      this.report_title = sessionStorage.location_name + " PEPFAR Disaggregated report";
       let url = 'cohort_disaggregated';
       url += "?date=" + moment().format('YYYY-MM-DD');
       url += "&quarter=pepfar";
@@ -166,18 +190,18 @@ export default {
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
       
-      const response = await ApiClient.get(url, {}, {});
+      const response = await ApiClient.get(url);
 
       if (response.status === 200) {
         //response.json().then((data) => this.checkResult(data) );
         this.rebuildOutcome = false;
-        response.json().then((data) =>  setTimeout(() => this.addData(data), 5000) );
+        await this.addData(await response.json());
       }else{
         //setTimeout(() => this.fetchData(), 5000);
       }
 
     },
-    addData(data) {
+    async addData(data) {
       let rows = this.$refs.tableBody.children;
       let female_row;
       let male_row;
@@ -216,13 +240,15 @@ export default {
         this.ageGroups.shift();
 
       if(this.ageGroups.length > 0)
-        this.initializeReport(); 
+        await this.initializeReport(); 
 
       if(this.ageGroups.length < 1)
-        this.addTBscreenedData();
+        await this.addTBscreenedData();
 
     },
     addTBscreenedData: async function() {
+      if (this.screenedTB.length === 0) return;
+
       let age_group = this.screenedTB[0][2];
       let gender  = this.screenedTB[0][1];
       let el = this.screenedTB[0][0];
@@ -236,17 +262,17 @@ export default {
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
      
-      const response = await ApiClient.get(url, {}, {});
+      const response = await ApiClient.get(url);
 
       if (response.status === 200) {
         //response.json().then((data) => this.checkResult(data) );
         this.screenedTB.shift();
-        response.json().then((data) =>  this.TBscreened(el, gender, data) );
+        this.TBscreened(el, gender, await response.json());
 
         if(this.screenedTB.length < 1) {
-           this.addGivenIPTdata();
+          await this.addGivenIPTdata();
         }else{
-          setTimeout(() => this.addTBscreenedData(), 500);
+          await this.addTBscreenedData();
         }
       }else{
         //setTimeout(() => this.fetchData(), 5000);
@@ -266,18 +292,18 @@ export default {
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
      
-      const response = await ApiClient.get(url, {}, {});
+      const response = await ApiClient.get(url);
 
       if (response.status === 200) {
         //response.json().then((data) => this.checkResult(data) );
         this.givenIPT.shift();
-        response.json().then((data) =>  this.iptGiven(el, gender, data) );
+        this.iptGiven(el, gender, await response.json());
 
         if(this.givenIPT.length < 1) {
            //Go to All males();
-           this.allMales();
+           await this.allMales();
         }else{
-          setTimeout(() => this.addGivenIPTdata(), 500);
+          await this.addGivenIPTdata();
         }
       }else{
         //setTimeout(() => this.fetchData(), 5000);
@@ -302,11 +328,11 @@ export default {
       }
     
     },
-    allMales() {
+    async allMales() {
       this.dTable.fnAddData([ "31", "All", "Male", this.totalMales[0],
         this.totalMales[1], this.totalMales[2], this.totalMales[3] ]);
       
-      this.getAllFemale("Pregnant");
+      await this.getAllFemale("Pregnant");
     },
     getAllFemale: async function(age_group) {
       let url = 'cohort_disaggregated';
@@ -320,14 +346,14 @@ export default {
       url += "&initialize=false";
       url += "&rebuild_outcome=" + this.rebuildOutcome;
      
-      const response = await ApiClient.get(url, {}, {});
+      const response = await ApiClient.get(url);
 
       if (response.status === 200) {
-        response.json().then((data) =>  this.addNewFemaleRow(age_group, data) );
+        await this.addNewFemaleRow(age_group, await response.json());
       }
 
     },
-    addNewFemaleRow(age_group, data){
+    async addNewFemaleRow(age_group, data){
       for(let age in data) {
         let gender = data[age];
         for(let sex in gender) {
@@ -344,7 +370,7 @@ export default {
             let nTr = oSettings.aoData[ newRow[0] ].nTr;
             this.fpRow = nTr;
 
-            this.getAllFemale('Breastfeeding');
+            await this.getAllFemale('Breastfeeding');
           } else {
             let newRow = this.dTable.fnAddData([ "33", "All", "Fbf", tx_new,
               tx_curr, tx_given_ipt, tx_screened_for_tb ]);
@@ -353,7 +379,7 @@ export default {
             let nTr = oSettings.aoData[ newRow[0] ].nTr;
 
             this.fbfRow = nTr;
-            this.loadFPdata("pregnant", 'screened_for_tb');
+            await this.loadFPdata("pregnant", 'screened_for_tb');
           } 
         }
       }
@@ -368,20 +394,20 @@ export default {
       url += "&outcome_table=temp_pepfar_patient_outcomes";
       url += '&program_id=1';
      
-      const response = await ApiClient.get(url, {}, {});
+      const response = await ApiClient.get(url);
 
       if (response.status === 200 && age_group == 'pregnant' && urlPath == 'screened_for_tb') {
-        response.json().then((data) =>  this.assignValueTD(this.fpRow, data.length, 2) );
-        this.loadFPdata("breastfeeding", urlPath);
+        this.assignValueTD(this.fpRow, (await response.json()).length, 2);
+        await this.loadFPdata("breastfeeding", urlPath);
       }else if(response.status === 200 && age_group == 'breastfeeding' && urlPath == 'screened_for_tb'){
-        response.json().then((data) =>  this.assignValueTD(this.fbfRow, data.length, 2) );
-        this.loadFPdata("pregnant", 'clients_given_ipt');
+        this.assignValueTD(this.fbfRow, (await response.json()).length, 2);
+        await this.loadFPdata("pregnant", 'clients_given_ipt');
       }else if(response.status === 200 && age_group == 'pregnant'){
-        response.json().then((data) =>  this.assignValueTD(this.fpRow, data.length, 1) );
-        this.loadFPdata("breastfeeding", urlPath);
+        this.assignValueTD(this.fpRow, (await response.json()).length, 1);
+        await this.loadFPdata("breastfeeding", urlPath);
       }else if(response.status === 200 && age_group == 'breastfeeding'){
-        response.json().then((data) =>  this.assignValueTD(this.fbfRow, data.length, 1) );
-        setTimeout(() => this.addAllFemaleRow(), 5000);
+        this.assignValueTD(this.fbfRow, (await response.json()).length, 1);
+        this.addAllFemaleRow();
       }
     },
     assignValueTD(el, count, rowNum){
@@ -415,8 +441,6 @@ export default {
   }, data: function() {
     return {
         reportData: null,
-        report_title: 'PEPFAR Disaggregated ',
-        reportData: null,
         dTable: null,
         formatedData: [],
         rebuildOutcome: true,
@@ -436,7 +460,15 @@ export default {
           '25-29 years', '30-34 years',
           '35-39 years', '40-44 years',
           '45-49 years', '50 plus years'
-        ].reverse()
+        ].reverse(),
+        reportLoading: false,
+        reportSelected: false
+      }
+    },
+    computed: {
+      ...mapState(['location']),
+      reportTitle() {
+        return `${this.location.name} PEPFAR Disaggregated report`;
       }
     }
 }

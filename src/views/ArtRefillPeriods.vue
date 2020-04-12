@@ -2,38 +2,53 @@
     <div class="d-flex" id="wrapper">
       <side-bar />
       <div id="page-content-wrapper">
-         <top-nav />
-        <!-- Page Content -->
-        <div class="alert alert-info">
-          <strong>TX CURR MMD</strong> Clients that are alive and on treatment in the reporting period and
-the difference in days between their clinical dispensation visit and next appointment / drug-runout date is:
-          <ul>
-            <li><3 months (1 – 89 days)</li>
-            <li>3-5 months (90-179 days)</li>
-            <li>6+ months (180 or more days)</li>
-          </ul>
-        </div>
+        <top-nav />
 
-        <div id="main-container" class="col-12 table-col">
-          <!--span><button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
-           <sdPicker :onSubmit="fetchDates"></sdPicker>
-          
-          
-          <table class="table table-striped report" id="cohort-clients">
-            <thead>
-              <tr>
-                <th scope="col">&nbsp;</th>
-                <th scope="col" style="width: 20%;">&nbsp;</th>
-                <th class="center-text" scope="col"># of clients on <3 months of ARVs</th>
-                <th class="center-text" scope="col"># of clients on 3 - 5 months of ARVs</th>
-                <th class="center-text" scope="col"># of clients on >= 6 months of ARVs</th>
-              </tr>
-            </thead>
-          </table>
+        <div class="main-container">
+        <!-- Page Content -->
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="alert alert-info">
+                <strong>TX CURR MMD</strong> Clients that are alive and on treatment in the reporting period and
+      the difference in days between their clinical dispensation visit and next appointment / drug-runout date is:
+                <ul>
+                  <li>&lt;3 months (1 – 89 days)</li>
+                  <li>3-5 months (90-179 days)</li>
+                  <li>6+ months (180 or more days)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!--span><button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
+            <div class="col-sm-12">
+              <sdPicker :onSubmit="fetchDates"></sdPicker>
+            </div>
+          </div>
+            
+            
+          <div class="row">
+            <div class="col-sm-12">
+              <report-overlay :reportLoading="reportLoading">
+                <table class="table table-striped report" id="cohort-clients">
+                  <thead>
+                    <tr>
+                      <th scope="col">&nbsp;</th>
+                      <th scope="col" style="width: 20%;">&nbsp;</th>
+                      <th class="center-text" scope="col"># of clients on <3 months of ARVs</th>
+                      <th class="center-text" scope="col"># of clients on 3 - 5 months of ARVs</th>
+                      <th class="center-text" scope="col"># of clients on >= 6 months of ARVs</th>
+                    </tr>
+                  </thead>
+                </table>
+              </report-overlay>
+            </div>
+            <!-- Page Content end -->
+          </div>
         </div>
-        <!-- Page Content end -->
+      </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -47,6 +62,7 @@ require("@/assets/datatable/css/dataTables.jqueryui.min.css");
 
 import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
+import ReportOverlay from "../components/reports/ReportOverlay";
 import Sidebar from "@/components/SideBar.vue";
 import moment, { max } from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
@@ -70,14 +86,23 @@ require("@/assets/datatable/js/buttons.print.min.js");
 export default {
   name: "reports",
   components: {
+    ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
   },methods: {
-    fetchDates(dates) {
-      this.startDate = dates[0];
-      this.endDate = dates[1];
-      this.fetchData();
+    async fetchDates(dates) {
+      try {
+        this.startDate = dates[0];
+        this.endDate = dates[1];
+
+        this.reportLoading = true;
+        await this.fetchData();
+        this.reportLoading = false;
+      } catch (e) {
+        console.error(e);
+        this.$router.push({name: 'error', params: {message: e.message}});
+      }
     },
     fetchData: async function() {
       let group;
@@ -99,11 +124,11 @@ export default {
       url_path += "&min_age=" + min_age;
       url_path += "&max_age=" + max_age;
 
-      const response = await ApiClient.get(url_path, {}, {});
+      const response = await ApiClient.get(url_path);
 
       if (response.status === 200) {
-        response.json().then((data) => this.addRow(data) );
-        setTimeout(() => this.fetchData(), 500);
+        this.addRow(await response.json());
+        await this.fetchData();
       }else{
         //setTimeout(() => this.fetchData(), 5000);
       }
@@ -205,11 +230,12 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => this.initDataTable(), 300);
+    this.$nextTick(this.initDataTable);
   }, data: function() {
       return {
         report_title: 'TX CURR MMD ',
         reportData: null,
+        reportLoading: false,
         dTable: null,
         startDate: null,
         endDate: null,
