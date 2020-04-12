@@ -6,20 +6,28 @@
     <top-nav />
     <!-- Page Content -->
     <div id="main-container" class="col-12 table-col">
-      <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-       <sdPicker :onSubmit="fetchDates"></sdPicker>
-      <table class="table table-striped report" id="cohort-clients">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Age group</th>
-            <th>Gender</th>
-            <th class="disaggregated-numbers">Count</th>
-          </tr>
-        </thead>
-        <tbody ref="tableBody">
-        </tbody>
-      </table>
+      <div class="row">
+        <span>{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+        <sdPicker :onSubmit="fetchDates"></sdPicker>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <report-overlay :reportLoading="reportLoading">
+            <table class="table table-striped report" id="cohort-clients">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Age group</th>
+                  <th>Gender</th>
+                  <th class="disaggregated-numbers">Count</th>
+                </tr>
+              </thead>
+              <tbody ref="tableBody">
+              </tbody>
+            </table>
+          </report-overlay>
+        </div>
+      </div>
     </div>
     <!-- Page Content ends -->
   </div>
@@ -38,8 +46,10 @@
 <script>
 // @ is an alias to /src
 import ApiClient from "../services/api_client"
-import TopNav from "@/components/topNav.vue";
+import { mapState } from "vuex";
+import ReportOverlay from "../components/reports/ReportOverlay";
 import Sidebar from "@/components/SideBar.vue";
+import TopNav from "@/components/topNav.vue";
 
 import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
@@ -68,6 +78,7 @@ require("@/assets/datatable/js/buttons.print.min.js")
 export default {
   name: "txML",
   components: {
+    ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
@@ -91,19 +102,19 @@ export default {
         buttons: [
           {
             extend: 'copy',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'csv',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'pdf',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'print',
-            title:  this.report_title
+            title:  this.reportTitle
           }
         ],
         columnDefs: [
@@ -114,10 +125,15 @@ export default {
         ]
       });
     },
-    fetchDates(dates){
-      this.startDate = dates[0];
-      this.endDate = dates[1];
-      this.loadXLdata();
+    async fetchDates(dates){
+      try {
+        this.reportLoading = true;
+        this.startDate = dates[0];
+        this.endDate = dates[1];
+        await this.loadXLdata();
+      } finally {
+        this.reportLoading = false;
+      }
     },
     loadXLdata: async function(){
       let url = "ipt_coverage?date=" + moment().format('YYYY-MM-DD');
@@ -128,13 +144,11 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
-        response.json().then((data) =>  this.loadGroupData(data) );
+        this.loadGroupData(await response.json());
       }
     },
     loadGroupData(data){
       //this.loadXLdata();
-      this.report_title = sessionStorage.location_name + "  IPT coverage (those completed six months: 168 days): " + moment(this.startDate).format('DD/MMM/YYYY')
-      this.report_title += " - " + moment(this.endtDate).format('DD/MMM/YYYY')
       let counter = 1;
       this.dTable.fnClearTable();
       let age_groups = this.ageGroups;
@@ -156,9 +170,9 @@ export default {
     }
   }, data: function() {
       return {
-        report_title: 'IPT coverage (those completed six months: 168 days)',
         startDate: null,
         endDate: null,
+        reportLoading: false,
         ageGroups: [
           '0-5 months', '6-11 months','12-23 months',
           '2-4 years', '5-9 years',
@@ -169,6 +183,15 @@ export default {
           '45-49 years', '50 plus years'
         ]
       }
+  },
+  computed: {
+    ...mapState(['location']),
+    reportTitle() {
+      let formattedDate = this.startDate && this.endDate ? `${moment(this.startDate).format('DD/MMM/YYYY')}- ${moment(this.endtDate).format('DD/MMM/YYYY')}`
+                                                         : '';
+
+      return `${this.location.name} IPT coverage (those completed six months: 168 days) ${formattedDate}`;
+    }
   },
   mounted(){
     setTimeout(() => this.initDataTable(), 300);

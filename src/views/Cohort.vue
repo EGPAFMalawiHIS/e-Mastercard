@@ -13,21 +13,17 @@
 
         <div class="cohort">
           <report-date-picker :onSubmit="fetchData"></report-date-picker>
-          <b-overlay :show="hideReport" :no-center="true" spinner-type="grow" spinner-variant="primary">
-            <template v-slot:overlay>
-              <div style="display: block; min-height: 720px; width: 100%; padding-top: 20%">
-                <h1 v-if="!reportSelected">No Report Selected</h1>
-                <b-spinner v-if="reportSelected" type="grow" variant="primary"></b-spinner>
+          <report-overlay :reportLoading="reportLoading" :reportSelected="reportSelected">
+            <div>
+              <div id="printReport">
+                <cohortvalidation :dataparams="validationData"/>
+                <cohortheader :reportparams="reportData"/>
+                <cohort-ft :params="cohortData" :reportid="reportID"/>
               </div>
-            </template>
-            <div id="printReport">
-              <cohortvalidation :dataparams="validationData"/>
-              <cohortheader :reportparams="reportData"/>
-              <cohort-ft :params="cohortData" :reportid="reportID"/>
-            </div>
 
-            <cohort-print :onPrint="printReport" />
-          </b-overlay>
+              <cohort-print :onPrint="printReport" />
+            </div>
+          </report-overlay>
         </div>
 
         <!-- Page Content end -->
@@ -58,10 +54,12 @@ import cohortHeader from '@/components/cohortHeader.vue';
 import cohortFT from '@/components/cohortFT.vue';
 import ApiClient from "../services/api_client";
 import cohortPrint from "@/components/cohortPrint.vue";
+import ReportOverlay from "../components/reports/ReportOverlay.vue";
 
 export default {
   name: "reports",
   components: {
+    ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
     'report-date-picker': reportDatePicker,
@@ -116,11 +114,6 @@ export default {
       reportID: null,
       reportSelected: false,
       reportLoading: false
-    }
-  },
-  computed: {
-    hideReport() {
-      return this.reportLoading || !this.reportSelected;
     }
   },
   mounted(){
