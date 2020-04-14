@@ -67,7 +67,7 @@ const ApiClient = (() => {
       const response = await fetch(expandPath(uri), params)
 
       if (response.status === 401 && !noRedirectCodes.includes(response.status)
-                                  && !window.location.search(/login\/?$/)) {
+                                  && !window.location.search.href(/login\/?$/)) {
         getRouter().push('/login')
       } else if (response.status >= 500 && !noRedirectCodes.includes(response.status)) {
         const {error, exception} = await response.json();
@@ -76,7 +76,7 @@ const ApiClient = (() => {
       return response
     } catch(e) {
       console.log(e)
-      // getRouter().push('/error')
+      getRouter().push({name: 'error', query: {'message': `${e.name} - ${e.message}`}})
     }
   }
 
