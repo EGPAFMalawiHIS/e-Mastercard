@@ -6,7 +6,7 @@
     <prescription v-on:addEncounter="addEncounter" ref="prescription" :date="date"/>
     <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
     <adherence v-on:addEncounter="addEncounter" ref="adherence" :date="date"></adherence>      
-    <appointment v-on:addEncounter="addEncounter" ref="appointment"></appointment>      
+    <appointment v-on:addEncounter="addEncounter" ref="appointment" :date="date"></appointment>      
         <button class="btn btn-primary" @click="createEncounters" >
             <template v-if="posting === true">
               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
