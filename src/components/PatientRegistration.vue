@@ -156,8 +156,22 @@
               </div>
             </div>
             <div class="form-row">
-              <div class="form-group col-md-6 input-column">
-                <label style="font-weight: bold">Home Village (*)</label>
+              <div class="col-md-12">
+                <label style="font-weight: bold">Physical Address</label>
+              </div>
+              <div class="form-group col-md-6 input-column" style="height: 70px">
+               
+                <label style="font-weight: bold;">Home Village (*)</label>
+                <span
+                  style="font-size: 14px; margin-left: 15px; margin-top: 10px; font-style: italic; font-weight: bold; color: rgba(67, 149, 204, 1)"
+                >Village not listed?</span>
+                <input
+                  @click="locationOtherUncheck($event)"
+                  type="checkbox"
+                  class="form-check-input"
+                  id="exampleCheck1"
+                  style="margin-left:6px; margin-top:7px"
+                />
                 <v-select
                   v-model="homeVillage"
                   :options="villages"
@@ -165,9 +179,19 @@
                   @input="buildPatientAddress"
                   name="patient-home-village"
                   id="patient-home-village"
+                  v-if="!locationOther"
                 ></v-select>
+                <input
+                  v-model="otherLocationName"
+                  type="text"
+                  class="form-control"
+                  id="free-text-location"
+                  name="free-text-location"
+                  placeholder="Enter location"
+                  v-if="locationOther"
+                />
               </div>
-              <div class="form-group col-md-6 input-column">
+              <div class="form-group col-md-6 input-column" style="height: 70px">
                 <label style="font-weight: bold">Closest Land Mark or Plot Number (*)</label>
                 <v-select
                   id="patient-landmark"
@@ -254,7 +278,7 @@
                   id="guardian-phonenumber"
                   name="guardian-phonenumber"
                   placeholder="Phone Number"
-                  :disabled="disableGuardianDetails || disabledGuardianPhoneNumber" 
+                  :disabled="disableGuardianDetails || disabledGuardianPhoneNumber"
                 />
               </div>
             </div>
@@ -307,12 +331,8 @@
                       <td>{{phoneNumber}}</td>
                     </tr>
                     <tr>
-                      <th scope="row">Physical Address - Village</th>
-                      <td>{{homeVillage.code}}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Physical Address - Closest Landmaark</th>
-                      <td>{{landmark.code}}</td>
+                      <th scope="row">Physical Address</th>
+                      <td>{{`${homeVillage.code || otherLocationName} near ${landmark.code}`}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Guardian Name</th>
@@ -440,6 +460,8 @@ export default {
       autoCompletedLandMark: "Select Current Landmark",
       guardianAutoCompletedVillage: "Select Current Village",
       guardianAutoCompletedLandMark: "Select Current Landmark",
+      locationOther: false,
+      otherLocationName: null,
       landmark: "Select Landmark",
       currentLandmark: null,
       phoneNumber: null,
@@ -881,8 +903,7 @@ export default {
         this.guardianPhoneNumber = "";
         this.disabledGuardianPhoneNumber = false;
       }
-      
-      console.log(this.guardianPhoneNumber)
+
     },
 
     estimateGuarianAge() {
@@ -938,6 +959,11 @@ export default {
 
       const dob = moment(new Date(dobInput)).format("YYYY-MM-DD");
 
+
+      if(this.locationOther){
+        this.homeVillage = this.otherLocationName
+      }
+
       this.person = {
         given_name: this.firstname,
         middle_name: this.middlename || "",
@@ -950,16 +976,10 @@ export default {
         home_district: this.homeDistrict,
         home_traditional_authority: this.homeTA,
         home_village: this.homeVillage,
-        current_district: this.homeCurrentAddress
-          ? this.homeDistrict
-          : this.currentDistrict,
-        current_traditional_authority: this.homeCurrentAddress
-          ? this.homeTA
-          : this.currentTA,
-        current_village: this.homeCurrentAddress
-          ? this.homeVillage
-          : this.autoCompletedVillage, //CONFIRM IF THIS IS WORKING
-        landmark: this.landmark.code,
+        current_district: this.homeDistrict,
+        current_traditional_authority: this.homeTA,
+        current_village: this.homeVillage, //CONFIRM IF THIS IS WORKING
+        landmark: `${this.homeVillage} near ${this.landmark.code}`,
         cell_phone_number: this.phoneNumber,
         occupation: null,
         relationship: this.registerGuardian ? "Yes" : "No",
@@ -1082,6 +1102,14 @@ export default {
       }
     },
 
+    locationOtherUncheck() {
+      if (this.locationOther == false) {
+        this.locationOther = true;
+      } else if (this.locationOther == true) {
+        this.locationOther = false;
+      }
+    },
+
     landmarkSelected(landmark) {
       console.log("Landmark selected: " + landmark);
     },
@@ -1122,6 +1150,14 @@ export default {
               .text()
               .trim()
               .replace("Loading...", "").length;
+            let otherLocation = 0;
+            try {
+              otherLocation = $("#free-text-location")
+              .val()
+              .trim().length;
+            } catch (error) {
+              otherLocation = 0
+            }
             let patientLandmark = $("#patient-landmark")
               .text()
               .trim()
@@ -1145,7 +1181,7 @@ export default {
               phone > 0 &&
               gender > 0 &&
               gender != "Select Gender" &&
-              homeVillage > 0 &&
+              (homeVillage > 0 || otherLocation > 0) &&
               homeVillage != "Select Home Village" &&
               patientLandmark > 0 &&
               patientLandmark != "Select Landmark" &&
