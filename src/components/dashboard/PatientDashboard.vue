@@ -114,7 +114,9 @@ export default {
       try {
         const response = await ApiClient.get(reportUrl);
 
-        if (!response.ok) {
+        if (!response) {
+          return ['error', null];
+        } else if (!response.ok) {
           const {status, error, exception} = await response.json();
           throw new Error(`Failed to pull (reportUrl): ${status} - ${error} (${exception})`);
         }
