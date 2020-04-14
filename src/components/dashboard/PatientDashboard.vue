@@ -118,14 +118,13 @@ export default {
           return ['error', null];
         } else if (!response.ok) {
           const {status, error, exception} = await response.json();
-          throw new Error(`Failed to pull (reportUrl): ${status} - ${error} (${exception})`);
+          throw new Error(`Failed to pull (${reportUrl}): ${status} - ${error} (${exception})`);
         }
 
         if (response.status === 204) return ['ok', null];
 
         return ['ok', await response.json()];
       } catch (error) {
-        this.$router.push({name: 'error', params: {message: error.message}});
         return ['error', null];
       }
     },
