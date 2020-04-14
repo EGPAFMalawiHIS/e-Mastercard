@@ -4,18 +4,18 @@
     <b-col>
 
   <label for="appointment-datepicker">Choose an appointment date</label>
-  <b-form-datepicker  id="appointment-datepicker" class="mb-2" v-model="date.value_datetime"></b-form-datepicker>
+  <b-form-datepicker  id="appointment-datepicker" class="mb-2" v-model="appointmentdate.value_datetime" :min="date"></b-form-datepicker>
     </b-col>
   </b-row>
 </template>
 
 <script>
 export default {
-
+props: ["date"],
 data: function() {
     return {
 
-      date: {
+      appointmentdate: {
         value_datetime: null,
         concept_id: 5096
       },
@@ -27,7 +27,7 @@ methods: {
       hiv_staging: {
         encounter_id: 7,
         obs: {
-          date: this.date,
+          date: this.appointmentdate,
         }
       }
     }
