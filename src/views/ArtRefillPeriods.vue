@@ -23,7 +23,8 @@ the difference in days between their clinical dispensation visit and next appoin
             <thead>
               <tr>
                 <th scope="col">&nbsp;</th>
-                <th scope="col" style="width: 20%;">&nbsp;</th>
+                <th scope="col" style="width: 20%;">Age group</th>
+                <th scope="col" style="width: 20%;">Gender</th>
                 <th class="center-text" scope="col"># of clients on <3 months of ARVs</th>
                 <th class="center-text" scope="col"># of clients on 3 - 5 months of ARVs</th>
                 <th class="center-text" scope="col"># of clients on >= 6 months of ARVs</th>
@@ -33,7 +34,33 @@ the difference in days between their clinical dispensation visit and next appoin
         </div>
         <!-- Page Content end -->
     </div>
+
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{this.selectedGender}}&nbsp;{{this.selectedAgeGroup}}</h4>
+          </div>
+          <div class="modal-body">
+            <table id="drill-down">
+              <tr>
+                <th>ARV number</th>
+                <th>Regimen</th>
+                <th>Qty</th>
+                <th>Dispensed date</th>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+
 </template>
 
 <script>
@@ -88,6 +115,23 @@ export default {
         min_age = ages[0];
         max_age = ages[1];
       }else{
+        let gender = ["Female", "Male"];
+        let counter = 1;
+        let rowData = this.tableRows;
+
+        for(let g = 0; g < gender.length; g++){
+          for(let i = 0; i < rowData.length; i++){
+            if(gender[g] != rowData[i][1])
+              continue;
+
+            this.dTable.fnAddData([ 
+              counter++, rowData[i][0], rowData[i][1], 
+              this.addLink(rowData[i][0], rowData[i][1], rowData[i][2], 1),
+              this.addLink(rowData[i][0], rowData[i][1], rowData[i][3], 2),
+              this.addLink(rowData[i][0], rowData[i][1], rowData[i][4], 3)
+            ]);    
+          }
+        }
         return;
       }
       
@@ -107,6 +151,24 @@ export default {
       }else{
         //setTimeout(() => this.fetchData(), 5000);
       }
+    },
+    addLink(age_group, gender, count, column_num){
+      console.log(age_group + " --- " + gender);
+      let span = document.createElement("span");
+      let a = document.createElement("a");
+      a.setAttribute("href", "#");
+      //a.setAttribute("data-target", "#myModal");
+      //a.setAttribute("data-toggle","modal");
+      a.setAttribute("age-group", age_group);
+      a.setAttribute("gender", gender);
+      a.setAttribute("column_number", column_num);
+      a.setAttribute("@click", "showPoPBox('" + age_group + "');");
+      a.innerHTML = count;
+      span.appendChild(a);
+      return span.innerHTML;
+    },
+    showPoPBox(age_group){
+      console.log(age_group);
     },
     initDataTable(){
       this.dTable = jQuery("#cohort-clients").dataTable({
@@ -133,33 +195,73 @@ export default {
           }
         ],
         columnDefs: [
-          {"className": "center-text", "targets": 2},
           {"className": "center-text", "targets": 3},
-          {"className": "center-text", "targets": 4}
+          {"className": "center-text", "targets": 4},
+          {"className": "center-text", "targets": 5}
         ]
       });
     },
     addRow(data){
-      let column_3 = 0;
-      let column_4 = 0;
-      let column_5 = 0;
+  /* ................................................................ */
+      var client_sex = ["Female", "Male"];
+      var ageGroups = this.reportingGroups;
 
-      for(let person_id in data){
-        let info =  data[person_id];
-        let prescribed_days = info.prescribed_days;
+      for(let i = 0; i < client_sex.length; i++){
+        let gender = client_sex[i];
+        if(this.column_3[gender] == undefined){
+          this.column_3[gender] = {};
+          this.column_3[gender][ageGroups[0]] = 0;
+        }else if(this.column_3[gender][ageGroups[0]] == undefined){
+          this.column_3[gender][ageGroups[0]] = 0;
+        }
+        
+        if(this.column_4[gender] == undefined){
+          this.column_4[gender] = {};
+          this.column_4[gender][ageGroups[0]] = 0;
+        }else if(this.column_4[gender][ageGroups[0]] == undefined){
+          this.column_4[gender][ageGroups[0]] = 0;
+        }
 
-        if(prescribed_days < 60)
-          column_3 += 1
+        if(this.column_5[gender] == undefined){
+          this.column_5[gender] = {};
+          this.column_5[gender][ageGroups[0]] = 0;
+        }else if(this.column_5[gender][ageGroups[0]] == undefined){
+          this.column_5[gender][ageGroups[0]] = 0;
+        }
+            
+        for(let g in data){
+          if(g != client_sex[i])
+            continue;
+            
+          let patient_ids = data[gender];
+          for(let patinet_id in patient_ids){ 
+            let info =  data[gender][patinet_id];
+            let prescribed_days = info.prescribed_days;
+            
+            if(prescribed_days < 60)
+              this.column_3[gender][ageGroups[0]]  += 1
 
-        if(prescribed_days >= 60 && prescribed_days <= 150)
-          column_4 += 1
+            if(prescribed_days >= 60 && prescribed_days <= 150)
+              this.column_4[gender][ageGroups[0]]  += 1
 
-        if(prescribed_days > 150)
-          column_5 += 1
+            if(prescribed_days > 150)
+              this.column_5[gender][ageGroups[0]]  += 1
+
+          }
+        }
+
+        //let gender = client_sex[i];
+        this.tableRows.push([ ageGroups[0], gender,  
+          this.column_3[gender][ageGroups[0]], 
+          this.column_4[gender][ageGroups[0]], 
+          this.column_5[gender][ageGroups[0]] 
+        ]);
 
       }
-      this.dTable.fnAddData([ (this.rowCounter++), this.reportingGroups[0], column_3,
-        column_4, column_5 ]);
+  /* ................................................................ */
+
+
+
       this.reportingGroups.shift();
     },
     setMinMaxAges(group){
@@ -199,9 +301,6 @@ export default {
       if(group == '50 plus years')
         return [50, 10000];
 
-      if(group == 'Unknown')
-        return ['Unknown', 'Unknown'];
-
     }
   },
   mounted() {
@@ -214,12 +313,17 @@ export default {
         startDate: null,
         endDate: null,
         rowCounter: 1,
+        column_3: {},
+        column_4: {},
+        column_5: {},
+        tableRows: [],
+        selectedAgeGroup:  null,
+        selectedGender: null,
         reportingGroups: [
           '<1 year', '1-4 years','5-9 years',
           '10-14 years', '15-19 years', '20-24 years',
           '25-29 years', '30-34 years', '35-39 years',
-          '40-44 years', '45-49 years', '50 plus years',
-          'Unknown'
+          '40-44 years', '45-49 years', '50 plus years'
         ]
       }
     }
@@ -254,6 +358,10 @@ table {
   width: 98%;
   margin: 10px;
   text-align: left;
+}
+
+.modal-content {
+  width: 90vh;
 }
 </style>
 
