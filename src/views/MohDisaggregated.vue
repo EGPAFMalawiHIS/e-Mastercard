@@ -4,24 +4,38 @@
       <div id="page-content-wrapper">
          <top-nav />
         <!-- Page Content -->
-        <div id="main-container" class="col-12 table-col">
-          <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-           <sdPicker :onSubmit="fetchDates"></sdPicker>
-          <table class="table table-striped report" id="cohort-clients">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Age group</th>
-                <th>Gender</th>
-                <th class="disaggregated-numbers">Tx new (new on ART)</th>
-                <th class="disaggregated-numbers">TX curr (receiving ART)</th>
-                <th class="disaggregated-numbers">TX curr (received IPT)</th>
-                <th class="disaggregated-numbers">TX curr (screened for TB)</th>
-              </tr>
-            </thead>
-            <tbody ref="tableBody">
-            </tbody>
-          </table>
+        <div id="main-container">
+          <div class="row">
+            <div class="col-sm-12" style="z-index: 20"> <!-- elevate date picker above overlay below -->
+              <span>{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+              <sdPicker :onSubmit="fetchDates"></sdPicker>
+            </div>
+          </div>
+
+           <div class="row">
+             <div class="col-sm-12">
+               <b-overlay :show="hideReport" spinner-type="grow" spinner-variant="primary">
+                  <template v-if="!reportSelected" v-slot:overlay>
+                    <h1>No Report Selected</h1>
+                  </template>
+                  <table class="table table-striped report" id="cohort-clients">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Age group</th>
+                        <th>Gender</th>
+                        <th class="disaggregated-numbers">Tx new (new on ART)</th>
+                        <th class="disaggregated-numbers">TX curr (receiving ART)</th>
+                        <th class="disaggregated-numbers">TX curr (received IPT)</th>
+                        <th class="disaggregated-numbers">TX curr (screened for TB)</th>
+                      </tr>
+                    </thead>
+                    <tbody ref="tableBody">
+                    </tbody>
+                  </table>
+               </b-overlay>
+             </div>
+           </div>
         </div>
         <!-- Page Content end -->
     </div>
@@ -43,6 +57,7 @@ import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
+import { mapState } from 'vuex';
 import jQuery from 'jquery';
 import datatable from 'datatables';
 
@@ -63,10 +78,15 @@ export default {
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
   },methods: {
-    fetchDates: function(dates) {
-      this.startDate = dates[0];
-      this.endDate = dates[1];
-      this.initializeReport();
+    async fetchDates(dates) {
+      try {
+        this.startDate = dates[0];
+        this.endDate = dates[1];
+        await this.initializeReport();
+        this.reportLoading = false;
+      } catch (e) {
+        this.$router.push({name: 'error', params: {message: `Failed to fetch disaggregated report: ${e.message}`}});
+      }
     },
     initDataTable(){
       this.dTable = jQuery("#cohort-clients").dataTable({
@@ -84,19 +104,19 @@ export default {
         buttons: [
           {
             extend: 'copy',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'csv',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'pdf',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'print',
-            title:  this.report_title
+            title:  this.reportTitle
           }
         ]
       });
@@ -122,6 +142,8 @@ export default {
       ];
 
       let table_body  = this.$refs.tableBody;
+      if (!table_body) return;
+
       let row_count = 1;
       let gender = ['Female', 'Male'];
 
@@ -156,7 +178,6 @@ export default {
       setTimeout(() => this.initDataTable(), 300);
     },
     initializeReport: async function() {
-      this.report_title = sessionStorage.location + " MoH Disaggregated report";
       let url = 'cohort_disaggregated';
       url += "?date=" + moment().format('YYYY-MM-DD');
       url += "&quarter=Custom";
@@ -167,19 +188,20 @@ export default {
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
 
+      this.reportLoading = true;
+      this.reportSelected = true;
       this.initialize = false;
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
         //response.json().then((data) => this.checkResult(data) );
         this.rebuildOutcome = false;
-        response.json().then((data) =>  setTimeout(() => this.addData(data), 5000) );
+        await this.addData(await response.json());
       }else{
         //setTimeout(() => this.fetchData(), 5000);
       }
-
     },
-    addData(data) {
+    async addData(data) {
       let rows = this.$refs.tableBody.children;
       let female_row;
       let male_row;
@@ -219,12 +241,11 @@ export default {
       if(this.ageGroups.length > 0)
         this.ageGroups.shift();
 
-      if(this.ageGroups.length > 0)
-        this.initializeReport(); 
-
-      if(this.ageGroups.length < 1)
-        this.addTBscreenedData();
-
+      if(this.ageGroups.length > 0) {
+        await this.initializeReport(); 
+      } else {
+        await this.addTBscreenedData();
+      }
     },
     addTBscreenedData: async function() {
       let age_group = this.screenedTB[0][2];
@@ -246,12 +267,12 @@ export default {
       if (response.status === 200) {
         //response.json().then((data) => this.checkResult(data) );
         this.screenedTB.shift();
-        response.json().then((data) =>  this.TBscreened(el, gender, data) );
+        this.TBscreened(el, gender, await response.json());
 
         if(this.screenedTB.length < 1) {
-           this.addGivenIPTdata();
+          await this.addGivenIPTdata();
         }else{
-          setTimeout(() => this.addTBscreenedData(), 500);
+          await this.addTBscreenedData();
         }
       }else{
         //setTimeout(() => this.fetchData(), 5000);
@@ -276,13 +297,13 @@ export default {
       if (response.status === 200) {
         //response.json().then((data) => this.checkResult(data) );
         this.givenIPT.shift();
-        response.json().then((data) =>  this.iptGiven(el, gender, data) );
+        this.iptGiven(el, gender, await response.json());
 
         if(this.givenIPT.length < 1) {
            //Go to All males();
-           this.allMales();
+           await this.allMales();
         }else{
-          setTimeout(() => this.addGivenIPTdata(), 500);
+          await this.addGivenIPTdata();
         }
       }else{
         //setTimeout(() => this.fetchData(), 5000);
@@ -307,11 +328,11 @@ export default {
       }
     
     },
-    allMales() {
+    async allMales() {
       this.dTable.fnAddData([ "31", "All", "Male", this.totalMales[0],
         this.totalMales[1], this.totalMales[2], this.totalMales[3] ]);
       
-      this.getAllFemale("Pregnant");
+      await this.getAllFemale("Pregnant");
     },
     getAllFemale: async function(age_group) {
       let url = 'cohort_disaggregated';
@@ -328,11 +349,11 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
-        response.json().then((data) =>  this.addNewFemaleRow(age_group, data) );
+        await this.addNewFemaleRow(age_group, await response.json());
       }
 
     },
-    addNewFemaleRow(age_group, data){
+    async addNewFemaleRow(age_group, data){
       for(let age in data) {
         let gender = data[age];
         for(let sex in gender) {
@@ -349,7 +370,7 @@ export default {
             let nTr = oSettings.aoData[ newRow[0] ].nTr;
             this.fpRow = nTr;
 
-            this.getAllFemale('Breastfeeding');
+            await this.getAllFemale('Breastfeeding');
           } else {
             let newRow = this.dTable.fnAddData([ "33", "All", "Fbf", tx_new,
               tx_curr, tx_given_ipt, tx_screened_for_tb ]);
@@ -358,7 +379,7 @@ export default {
             let nTr = oSettings.aoData[ newRow[0] ].nTr;
 
             this.fbfRow = nTr;
-            this.loadFPdata("pregnant", 'screened_for_tb');
+            await this.loadFPdata("pregnant", 'screened_for_tb');
           } 
         }
       }
@@ -376,17 +397,17 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200 && age_group == 'pregnant' && urlPath == 'screened_for_tb') {
-        response.json().then((data) =>  this.assignValueTD(this.fpRow, data.length, 2) );
-        this.loadFPdata("breastfeeding", urlPath);
+        this.assignValueTD(this.fpRow, (await response.json()).length, 2);
+        await this.loadFPdata("breastfeeding", urlPath);
       }else if(response.status === 200 && age_group == 'breastfeeding' && urlPath == 'screened_for_tb'){
-        response.json().then((data) =>  this.assignValueTD(this.fbfRow, data.length, 2) );
-        this.loadFPdata("pregnant", 'clients_given_ipt');
+        this.assignValueTD(this.fbfRow, (await response.json()).length, 2);
+        await this.loadFPdata("pregnant", 'clients_given_ipt');
       }else if(response.status === 200 && age_group == 'pregnant'){
-        response.json().then((data) =>  this.assignValueTD(this.fpRow, data.length, 1) );
-        this.loadFPdata("breastfeeding", urlPath);
+        this.assignValueTD(this.fpRow, (await response.json()).length, 1);
+        await this.loadFPdata("breastfeeding", urlPath);
       }else if(response.status === 200 && age_group == 'breastfeeding'){
-        response.json().then((data) =>  this.assignValueTD(this.fbfRow, data.length, 1) );
-        setTimeout(() => this.addAllFemaleRow(), 5000);
+        this.assignValueTD(this.fbfRow, (await response.json()).length, 1);
+        await this.addAllFemaleRow()
       }
     },
     assignValueTD(el, count, rowNum){
@@ -395,7 +416,8 @@ export default {
       }else{
         jQuery('td', el)[6].innerHTML = count;
       }
-    },addAllFemaleRow(){
+    },
+    async addAllFemaleRow(){
       let rows = this.$refs.tableBody.children;
 
       for(let i = 0 ; i < rows.length; i++){
@@ -412,7 +434,7 @@ export default {
         this.totalFemales[1], this.totalFemales[2], this.totalFemales[3] ]);
       
       this.dTable.fnDestroy();
-      this.initDataTable();
+      await this.initDataTable();
     }
   },
   mounted() {
@@ -420,8 +442,8 @@ export default {
   }, data: function() {
     return {
         reportData: null,
-        report_title: 'MoH Disaggregated ',
-        reportData: null,
+        reportSelected: false,
+        reportLoading: false,
         dTable: null,
         formatedData: [],
         rebuildOutcome: true,
@@ -444,7 +466,16 @@ export default {
           '45-49 years', '50 plus years'
         ].reverse()
       }
+    },
+  computed: {
+    ...mapState(['location']),
+    hideReport() {
+      return this.reportLoading || !this.reportSelected;
+    },
+    reportTitle() {
+      return `${this.location.name} MoH Disaggregated`;
     }
+  }
 }
 
 </script>

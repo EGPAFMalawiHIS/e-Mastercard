@@ -17,6 +17,10 @@ export default new Vuex.Store({
     patient: null,
     currentWeight: null,
     currentHeight: null,
+    location: {
+      name: null,
+      id: null
+    }
   },
   getters: {
     userIs(state) {
@@ -42,6 +46,10 @@ export default new Vuex.Store({
     },
     setHeight(state, height) {
       state.currentHeight = height;
+    },
+    setLocation(state, location) {
+      state.location.id = location.location_id;
+      state.location.name = location.name;
     },
     setWeight(state, weight) {
       state.currentWeight = weight;

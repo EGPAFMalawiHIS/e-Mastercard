@@ -5,27 +5,43 @@
   <div id="page-content-wrapper">
     <top-nav />
     <!-- Page Content -->
-    <div id="main-container" class="col-12 table-col">
-      <div class="alert alert-info">
-          <strong>TX RTT</strong> Clients that have their clinical dispensation visit falling in the
-reporting period and there is a difference of 30 or more days between their visit date and their previous appointment date / runout date
+    <div id="main-container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="alert alert-info">
+            <strong>TX RTT</strong> Clients that have their clinical dispensation visit falling in the
+    reporting period and there is a difference of 30 or more days between their visit date and their previous appointment date / runout date
+          </div>
         </div>
-      <!--span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
-       <sdPicker :onSubmit="fetchDates"></sdPicker>
-      <table class="table table-striped report" id="cohort-clients">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Age group</th>
-            <th>Gender</th>
-            <th class="disaggregated-numbers">Returned after 14 - 27 days</th>
-            <th class="disaggregated-numbers">Returned after 28 - 59 days</th>
-            <th class="disaggregated-numbers">Returned after 60 or more days</th>
-          </tr>
-        </thead>
-        <tbody ref="tableBody">
-        </tbody>
-      </table>
+      </div>
+      
+      <!--span>{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
+      <div class="row">
+        <div class="col-sm-12" style="z-index: 40"> <!-- Report overlay below is at z-index === 30 -->
+          <sdPicker :onSubmit="fetchDates"></sdPicker>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <report-overlay :reportLoading="reportLoading">
+            <table class="table table-striped report" id="cohort-clients">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Age group</th>
+                  <th>Gender</th>
+                  <th class="disaggregated-numbers">Returned after 14 - 27 days</th>
+                  <th class="disaggregated-numbers">Returned after 28 - 59 days</th>
+                  <th class="disaggregated-numbers">Returned after 60 or more days</th>
+                </tr>
+              </thead>
+              <tbody ref="tableBody">
+              </tbody>
+            </table>
+          </report-overlay>
+        </div>
+      </div>
     </div>
     <!-- Page Content ends -->
   </div>
@@ -46,8 +62,11 @@ reporting period and there is a difference of 30 or more days between their visi
 import ApiClient from "../services/api_client"
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
+import ReportOverlay from "../components/reports/ReportOverlay";
+import DateUtils from "../services/date_utils";
 
 import moment from 'moment';
+import { mapState } from 'vuex';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
 import jQuery from 'jquery';
@@ -74,6 +93,7 @@ require("@/assets/datatable/js/buttons.print.min.js")
 export default {
   name: "txML",
   components: {
+    ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
@@ -97,27 +117,35 @@ export default {
         buttons: [
           {
             extend: 'copy',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'csv',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'pdf',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'print',
-            title:  this.report_title
+            title:  this.reportTitle
           }
         ]
       });
     },
-    fetchDates(dates){
-      this.startDate = dates[0];
-      this.endDate = dates[1];
-      this.loadXLdata();
+    async fetchDates(dates){
+      try {
+        this.startDate = dates[0];
+        this.endDate = dates[1];
+        
+        this.reportLoading = true;
+        await this.loadXLdata();
+        this.reportLoading = false;
+      } catch (e) {
+        console.error(e);
+        this.router.push({name: 'error', params: {message: e.message}});
+      }
     },
     loadXLdata: async function(){
       let url = "tx_rtt?date=" + moment().format('YYYY-MM-DD');
@@ -125,16 +153,14 @@ export default {
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
      
-      const response = await ApiClient.get(url, {}, {});
+      const response = await ApiClient.get(url);
 
       if (response.status === 200) {
-        response.json().then((data) =>  this.loadGroupData(data) );
+        this.loadGroupData(await response.json());
       }
     },
     loadGroupData(data){
       //this.loadXLdata();
-      this.report_title = sessionStorage.location_name + " TX RTT: " + moment(this.startDate).format('DD/MMM/YYYY')
-      this.report_title += " - " + moment(this.endtDate).format('DD/MMM/YYYY')
       let counter = 1;
       let report_gender = ['F','M'];
       let set_age_groups = this.ageGroups;
@@ -173,7 +199,7 @@ export default {
     }
   }, data: function() {
       return {
-        report_title: 'TX RTT ',
+        reportLoading: false,
         startDate: null,
         endDate: null,
         ageGroups: [
@@ -187,8 +213,16 @@ export default {
         ]
       }
   },
+  computed: {
+    ...mapState(['location']),
+    reportTitle() {
+      const period = this.startDate && this.endDate ? `${DateUtils.localDate(this.startDate)} - ${DateUtils.localDate(this.endDate)}`
+                                                    : '';
+      return `${this.location.name} TX RTT: ${period}`
+    }
+  },
   mounted(){
-    setTimeout(() => this.initDataTable(), 300);
+    this.$nextTick(this.initDataTable);
   }
 };
 </script>

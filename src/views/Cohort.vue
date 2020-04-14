@@ -13,12 +13,17 @@
 
         <div class="cohort">
           <report-date-picker :onSubmit="fetchData"></report-date-picker>
-          <div id="printReport">
-            <cohortvalidation :dataparams="validationData"/>
-            <cohortheader :reportparams="reportData"/>
-            <cohort-ft :params="cohortData" :reportid="reportID"/>
-          </div>
-          <cohort-print :onPrint="printReport" />
+          <report-overlay :reportLoading="reportLoading" :reportSelected="reportSelected">
+            <div>
+              <div id="printReport">
+                <cohortvalidation :dataparams="validationData"/>
+                <cohortheader :reportparams="reportData"/>
+                <cohort-ft :params="cohortData" :reportid="reportID"/>
+              </div>
+
+              <cohort-print :onPrint="printReport" />
+            </div>
+          </report-overlay>
         </div>
 
         <!-- Page Content end -->
@@ -49,10 +54,12 @@ import cohortHeader from '@/components/cohortHeader.vue';
 import cohortFT from '@/components/cohortFT.vue';
 import ApiClient from "../services/api_client";
 import cohortPrint from "@/components/cohortPrint.vue";
+import ReportOverlay from "../components/reports/ReportOverlay.vue";
 
 export default {
   name: "reports",
   components: {
+    ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
     'report-date-picker': reportDatePicker,
@@ -73,10 +80,14 @@ export default {
       if(qtr == 'Select cohort quarter')
         return;
 
+      this.reportSelected = true;
+      this.reportLoading = true;
+
       const response = await ApiClient.get("programs/1/reports/cohort?name=" + qtr + "&regenerate=" + regenerate, {}, {});
 
       if (response.status === 200) {
         //response.json.then(function(data) { this.checkResult(data.values) });
+        this.reportLoading = false;
         this.reportData = qtr;
         response.json().then((data) => this.checkResult(data) );
       }else{
@@ -100,7 +111,9 @@ export default {
       cohortData: [],
       validationData: [],
       reportData: null,
-      reportID: null
+      reportID: null,
+      reportSelected: false,
+      reportLoading: false
     }
   },
   mounted(){

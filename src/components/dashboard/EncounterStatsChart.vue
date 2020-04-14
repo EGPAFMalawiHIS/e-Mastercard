@@ -1,6 +1,6 @@
 
 <template>
-  <b-overlay :show="loading">
+  <b-overlay :show="loading" spinner-variant="primary" spinner-type="grow" :spinner-small="true">
     <div class="col-sm-12 shadow p-3 mb-5 bg-white rounded"> 
       <div class="row">
         <div class="col-md-3">
