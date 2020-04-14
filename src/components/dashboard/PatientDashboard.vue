@@ -85,6 +85,7 @@ export default {
     this.loadMissedAppointments(startDate, endDate);
     this.loadAppointmentsDue(startDate, endDate);
     this.loadCompleteAndIncompleteVisits(startDate, endDate);
+    this.loadTxCurrent(startDate, endDate);
   },
   computed: mapState({
     completeAndIncompleteVisits: state => state.dashboard.completeAndIncompleteVisits,
@@ -107,7 +108,8 @@ export default {
                      'setDefaulters',
                      'setPatientsOnDtg',
                      'setPatientsWithMissedAppointments',
-                     'setPatientsWithAppointmentsTomorrow']),
+                     'setPatientsWithAppointmentsTomorrow',
+                     'setTxCurrent']),
     async getReport(reportUrl) {
       try {
         const response = await ApiClient.get(reportUrl);
@@ -169,14 +171,27 @@ export default {
       const pollReport = async () => {
         const [status, visits] = await this.getReport(reportUrl);
 
-        if (status === 'ok' && visits) {
+        if (visits) {
           this.setCompleteAndIncompleteVisits(visits);
-        } else {
+        } else if (status === 'ok') {
           setInterval(pollReport, REPORT_POLL_INTERVAL);
+        } else {
+          return;
         }
       }
 
       pollReport();
+    },
+    async loadTxCurrent(_startDate, _endDate) {
+      const endDate = DateUtils.isoDate(new Date());
+      const startDate = DateUtils.isoDate(moment(endDate).subtract(2, 'months'));
+      const reportUrl = `programs/1/reports/tx_curr?start_date=${startDate}&end_date=${endDate}`;
+
+      const [status, patients] = await this.getReport(reportUrl);
+
+      if (status !== 'ok') return;
+
+      this.setTxCurrent(patients);
     }
   }
 };
