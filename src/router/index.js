@@ -196,7 +196,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.path === '/login' || sessionStorage.apiKey) {
+  if (['/login', '/error'].includes(to.path) || sessionStorage.apiKey) {
     return next();
   }
 
