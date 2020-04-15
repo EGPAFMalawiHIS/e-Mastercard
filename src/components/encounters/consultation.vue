@@ -2,8 +2,8 @@
   <div>
     <div>
       <b-row>
-        <b-col>
-          <b-form-group label="Pregnant" v-if="isFemale">
+        <b-col v-if="isFemale">
+          <b-form-group label="Pregnant" >
             <b-form-radio
               v-model="pregnant.value_coded"
               name="pregnant-radios"
@@ -18,8 +18,8 @@
             >No</b-form-radio>
           </b-form-group>
         </b-col>
-        <b-col>
-          <b-form-group label="Breastfeeding" v-if="isFemale">
+        <b-col v-if="isFemale">
+          <b-form-group label="Breastfeeding">
             <b-form-radio
               v-model="breastFeeding.value_coded"
               name="breastfeeding-radios"

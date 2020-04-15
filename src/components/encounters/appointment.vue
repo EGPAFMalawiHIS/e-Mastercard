@@ -4,12 +4,14 @@
     <b-col>
 
   <label for="appointment-datepicker">Choose an appointment date</label>
-  <b-form-datepicker  id="appointment-datepicker" class="mb-2" v-model="appointmentdate.value_datetime" :min="date"></b-form-datepicker>
+  <b-form-datepicker  id="appointment-datepicker" class="mb-2" v-model="appointmentdate.value_datetime" :min="date" :max="earliestExpiry"></b-form-datepicker>
     </b-col>
   </b-row>
 </template>
 
 <script>
+import EventBus from "@/services/event-bus.js";
+import moment from "moment";
 export default {
 props: ["date"],
 data: function() {
@@ -19,6 +21,7 @@ data: function() {
         value_datetime: null,
         concept_id: 5096
       },
+      earliestExpiry: null,
     }
 },
 methods: {
@@ -33,7 +36,12 @@ methods: {
     }
     this.$emit('addEncounter', encounterObject);
   }
-}
+},
+    mounted() {
+    EventBus.$on('earliest-expiry-date', payload => {
+      this.earliestExpiry = moment(this.date).add(payload, 'days').format("YYYY-MM-DD");
+    });
+  }
 }
 </script>
 
