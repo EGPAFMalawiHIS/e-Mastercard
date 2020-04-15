@@ -59,6 +59,7 @@
         <td v-else> </td>
         <!-- <td>{{moment(visit.visitDate).format("DD-MMM-YYYY")}}</td> -->
         <td>
+          <click-confirm>
           <button class="btn btn-danger" @click="voidState(outcome.patient_state_id, index)" >
             <template v-if="voiding">
               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -70,6 +71,7 @@
               <span>X</span>
             </template>
           </button>
+          </click-confirm>
         </td>
       </tr>
      

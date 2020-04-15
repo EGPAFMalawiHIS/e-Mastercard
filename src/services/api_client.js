@@ -66,17 +66,20 @@ const ApiClient = (() => {
 
       const response = await fetch(expandPath(uri), params)
 
-      if (response.status === 401 && !noRedirectCodes.includes(response.status)) {
-        console.error('Not authorized')
+      if (response.status === 401 && !noRedirectCodes.includes(response.status)
+                                  && window.location.href.search(/login\/?$/) < 0) {
         getRouter().push('/login')
+        return null;
       } else if (response.status >= 500 && !noRedirectCodes.includes(response.status)) {
-        console.error('Internal server error');
-        // getRouter().push('/error')
+        const {error, exception} = await response.json();
+        getRouter().push({name: 'error', query: {message: `${error} - ${exception}`}});
+        return null;
       }
+      
       return response
     } catch(e) {
       console.log(e)
-      // getRouter().push('/error')
+      getRouter().push({name: 'error', query: {'message': `${e.name} - ${e.message}`}})
     }
   }
 

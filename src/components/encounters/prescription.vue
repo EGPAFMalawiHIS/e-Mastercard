@@ -87,6 +87,17 @@ export default {
         }
       );
     },
+    getAutoExpireDate: function() {
+      if(this.ARVquantity && this.selectedRegimen) {
+        let doses = [];
+        this.regimens[this.selectedRegimen].forEach(element => {
+          let equivalent_daily_dose = parseFloat(element.am) + parseFloat(element.pm);
+          let auto_expire = (this.ARVquantity/equivalent_daily_dose) + 2;
+          doses.push(auto_expire);
+        });
+        EventBus.$emit("earliest-expiry-date", Math.min(...doses));
+      }
+    },
     saveEncounter: function() {
       let selectedRegimens = [];
       this.selectedDrugs = [];
@@ -178,7 +189,7 @@ export default {
           equivalent_daily_dose: equivalent_daily_dose,
           frequency: frequency,
           start_date: moment(this.date).format("YYYY-MM-DD"),
-          auto_expire_date: moment(this.date).add((this.quantity/equivalent_daily_dose) + 2, 'days').format("YYYY-MM-DD"),
+          auto_expire_date: moment(this.date).add((this.selectedDrugs[i].quantity/equivalent_daily_dose) + 2, 'days').format("YYYY-MM-DD"),
           instructions: instructions,
           units: this.selectedDrugs[i].units,
           qty: this.selectedDrugs[i].quantity
@@ -213,6 +224,8 @@ export default {
     this.latestWeight = this.$store.state.currentWeight;
     this.weight = this.latestWeight;
     this.getRegimens();
+    this.getCPT();
+    this.getIPT();
     EventBus.$on('set-weight', payload => {
       this.selectedRegimen = null;
       this.ARVquantity = null;
@@ -240,7 +253,21 @@ export default {
           this.onTb = false;
         }  
     });
+  },
+  watch: {
+     ARVquantity: {
+     handler(val){
+        this.getAutoExpireDate();
+     },
+     deep: true
+  },   
+  selectedRegimen: {
+     handler(val){
+        this.getAutoExpireDate();
+     },
+     deep: true
   }
+}
 };
 </script>
 
