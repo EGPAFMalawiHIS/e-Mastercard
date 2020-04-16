@@ -9,9 +9,9 @@
     </div>
     <div class="row bar-charts" style="margin-top: 10px">
       <div class="col-md-3">
-        <EncounterStatsChart :value="patientsDueForViralLoad.count"
-                             style="height: 100px;">
-          Due for Viral Load
+        <EncounterStatsChart :value="patientsWithMissedAppointments.count"
+                             style="height: 100px">
+          Missed Appointments
         </EncounterStatsChart>
       </div>
       <div class="col-md-3">
@@ -21,15 +21,15 @@
         </EncounterStatsChart>
       </div>
       <div class="col-md-3">
-        <EncounterStatsChart :value="patientsWithMissedAppointments.count"
-                             style="height: 100px">
-          Missed Appointments
+        <EncounterStatsChart :value="patientsDueForViralLoad.count"
+                             style="height: 100px;">
+          Due for Viral Load
         </EncounterStatsChart>
       </div>
       <div class="col-md-3">
-        <EncounterStatsChart :value="patientsWithMissedAppointments.count"
+        <EncounterStatsChart :value="defaulters.count"
                              style="height: 100px">
-          Missed Appointments
+          Defaulters (30 Days)
         </EncounterStatsChart>
       </div>
     </div>
@@ -39,14 +39,14 @@
           <DashboardCard :value="patientsOnDtg.count">
             Patients on DTG
           </DashboardCard>
-          <DashboardCard :value="defaulters.count">
-            Patients Default (30 Days)
+          <!-- <DashboardCard :value="defaulters.count">
+            Patients Defaulted (30 Days)
+          </DashboardCard> -->
+          <DashboardCard :value="txCurrent30.count">
+            TX Current (30 Days)
           </DashboardCard>
-          <DashboardCard :value="txCurrent.count">
+          <DashboardCard :value="txCurrent60.count">
             TX Current (60 Days)
-          </DashboardCard>
-          <DashboardCard :value="lipo.count">
-            Lipo
           </DashboardCard>
           <!-- <PatientChart />
           <PatientChart /> -->
@@ -73,19 +73,24 @@ import VisitsStartChart from "./VisitsStartChart.vue";
 import ApiClient from "../../services/api_client";
 import DateUtils from "../../services/date_utils";
 
-const REPORT_POLL_INTERVAL = 1000; // In millis
+const DEFAULTERS_CACHE_VALIDITY_TIME = 15; // In minutes
+const REPORT_POLL_INTERVAL = 5000; // In millis
 
 export default {
   name: "PatientDashboard",
   created() {
     const [startDate, endDate] = DateUtils.dateQuarter(new Date());
 
-    this.loadPatientsOnDtg(startDate, endDate);
-    this.loadDefaulters(startDate, endDate);
-    this.loadMissedAppointments(startDate, endDate);
+    // const [startDate, endDate] = ['2019-10-01', '2019-12-31'];
+
     this.loadAppointmentsDue(startDate, endDate);
     this.loadCompleteAndIncompleteVisits(startDate, endDate);
-    this.loadTxCurrent(startDate, endDate);
+    this.loadDefaulters(startDate, endDate);
+    this.loadMissedAppointments(startDate, endDate);
+    this.loadPatientsDueForViralLoad(startDate, endDate);
+    this.loadPatientsOnDtg(startDate, endDate);
+    this.loadTxCurrent30(startDate, endDate);
+    this.loadTxCurrent60(startDate, endDate);
   },
   computed: mapState({
     completeAndIncompleteVisits: state => state.dashboard.completeAndIncompleteVisits,
@@ -95,7 +100,8 @@ export default {
     patientsOnDtg: state => state.dashboard.patientsOnDtg,
     patientsWithAppointmentsTomorrow: state => state.dashboard.patientsWithAppointmentsTomorrow,
     patientsWithMissedAppointments: state => state.dashboard.patientsWithMissedAppointments,
-    txCurrent: state => state.dashboard.txCurrent
+    txCurrent30: state => state.dashboard.txCurrent30,
+    txCurrent60: state => state.dashboard.txCurrent60
   }),
   components: {
     DashboardCard,
@@ -106,10 +112,12 @@ export default {
   methods: {
     ...mapMutations(['setCompleteAndIncompleteVisits',
                      'setDefaulters',
+                     'setPatientsDueForViralLoad',
                      'setPatientsOnDtg',
                      'setPatientsWithMissedAppointments',
                      'setPatientsWithAppointmentsTomorrow',
-                     'setTxCurrent']),
+                     'setTxCurrent30',
+                     'setTxCurrent60']),
     async getReport(reportUrl) {
       try {
         const response = await ApiClient.get(reportUrl);
@@ -137,6 +145,12 @@ export default {
       this.setPatientsOnDtg(patients);
     },
     async loadDefaulters(startDate, endDate) {
+      if (this.defaulters.count > 0
+          && this.defaulters.lastUpdated
+          && moment(new Date()).diff(this.defaulters.lastUpdated, 'minutes') <= DEFAULTERS_CACHE_VALIDITY_TIME) {
+        return;
+      }
+      
       const today = moment(new Date()).format(DateUtils.ISO_FORMAT);
       const reportUrl = `defaulter_list?date=${today}&start_date=${startDate}&end_date=${endDate}&pepfar=true&program_id=1`;
       const [status, patients] = await this.getReport(reportUrl);
@@ -162,8 +176,7 @@ export default {
 
       this.setPatientsWithAppointmentsTomorrow(patients);
     },
-    async loadCompleteAndIncompleteVisits(_startDate, _endDate) {
-      const endDate = moment(new Date()).format(DateUtils.ISO_FORMAT);
+    async loadCompleteAndIncompleteVisits(_startDate, endDate) {
       const startDate = moment(endDate).subtract(7, 'days').format(DateUtils.ISO_FORMAT);
       const reportUrl = `programs/1/reports/visits?start_date=${startDate}&end_date=${endDate}`;
 
@@ -183,16 +196,33 @@ export default {
 
       pollReport();
     },
-    async loadTxCurrent(_startDate, _endDate) {
-      const endDate = DateUtils.isoDate(new Date());
-      const startDate = DateUtils.isoDate(moment(endDate).subtract(2, 'months'));
+    async loadTxCurrent30(_startDate, endDate) {
+      const startDate = DateUtils.isoDate(moment(endDate).subtract(30, 'days'));
       const reportUrl = `programs/1/reports/tx_curr?start_date=${startDate}&end_date=${endDate}`;
 
       const [status, patients] = await this.getReport(reportUrl);
 
       if (status !== 'ok') return;
 
-      this.setTxCurrent(patients);
+      this.setTxCurrent30(patients);
+    },
+    async loadTxCurrent60(_startDate, endDate) {
+      const startDate = DateUtils.isoDate(moment(endDate).subtract(60, 'days'));
+      const reportUrl = `programs/1/reports/tx_curr?start_date=${startDate}&end_date=${endDate}`;
+
+      const [status, patients] = await this.getReport(reportUrl);
+
+      if (status !== 'ok') return;
+
+      this.setTxCurrent60(patients);
+    },
+    async loadPatientsDueForViralLoad(startDate, endDate) {
+      const reportUrl = `programs/1/reports/vl_due?start_date=${startDate}&endDate=${endDate}`;
+      const [status, patients] = await this.getReport(reportUrl);
+
+      if (status !== 'ok') return;
+
+      this.setPatientsDueForViralLoad(patients);
     }
   }
 };

@@ -1,6 +1,7 @@
 const state = {
   defaulters: {
     count: -1,
+    lastUpdated: null,
     patients: []
   },
   lipo: {
@@ -23,7 +24,11 @@ const state = {
     count: -1,
     patients: []
   },
-  txCurrent: {
+  txCurrent30: {
+    count: -1,
+    patients: []
+  },
+  txCurrent60: {
     count: -1,
     patients: []
   },
@@ -38,14 +43,23 @@ const mutations = {
   setDefaulters(state, patients) {
     state.defaulters.patients = patients;
     state.defaulters.count = patients.length;
+    state.defaulters.lastUpdated = new Date();
   },
   setPatientsOnDtg(state, patients) {
     state.patientsOnDtg.patients = patients;
     state.patientsOnDtg.count = patients.length;
   },
-  setTxCurrent(state, patients) {
-    state.txCurrent.patients = patients;
-    state.txCurrent.count = patients.length;
+  setTxCurrent30(state, patients) {
+    state.txCurrent30.patients = patients;
+    state.txCurrent30.count = patients.length;
+  },
+  setTxCurrent60(state, patients) {
+    state.txCurrent60.patients = patients;
+    state.txCurrent60.count = patients.length;
+  },
+  setPatientsDueForViralLoad(state, patients) {
+    state.patientsDueForViralLoad.patients = patients;
+    state.patientsDueForViralLoad.count = patients.length;
   },
   setPatientsWithMissedAppointments(state, patients) {
     state.patientsWithMissedAppointments.patients = patients;
