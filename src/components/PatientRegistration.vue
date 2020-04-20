@@ -320,7 +320,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Birthdate</th>
-                      <td>{{`${dateOfBirthDay}-${dateOfBirthMonth}-${dateOfBirthYear}` || estimateBirthdate(estimatedAge)}}</td>
+                      <td>{{ estimageAge ? estimateBirthdate(estimatedAge) : `${dateOfBirthDay}-${dateOfBirthMonth}-${dateOfBirthYear}` }}</td>
                     </tr>
                     <tr>
                       <th scope="row">Gender</th>
