@@ -1,7 +1,8 @@
 <template>
   <PageView>
     <UserEditForm @on-submit="createUser"
-                  submitText="Create user" />
+                  submitText="Create user"
+                  :loading="loading" />
   </PageView>
 </template>
 
@@ -12,17 +13,27 @@ import UserEditForm from "@/components/users/UserEditForm"
 
 export default {
   components: {PageView, UserEditForm},
+  data() {
+    return {
+      loading: false
+    }
+  },
   methods: {
     async createUser(user) {
-      const response = await ApiClient.post('/users', user); 
+      try {
+        this.loading = true;
+        const response = await ApiClient.post('/users', user); 
 
-      if (response.status === 400) {
-        response.text()
-                .then(alert)
-        return;
+        if (response.status !== 201) {
+          const {errors} = await response.json();
+          this.$bvToast.toast(`Failed to create user: ${errors.join(', ')}`, {title: 'Error', variant: 'danger'});
+          return;
+        }
+
+        this.$router.push({name: 'ListUsers'});
+      } finally {
+        this.loading = false;
       }
-
-      this.$router.push({name: 'ListUsers'});
     }
   }
 }
