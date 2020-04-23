@@ -1,5 +1,7 @@
 <template>
-  <div class="row">
+<b-col cols="6">
+
+  <b-row>
     <div class="col">
       <div class="input-group mb-3">
         <div class="input-group-prepend">
@@ -29,7 +31,8 @@
         />
       </div>
     </div>
-  </div>
+  </b-row>
+</b-col>
 </template>
 
 <script>

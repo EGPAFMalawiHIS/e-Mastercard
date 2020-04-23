@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <b-row>
+    <b-col cols="6">
+
     <div class="form-row" >
       <div class="form-group col-md-6">
         <label for="inputState">Regimen</label>
@@ -12,22 +14,22 @@
         </select>
       </div>
       <div class="form-group col-md-6">
-        <label for="inputZip">Quantity</label>
-        <input type="number" class="form-control" id="inputZip" v-model="ARVquantity" />
+        <label for="ARV-quantity">Quantity</label>
+        <input type="number" class="form-control" id="ARV-quantity" v-model="ARVquantity" />
       </div>
     </div>
-    <div class="form-row" >
-      <div class="form-group col-md-6">
-        <label for="inputZip">CPT Quantity</label>
-        <input type="number" class="form-control" id="inputZip" v-model="CPTquantity" />
-      </div>
+
+    </b-col>
     
-      <div class="form-group col-md-6">
-        <label for="inputZip">IPT Quantity</label>
-        <input type="number" class="form-control" id="inputZip" v-model="IPTquantity" />
-      </div>
-    </div>
-  </div>
+    <b-col>
+        <label for="CPT-quantity">CPT Quantity</label>
+        <input type="number" class="form-control" id="CPT-quantity" v-model="CPTquantity" />
+    </b-col>
+    <b-col> 
+        <label for="IPT-quantity">IPT Quantity</label>
+        <input type="number" class="form-control" id="IPT-quantity" v-model="IPTquantity" />
+    </b-col>
+  </b-row>
 </template>
 
 <script>
