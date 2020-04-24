@@ -839,7 +839,6 @@ export default {
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.clinicRegistration.obs.dateARTStarted.value_datetime = date; // this looks ok
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.arvNumber}`;
-        this.saveARVNumber();
         this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
       } else {
         //ART start date
@@ -865,6 +864,9 @@ export default {
         delete this.clinicRegistration.obs.testLocation;
         delete this.clinicRegistration.obs.testLocation;
       }
+
+      this.saveARVNumber();
+      
     },
 
     buildVitalsObservations() {
