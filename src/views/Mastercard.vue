@@ -32,20 +32,7 @@
             <visit-data></visit-data>
           </div>
 
-          <b-modal id="encounter-modal" title="encounter" size="xl">
-            <div class="row">
-              
-              <div class="col">
-                <label for="encounter-datepicker">Choose a visit date</label>
-                <b-form-datepicker id="encounter-datepicker" class="mb-2" v-model="date"></b-form-datepicker>
-                <!-- <input type="date" class="form-control" name id v-model="date" /> -->
-              </div>
-            </div>
-            <encounter :date="date" />
-            <template v-slot:modal-footer>
-              <div class="w-100"></div>
-            </template>
-          </b-modal>
+         <encounter/> 
 
           <b-modal id="outcome-modal" title="outcome" size="xl">
             <outcome />

@@ -4,59 +4,48 @@
     <div v-if="!loading" class="col-md-12 rounded shadow content-pane">
       <form class="form" @submit.prevent="submitForm">
         <FormInputLabel forInput="username">Username</FormInputLabel>
-        <input id="username" type="text" class="form-control" :class="$v.form.username.$error && 'form-control-invalid'" placeholder="Username"
-               v-model.trim="$v.form.username.$model"
-               autocomplete="username"
-               :disabled="editMode ? true : false" />
-        <span v-if="$v.form.username.$dirty">
-          <p class="text-danger form-error" v-if="!$v.form.username.required">Username is required</p>
-          <p class="text-danger form-error" v-if="!$v.form.username.minLength">Username must be at least {{ $v.form.username.$params.minLength.min }} characters long</p>
-        </span>
+        <b-form-input id="username" type="text" :state="$v.form.username.$dirty ? !$v.form.username.$error : null" placeholder="Username"
+                      v-model="$v.form.username.$model" autocomplete="username" :disabled="editMode ? true : false" trim></b-form-input>
+        <b-form-invalid-feedback>
+          <span v-if="!$v.form.username.required">Username is required</span>
+          <span v-if="!$v.form.username.minLength">Username must be at least {{ $v.form.username.$params.minLength.min }} characters long</span>
+        </b-form-invalid-feedback>
         
         <FormInputLabel for="password">Password</FormInputLabel>
-        <input id="password" type="password" class="form-control password-input"
-               :class="($v.form.password.$error || $v.form.shadow_password.$error) && 'form-control-invalid'"
-               placeholder="Password" v-model.trim="$v.form.password.$model"
-               autocomplete="password" />
-        <input id="shadow-password" type="password" class="form-control password-input password-input-right"
-               :class="($v.form.password.$error || $v.form.shadow_password.$error) && 'form-control-invalid'"
-               placeholder="Verify password" v-model="$v.form.shadow_password.$model"
-               autocomplete="password" />
-        <span v-if="$v.form.password.$dirty">
-          <p class="form-error text-danger" v-if="!$v.form.password.required">Password is required</p>
-          <p class="form-error text-danger" v-if="!$v.form.password.minLength">Password must be at least {{ $v.form.password.$params.minLength.min }} characters long</p>
-        </span>
-        <span v-if="$v.form.shadow_password.$dirty">
-          <p class="form-error text-danger" v-if="!$v.form.shadow_password.sameAs">Passwords don't match</p>
-        </span>
-
+        <b-form-input id="password" type="password" class="password-input"
+                      :state="$v.form.password.$dirty || $v.form.shadow_password.$dirty ? !($v.form.password.$error || $v.form.shadow_password.$error) : null"
+                      placeholder="Password" v-model="$v.form.password.$model" autocomplete="password" trim></b-form-input>
+        <b-form-input id="shadow-password" type="password" class="form-control password-input password-input-right"
+                      :state="shadowPasswordValid()"
+                      placeholder="Verify password" v-model="$v.form.shadow_password.$model" autocomplete="password"></b-form-input>
+        <b-form-invalid-feedback>
+          <span v-if="!$v.form.password.required">Password is required<br/></span>
+          <span v-if="!$v.form.password.minLength">Password must be at least {{ $v.form.password.$params.minLength.min }} characters long<br/></span>
+          <span v-if="!$v.form.shadow_password.sameAs">Passwords don't match</span>
+        </b-form-invalid-feedback>
 
         <FormInputLabel for="roles">Roles</FormInputLabel>
-        <VueSelect id="roles" v-model="$v.form.roles.$model"
-                  :class="$v.form.roles.$error && 'form-control-invalid'"
-                  :options="roles" multiple>
+        <VueSelect id="roles" v-model="$v.form.roles.$model" :class="getRolesInputClass()" :options="roles" multiple>
         </VueSelect>
         <span v-if="$v.form.roles.$dirty">
           <p class="form-error text-danger" v-if="!$v.form.roles.required">At least one role is required</p>
         </span>
 
         <FormInputLabel for="given-name">Given name</FormInputLabel>
-        <input id="given-name" type="text" class="form-control"
-               :class="$v.form.given_name.$error && 'form-control-invalid'"
-               placeholder="Given name" v-model="$v.form.given_name.$model" />
-        <span v-if="$v.form.given_name.$dirty">
-          <p class="form-error text-danger" v-if="!$v.form.given_name.required">Given name is required</p>
-          <p class="form-error text-danger" v-if="!$v.form.given_name.minLength">Given name must be at least {{ $v.form.given_name.$params.minLength.min }} characters long</p>
-        </span>
+        <b-form-input id="given-name" type="text" :state="$v.form.given_name.$dirty ? !$v.form.given_name.$error : null"
+                      placeholder="Given name" v-model="$v.form.given_name.$model" trim></b-form-input>
+        <b-form-invalid-feedback>
+          <p v-if="!$v.form.given_name.required">Given name is required</p>
+          <p v-if="!$v.form.given_name.minLength">Given name must be at least {{ $v.form.given_name.$params.minLength.min }} characters long</p>
+        </b-form-invalid-feedback>
 
         <FormInputLabel for="family-name">Family name</FormInputLabel>
-        <input id="family-name" type="text" class="form-control"
-               :class="$v.form.family_name.$error && 'form-control-invalid'"
-               placeholder="Family name" v-model="$v.form.family_name.$model" />
-        <span v-if="$v.form.family_name.$dirty">
-          <p class="form-error text-danger" v-if="!$v.form.family_name.required">Family name is required</p>
-          <p class="form-error text-danger" v-if="!$v.form.family_name.minLength">Family name must be at least {{ $v.form.family_name.$params.minLength.min }} characters long</p>
-        </span>
+        <b-form-input id="family-name" type="text" :state="$v.form.family_name.$dirty ? !$v.form.family_name.$error : null"
+                      placeholder="Family name" v-model="$v.form.family_name.$model" trim></b-form-input>
+        <b-form-invalid-feedback>
+          <span v-if="!$v.form.family_name.required">Family name is required</span>
+          <span v-if="!$v.form.family_name.minLength">Family name must be at least {{ $v.form.family_name.$params.minLength.min }} characters long</span>
+        </b-form-invalid-feedback>
 
         <input type="submit" class="btn btn-primary" :value="submitText || 'Submit'" />
       </form>
@@ -78,10 +67,9 @@ import "vue-select/dist/vue-select.css";
 export default {
   mixins: [validationMixin],
   components: {FormInputLabel, Fragment, Loader, VueSelect},
-  props: ['user', 'editMode', 'submitText'],
+  props: ['user', 'loading', 'editMode', 'submitText'],
   data() {
     return {
-      loading: true,
       roles: [],
       form: {
         username: '',
@@ -94,12 +82,9 @@ export default {
     };
   },
   mounted() {
-    this.loading = true;
-
     this.fetchRoles()
         .then(roles => this.roles = roles.map(role => role.role))
-        .then(this.loadUserIntoForm)
-        .then(() => this.loading = false);
+        .then(this.loadUserIntoForm);
   },
   validations() {
     return {
@@ -143,8 +128,6 @@ export default {
       if (!this.validateForm()) {
         return;
       }
-
-      this.loading = true;
       
       const {shadow_password: _, ...user} = this.form;
 
@@ -163,6 +146,26 @@ export default {
     validateForm() {
       this.$v.$touch();
       return !this.$v.$invalid;
+    },
+    shadowPasswordValid() {
+      if (this.$v.form.password.$dirty && this.$v.form.shadow_password.$dirty) {
+        return !(this.$v.form.password.$error || this.$v.form.shadow_password.$error);
+      } else if (this.$v.form.shadow_password.$dirty) {
+        return !this.$v.form.shadow_password.$error;
+      } else if (this.$v.form.password.$dirty) {
+        return this.$v.form.password.$error ? false : null;
+      } else {
+        return null;
+      }
+    },
+    getRolesInputClass() {
+      if (!this.$v.form.roles.$dirty) return;
+
+      if (this.$v.form.roles.$error) {
+        return 'form-control-invalid';
+      } else {
+        return 'form-control-valid';
+      }
     }
   }
 }

@@ -1,22 +1,43 @@
 <template>
-  <div>
-    <vitals v-on:addEncounter="addEncounter" ref="vitals" ></vitals>      
-    <consultation ref="consultation" v-on:addEncounter="addEncounter"/>
+<b-modal id="encounter-modal" title="encounter" size="xl">
 
-    <prescription v-on:addEncounter="addEncounter" ref="prescription" :date="date"/>
+    <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>
+    <consultation ref="consultation" v-on:addEncounter="addEncounter" />
+
+    <prescription v-on:addEncounter="addEncounter" ref="prescription" :date="date" />
     <reception ref="reception" v-on:addEncounter="addEncounter"></reception>
-    <adherence v-on:addEncounter="addEncounter" ref="adherence" :date="date"></adherence>      
-    <appointment v-on:addEncounter="addEncounter" ref="appointment" :date="date"></appointment>      
-        <button class="btn btn-primary" @click="createEncounters" >
+    <adherence v-on:addEncounter="addEncounter" ref="adherence" :date="date"></adherence>
+    <appointment v-on:addEncounter="addEncounter" ref="appointment" :date="date"></appointment>
+
+    <template v-slot:modal-footer>
+        <button class="btn btn-primary" @click="createEncounters">
             <template v-if="posting === true">
-              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              <span class="sr-only">Loading...</span>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span class="sr-only">Loading...</span>
             </template>
             <template v-else>
-              <span>Save</span>
+                <span>Save</span>
             </template>
-          </button>
-  </div>
+        </button>
+    </template>
+    <template v-slot:modal-header="{ close }">
+        <b-col>
+            <p>
+                New visit
+            </p>
+        </b-col>
+        <b-col cols="9">
+
+            <b-form-datepicker id="encounter-datepicker" class="mb-2" v-model="date"></b-form-datepicker>
+        </b-col>
+        <b-col cols="1">
+            <b-button @click="close()">
+                X
+            </b-button>
+        </b-col>
+    </template>
+</b-modal>
+
 </template>
 
 <script>
@@ -28,12 +49,11 @@ import appointment from '@/components/encounters/appointment.vue';
 import consultation from '@/components/encounters/consultation.vue';
 import prescription from '@/components/encounters/prescription.vue';
 import adherence from '@/components/encounters/adherence.vue';
-import ApiClient from "../../services/api_client";
-import EncounterService from "../../services/encounter_service";
-import EventBus from "../../services/event-bus.js";
-import { isMoment } from 'moment';
+import ApiClient from "@/services/api_client";
+import EncounterService from "@/services/encounter_service";
+import EventBus from "@/services/event-bus.js";
+import moment from "moment/moment";
 export default {
-    props: ["date"],
     data: function() {
         return {
             encounters: {},
@@ -41,6 +61,7 @@ export default {
             patientPresent: false,
             posting: false,
             verifiedEnc: [],
+            date: moment().format("YYYY-MM-DD")
         }
     },
     components: {

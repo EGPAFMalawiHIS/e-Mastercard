@@ -126,9 +126,7 @@ export default {
 
             this.dTable.fnAddData([ 
               counter++, rowData[i][0], rowData[i][1], 
-              this.addLink(rowData[i][0], rowData[i][1], rowData[i][2], 1),
-              this.addLink(rowData[i][0], rowData[i][1], rowData[i][3], 2),
-              this.addLink(rowData[i][0], rowData[i][1], rowData[i][4], 3)
+              rowData[i][2], rowData[i][3], rowData[i][4]
             ]);    
           }
         }
@@ -162,7 +160,7 @@ export default {
       a.setAttribute("age-group", age_group);
       a.setAttribute("gender", gender);
       a.setAttribute("column_number", column_num);
-      a.setAttribute("@click", "showPoPBox('" + age_group + "');");
+      a.setAttribute("click", "showPoPBox('" + age_group + "');");
       a.innerHTML = count;
       span.appendChild(a);
       return span.innerHTML;

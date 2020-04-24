@@ -60,23 +60,34 @@ export default {
       this.$router.push({name: 'EditUser', params: {userId}})
     },
     async deactivateUser(userId) {
-      const response = await ApiClient.post(`users/${userId}/deactivate`);
-
-      if (response.status !== 200) {
-        response.json().then(alert);
+      if (userId === this.$store.state.user.user_id) {
+        this.$bvToast.toast('You can not deactivate your own account', {title: 'Error', variant: 'danger'});
         return;
       }
 
+      const response = await ApiClient.post(`users/${userId}/deactivate`);
+
+      if (response.status !== 200) {
+        const {errors} = await response.json();
+        this.$bvToast.toast(`Failed to deactivate user: ${errors.join(',')}`, {title: 'Error', variant: 'danger'});
+        return;
+      }
+
+      const {user} = await response.json();
+      this.$bvToast.toast(`User ${user.username} deactivated`, {title: 'Success'});
       this.loadUsers();
     },
     async activateUser(userId) {
       const response = await ApiClient.post(`users/${userId}/activate`);
 
       if (response.status !== 200) {
-        response.json().then(alert);
+        const {errors} = await response.json(); 
+        this.$bvToast.toast(`Failed to activate user: ${errors.join(',')}`, {title: 'Error', variant: 'danger'});
         return;
       }
 
+      const {user} = await response.json();
+      this.$bvToast.toast(`User ${user.username} activated`, {title: 'Success', variant: 'success'});
       this.loadUsers();
     }
   }

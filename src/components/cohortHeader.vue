@@ -37,7 +37,6 @@ export default {
       items: ['3.','4.','5.','6.','7.','8.','9.'],
       quarterStr: null,
       quarterYr: null,
-      clinic_name: sessionStorage.location_name
     }
   },
   methods: {
@@ -57,6 +56,11 @@ export default {
       handler() {
         this.renderQuarter();
       }
+    }
+  },
+  computed: {
+    clinic_name() {
+      return this.$store.state.location.name;
     }
   }
 }

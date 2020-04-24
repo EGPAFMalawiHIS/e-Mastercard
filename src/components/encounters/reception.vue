@@ -1,4 +1,5 @@
 <template>
+<b-col>
   <div>
     <div class="row ">
       <div class="col d-flex justify-content-start">
@@ -62,10 +63,11 @@
       </div>
     </div>
   </div>
+</b-col>
 </template>
 
 <script>
-import EventBus from "../../services/event-bus.js";
+import EventBus from "@/services/event-bus.js";
 export default {
   data: function() {
     return {
