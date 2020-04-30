@@ -10,13 +10,7 @@
           <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Age group</th>
-                <th>Gender</th>
-                <th class="disaggregated-numbers">Tx new (new on ART)</th>
-                <th class="disaggregated-numbers">TX curr (receiving ART)</th>
-                <th class="disaggregated-numbers">TX curr (received IPT)</th>
-                <th class="disaggregated-numbers">TX curr (screened for TB)</th>
+                <th>Weight Band</th>
                 <th class="disaggregated-numbers">0A</th>
                 <th class="disaggregated-numbers">2A</th>
                 <th class="disaggregated-numbers">4A</th>
@@ -47,6 +41,13 @@
               </tr>
             </thead>
             <tbody ref="tableBody">
+              <tr v-for="(reg, index) in regim" :key="index">
+                <td>{{reg.weight}}</td>
+
+                <td v-for="(r, innerIndex) in Object.keys(reg.males[0])" :key="innerIndex">
+                  {{reg.males[0][r]}}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -87,6 +88,7 @@ require("@/assets/datatable/js/dataTables.fixedHeader.min.js");
 
 export default {
   name: "reports",
+ 
   components: {
     "top-nav": TopNav,
     "side-bar": Sidebar,
@@ -585,9 +587,36 @@ export default {
   mounted() {
     setTimeout(() => this.addTableBody(), 300);
   }, data: function() {
+    let regimens = {
+          "0A": 0,
+          "2A": 0,
+          "4A": 0,
+          "5A": 0,
+          "6A": 0,
+          "7A": 0,
+          "8A": 0,
+          "9A": 0,
+          "10A": 0,
+          "11A": 0,
+          "12A": 0,
+          "14A": 0,
+          "15A": 0,
+          "16A": 0,
+          "17A": 0,
+          "0P": 0,
+          "2P": 0,
+          "4P": 0,
+          "9P": 0,
+          "11P": 0,
+          "14P": 0,
+          "15P": 0,
+          "16P": 0,
+          "17P": 0,
+          "N/A": 0,
+        };
     return {
         reportData: null,
-        report_title: 'MoH Disaggregated ',
+        report_title: 'MoH Weight band distribution ',
         reportData: null,
         dTable: null,
         formatedData: [],
@@ -602,17 +631,34 @@ export default {
         fbfRow: null,
         allRows: [],
         initialize: false,
-        ageGroups: [
-          '0-5 months', '6-11 months','12-23 months',
-          '2-4 years', '5-9 years',
-          '10-14 years', '15-17 years',
-          '18-19 years', '20-24 years',
-          '25-29 years', '30-34 years',
-          '35-39 years', '40-44 years',
-          '45-49 years', '50 plus years'
-        ].reverse()
+        
+        regim: [
+            {
+                "weight": "3 - 3.9 Kg",
+                "males": [
+                  Object.assign(regimens, {"13A": 1})
+                ],
+                "females": [
+                  Object.assign(regimens, {"2P": 1})
+                ]
+            },
+            // {
+            //     "weight": "4 - 4.9 Kg",
+            //     "males": [
+            //       {...regimens, ...{"13A": 1}},
+            //     ],
+            //     "females": [
+            //       {...regimens, ...{"2A": 1}},
+            //     ]
+            // },
+        ]
       }
+    },
+     computed: {
+    getRegimens() {
+      return this.regimens;
     }
+  },
 }
 
 </script>
