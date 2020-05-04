@@ -69,7 +69,7 @@
             </div>
 
              <div class="col-sm">
-              <div class="btn-container" @click="redirect('/moh_disaggregated_regimen')">
+              <div class="btn-container" @click="redirect('/regimen_distribution_weight')">
                 <div class="card">
                   <img src="../assets/report-icons/distribution.png" class="btn-icon"/>
                   <p>Regimen distribution, Weight</p>
