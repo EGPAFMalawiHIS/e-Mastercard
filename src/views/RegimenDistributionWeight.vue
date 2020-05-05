@@ -1,16 +1,29 @@
+
 <template>
     <div class="d-flex" id="wrapper">
       <side-bar />
       <div id="page-content-wrapper">
          <top-nav />
         <!-- Page Content -->
-        <div id="main-container" class="col-12 table-col">
-          <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-           <sdPicker :onSubmit="fetchDates"></sdPicker>
-          <table class="table table-striped report" id="cohort-clients">
+        <div id="main-container">
+          <div class="row">
+            <div class="col-sm-12" style="z-index: 20"> <!-- elevate date picker above overlay below -->
+              <span>{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+              <sdPicker :onSubmit="fetchDates"></sdPicker>
+            </div>
+          </div>
+
+           <div class="row">
+             <div class="col-sm-12">
+               <b-overlay :show="hideReport" spinner-type="grow" spinner-variant="primary">
+                  <template v-if="!reportSelected" v-slot:overlay>
+                    <h1>No Report Selected</h1>
+                  </template>
+            <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
                 <th>Weight Band</th>
+                <th>Gender</th>
                 <th class="disaggregated-numbers">0A</th>
                 <th class="disaggregated-numbers">2A</th>
                 <th class="disaggregated-numbers">4A</th>
@@ -41,28 +54,32 @@
               </tr>
             </thead>
             <tbody ref="tableBody">
-              <tr v-for="(reg, index) in regim" :key="index">
+              <tr v-for="(reg, index) in reportData" :key="index">
                 <td>{{reg.weight}}</td>
+                <td>Male</td>
 
                 <td v-for="(r, innerIndex) in reg.males" :key="innerIndex">
                   {{r[Object.keys(r)[0]]}}
                 </td>
               </tr>
-              <tr v-for="(reg, index) in regim" :key="index+'fem'">
+              <tr v-for="(reg, index) in reportData" :key="index+'fem'">
                 <td>{{reg.weight}}</td>
 
+                <td>Female</td>
                 <td v-for="(r, innerIndex) in reg.females" :key="innerIndex">
                   {{r[Object.keys(r)[0]]}}
                 </td>
               </tr>
             </tbody>
           </table>
+               </b-overlay>
+             </div>
+           </div>
         </div>
         <!-- Page Content end -->
     </div>
   </div>
 </template>
-
 <script>
 
 require("@/assets/datatable/css/bootstrap.css");
@@ -81,7 +98,6 @@ import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
 import jQuery from 'jquery';
 import datatable from 'datatables';
-
 
 
 require("@/assets/datatable/js/buttons.flash.min.js");
@@ -107,6 +123,8 @@ export default {
       this.initializeReport();
     },
     initializeReport: async function() {
+      this.reportLoading = true;
+      this.reportSelected = true;
       this.report_title = sessionStorage.location + " MoH Disaggregated report";
       let url = '/programs/1/reports/regimens_by_weight_and_gender?';
       url += "start_date=" + this.startDate;
@@ -115,8 +133,9 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
-        response.json().then((data) => 
-          this.mergeRegimens(data),
+        response.json().then((data) => {
+          this.mergeRegimens(data);
+        }
         );
       }else{
       }
@@ -127,10 +146,11 @@ export default {
         regimens[index].males = this.getReg(element.males);
         regimens[index].females = this.getReg(element.females);
       });
-      this.regim = regimens; 
+      this.reportData = regimens; 
+      this.reportLoading = false;
     },
     getReg(regimens) {
-      const regimenProto = [
+      let regimenProto = [
             {"0A": 0},
             {"2A": 0},
             {"4A": 0},
@@ -158,26 +178,23 @@ export default {
             {"17P": 0},
             {"N/A": 0},
       ];
-   
+      let total = {"total": 0};
+      regimens.forEach((el, innerIndex) => {
         regimenProto.forEach((element, index) => {
-          regimens.forEach((el, innerIndex) => {
-            if(element.hasOwnProperty(Object.keys(el)[0])) {
+            if(element.hasOwnProperty(Object.keys(el))) {
               regimenProto[index] = el;
-            }else {
-              regimenProto[index] = element;
             }
           });
+          total.total += el[Object.keys(el)[0]];
         });
+      regimenProto.push(total);
       return(regimenProto);
     }
   },
   mounted() {
-    // setTimeout(() => this.addTableBody(), 300);
   }, data: function() {
    
     return {
-        reportData: null,
-        report_title: 'MoH Weight band distribution ',
         reportData: null,
         dTable: null,
         formatedData: [],
@@ -192,8 +209,9 @@ export default {
         fbfRow: null,
         allRows: [],
         initialize: false,
-        
-        regim: [
+        reportSelected: false,
+        reportLoading: false,
+        reportData: [
             
         ]
       }
@@ -201,6 +219,12 @@ export default {
      computed: {
     getRegimens() {
       return this.regimens;
+    },
+    hideReport() {
+      return this.reportLoading || !this.reportSelected;
+    },
+    reportTitle() {
+      return `${this.$store.state.location.name} Regimen Distribution by weight`;
     }
   },
 }
