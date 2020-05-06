@@ -19,13 +19,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text" >Outcome Date</span>
           </div>
-          <input
-            type="date"
-            class="form-control"
-            aria-label="Default"
-            aria-describedby="inputGroup-sizing-default"
-            v-model="date"
-          />
+            <b-form-datepicker id="encounter-datepicker"  v-model="date" :min="moment(enrollDate).format('YYYY-MM-DD')"></b-form-datepicker>
         </div>
       </div>
       
@@ -100,6 +94,7 @@ export default {
         locations: [],
         location: null,
         voiding: false,
+        enrollDate: null,
 
     };
   }, methods: {
@@ -116,6 +111,7 @@ export default {
             this.outcomes = f.filter(y =>  {
               return y.program_id === 1;
             })[0]["patient_states"];
+            this.enrollDate = f[0].date_enrolled;
         })
       });
     },
