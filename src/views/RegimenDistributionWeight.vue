@@ -141,6 +141,49 @@ export default {
       }
 
     },
+    initDataTable(){
+      this.report_title = sessionStorage.location + " MoH Disaggregated regimen distribution by weight report. ";
+      this.report_title += " Reporting  period: " + moment(this.startDate).format("DD/MMM/YYYY");
+      this.report_title += " " + moment(this.endDate).format("DD/MMM/YYYY");
+      
+      this.dTable = jQuery("#cohort-clients").dataTable({
+        order: [[ 0, "asc" ]],
+        fixedHeader: false,
+        searching: false,
+        paging: false,
+        Processing: false,
+        ServerSide: false,
+        scrollY: "50vh",
+        scrollX: true,
+        scrollCollapse: true,
+        fixedColumns:   {
+          leftColumns: 2,
+          rightColumns: 1
+        },
+        scroller: {
+          loadingIndicator: true
+        },
+        dom: 'Bfrtip',
+        buttons: [
+          {
+            extend: 'copy',
+            title:  this.report_title
+          },
+          {
+            extend: 'csv',
+            title:  this.report_title
+          },
+          {
+            extend: 'pdf',
+            title:  this.report_title
+          },
+          {
+            extend: 'print',
+            title:  this.report_title
+          }
+        ]
+      });
+    },
     mergeRegimens(regimens) {
       regimens.forEach((element, index )=> {
         regimens[index].males = this.getReg(element.males);
@@ -148,6 +191,7 @@ export default {
       });
       this.reportData = regimens; 
       this.reportLoading = false;
+      setTimeout(() => this.initDataTable(), 400);
     },
     getReg(regimens) {
       let regimenProto = [

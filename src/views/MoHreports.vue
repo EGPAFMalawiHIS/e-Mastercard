@@ -71,7 +71,7 @@
              <div class="col-sm">
               <div class="btn-container" @click="redirect('/regimen_distribution_weight')">
                 <div class="card">
-                  <img src="../assets/report-icons/distribution.png" class="btn-icon"/>
+                  <img src="../assets/report-icons/electronics.png" class="btn-icon"/>
                   <p>Regimen distribution, Weight</p>
                 </div>
               </div>
