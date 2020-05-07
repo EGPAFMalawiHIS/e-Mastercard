@@ -58,8 +58,13 @@ export default {
       async fetchLocationName(location_id) {
         const response = await ApiClient.get("locations/" + location_id, {}, {});
         if (response.status === 200) {
-          this.setLocation(await response.json());
+          response.json().then((data) => this.createSessionLocationName(data) );
+          //this.setLocation(await response.json());
         }
+      },
+      createSessionLocationName(data){
+        this.setLocation(data);
+        sessionStorage.location = data.name;
       }
     },
     computed: {
