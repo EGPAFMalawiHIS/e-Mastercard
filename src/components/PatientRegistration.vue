@@ -13,18 +13,19 @@
               <div class="form-group col-md-4 input-column">
                 <label class="input-label" for="firstNameInput">First Name (*)</label>
                 <input
-                  v-model="firstname"
+                  v-model="$v.form.first_name.$model"
                   type="text"
                   class="form-control"
                   id="patient-firstname"
                   name="patient-firstname"
                   placeholder="First Name"
+                  v-bind:style="!$v.form.first_name.minLength || !$v.form.first_name.charsOnly && !form.first_name == '' ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="form-group col-md-4 input-column">
                 <label class="input-label" for="middleNameInput">Middle Name</label>
                 <input
-                  v-model="middlename"
+                  v-model="$v.form.middle_name.$model"
                   type="text"
                   class="form-control"
                   id="patient-middlename"
@@ -35,12 +36,13 @@
               <div class="form-group col-md-4 input-column">
                 <label class="input-label" for="lastNameInput">Last Name (*)</label>
                 <input
-                  v-model="lastname"
+                  v-model="$v.form.last_name.$model"
                   type="text"
                   class="form-control"
                   id="patient-lastname"
                   name="patient-lastname"
                   placeholder="Last Name"
+                  v-bind:style="!$v.form.last_name.minLength || !$v.form.last_name.charsOnly && !form.last_name == '' ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
             </div>
@@ -68,38 +70,35 @@
                 <div class="row">
                   <div class="col-md-4">
                     <input
-                      v-model="dateOfBirthDay"
+                      v-model="$v.form.date_of_birth_day.$model"
                       type="number"
                       class="form-control"
                       id="patient-date-of-birth-day"
                       name="patient-date-of-birth-day"
                       placeholder="DD"
-                      maxlength="2"
-                      minlength="2"
+                      v-bind:style="!$v.form.date_of_birth_day.maxLength || !$v.form.date_of_birth_day.minLength || !$v.form.date_of_birth_day.dayRange ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
                   <div class="col-md-4">
                     <input
-                      v-model="dateOfBirthMonth"
+                      v-model="$v.form.date_of_birth_month.$model"
                       type="number"
                       class="form-control"
                       id="patient-date-of-birth-month"
                       name="patient-date-of-birth-month"
                       placeholder="MM"
-                      maxlength="2"
-                      minlength="2"
+                      v-bind:style="!$v.form.date_of_birth_month.maxLength || !$v.form.date_of_birth_month.minLength || !$v.form.date_of_birth_month.monthRange ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
                   <div class="col-md-4">
                     <input
-                      v-model="dateOfBirthYear"
+                      v-model="$v.form.date_of_birth_year.$model"
                       type="number"
                       class="form-control"
                       id="patient-date-of-birth-year"
                       name="patient-date-of-birth-year"
                       placeholder="YYYY"
-                      maxlength="4"
-                      minlength="4"
+                      v-bind:style="!$v.form.date_of_birth_year.maxLength || !$v.form.date_of_birth_year.minLength || !$v.form.date_of_birth_year.between ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
                 </div>
@@ -107,12 +106,13 @@
               <div v-if="estimageAge" class="form-group col-md-6 input-column">
                 <label class="input-label" for="dobInput">Estimage Age (*)</label>
                 <input
-                  v-model="estimatedAge"
-                  type="text"
+                  v-model="$v.form.estimated_age.$model"
+                  type="number"
                   class="form-control"
                   id="patient-age-estimate"
                   name="patient-age-estimate"
                   placeholder="Estimate Age"
+                  v-bind:style="!$v.form.estimated_age.maxLength || !$v.form.estimated_age.minLength || !$v.form.estimated_age.between || !$v.form.estimated_age.numberAge && !form.estimated_age.toString() == ''  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="form-group col-md-6 input-column">
@@ -145,13 +145,14 @@
                   />
                 </label>
                 <input
-                  v-model="phoneNumber"
-                  type="text"
+                  v-model="$v.form.phone_number.$model"
+                  type="number"
                   class="form-control"
                   id="patient-phonenumber"
                   name="patient-phonenumber"
                   placeholder="Cellphone Number"
                   :disabled="disabledPhoneNumber"
+                  v-bind:style="!$v.form.phone_number.phoneNumberValidations && !form.phone_number == ''  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
             </div>
@@ -160,7 +161,6 @@
                 <label style="font-weight: bold">Physical Address</label>
               </div>
               <div class="form-group col-md-6 input-column" style="height: 70px">
-               
                 <label style="font-weight: bold;">Home Village (*)</label>
                 <span
                   style="font-size: 14px; margin-left: 15px; margin-top: 10px; font-style: italic; font-weight: bold; color: rgba(67, 149, 204, 1)"
@@ -223,25 +223,27 @@
                   <div class="col-md-6">
                     <label class="input-label" for="firstNameInput">First Name (*)</label>
                     <input
-                      v-model="guardianFirstname"
+                      v-model="$v.form.guardian_first_name.$model"
                       type="text"
                       class="form-control"
                       id="guardian-firstname"
                       name="guardian-firstname"
                       placeholder="First Name"
                       :disabled="disableGuardianDetails"
+                      v-bind:style="!$v.form.guardian_first_name.minLength || !$v.form.guardian_first_name.charsOnly && !form.guardian_first_name == ''  ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
                   <div class="col-md-6">
                     <label class="input-label" for="firstNameInput">Last Name (*)</label>
                     <input
-                      v-model="guardianLastname"
+                      v-model="$v.form.guardian_last_name.$model"
                       type="text"
                       class="form-control"
                       id="guardian-lastname"
                       name="guardian-lastname"
                       placeholder="Last Name"
                       :disabled="disableGuardianDetails"
+                      v-bind:style="!$v.form.guardian_last_name.minLength || !$v.form.guardian_last_name.charsOnly && !form.guardian_last_name == ''  ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
                 </div>
@@ -262,13 +264,14 @@
                 </label>
                 <input
                   v-if="!disableGuardianDetails && !guardianPhoneNumber"
-                  v-model="guardianPhoneNumber"
+                  v-model="$v.form.guardian_phone_number.$model"
                   type="number"
                   class="form-control"
                   id="guardian-phonenumber"
                   name="guardian-phonenumber"
                   placeholder="Phone Number"
                   :disabled="disableGuardianDetails || disabledGuardianPhoneNumber"
+                  v-bind:style="!$v.form.guardian_phone_number.phoneNumberValidations && !form.guardian_phone_number == ''  ? 'border: 1.5px solid red;' : ''"
                 />
                 <input
                   v-if="disableGuardianDetails || guardianPhoneNumber"
@@ -288,7 +291,6 @@
               name="next"
               class="btn btn-primary personal action-button"
               value="Next Step"
-              @click="sampleClicked"
               style="margin-top: 95px"
             />
             <div class="errorTxt" style="margin-top: 10px; text-align: center; font-weight: bold"></div>
@@ -411,11 +413,131 @@ import moment from "moment";
 import "vue-select/dist/vue-select.css";
 import VueSelect from "vue-select";
 import jqueryValidation from "jquery-validation";
+import { validationMixin } from "vuelidate";
+import {
+  required,
+  requiredIf,
+  minLength,
+  maxLength,
+  sameAs,
+  between
+} from "vuelidate/lib/validators";
 
 export default {
   name: "app",
+  mixins: [validationMixin],
+  validations() {
+    return {
+      form: {
+        first_name: {
+          required,
+          minLength: minLength(2),
+          charsOnly(first_name) {
+            return /^[A-Za-z]+$/.test(first_name); //only allow characters
+          }
+        },
+        middle_name: {
+          charsOnly(last_name) {
+            return /^[A-Za-z]+$/.test(last_name); //only allow characters
+          }
+        },
+        last_name: {
+          required,
+          minLength: minLength(2),
+          charsOnly(last_name) {
+            return /^[A-Za-z]+$/.test(last_name); //only allow characters
+          }
+        },
+        date_of_birth_day: {
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          dayRange(date_of_birth_day) {
+            return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(date_of_birth_day);
+          }
+        },
+        date_of_birth_month: {
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          monthRange(date_of_birth_month) {
+            return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(date_of_birth_month);
+          }
+        },
+        date_of_birth_year: {
+          maxLength: maxLength(4),
+          minLength: minLength(4),
+          between: between(1850, moment(this.DATE).format("YYYY")) // date range could adjusted
+        },
+
+        estimated_age: {
+          // required estimate age is checked
+          //required: requiredIf(() => !this.editMode),
+          maxLength: maxLength(3),
+          minLength: minLength(1),
+          between: between(0, 150), // this can be adjusted if needed
+          numberAge(age) {
+            return /^(?:0|(?:[1-9](?:\d{0,2}(?:,\d{3})+|\d*)))$/.test(age);
+          }
+        },
+
+        guardian_first_name: {
+          required,
+          minLength: minLength(2),
+          charsOnly(guardian_first_name) {
+            return /^[A-Za-z]+$/.test(guardian_first_name); //only allow characters
+          }
+        },
+
+        phone_number: {
+          required, // required by optional
+          phoneNumberValidations(phone_number) {
+            return /^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/.test(
+              phone_number
+            );
+          }
+        },
+
+        guardian_first_name: {
+          // required if something
+          minLength: minLength(2),
+          charsOnly(guardian_first_name) {
+            return /^[A-Za-z]+$/.test(guardian_first_name); //only allow characters
+          }
+        },
+
+        guardian_last_name: {
+          minLength: minLength(2),
+          charsOnly(guardian_last_name) {
+            return /^[A-Za-z]+$/.test(guardian_last_name); //only allow characters
+          }
+        },
+        guardian_phone_number: {
+          required,
+          phoneNumberValidations(guardian_phone_number) {
+            return /^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/.test(
+              guardian_phone_number
+            );
+          }
+        },
+      }
+    };
+  },
   data() {
     return {
+      form: {
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        phone_number: "",
+        date_of_birth_day: "",
+        date_of_birth_month: "",
+        date_of_birth_year: "",
+        estimated_age: "",
+        gender: "",
+        other_location_name: "",
+        guardian_first_name: "",
+        guardian_last_name: "",
+        guardian_phone_number: ""
+      },
       Date: new Date(),
       config: {
         api_base_url: `${Config.apiProtocol}://${Config.apiURL}:${Config.apiPort}/api/${ApiClient.config.apiVersion}`,
@@ -554,8 +676,9 @@ export default {
     jqueryValidation
   },
   methods: {
-    sampleClicked() {
-      console.log("Click for click");
+    validateForm() {
+      this.$v.$touch();
+      return !this.$v.$invalid;
     },
 
     createPerson(params = {}) {
@@ -903,7 +1026,6 @@ export default {
         this.guardianPhoneNumber = "";
         this.disabledGuardianPhoneNumber = false;
       }
-
     },
 
     estimateGuarianAge() {
@@ -959,9 +1081,8 @@ export default {
 
       const dob = moment(new Date(dobInput)).format("YYYY-MM-DD");
 
-
-      if(this.locationOther){
-        this.homeVillage = this.otherLocationName
+      if (this.locationOther) {
+        this.homeVillage = this.otherLocationName;
       }
 
       this.person = {
@@ -1114,6 +1235,8 @@ export default {
       console.log("Landmark selected: " + landmark);
     },
     initileWizard() {
+      const patientRegistration = this;
+
       $(document).ready(function() {
         let current_fs, next_fs, previous_fs; //fieldsets
         let opacity;
@@ -1123,6 +1246,8 @@ export default {
           "<label style='color:red'> All required fields (*) must be completed before proceeding. </label>";
 
         $(".personal").click(function() {
+          console.log(patientRegistration.form.phone_number);
+
           const detailsValid = () => {
             let firstname = $("#patient-firstname")
               .val()
@@ -1153,10 +1278,10 @@ export default {
             let otherLocation = 0;
             try {
               otherLocation = $("#free-text-location")
-              .val()
-              .trim().length;
+                .val()
+                .trim().length;
             } catch (error) {
-              otherLocation = 0
+              otherLocation = 0;
             }
             let patientLandmark = $("#patient-landmark")
               .text()
@@ -1190,6 +1315,11 @@ export default {
               guardianPhoneNumber > 0
             );
           };
+
+          if (!patientRegistration.validateForm()) {
+            console.log("Validate Form has been called!!!");
+            return;
+          }
 
           if (detailsValid()) {
             $(".errorTxt").html("");
