@@ -191,6 +191,11 @@ const routes = [
     path: "/moh_disaggregated_regimen",
     name: "MohDisaggregatedRegimen",
     component: () => import("../views/cohortDisaggregatedRegimen.vue")
+  },
+  {
+    path: "/regimen_formulation_pt",
+    name: "Regimen Distribution Patient Level",
+    component: () => import("../views/PTLevelFormulations.vue")
   }
 ]
 
