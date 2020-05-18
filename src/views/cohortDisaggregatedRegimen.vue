@@ -100,7 +100,7 @@ export default {
     initDataTable(){
       let start_date  = moment(this.startDate).format("DD/MMM/YYYY");
       let end_date = moment(this.endDate).format("DD/MMM/YYYY");
-      this.report_title = sessionStorage.location + " MoH Disaggregated regimen  distribution report. ";
+      this.report_title = sessionStorage.location_name + " MoH Disaggregated regimen  distribution report. ";
       
       if(!start_date == 'Invalid date'){
         this.report_title += " Reporting  period: " + start_date;
@@ -200,7 +200,7 @@ export default {
       setTimeout(() => this.initDataTable(), 300);
     },
     initializeReport: async function() {
-      this.report_title = sessionStorage.location + " MoH Disaggregated report";
+      this.report_title = sessionStorage.location_name + " MoH Disaggregated report";
       let url = 'cohort_disaggregated';
       url += "?date=" + moment().format('YYYY-MM-DD');
       url += "&quarter=Custom";

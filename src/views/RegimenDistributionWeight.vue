@@ -125,7 +125,7 @@ export default {
     initializeReport: async function() {
       this.reportLoading = true;
       this.reportSelected = true;
-      this.report_title = sessionStorage.location + " MoH Disaggregated report";
+      this.report_title = sessionStorage.location_name + " MoH Disaggregated report";
       let url = '/programs/1/reports/regimens_by_weight_and_gender?';
       url += "start_date=" + this.startDate;
       url += "&end_date=" + this.endDate;
@@ -142,7 +142,7 @@ export default {
 
     },
     initDataTable(){
-      this.report_title = sessionStorage.location + " MoH Disaggregated regimen distribution by weight report. ";
+      this.report_title = sessionStorage.location_name + " MoH Disaggregated regimen distribution by weight report. ";
       this.report_title += " Reporting  period: " + moment(this.startDate).format("DD/MMM/YYYY");
       this.report_title += " " + moment(this.endDate).format("DD/MMM/YYYY");
       

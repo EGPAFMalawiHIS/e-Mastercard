@@ -43,7 +43,8 @@
 </template>
 
 <script>
-import ApiClient from "../services/api_client";
+import ApiClient from "@/services/api_client";
+import EventBus from "@/services/event-bus.js";
 import { mapState, mapMutations } from 'vuex';
 
 export default {
@@ -65,6 +66,7 @@ export default {
       createSessionLocationName(data){
         this.setLocation(data);
         sessionStorage.location = data.name;
+        sessionStorage.location_name = data.name;
       }
     },
     computed: {
@@ -76,6 +78,9 @@ export default {
       if (!sessionStorage.apiKey) {
         this.$router.push('/login');
       } 
+      EventBus.$on('change-location', payload => {
+        this.fetchLocationID();
+      });
       setTimeout(() => this.fetchLocationID(), 300);
     }
 };
