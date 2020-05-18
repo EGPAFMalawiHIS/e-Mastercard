@@ -67,8 +67,8 @@
             <div class="col-sm">
               <div class="btn-container" @click="redirect('/regimen_formulation_pt')">
                 <div class="card">
-                  <img src="../assets/report-icons/regimen-switch.png" class="btn-icon"/>
-                  <p>Regimens and formulation - pt level</p>
+                  <img src="../assets/report-icons/medical.png" class="btn-icon"/>
+                  <p>Regimens and formulation - patient level</p>
                 </div>
               </div>
             </div>
@@ -81,7 +81,15 @@
                 </div>
               </div-->
             </div>
-
+            
+            <div class="col-sm">
+              <!--div class="btn-container" @click="redirect">
+                <div class="card">
+                  <img src="../assets/report-icons/cohort.png" class="btn-icon"/>
+                  <p>IPT (usage)</p>
+                </div>
+              </div-->
+            </div>
           </div>
 
         </div>
