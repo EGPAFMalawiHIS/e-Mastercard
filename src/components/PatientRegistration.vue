@@ -603,73 +603,31 @@ export default {
         api_base_url: `${Config.apiProtocol}://${Config.apiURL}:${Config.apiPort}/api/${ApiClient.config.apiVersion}`,
         token: sessionStorage.apiKey
       },
-      firstname: null,
-      middlename: null,
-      lastname: null,
-      gender: "Select Gender",
-      dateOfBirth: null,
-      dateOfBirthDay: null,
-      dateOfBirthMonth: null,
-      dateOfBirthYear: null,
-      estimatedAge: null,
       estimageAge: false,
       requireDateOfBirth: true,
-      guardianFirstname: null,
-      guardianMiddlename: null,
-      guardianLastname: null,
-      guardianGender: "Select Gender",
-      guardianDateOfBirth: null,
-      dateOfBirthDayGuardian: null,
-      dateOfBirthMonthGuardian: null,
-      dateOfBirthYearGuardian: null,
-      guardianEstimatedAge: null,
-      guardianEstimageAge: false,
       homeDistrict: null,
       homeTA: null,
-      homeVillage: "Select Home Village",
       currentDistrict: null,
       currentTA: null,
-      currentVillage: "Select Current Village",
       guardianHomeDistrict: null,
       guardianHomeTA: null,
-      guardianHomeVillage: "Select Home Village",
       guardianCurrentDistrict: null,
       guardianCurrentTA: null,
-      guardianCurrentVillage: "Select Current Village",
       guardianPhoneNumber: null,
-      guardianLandMark: "Select Landmark",
-      guardianOccupation: null,
-      autoCompletedVillage: "Select Current Village",
-      autoCompletedLandMark: "Select Current Landmark",
-      guardianAutoCompletedVillage: "Select Current Village",
-      guardianAutoCompletedLandMark: "Select Current Landmark",
       locationOther: false,
       homeVillageSelection: true,
-      otherLocationName: null,
-      landmark: "Select Landmark",
-      currentLandmark: null,
-      phoneNumber: null,
       disabledPhoneNumber: false,
       disabledGuardianPhoneNumber: false,
-      occupation: "Select Occupation",
-      relationship: null,
-      patientGuardianRelationship: "Select Relationship",
-      patientType: "Select Patient Type",
       PATIENT_TYPES: {
         "New patient": 7572,
         "External consultation": 9684
       },
-      facilityName: null,
-      homeCurrentAddress: false,
-      guardianHomeCurrentAddress: false,
       villages: [],
       taId: null,
       taName: null,
       village: null,
       registerGuardian: true,
       relationships: [],
-      personalDetailsValid: false,
-      guardianDetailsValid: false,
       disableGuardianDetails: false,
       person: {},
       patient: {},
@@ -1094,62 +1052,16 @@ export default {
       }
     },
 
-    estimateGuarianAge() {
-      if (this.guardianEstimageAge == false) {
-        this.guardianEstimageAge = true;
-      } else if (this.guardianEstimageAge == true) {
-        this.guardianEstimageAge = false;
-      }
-    },
-
-    registerGuardianCheck() {
-      if (this.registerGuardian == false) {
-        this.registerGuardian = true;
-      } else if (this.registerGuardian == true) {
-        this.registerGuardian = false;
-      }
-    },
-
     estimateBirthdate(age) {
       const currYear = this.Date.getFullYear();
       const estYear = currYear - parseInt(age);
       return estYear + "-07-01";
     },
 
-    homeCurrentAddressCheck() {
-      if (this.homeCurrentAddress == false) {
-        this.autoCompletedVillage = this.homeVillage;
-        this.autoCompletedLandMark = this.landmark;
-        this.homeCurrentAddress = true;
-      } else if (this.homeCurrentAddress == true) {
-        this.autoCompletedVillage = "";
-        this.autoCompletedLandMark = "";
-        this.homeCurrentAddress = false;
-      }
-      console.log(this.homeCurrentAddress);
-    },
-
-    guardianHomeCurrentAddressCheck() {
-      if (this.guardianHomeCurrentAddress == false) {
-        this.guardianCurrentVillage = this.guardianHomeVillage;
-        this.guardianAutoCompletedLandMark = this.guardianLandMark;
-        this.guardianHomeCurrentAddress = true;
-      } else if (this.guardianHomeCurrentAddress == true) {
-        this.guardianCurrentVillage = "";
-        this.guardianAutoCompletedLandMark = "";
-        this.guardianHomeCurrentAddress = false;
-      }
-      console.log(this.guardianHomeCurrentAddress);
-    },
-
     submitPersonCreate() {
       const dobInput = `${this.form.date_of_birth_year}-${this.form.date_of_birth_month}-${this.form.date_of_birth_day}`;
 
       const dob = moment(new Date(dobInput)).format("YYYY-MM-DD");
-
-      if (this.locationOther) {
-        this.form.village_village = this.form.other_location_name;
-      }
 
       this.person = {
         given_name: this.form.first_name,
@@ -1160,17 +1072,17 @@ export default {
           ? this.estimateBirthdate(this.form.estimated_age)
           : dob,
         birthdate_estimated: this.estimageAge ? "Yes" : "No",
-        home_district: this.homeDistrict,
-        home_traditional_authority: this.homeTA,
-        home_village: this.form.home_village.code,
-        current_district: this.homeDistrict,
-        current_traditional_authority: this.homeTA,
-        current_village: this.form.home_village.code, //CONFIRM IF THIS IS WORKING
-        landmark: `${this.form.home_village.code} near ${this.form.land_mark.code}`,
+        home_district: !this.locationOther ? this.homeDistrict : "N/A",
+        home_traditional_authority: !this.locationOther ? this.homeTA : "N/A",
+        home_village: !this.locationOther ? this.form.home_village.code : this.form.other_location_name,
+        current_district: !this.locationOther ? this.homeDistrict : "N/A",
+        current_traditional_authority: !this.locationOther ? this.homeTA : "N/A",
+        current_village: !this.locationOther ? this.form.home_village.code : this.form.other_location_name, //CONFIRM IF THIS IS WORKING
+        landmark: `${!this.locationOther ? this.form.home_village.code : this.form.other_location_name} near ${this.form.land_mark.code}`,
         cell_phone_number: this.form.phone_number,
         occupation: null,
         relationship: this.registerGuardian ? "Yes" : "No",
-        patient_type: this.patientType,
+        patient_type: null,
         facility_name: null
       };
 
