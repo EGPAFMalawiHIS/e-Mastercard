@@ -1,6 +1,6 @@
 <template>
   <PageView>
-    <UserEditForm v-if="!loading"
+    <UserEditForm :loading="loading"
                   @on-submit="editUser"
                   :user="user"
                   :editMode="true"
@@ -32,20 +32,25 @@ export default {
   },
   methods: {
     async editUser(user) {
-      const {password, ...params} = user;
-      if (password && password.length > 0) {
-        params['password'] = password
+      try {
+        this.loading = true;
+        const {password, ...params} = user;
+        if (password && password.length > 0) {
+          params['password'] = password
+        }
+
+        const response = await ApiClient.put(`/users/${this.user.user_id}`, params); 
+
+        if (response.status !== 200) {
+          const {errors} = await response.json();
+          this.$vbToast.toast(`Failed to update user: ${errors.join(', ')}`, {title: 'Error', variant: 'danger'});
+          return;
+        }
+
+        this.$router.push({name: 'ListUsers'});
+      } finally {
+        this.loading = false;
       }
-
-      const response = await ApiClient.put(`/users/${this.user.user_id}`, params); 
-
-      if (response.status !== 200) {
-        response.text()
-                .then(alert)
-        return;
-      }
-
-      this.$router.push({name: 'ListUsers'});
     },
     async fetchUser() {
       const response = await ApiClient.get(`/users/${this.userId}`);

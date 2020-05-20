@@ -2,53 +2,65 @@
     <div class="d-flex" id="wrapper">
       <side-bar />
       <div id="page-content-wrapper">
-        <top-nav />
-
-        <div class="main-container">
+         <top-nav />
         <!-- Page Content -->
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="alert alert-info">
-                <strong>TX CURR MMD</strong> Clients that are alive and on treatment in the reporting period and
-      the difference in days between their clinical dispensation visit and next appointment / drug-runout date is:
-                <ul>
-                  <li>&lt;3 months (1 – 89 days)</li>
-                  <li>3-5 months (90-179 days)</li>
-                  <li>6+ months (180 or more days)</li>
-                </ul>
-              </div>
-            </div>
-          </div>
+        <div class="alert alert-info">
+          <strong>TX CURR MMD</strong> Clients that are alive and on treatment in the reporting period and
+the difference in days between their clinical dispensation visit and next appointment / drug-runout date is:
+          <ul>
+            <li><3 months (1 – 89 days)</li>
+            <li>3-5 months (90-179 days)</li>
+            <li>6+ months (180 or more days)</li>
+          </ul>
+        </div>
 
-          <div class="row">
-            <!--span><button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
-            <div class="col-sm-12">
-              <sdPicker :onSubmit="fetchDates"></sdPicker>
-            </div>
+        <div id="main-container" class="col-12 table-col">
+          <!--span><button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
+           <sdPicker :onSubmit="fetchDates"></sdPicker>
+          
+          
+          <table class="table table-striped report" id="cohort-clients">
+            <thead>
+              <tr>
+                <th scope="col">&nbsp;</th>
+                <th scope="col" style="width: 20%;">Age group</th>
+                <th scope="col" style="width: 20%;">Gender</th>
+                <th class="center-text" scope="col"># of clients on <3 months of ARVs</th>
+                <th class="center-text" scope="col"># of clients on 3 - 5 months of ARVs</th>
+                <th class="center-text" scope="col"># of clients on >= 6 months of ARVs</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <!-- Page Content end -->
+    </div>
+
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{this.selectedGender}}&nbsp;{{this.selectedAgeGroup}}</h4>
           </div>
-            
-            
-          <div class="row">
-            <div class="col-sm-12">
-              <report-overlay :reportLoading="reportLoading">
-                <table class="table table-striped report" id="cohort-clients">
-                  <thead>
-                    <tr>
-                      <th scope="col">&nbsp;</th>
-                      <th scope="col" style="width: 20%;">&nbsp;</th>
-                      <th class="center-text" scope="col"># of clients on <3 months of ARVs</th>
-                      <th class="center-text" scope="col"># of clients on 3 - 5 months of ARVs</th>
-                      <th class="center-text" scope="col"># of clients on >= 6 months of ARVs</th>
-                    </tr>
-                  </thead>
-                </table>
-              </report-overlay>
-            </div>
-            <!-- Page Content end -->
+          <div class="modal-body">
+            <table id="drill-down">
+              <tr>
+                <th>ARV number</th>
+                <th>Regimen</th>
+                <th>Qty</th>
+                <th>Dispensed date</th>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
+
+  </div>
+
 </template>
 
 <script>
@@ -62,7 +74,6 @@ require("@/assets/datatable/css/dataTables.jqueryui.min.css");
 
 import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
-import ReportOverlay from "../components/reports/ReportOverlay";
 import Sidebar from "@/components/SideBar.vue";
 import moment, { max } from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
@@ -86,23 +97,14 @@ require("@/assets/datatable/js/buttons.print.min.js");
 export default {
   name: "reports",
   components: {
-    ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
   },methods: {
-    async fetchDates(dates) {
-      try {
-        this.startDate = dates[0];
-        this.endDate = dates[1];
-
-        this.reportLoading = true;
-        await this.fetchData();
-        this.reportLoading = false;
-      } catch (e) {
-        console.error(e);
-        this.$router.push({name: 'error', params: {message: e.message}});
-      }
+    fetchDates(dates) {
+      this.startDate = dates[0];
+      this.endDate = dates[1];
+      this.fetchData();
     },
     fetchData: async function() {
       let group;
@@ -113,6 +115,21 @@ export default {
         min_age = ages[0];
         max_age = ages[1];
       }else{
+        let gender = ["Female", "Male"];
+        let counter = 1;
+        let rowData = this.tableRows;
+
+        for(let g = 0; g < gender.length; g++){
+          for(let i = 0; i < rowData.length; i++){
+            if(gender[g] != rowData[i][1])
+              continue;
+
+            this.dTable.fnAddData([ 
+              counter++, rowData[i][0], rowData[i][1], 
+              rowData[i][2], rowData[i][3], rowData[i][4]
+            ]);    
+          }
+        }
         return;
       }
       
@@ -124,14 +141,32 @@ export default {
       url_path += "&min_age=" + min_age;
       url_path += "&max_age=" + max_age;
 
-      const response = await ApiClient.get(url_path);
+      const response = await ApiClient.get(url_path, {}, {});
 
       if (response.status === 200) {
-        this.addRow(await response.json());
-        await this.fetchData();
+        response.json().then((data) => this.addRow(data) );
+        setTimeout(() => this.fetchData(), 500);
       }else{
         //setTimeout(() => this.fetchData(), 5000);
       }
+    },
+    addLink(age_group, gender, count, column_num){
+      console.log(age_group + " --- " + gender);
+      let span = document.createElement("span");
+      let a = document.createElement("a");
+      a.setAttribute("href", "#");
+      //a.setAttribute("data-target", "#myModal");
+      //a.setAttribute("data-toggle","modal");
+      a.setAttribute("age-group", age_group);
+      a.setAttribute("gender", gender);
+      a.setAttribute("column_number", column_num);
+      a.setAttribute("click", "showPoPBox('" + age_group + "');");
+      a.innerHTML = count;
+      span.appendChild(a);
+      return span.innerHTML;
+    },
+    showPoPBox(age_group){
+      console.log(age_group);
     },
     initDataTable(){
       this.dTable = jQuery("#cohort-clients").dataTable({
@@ -158,33 +193,73 @@ export default {
           }
         ],
         columnDefs: [
-          {"className": "center-text", "targets": 2},
           {"className": "center-text", "targets": 3},
-          {"className": "center-text", "targets": 4}
+          {"className": "center-text", "targets": 4},
+          {"className": "center-text", "targets": 5}
         ]
       });
     },
     addRow(data){
-      let column_3 = 0;
-      let column_4 = 0;
-      let column_5 = 0;
+  /* ................................................................ */
+      var client_sex = ["Female", "Male"];
+      var ageGroups = this.reportingGroups;
 
-      for(let person_id in data){
-        let info =  data[person_id];
-        let prescribed_days = info.prescribed_days;
+      for(let i = 0; i < client_sex.length; i++){
+        let gender = client_sex[i];
+        if(this.column_3[gender] == undefined){
+          this.column_3[gender] = {};
+          this.column_3[gender][ageGroups[0]] = 0;
+        }else if(this.column_3[gender][ageGroups[0]] == undefined){
+          this.column_3[gender][ageGroups[0]] = 0;
+        }
+        
+        if(this.column_4[gender] == undefined){
+          this.column_4[gender] = {};
+          this.column_4[gender][ageGroups[0]] = 0;
+        }else if(this.column_4[gender][ageGroups[0]] == undefined){
+          this.column_4[gender][ageGroups[0]] = 0;
+        }
 
-        if(prescribed_days < 60)
-          column_3 += 1
+        if(this.column_5[gender] == undefined){
+          this.column_5[gender] = {};
+          this.column_5[gender][ageGroups[0]] = 0;
+        }else if(this.column_5[gender][ageGroups[0]] == undefined){
+          this.column_5[gender][ageGroups[0]] = 0;
+        }
+            
+        for(let g in data){
+          if(g != client_sex[i])
+            continue;
+            
+          let patient_ids = data[gender];
+          for(let patinet_id in patient_ids){ 
+            let info =  data[gender][patinet_id];
+            let prescribed_days = info.prescribed_days;
+            
+            if(prescribed_days < 60)
+              this.column_3[gender][ageGroups[0]]  += 1
 
-        if(prescribed_days >= 60 && prescribed_days <= 150)
-          column_4 += 1
+            if(prescribed_days >= 60 && prescribed_days <= 150)
+              this.column_4[gender][ageGroups[0]]  += 1
 
-        if(prescribed_days > 150)
-          column_5 += 1
+            if(prescribed_days > 150)
+              this.column_5[gender][ageGroups[0]]  += 1
+
+          }
+        }
+
+        //let gender = client_sex[i];
+        this.tableRows.push([ ageGroups[0], gender,  
+          this.column_3[gender][ageGroups[0]], 
+          this.column_4[gender][ageGroups[0]], 
+          this.column_5[gender][ageGroups[0]] 
+        ]);
 
       }
-      this.dTable.fnAddData([ (this.rowCounter++), this.reportingGroups[0], column_3,
-        column_4, column_5 ]);
+  /* ................................................................ */
+
+
+
       this.reportingGroups.shift();
     },
     setMinMaxAges(group){
@@ -224,28 +299,29 @@ export default {
       if(group == '50 plus years')
         return [50, 10000];
 
-      if(group == 'Unknown')
-        return ['Unknown', 'Unknown'];
-
     }
   },
   mounted() {
-    this.$nextTick(this.initDataTable);
+    setTimeout(() => this.initDataTable(), 300);
   }, data: function() {
       return {
         report_title: 'TX CURR MMD ',
         reportData: null,
-        reportLoading: false,
         dTable: null,
         startDate: null,
         endDate: null,
         rowCounter: 1,
+        column_3: {},
+        column_4: {},
+        column_5: {},
+        tableRows: [],
+        selectedAgeGroup:  null,
+        selectedGender: null,
         reportingGroups: [
           '<1 year', '1-4 years','5-9 years',
           '10-14 years', '15-19 years', '20-24 years',
           '25-29 years', '30-34 years', '35-39 years',
-          '40-44 years', '45-49 years', '50 plus years',
-          'Unknown'
+          '40-44 years', '45-49 years', '50 plus years'
         ]
       }
     }
@@ -280,6 +356,10 @@ table {
   width: 98%;
   margin: 10px;
   text-align: left;
+}
+
+.modal-content {
+  width: 90vh;
 }
 </style>
 

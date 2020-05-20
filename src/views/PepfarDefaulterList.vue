@@ -15,6 +15,8 @@
                 <th scope="col">Last name</th>
                 <th class="center-text" scope="col">Gender</th>
                 <th class="center-text" scope="col">DOB</th>
+                <th class="center-text" scope="col">Age (at reporting)</th>
+                <th class="center-text" scope="col">Defaulter date</th>
                 <th class="center-text" scope="col">&nbsp;</th>
               </tr>
             </thead>
@@ -103,7 +105,9 @@ export default {
         ],
         columnDefs: [
           {"className": "center-text", "targets": 3},
-          {"className": "center-text", "targets": 4}
+          {"className": "center-text", "targets": 4},
+          {"className": "center-text", "targets": 5},
+          {"className": "center-text", "targets": 6}
         ]
       });
     },
@@ -125,10 +129,12 @@ export default {
         }catch(e) {
           birthdate = 'N/A';
         }
+
+        let defaulter_date = (data[i].defaulter_date ?  moment(data[i].defaulter_date).format('DD/MMM/YYYY')  : 'N/A');
         
         this.formatedData.push( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
-          data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
+          data[i].gender, birthdate, data[i].current_age, defaulter_date, this.createdShowBTN(data[i].person_id)] );
       }
       this.dTable.api().destroy();
       this.initDataTable();

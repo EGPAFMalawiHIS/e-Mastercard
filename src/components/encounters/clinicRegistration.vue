@@ -308,7 +308,54 @@
       v-if="everRegisteredAtClinicValue == 'No' || receievedARVTreatmentBefore == 'No'"
       class="row"
     >
-      <div class="col-md-12">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <label style="float: left; font-weight: bold">Visit Date (*)</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <input
+                  v-model="visitDateDay"
+                  type="number"
+                  class="form-control"
+                  placeholder="DD"
+                  maxlength="2"
+                  minlength="2"
+                  v-on:input="setRegistration"
+                />
+              </div>
+              <div class="col-md-4">
+                <input
+                  v-model="visitDateMonth"
+                  type="number"
+                  class="form-control"
+                  placeholder="MM"
+                  maxlength="2"
+                  minlength="2"
+                  v-on:input="setRegistration"
+                />
+              </div>
+              <div class="col-md-4">
+                <input
+                  v-model="visitDateYear"
+                  type="number"
+                  class="form-control"
+                  placeholder="YYYY"
+                  maxlength="4"
+                  minlength="4"
+                  v-on:input="setRegistration"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
         <div class="row">
           <div class="col-md-6">
             <label style="float: left; font-weight: bold;">ARV Number (*)</label>
@@ -318,7 +365,7 @@
           <div style="float: left; margin-top: 7px">
             <label style=" display: inline-block">{{`${sitePrefix}-ARV-`}}</label>
           </div>
-          <div style="float: right; width: 90%; margin: auto">
+          <div style="float: right; width: 80%; margin: auto">
             <input
               type="number"
               class="form-control"
@@ -483,6 +530,10 @@ export default {
       dateLastTakenARVday: null,
       dateLastTakenARVmonth: null,
       dateLastTakenARVyear: null,
+      visitDateDay: null,
+      visitDateMonth: null,
+      visitDateYear: null,
+      visitDate: null,
       TB_STATUS: {
         "TB NOT suspected": 7454,
         "TB suspected": 7455,
@@ -740,6 +791,13 @@ export default {
     },
 
     buildForRegistrationGlobalState() {
+
+      if (!this.registered) {
+        const dateInput = `${this.visitDateYear}-${this.visitDateMonth}-${this.visitDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.clinicRegistration.encounter_datetime = date;
+      }
+
       if (
         this.dateLastTakenARVyear != null &&
         this.dateLastTakenARVmonth != null &&
@@ -777,7 +835,7 @@ export default {
       if (this.hivTestDateYear != null && this.hivTestDateMonth !=  null && this.hivTestDateDay) {
         const dateInput = `${this.hivTestDateYear}-${this.hivTestDateMonth}-${this.hivTestDateDay}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
-        
+
         this.clinicRegistration.obs.testDate.value_datetime = date;
       }
 
@@ -822,6 +880,12 @@ export default {
     buildObservations() {
       // YEAR LAST TAKEN
 
+      if (!this.registered) {
+        const dateInput = `${this.visitDateYear}-${this.visitDateMonth}-${this.visitDateDay}`;
+        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
+        this.clinicRegistration.encounter_datetime = date;
+      }
+
       // optional
       if (this.recievedTreatment) {
         const dateInput = `${this.dateLastTakenARVyear}-${this.dateLastTakenARVmonth}-${this.dateLastTakenARVday}`;
@@ -839,7 +903,6 @@ export default {
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.clinicRegistration.obs.dateARTStarted.value_datetime = date; // this looks ok
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.arvNumber}`;
-        this.saveARVNumber();
         this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
       } else {
         //ART start date
@@ -865,6 +928,9 @@ export default {
         delete this.clinicRegistration.obs.testLocation;
         delete this.clinicRegistration.obs.testLocation;
       }
+
+      this.saveARVNumber();
+
     },
 
     buildVitalsObservations() {
@@ -946,8 +1012,7 @@ export default {
         clinicRegistration: this.clinicRegistration
       });
 
-      //submit vitals if Vitals are known
-      if (!this.initialVitalsUnknown) {
+      if (!this.initialVitalsUnknown && this.everRegisteredAtClinicValue == 'Yes' && this.receievedARVTreatmentBefore == 'Yes') {
         this.buildVitalsObservations();
         console.log(this.vitalsEncounter);
         this.$emit("addEncounter", {

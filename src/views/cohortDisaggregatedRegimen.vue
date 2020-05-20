@@ -98,10 +98,15 @@ export default {
       this.initializeReport();
     },
     initDataTable(){
-      this.report_title = sessionStorage.location + " MoH Disaggregated regimen  distribution report. ";
-      this.report_title += " Reporting  period: " + moment(this.startDate).format("DD/MMM/YYYY");
-      this.report_title += " " + moment(this.endDate).format("DD/MMM/YYYY");
+      let start_date  = moment(this.startDate).format("DD/MMM/YYYY");
+      let end_date = moment(this.endDate).format("DD/MMM/YYYY");
+      this.report_title = sessionStorage.location_name + " MoH Disaggregated regimen  distribution report. ";
       
+      if(!start_date == 'Invalid date'){
+        this.report_title += " Reporting  period: " + start_date;
+        this.report_title += " " + end_date;
+      }
+
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: false,
@@ -195,7 +200,7 @@ export default {
       setTimeout(() => this.initDataTable(), 300);
     },
     initializeReport: async function() {
-      this.report_title = sessionStorage.location + " MoH Disaggregated report";
+      this.report_title = sessionStorage.location_name + " MoH Disaggregated report";
       let url = 'cohort_disaggregated';
       url += "?date=" + moment().format('YYYY-MM-DD');
       url += "&quarter=Custom";
@@ -205,6 +210,12 @@ export default {
       url += "&start_date=" + this.startDate;
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
+
+      let btns = document.getElementsByClassName("dt-button");
+      for(let i = 0; i < btns.length; i++){
+        btns[i].setAttribute("disabled", true); 
+        btns[i].style = "display: none;";
+      }
 
       this.initialize = false;
       const response = await ApiClient.get(url, {}, {});
@@ -478,7 +489,13 @@ export default {
       url += "&age_group=" + age_group;
       url += "&outcome_table=temp_patient_outcomes";
       url += '&program_id=1';
-     
+    
+      let btns = document.getElementsByClassName("dt-button");
+      for(let i = 0; i < btns.length; i++){
+        btns[i].setAttribute("disabled", true); 
+        btns[i].style = "display: none;";
+      }
+
       const response = await ApiClient.get(url, {}, {});
       if (response.status === 200) {
         response.json().then((data) =>  this.addRegimen(data, tds) );

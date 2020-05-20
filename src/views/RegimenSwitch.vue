@@ -12,7 +12,7 @@
               <tr>
                 <th scope="col">ARV#</th>
                 <th class="center-text" scope="col">Gender</th>
-                <th class="center-text" scope="col">DOB</th>
+                <th class="center-text" scope="col">DoB (Age in Years)</th>
                 <th class="center-text" scope="col">Prev.Regimen</th>
                 <th class="center-text" scope="col">Curr.Regimen</th>
                 <th class="center-text" scope="col">ARVs</th>
@@ -39,6 +39,7 @@ import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
+import { mapState } from 'vuex';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
 import jQuery from 'jquery';
@@ -65,7 +66,7 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     fetchDates: async function(dates) {
-      this.report_title = sessionStorage.location_name + "  Regimen switch report: ";
+      this.report_title = this.location.name + "  Regimen switch report: ";
       this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
       this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
       let url_path = '/regimen_switch?start_date=' + dates[0] + "&date=" + dates[1];
@@ -123,12 +124,8 @@ export default {
 
       for(let patient_id in info){
         let data = info[patient_id];
-        let birthdate;
-        try {
-          birthdate = moment(data.birthdate).format('DD/MMM/YYYY');
-        }catch(e) {
-          birthdate = 'N/A';
-        }
+        const birthdate = data.birthdate ? `${data.birthdate} (${moment(new Date()).diff(data.birthdate, 'years')})`
+                                         : 'N/A';
         
         let current_reg = data.current_regimen;
         let medications = [];
@@ -167,6 +164,9 @@ export default {
         dTable: null,
         formatedData: []
       }
+    },
+    computed: {
+      ...mapState(['location'])
     }
 }
 

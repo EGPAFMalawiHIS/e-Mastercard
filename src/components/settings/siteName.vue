@@ -15,6 +15,7 @@
 <script>
 import TopNav from "@/components/topNav.vue";
 import ApiClient from "../../services/api_client";
+import EventBus from "@/services/event-bus.js";
 import "vue-select/dist/vue-select.css";
 import VueSelect from "vue-select";
 export default {
@@ -46,19 +47,18 @@ export default {
       this.location = val.location_id;
     },
     postOutcome: async function() {
-      console.log(this.location);
       let gp = {
         property: "current_health_center_id",
         property_value: this.location
       };
       const response = await ApiClient.post(`/global_properties`, gp);
       if (response.status === 201 || response.status === 200) {
+      EventBus.$emit('change-location', null);
         let toast = this.$toasted.show("Successfully saved", { 
             theme: "toasted-primary", 
             position: "top-right", 
             duration : 5000
         });
-        console.log("Succesfully done");
         // this.$router.go(0);
       } else {
         console.log("Failed to update");

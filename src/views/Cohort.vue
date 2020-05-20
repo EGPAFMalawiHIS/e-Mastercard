@@ -133,7 +133,7 @@ export default {
     display: block !important;
   }
 
-  .cohort > div {
+  .cohort div.control-container, .cohort .footer {
     display: none;
   }
 

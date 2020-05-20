@@ -68,14 +68,14 @@
               </div>
             </div>
 
-            <div class="col-sm">
-              <!--div class="btn-container" @click="redirect">
+             <div class="col-sm">
+              <div class="btn-container" @click="redirect('/regimen_distribution_weight')">
                 <div class="card">
-                  <img src="../assets/report-icons/cohort.png" class="btn-icon"/>
-                  <p>IPT (usage)</p>
+                  <img src="../assets/report-icons/electronics.png" class="btn-icon"/>
+                  <p>Regimen distribution, Weight</p>
                 </div>
-              </div-->
-            </div>
+              </div>
+            </div>           
 
             <div class="col-sm">
               <!--div class="btn-container" @click="redirect">

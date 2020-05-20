@@ -13,7 +13,7 @@
               <p>ARV #</p>
             </div>
             <div
-              class="col-md-6 information"
+              class="col-md-6 information editable"
               data-toggle="modal"
               @click="$bvModal.show('arv-number-modal')"
             >
@@ -26,7 +26,7 @@
             <div class="col-md-6">
               <p>Name</p>
             </div>
-            <div class="col-md-6 information">
+            <div class="col-md-6 information editable">
               <p>{{name}}</p>
             </div>
           </div>
@@ -36,7 +36,7 @@
             <div class="col-md-6">
               <p>DOB and Age at initiation</p>
             </div>
-            <div class="col-md-6 information">
+            <div class="col-md-6 information editable">
               <p>{{age}} ({{initialAge}})</p>
             </div>
           </div>
@@ -46,7 +46,7 @@
             <div class="col-md-6">
               <p>Sex</p>
             </div>
-            <div class="col-md-6 information">
+            <div class="col-md-6 information editable">
               <p>{{sex}}</p>
             </div>
           </div>
@@ -97,7 +97,7 @@
             <div class="col-md-6">
               <p>Physical Address</p>
             </div>
-            <div class="col-md-6 information">
+            <div class="col-md-6 information editable">
               <p>{{landmark}}</p>
             </div>
           </div>
@@ -107,7 +107,7 @@
             <div class="col-md-6">
               <p>Phone Number</p>
             </div>
-            <div class="col-md-6 information">
+            <div class="col-md-6 information editable">
               <p>{{phoneNumber}}</p>
             </div>
           </div>
@@ -117,7 +117,7 @@
             <div class="col-md-6">
               <p>Name of Guardian</p>
             </div>
-            <div class="col-md-6 information" v-if="guardianFirstName">
+            <div class="col-md-6 information editable" v-if="guardianFirstName">
               <p>{{guardianFirstName + " " + guardianLastName + " (" + guardianRelation + ")" + " (" + guardianNumber + ")"}}</p>
             </div>
           </div>
@@ -195,11 +195,13 @@
         </div>
         <div class="col-md-3">
           <div class="row">
-            <div class="col-md-6">
-              <p>Kaposi's Sarcoma</p>
-            </div>
-            <div class="col-md-6 information">
-              <p>{{kaposisSarcoma}}</p>
+            <div class="col-md-12">
+              <p>Staging conditions</p>
+              <ul style="padding: 0;">
+                <li v-for="(item, index) in stagingConditions" :key="index" class="horizontal-list">
+                  {{item}}, 
+                  </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -290,6 +292,7 @@
 import ApiClient from "../services/api_client";
 import EventBus from "../services/event-bus.js";
 import GlobalProperties from "@/services/global_properties";
+import {conditions} from "../services/staging_condition_service.js";
 import moment from "moment";
 export default {
   data: function() {
@@ -340,6 +343,7 @@ export default {
       updatedguardianNumber: null,
       phoneNumberUnknown: false,
       guardianphoneNumberUnknown: false,
+      stagingConditions: [],
       obs: [
         {
           conceptID: 2552
@@ -453,16 +457,11 @@ export default {
         },
         {
           conceptID: 2743,
-          subConcepts: {
-            507: {
-              variableName: "kaposisSarcoma",
-              returnValue: "Yes"
-            }
-          }
+          subConcepts: [],
         }
       ], initialObs: [
 
-      ]
+      ],
     };
   },
   computed: {
@@ -534,10 +533,7 @@ export default {
             context[conceptSet.variableName] = conceptSet.returnValue;
           } else if (conceptSet.subConcepts) {
             res.forEach(ret => {
-              try {
-                context[conceptSet.subConcepts[ret.value_coded].variableName] =
-                  conceptSet.subConcepts[ret.value_coded].returnValue;
-              } catch (error) {}
+              context.stagingConditions.push(conditions[ret.value_coded]);
             });
           } else {
             let val = res[res.length - 1][conceptSet.valueType]
@@ -908,8 +904,12 @@ export default {
 
 <style scoped>
 .information {
-  color: #537fb5;
+  color: #62676e;
   /* mix-blend-mode: difference; */
+}
+.editable{
+  
+  color: #537fb5;
 }
 .col-md-3 {
   border: 0.5px black solid;
@@ -922,5 +922,8 @@ export default {
   /* margin: auto; */
   /* font-family: 'Avenir', Helvetica, Arial, sans-serif; */
   /* padding: 10px; */
+}
+.horizontal-list {
+      display: inline-block;
 }
 </style>

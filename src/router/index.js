@@ -118,6 +118,11 @@ const routes = [
     component: () => import("../views/RegimenDistribution.vue")
   },
   {
+    path: "/regimen_distribution_weight",
+    name: "Regimen Distribution by Weight",
+    component: () => import("../views/RegimenDistributionWeight.vue")
+  },
+  {
     path: "/regimen_switch",
     name: "RegimenSwitch",
     component: () => import("../views/RegimenSwitch.vue")
@@ -186,6 +191,11 @@ const routes = [
     path: "/moh_disaggregated_regimen",
     name: "MohDisaggregatedRegimen",
     component: () => import("../views/cohortDisaggregatedRegimen.vue")
+  },
+  {
+    path: "/regimen_formulation_pt",
+    name: "Regimen Distribution Patient Level",
+    component: () => import("../views/PTLevelFormulations.vue")
   }
 ]
 
