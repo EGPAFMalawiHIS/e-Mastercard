@@ -19,7 +19,7 @@
                   id="patient-firstname"
                   name="patient-firstname"
                   placeholder="First Name"
-                  v-bind:style="!$v.form.first_name.minLength || !$v.form.first_name.charsOnly && !form.first_name == '' ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.first_name.minLength || !$v.form.first_name.charsOnly) && $v.form.first_name.$dirty ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="form-group col-md-4 input-column">
@@ -31,6 +31,7 @@
                   id="patient-middlename"
                   name="patient-middlename"
                   placeholder="Middle Name"
+                  v-bind:style="!$v.form.middle_name.charsOnly && $v.form.middle_name.$dirty ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="form-group col-md-4 input-column">
@@ -42,7 +43,7 @@
                   id="patient-lastname"
                   name="patient-lastname"
                   placeholder="Last Name"
-                  v-bind:style="!$v.form.last_name.minLength || !$v.form.last_name.charsOnly && !form.last_name == '' ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.last_name.minLength || !$v.form.last_name.charsOnly) && $v.form.last_name.$dirty ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
             </div>
@@ -76,9 +77,10 @@
                       id="patient-date-of-birth-day"
                       name="patient-date-of-birth-day"
                       placeholder="DD"
-                      v-bind:style="!$v.form.date_of_birth_day.maxLength || !$v.form.date_of_birth_day.minLength || !$v.form.date_of_birth_day.dayRange ? 'border: 1.5px solid red;' : ''"
+                      v-bind:style="(!$v.form.date_of_birth_day.required || !$v.form.date_of_birth_day.maxLength || !$v.form.date_of_birth_day.minLength || !$v.form.date_of_birth_day.dayRange) && $v.form.date_of_birth_day.$dirty ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
+
                   <div class="col-md-4">
                     <input
                       v-model="$v.form.date_of_birth_month.$model"
@@ -87,9 +89,10 @@
                       id="patient-date-of-birth-month"
                       name="patient-date-of-birth-month"
                       placeholder="MM"
-                      v-bind:style="!$v.form.date_of_birth_month.maxLength || !$v.form.date_of_birth_month.minLength || !$v.form.date_of_birth_month.monthRange ? 'border: 1.5px solid red;' : ''"
+                      v-bind:style="(!$v.form.date_of_birth_month.required || !$v.form.date_of_birth_month.maxLength || !$v.form.date_of_birth_month.minLength || !$v.form.date_of_birth_month.monthRange) && $v.form.date_of_birth_month.$dirty ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
+
                   <div class="col-md-4">
                     <input
                       v-model="$v.form.date_of_birth_year.$model"
@@ -98,7 +101,7 @@
                       id="patient-date-of-birth-year"
                       name="patient-date-of-birth-year"
                       placeholder="YYYY"
-                      v-bind:style="!$v.form.date_of_birth_year.maxLength || !$v.form.date_of_birth_year.minLength || !$v.form.date_of_birth_year.between ? 'border: 1.5px solid red;' : ''"
+                      v-bind:style="(!$v.form.date_of_birth_year.required || !$v.form.date_of_birth_year.maxLength || !$v.form.date_of_birth_year.minLength || !$v.form.date_of_birth_year.between) && $v.form.date_of_birth_year.$dirty ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
                 </div>
@@ -112,16 +115,17 @@
                   id="patient-age-estimate"
                   name="patient-age-estimate"
                   placeholder="Estimate Age"
-                  v-bind:style="!$v.form.estimated_age.maxLength || !$v.form.estimated_age.minLength || !$v.form.estimated_age.between || !$v.form.estimated_age.numberAge && !form.estimated_age.toString() == ''  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.estimated_age.required || !$v.form.estimated_age.maxLength || !$v.form.estimated_age.minLength || !$v.form.estimated_age.between || !$v.form.estimated_age.numberAge) && $v.form.estimated_age.$dirty ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="form-group col-md-6 input-column">
                 <label class="input-label" for="gender">Gender (*)</label>
                 <select
-                  v-model="gender"
+                  v-model="$v.form.gender.$model"
                   id="patient-gender"
                   name="patient-gender"
                   class="form-control"
+                  v-bind:style="(!$v.form.gender.required || !$v.form.gender.filterOption) && $v.form.gender.$dirty ? 'border: 1.5px solid red;' : ''"
                 >
                   <option disabled>Select Gender</option>
                   <option value="F">Female</option>
@@ -152,10 +156,22 @@
                   name="patient-phonenumber"
                   placeholder="Cellphone Number"
                   :disabled="disabledPhoneNumber"
-                  v-bind:style="!$v.form.phone_number.phoneNumberValidations && !form.phone_number == ''  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="$v.form.phone_number.$dirty && !$v.form.phone_number.phoneNumberValidations ? 'border: 1.5px solid red;' : ''"
+                  v-if="!disabledPhoneNumber"
+                />
+                <input
+                  v-model="$v.form.phone_number.$model"
+                  type="text"
+                  class="form-control"
+                  id="patient-phonenumber"
+                  name="patient-phonenumber"
+                  placeholder="Cellphone Number"
+                  :disabled="disabledPhoneNumber"
+                  v-if="disabledPhoneNumber"
                 />
               </div>
             </div>
+
             <div class="form-row">
               <div class="col-md-12">
                 <label style="font-weight: bold">Physical Address</label>
@@ -173,22 +189,25 @@
                   style="margin-left:6px; margin-top:7px"
                 />
                 <v-select
-                  v-model="homeVillage"
+                  v-model="$v.form.home_village.$model"
                   :options="villages"
                   @search="fetchVillages"
                   @input="buildPatientAddress"
                   name="patient-home-village"
                   id="patient-home-village"
                   v-if="!locationOther"
+                  v-bind:style="(!$v.form.home_village.required || !$v.form.home_village.filterOption ) && $v.form.home_village.$dirty ? 'border: 1.5px solid red;' : ''"
                 ></v-select>
+
                 <input
-                  v-model="otherLocationName"
+                  v-model="$v.form.other_location_name.$model"
                   type="text"
                   class="form-control"
                   id="free-text-location"
                   name="free-text-location"
                   placeholder="Enter location"
                   v-if="locationOther"
+                  v-bind:style="(!$v.form.other_location_name.required || !$v.form.other_location_name.charsOnly ) && $v.form.other_location_name.$dirty ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="form-group col-md-6 input-column" style="height: 70px">
@@ -197,7 +216,8 @@
                   id="patient-landmark"
                   name="patient-landmark"
                   :options="LANDMARKS"
-                  v-model="landmark"
+                  v-model="$v.form.land_mark.$model"
+                  v-bind:style="(!$v.form.land_mark.required || !$v.form.land_mark.filterOption ) && $v.form.land_mark.$dirty ? 'border: 1.5px solid red;' : ''"
                 ></v-select>
               </div>
             </div>
@@ -230,7 +250,7 @@
                       name="guardian-firstname"
                       placeholder="First Name"
                       :disabled="disableGuardianDetails"
-                      v-bind:style="!$v.form.guardian_first_name.minLength || !$v.form.guardian_first_name.charsOnly && !form.guardian_first_name == ''  ? 'border: 1.5px solid red;' : ''"
+                      v-bind:style="(!$v.form.guardian_first_name.minLength || !$v.form.guardian_first_name.charsOnly) && $v.form.guardian_first_name.$dirty  ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
                   <div class="col-md-6">
@@ -243,7 +263,7 @@
                       name="guardian-lastname"
                       placeholder="Last Name"
                       :disabled="disableGuardianDetails"
-                      v-bind:style="!$v.form.guardian_last_name.minLength || !$v.form.guardian_last_name.charsOnly && !form.guardian_last_name == ''  ? 'border: 1.5px solid red;' : ''"
+                      v-bind:style="(!$v.form.guardian_last_name.minLength || !$v.form.guardian_last_name.charsOnly) && $v.form.guardian_last_name.$dirty  ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
                 </div>
@@ -271,11 +291,11 @@
                   name="guardian-phonenumber"
                   placeholder="Phone Number"
                   :disabled="disableGuardianDetails || disabledGuardianPhoneNumber"
-                  v-bind:style="!$v.form.guardian_phone_number.phoneNumberValidations && !form.guardian_phone_number == ''  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="!$v.form.guardian_phone_number.phoneNumberValidations && $v.form.guardian_phone_number.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
                 <input
                   v-if="disableGuardianDetails || guardianPhoneNumber"
-                  v-model="guardianPhoneNumber"
+                  v-model="$v.form.guardian_phone_number.$model"
                   type="text"
                   class="form-control"
                   id="guardian-phonenumber"
@@ -291,7 +311,7 @@
               name="next"
               class="btn btn-primary personal action-button"
               value="Next Step"
-              style="margin-top: 95px"
+              style="margin-top: 80px"
             />
             <div class="errorTxt" style="margin-top: 10px; text-align: center; font-weight: bold"></div>
           </form>
@@ -318,31 +338,31 @@
                   <tbody>
                     <tr>
                       <th scope="row">Name</th>
-                      <td>{{firstname}} {{middlename == null || middlename == "" ? middlename : ''}} {{lastname}}</td>
+                      <td>{{form.first_name}} {{form.middel_name == null || form.middle_name == "" ? form.middle_name : ''}} {{form.last_name}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Birthdate</th>
-                      <td>{{`${dateOfBirthDay}-${dateOfBirthMonth}-${dateOfBirthYear}` || estimateBirthdate(estimatedAge)}}</td>
+                      <td>{{!estimageAge ? `${form.date_of_birth_day}-${form.date_of_birth_month}-${form.date_of_birth_year}` : estimateBirthdate(form.estimated_age)}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Gender</th>
-                      <td>{{gender}}</td>
+                      <td>{{form.gender}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Cellphone</th>
-                      <td>{{phoneNumber}}</td>
+                      <td>{{form.phone_number}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Physical Address</th>
-                      <td>{{`${homeVillage.code || otherLocationName} near ${landmark.code}`}}</td>
+                      <td>{{`${!locationOther ? form.home_village.code : form.other_location_name} near ${form.land_mark.code}`}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Guardian Name</th>
-                      <td>{{`${guardianFirstname} ${guardianLastname}`}}</td>
+                      <td>{{`${form.guardian_first_name} ${form.guardian_last_name}`}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Guardian Phonenumber</th>
-                      <td>{{guardianPhoneNumber}}</td>
+                      <td>{{form.guardian_phone_number}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -436,11 +456,14 @@ export default {
             return /^[A-Za-z]+$/.test(first_name); //only allow characters
           }
         },
+
+        //optional causing validation problem
         middle_name: {
-          charsOnly(last_name) {
-            return /^[A-Za-z]+$/.test(last_name); //only allow characters
+          charsOnly(middle_name) {
+            return /^s*|[A-Za-z]+$/.test(middle_name); //only allow characters
           }
         },
+
         last_name: {
           required,
           minLength: minLength(2),
@@ -449,6 +472,7 @@ export default {
           }
         },
         date_of_birth_day: {
+          required: requiredIf(() => this.requireDateOfBirth), // if false do not require
           maxLength: maxLength(2),
           minLength: minLength(2),
           dayRange(date_of_birth_day) {
@@ -456,6 +480,7 @@ export default {
           }
         },
         date_of_birth_month: {
+          required: requiredIf(() => this.requireDateOfBirth), // if false do not require
           maxLength: maxLength(2),
           minLength: minLength(2),
           monthRange(date_of_birth_month) {
@@ -463,6 +488,7 @@ export default {
           }
         },
         date_of_birth_year: {
+          required: requiredIf(() => this.requireDateOfBirth), // if false do not require
           maxLength: maxLength(4),
           minLength: minLength(4),
           between: between(1850, moment(this.DATE).format("YYYY")) // date range could adjusted
@@ -470,12 +496,12 @@ export default {
 
         estimated_age: {
           // required estimate age is checked
-          //required: requiredIf(() => !this.editMode),
+          required: requiredIf(() => this.estimageAge),
           maxLength: maxLength(3),
           minLength: minLength(1),
           between: between(0, 150), // this can be adjusted if needed
           numberAge(age) {
-            return /^(?:0|(?:[1-9](?:\d{0,2}(?:,\d{3})+|\d*)))$/.test(age);
+            return /^(\s*|\d+)$/.test(age);
           }
         },
 
@@ -490,8 +516,10 @@ export default {
         phone_number: {
           required, // required by optional
           phoneNumberValidations(phone_number) {
-            return /^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/.test(
-              phone_number
+            return (
+              /^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/.test(
+                phone_number
+              ) || /Unknown/.test(phone_number)
             );
           }
         },
@@ -510,14 +538,44 @@ export default {
             return /^[A-Za-z]+$/.test(guardian_last_name); //only allow characters
           }
         },
+
         guardian_phone_number: {
           required,
           phoneNumberValidations(guardian_phone_number) {
             return /^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/.test(
               guardian_phone_number
-            );
+            ) || /Unknown/.test(guardian_phone_number)
           }
         },
+
+        gender: {
+          required,
+          filterOption(gender) {
+            return !/Select Gender/.test(gender);
+          }
+        },
+
+        home_village: {
+          required: requiredIf(() => this.homeVillageSelection),
+          filterOption(home_village) {
+            return !/Select Home Village/.test(home_village);
+          }
+        },
+
+        other_location_name: {
+          required: requiredIf(() => this.locationOther),
+          minLength: minLength(2),
+          charsOnly(other_location_name) {
+            return /^s*|[A-Za-z]+$/.test(other_location_name); //only allow characters
+          }
+        },
+
+        land_mark: {
+          required,
+          filterOption(land_mark) {
+            return !/Select Landmark/.test(land_mark);
+          }
+        }
       }
     };
   },
@@ -532,11 +590,13 @@ export default {
         date_of_birth_month: "",
         date_of_birth_year: "",
         estimated_age: "",
-        gender: "",
+        gender: "Select Gender",
         other_location_name: "",
         guardian_first_name: "",
         guardian_last_name: "",
-        guardian_phone_number: ""
+        guardian_phone_number: "",
+        home_village: "Select Home Village",
+        land_mark: "Select Landmark"
       },
       Date: new Date(),
       config: {
@@ -553,6 +613,7 @@ export default {
       dateOfBirthYear: null,
       estimatedAge: null,
       estimageAge: false,
+      requireDateOfBirth: true,
       guardianFirstname: null,
       guardianMiddlename: null,
       guardianLastname: null,
@@ -583,6 +644,7 @@ export default {
       guardianAutoCompletedVillage: "Select Current Village",
       guardianAutoCompletedLandMark: "Select Current Landmark",
       locationOther: false,
+      homeVillageSelection: true,
       otherLocationName: null,
       landmark: "Select Landmark",
       currentLandmark: null,
@@ -1002,27 +1064,31 @@ export default {
 
     greyOut() {
       if (this.estimageAge == false) {
+        this.requireDateOfBirth = false;
         this.estimageAge = true;
       } else if (this.estimageAge == true) {
+        this.requireDateOfBirth = true;
         this.estimageAge = false;
       }
     },
 
     cellphonNumberUnkownCheck() {
       if (this.disabledPhoneNumber == false) {
-        this.phoneNumber = "Unknown";
+        this.form.phone_number = "Unknown";
         this.disabledPhoneNumber = true;
       } else if (this.disabledPhoneNumber == true) {
-        this.phoneNumber = "";
+        this.form.phone_number = "";
         this.disabledPhoneNumber = false;
       }
     },
 
     guardianCellphoneNumberUnknown() {
       if (this.disabledGuardianPhoneNumber == false) {
+        this.form.guardian_phone_number = "Unknown";
         this.guardianPhoneNumber = "Unknown";
         this.disabledGuardianPhoneNumber = true;
       } else if (this.disabledGuardianPhoneNumber == true) {
+        this.form.guardian_phone_number = "";
         this.guardianPhoneNumber = "";
         this.disabledGuardianPhoneNumber = false;
       }
@@ -1077,31 +1143,31 @@ export default {
     },
 
     submitPersonCreate() {
-      const dobInput = `${this.dateOfBirthYear}-${this.dateOfBirthMonth}-${this.dateOfBirthDay}`;
+      const dobInput = `${this.form.date_of_birth_year}-${this.form.date_of_birth_month}-${this.form.date_of_birth_day}`;
 
       const dob = moment(new Date(dobInput)).format("YYYY-MM-DD");
 
       if (this.locationOther) {
-        this.homeVillage = this.otherLocationName;
+        this.form.village_village = this.form.other_location_name;
       }
 
       this.person = {
-        given_name: this.firstname,
-        middle_name: this.middlename || "",
-        family_name: this.lastname,
-        gender: this.gender,
+        given_name: this.form.first_name,
+        middle_name: this.form.middle_name || "",
+        family_name: this.form.last_name,
+        gender: this.form.gender,
         birthdate: this.estimageAge
-          ? this.estimateBirthdate(this.estimatedAge)
+          ? this.estimateBirthdate(this.form.estimated_age)
           : dob,
         birthdate_estimated: this.estimageAge ? "Yes" : "No",
         home_district: this.homeDistrict,
         home_traditional_authority: this.homeTA,
-        home_village: this.homeVillage,
+        home_village: this.form.home_village.code,
         current_district: this.homeDistrict,
         current_traditional_authority: this.homeTA,
-        current_village: this.homeVillage, //CONFIRM IF THIS IS WORKING
-        landmark: `${this.homeVillage} near ${this.landmark.code}`,
-        cell_phone_number: this.phoneNumber,
+        current_village: this.form.home_village.code, //CONFIRM IF THIS IS WORKING
+        landmark: `${this.form.home_village.code} near ${this.form.land_mark.code}`,
+        cell_phone_number: this.form.phone_number,
         occupation: null,
         relationship: this.registerGuardian ? "Yes" : "No",
         patient_type: this.patientType,
@@ -1119,9 +1185,9 @@ export default {
 
     submitGuardianCreate(patientId = "") {
       this.person = {
-        given_name: this.guardianFirstname,
+        given_name: this.form.guardian_first_name,
         middle_name: "",
-        family_name: this.guardianLastname,
+        family_name: this.form.guardian_last_name,
         gender: "N/A",
         birthdate: moment(new Date("1970-01-01")).format("YYYY-MM-DD"),
         birthdate_estimated: "N/A",
@@ -1132,7 +1198,7 @@ export default {
         current_traditional_authority: "N/A",
         current_village: "N/A",
         landmark: "N/A",
-        cell_phone_number: this.guardianPhoneNumber,
+        cell_phone_number: this.form.guardian_phone_number,
         occupation: null,
         relationship: "N/A",
         patient_type: "",
@@ -1209,15 +1275,15 @@ export default {
 
     guardianDetailsUnkownCheck() {
       if (this.disableGuardianDetails == false) {
-        this.guardianFirstname = "Unknown";
-        this.guardianLastname = "Unknown";
-        this.guardianPhoneNumber = "Unknown";
+        this.form.guardian_first_name = "Unknown";
+        this.form.guardian_last_name = "Unknown";
+        this.form.guardian_phone_number = "Unknown";
         this.disableGuardianDetails = true;
         this.registerGuardian = false;
       } else if (this.disableGuardianDetails == true) {
-        this.guardianFirstname = "";
-        this.guardianLastname = "";
-        this.guardianPhoneNumber = "";
+        this.form.guardian_first_name = "";
+        this.form.guardian_last_name = "";
+        this.form.guardian_phone_number = "";
         this.disableGuardianDetails = false;
         this.registerGuardian = true;
       }
@@ -1225,8 +1291,11 @@ export default {
 
     locationOtherUncheck() {
       if (this.locationOther == false) {
+        this.homeVillageSelection = false;
+        this.form.home_village = "";
         this.locationOther = true;
       } else if (this.locationOther == true) {
+        this.homeVillageSelection = true;
         this.locationOther = false;
       }
     },
@@ -1234,6 +1303,7 @@ export default {
     landmarkSelected(landmark) {
       console.log("Landmark selected: " + landmark);
     },
+
     initileWizard() {
       const patientRegistration = this;
 
@@ -1246,82 +1316,7 @@ export default {
           "<label style='color:red'> All required fields (*) must be completed before proceeding. </label>";
 
         $(".personal").click(function() {
-          console.log(patientRegistration.form.phone_number);
-
-          const detailsValid = () => {
-            let firstname = $("#patient-firstname")
-              .val()
-              .trim().length;
-            let lastname = $("#patient-lastname")
-              .val()
-              .trim().length;
-            let dobDay = $("#patient-date-of-birth-day").val()
-              ? $("#patient-date-of-birth-day").val().length
-              : 0;
-            let dobMonth = $("#patient-date-of-birth-month").val()
-              ? $("#patient-date-of-birth-month").val().length
-              : 0;
-            let dobYear = $("#patient-date-of-birth-year").val()
-              ? $("#patient-date-of-birth-year").val().length
-              : 0;
-            let age = $("#patient-age-estimate").val()
-              ? $("#patient-age-estimate").val().length
-              : 0;
-            let phone = $("#patient-phonenumber")
-              .val()
-              .trim().length;
-            let gender = $("#patient-gender :selected").text().length;
-            let homeVillage = $("#patient-home-village")
-              .text()
-              .trim()
-              .replace("Loading...", "").length;
-            let otherLocation = 0;
-            try {
-              otherLocation = $("#free-text-location")
-                .val()
-                .trim().length;
-            } catch (error) {
-              otherLocation = 0;
-            }
-            let patientLandmark = $("#patient-landmark")
-              .text()
-              .trim()
-              .replace("Loading...", "").length;
-            let guardianFirstname = $("#guardian-firstname")
-              .val()
-              .trim().length;
-            let guardianLastname = $("#guardian-lastname")
-              .val()
-              .trim().length;
-            let guardianPhoneNumber = $("#guardian-phonenumber")
-              .val()
-              .trim().length;
-
-            console.log(guardianPhoneNumber);
-
-            return (
-              firstname > 0 &&
-              lastname > 0 &&
-              ((dobDay > 0 && dobMonth > 0 && dobYear > 0) || age > 0) &&
-              phone > 0 &&
-              gender > 0 &&
-              gender != "Select Gender" &&
-              (homeVillage > 0 || otherLocation > 0) &&
-              homeVillage != "Select Home Village" &&
-              patientLandmark > 0 &&
-              patientLandmark != "Select Landmark" &&
-              guardianFirstname > 0 &&
-              guardianLastname > 0 &&
-              guardianPhoneNumber > 0
-            );
-          };
-
-          if (!patientRegistration.validateForm()) {
-            console.log("Validate Form has been called!!!");
-            return;
-          }
-
-          if (detailsValid()) {
+          if (patientRegistration.validateForm()) {
             $(".errorTxt").html("");
             current_fs = $(this).parent();
             next_fs = $(this)
@@ -1351,7 +1346,10 @@ export default {
                 duration: 600
               }
             );
+            return;
           } else {
+            console.log("Validation failed!!!");
+            console.log(patientRegistration.form);
             $(".errorTxt").html(message);
             return;
           }
