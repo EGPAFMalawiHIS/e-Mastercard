@@ -196,6 +196,11 @@ const routes = [
     path: "/regimen_formulation_pt",
     name: "Regimen Distribution Patient Level",
     component: () => import("../views/PTLevelFormulations.vue")
+  },
+  {
+    path: "/pregnant_patients",
+    name: "Pregnant client report",
+    component: () => import("../views/PregnantPatients.vue")
   }
 ]
 

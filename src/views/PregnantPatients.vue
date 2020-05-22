@@ -4,9 +4,20 @@
       <div id="page-content-wrapper">
          <top-nav />
         <!-- Page Content -->
-        <div id="main-container" class="col-12 table-col">
-          <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-           <sdPicker :onSubmit="fetchDates"></sdPicker>
+        <div id="main-container">
+          <div class="row">
+            <div class="col-sm-12" style="z-index: 20"> <!-- elevate date picker above overlay below -->
+             <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+            <sdPicker :onSubmit="fetchDates"></sdPicker>
+
+            </div>
+          </div>
+         <div class="row">
+             <div class="col-sm-12">
+   <b-overlay :show="hideReport" spinner-type="grow" spinner-variant="primary">
+                  <template v-if="!reportSelected" v-slot:overlay>
+                    <h1>No Report Selected</h1>
+                  </template>
           <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
@@ -15,13 +26,14 @@
                 <th scope="col">Last name</th>
                 <th class="center-text" scope="col">Gender</th>
                 <th class="center-text" scope="col">DOB</th>
-                <th class="center-text" scope="col">Date missed</th>
-                <th class="center-text" scope="col">Outcome</th>
-                <th class="center-text" scope="col">Contact <br />Deatils</th>
                 <th class="center-text" scope="col">&nbsp;</th>
               </tr>
             </thead>
           </table>
+   </b-overlay>
+
+        </div>
+        </div>
         </div>
         <!-- Page Content end -->
     </div>
@@ -42,7 +54,6 @@ import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
-
 import jQuery from 'jquery';
 import datatable from 'datatables';
 
@@ -66,16 +77,20 @@ export default {
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
   },methods: {
-    fetchDates: async function(dates) {
-      this.report_title = sessionStorage.location_name + "  Appointment missed";
-      this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
-      this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
-      let url_path = "/missed_appointments?start_date=" + dates[0] + "&end_date=" + dates[1]
-      url_path += "&program_id=1&date=" +  moment().format('YYYY-MM-DD');
+    fetchDates: async function(date) {
+      this.reportLoading = true;
+      this.reportSelected = true;
+      this.report_title = sessionStorage.location_name + " Patients pregnant";
+      this.report_title += " Reporting  period: " + moment(date[0]).format("DD/MMM/YYYY");
+      this.report_title += " " + moment(date[1]).format("DD/MMM/YYYY");
+      let url_path = '/programs/1/reports/pregnant_patients?start_date=' + date[0] + 'end_date='+date[1];
+      url_path += '&paginate=false';
       const response = await ApiClient.get(url_path, {}, {});
 
       if (response.status === 200) {
-        response.json().then((data) => this.datatableEnable(data) );
+        response.json().then((data) => this.checkResult(data) );
+      }else{
+        setTimeout(() => this.fetchData(), 5000);
       }
     },
     initDataTable(){
@@ -84,7 +99,6 @@ export default {
         fixedHeader: true,
         data: this.formatedData,
         dom: 'Bfrtip',
-        retrieve: true,
         buttons: [
           {
             extend: 'copy',
@@ -104,15 +118,18 @@ export default {
           }
         ],
         columnDefs: [
-          {"className": "center-arv", "targets": 0},
           {"className": "center-text", "targets": 3},
-          {"className": "center-text", "targets": 4},
-          {"className": "center-text", "targets": 5},
-          {"className": "center-text", "targets": 6},
-          {"className": "center-text", "targets": 7},
-          {"className": "center-left", "targets": 8}
+          {"className": "center-text", "targets": 4}
         ]
       });
+    },
+    checkResult(data){
+      const url_string = window.location;
+      const parsedURL = new URL(url_string);
+      const resource_id = parsedURL.searchParams.get("resource_id");
+      this.reportData = data;
+      this.reportLoading = false;
+      setTimeout(() => this.datatableEnable(data), 400);
     },
     datatableEnable(data){
       this.formatedData = []; 
@@ -126,36 +143,12 @@ export default {
         }catch(e) {
           birthdate = 'N/A';
         }
-
-        let contact = [];
-        if(data[i].cell_number)
-          contact.push("CELL: " + data[i].cell_number);
-
-        if(data[i].district)
-          contact.push("District: " + data[i].district);
-
-        if(data[i].ta)
-          contact.push("TA: " + data[i].ta);
-
-        if(data[i].village)
-          contact.push("Village: " + data[i].village);
-
-        let contact_details = '';
-        for(let j = 0; j < contact.length; j++) {
-          if(j > 0)
-            contact_details += '<br />';
-
-          contact_details += contact[j];   
-        }
-
-
         this.formatedData.push( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
-          data[i].gender, birthdate, data[i].appointment_date, 
-          data[i].current_outcome, contact_details, this.createdShowBTN(data[i].person_id)] );
+          data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
       }
-      this.dTable.api().destroy();
-      this.initDataTable();
+
+      setTimeout(() => this.initDataTable(), 400);
     },
     createdShowBTN(person_id){
       var span = document.createElement('span');
@@ -168,14 +161,21 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => this.initDataTable(), 300);
+    // setTimeout(() => this.initDataTable(), 300);
   }, data: function() {
       return {
-        report_title: 'Appointment missed ',
+        report_title: 'Pregnant Patients',
         reportData: null,
         dTable: null,
-        formatedData: []
+        formatedData: [],
+        reportSelected: false,
+        reportLoading: false,
       }
+    }, 
+    computed: {
+      hideReport() {
+        return this.reportLoading || !this.reportSelected;
+      },
     }
 }
 
@@ -214,15 +214,10 @@ table {
 .show-btn {
   font-size: 14px;
 }
-
-.center-left {
-    text-align: left;
-    padding-left: 5px;
+/* Ensure that the demo table scrolls */
+th, td { white-space: nowrap; }
+div.dataTables_wrapper {
+   /* width: 800px;*/
+    margin: 0 auto;
 }
-
-.center-arv {
-    text-align: center;
-    width: 150px;
-}
-
 </style>

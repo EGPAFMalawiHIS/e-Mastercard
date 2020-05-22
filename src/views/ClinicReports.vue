@@ -74,12 +74,12 @@
             </div>
 
             <div class="col-sm">
-              <!--div class="btn-container" @click="redirect">
+              <div class="btn-container" @click="redirect('/pregnant_patients')">
                 <div class="card">
-                  <img src="../assets/report-icons/cohort.png" class="btn-icon"/>
-                  <p>IPT (usage)</p>
+                  <img src="../assets/report-icons/pregnant.png" class="btn-icon"/>
+                  <p>Pregnant Patients</p>
                 </div>
-              </div-->
+            </div>
             </div>
             
             <div class="col-sm">
