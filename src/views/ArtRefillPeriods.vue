@@ -8,29 +8,38 @@
           <strong>TX CURR MMD</strong> Clients that are alive and on treatment in the reporting period and
 the difference in days between their clinical dispensation visit and next appointment / drug-runout date is:
           <ul>
-            <li><3 months (1 – 89 days)</li>
+            <li>&lt;3 months (1 – 89 days)</li>
             <li>3-5 months (90-179 days)</li>
             <li>6+ months (180 or more days)</li>
           </ul>
         </div>
 
         <div id="main-container" class="col-12 table-col">
-          <!--span><button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
-           <sdPicker :onSubmit="fetchDates"></sdPicker>
-          
-          
-          <table class="table table-striped report" id="cohort-clients">
-            <thead>
-              <tr>
-                <th scope="col">&nbsp;</th>
-                <th scope="col" style="width: 20%;">Age group</th>
-                <th scope="col" style="width: 20%;">Gender</th>
-                <th class="center-text" scope="col"># of clients on <3 months of ARVs</th>
-                <th class="center-text" scope="col"># of clients on 3 - 5 months of ARVs</th>
-                <th class="center-text" scope="col"># of clients on >= 6 months of ARVs</th>
-              </tr>
-            </thead>
-          </table>
+          <div class="row">
+            <div class="col-sm-12">
+              <!--span><button @click="$router.go(-1)" class="btn btn-primary">Back</button></span--> 
+              <sdPicker :onSubmit="fetchDates" style="z-index: 50"></sdPicker>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <ReportOverlay :reportLoading="reportLoading">
+                <table class="table table-striped report" id="cohort-clients">
+                  <thead>
+                    <tr>
+                      <th scope="col">&nbsp;</th>
+                      <th scope="col" style="width: 20%;">Age group</th>
+                      <th scope="col" style="width: 20%;">Gender</th>
+                      <th class="center-text" scope="col"># of clients on &lt;3 months of ARVs</th>
+                      <th class="center-text" scope="col"># of clients on 3 - 5 months of ARVs</th>
+                      <th class="center-text" scope="col"># of clients on >= 6 months of ARVs</th>
+                    </tr>
+                  </thead>
+                </table>
+              </ReportOverlay>
+            </div>
+          </div>
         </div>
         <!-- Page Content end -->
     </div>
@@ -77,6 +86,8 @@ import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment, { max } from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
+import ReportOverlay from "../components/reports/ReportOverlay.vue";
+import { mapState } from 'vuex';
 
 import jQuery from 'jquery';
 import datatable from 'datatables';
@@ -97,13 +108,37 @@ require("@/assets/datatable/js/buttons.print.min.js");
 export default {
   name: "reports",
   components: {
+    ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
-  },methods: {
+  },
+  computed: {
+    ...mapState(['location']),
+    reportTitle() {
+      if (this.startDate && this.endDate) {
+        const formatDate = date => moment(date).format('dddd, Do of MMM YYYY');
+
+        return `${this.location.name} TX CURR MMD between ${formatDate(this.startDate)} and ${formatDate(this.endDate)}`;
+      } else {
+        return `${this.location.name} TX CURR MMD`;
+      }
+    }
+  },
+  methods: {
     fetchDates(dates) {
+      if (!this.validateDateRange(dates)) return;
+
       this.startDate = dates[0];
       this.endDate = dates[1];
+
+      this.reportLoading = true;
+
+      const formatDate = date => moment(date).format('dddd, Do of MMM YYYY');
+
+      this.report_title = `${this.location.name} TX CURR MMD between ${formatDate(dates[0])} and ${formatDate(dates[1])}`;
+      
+      this.initReportingGroups();
       this.fetchData();
     },
     fetchData: async function() {
@@ -114,28 +149,12 @@ export default {
         let ages = this.setMinMaxAges(this.reportingGroups[0]);
         min_age = ages[0];
         max_age = ages[1];
-      }else{
-        let gender = ["Female", "Male"];
-        let counter = 1;
-        let rowData = this.tableRows;
-
-        for(let g = 0; g < gender.length; g++){
-          for(let i = 0; i < rowData.length; i++){
-            if(gender[g] != rowData[i][1])
-              continue;
-
-            this.dTable.fnAddData([ 
-              counter++, rowData[i][0], rowData[i][1], 
-              rowData[i][2], rowData[i][3], rowData[i][4]
-            ]);    
-          }
-        }
+      } else {
+        this.reportLoading = false;
+        this.$nextTick(this.renderTable);
         return;
       }
       
-      this.report_title = sessionStorage.location_name + ' TX CURR MMD ';
-      this.report_title += " between " + moment(this.startDate).format('dddd, Do of MMM YYYY');
-      this.report_title += " and " + moment(this.endDate).format('dddd, Do of MMM YYYY');
       let url_path = 'arv_refill_periods?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');
       url_path += "&end_date=" + this.endDate + "&program_id=1&org=pepfar";
       url_path += "&min_age=" + min_age;
@@ -168,28 +187,30 @@ export default {
     showPoPBox(age_group){
       console.log(age_group);
     },
-    initDataTable(){
+    initDataTable(data){
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: true,
         paging: false,
         dom: 'Bfrtip',
+        destroy: true,
+        data: data,
         buttons: [
           {
             extend: 'copy',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'csv',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'pdf',
-            title:  this.report_title
+            title:  this.reportTitle
           },
           {
             extend: 'print',
-            title:  this.report_title
+            title:  this.reportTitle
           }
         ],
         columnDefs: [
@@ -198,6 +219,15 @@ export default {
           {"className": "center-text", "targets": 5}
         ]
       });
+    },
+    initReportingGroups() {
+      this.reportingGroups = [
+          '<1 year', '1-4 years','5-9 years',
+          '10-14 years', '15-19 years', '20-24 years',
+          '25-29 years', '30-34 years', '35-39 years',
+          '40-44 years', '45-49 years', '50 plus years'
+        ];
+        this.tableRows = [];
     },
     addRow(data){
   /* ................................................................ */
@@ -299,10 +329,57 @@ export default {
       if(group == '50 plus years')
         return [50, 10000];
 
+    },
+    renderTable() {
+      const table = jQuery('#cohort-clients').DataTable();
+      table.clear();
+
+      const buttons = ['copy', 'csv', 'pdf', 'print'];
+
+      buttons.forEach(() => table.button().remove());
+
+      buttons.forEach((method, i) => {
+        table.button().add(i, {
+          extend: method,
+          title: this.reportTitle
+        });
+      });
+
+      let gender = ["Female", "Male"];
+      let counter = 1;
+      let rowData = this.tableRows;
+
+      for(let g = 0; g < gender.length; g++){
+        for(let i = 0; i < rowData.length; i++){
+          if(gender[g] != rowData[i][1])
+            continue;
+
+          table.row.add([ 
+            counter++, rowData[i][0], rowData[i][1], 
+            rowData[i][2], rowData[i][3], rowData[i][4]
+          ]);    
+        }
+      }
+
+      table.draw();
+    },
+    validateDateRange([startDate, endDate]) {
+      if (!(startDate && endDate) || startDate === 'Invalid date' || endDate === 'Invalid date') {
+        this.$bvToast.toast('Please select a start date and an end date', {title: 'Error', variant: 'warning'});
+        return false;
+      } else if (moment(startDate).isAfter(endDate)) {
+        this.$bvToast.toast('Start date can not be less than end date', {title: 'Error', variant: 'warning'});
+        return false;
+      } else {
+        return true;
+      }
     }
   },
   mounted() {
-    setTimeout(() => this.initDataTable(), 300);
+    this.$nextTick(() => {
+      this.initReportingGroups();
+      this.initDataTable();
+    });
   }, data: function() {
       return {
         report_title: 'TX CURR MMD ',
@@ -317,12 +394,8 @@ export default {
         tableRows: [],
         selectedAgeGroup:  null,
         selectedGender: null,
-        reportingGroups: [
-          '<1 year', '1-4 years','5-9 years',
-          '10-14 years', '15-19 years', '20-24 years',
-          '25-29 years', '30-34 years', '35-39 years',
-          '40-44 years', '45-49 years', '50 plus years'
-        ]
+        reportingGroups: [],
+        reportLoading: false
       }
     }
 }
