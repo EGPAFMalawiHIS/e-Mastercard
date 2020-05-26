@@ -1055,7 +1055,6 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900");
 body {
   font-family: "Roboto", sans-serif;
 }
