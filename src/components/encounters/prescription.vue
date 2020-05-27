@@ -56,7 +56,13 @@ export default {
       CPTRegimens: [], 
       IPTRegimens: [],
       onTb: false, 
-
+      "Unknown Regimen": [{
+        "drug_id": 1046,
+        "name": "Unknown ARV",
+        "combination": 0,
+        "am": 1,
+        "pm": 0,
+      }]
     };
   },
   methods: {
@@ -66,6 +72,7 @@ export default {
         res => {
           res.json().then(ret => {
             this.regimens = ret;
+            this.regimens["Unknown"] = this["Unknown Regimen"];
           });
         }
       );
