@@ -728,10 +728,24 @@ export default {
 
       let encounters = [];
 
-      encounters.push(this.$store.state.initialRegistration["encounter_id"]);
-      encounters.push(this.$store.state.initialVitals["encounter_id"]);
-      encounters.push(this.$store.state.initialStaging["encounter_id"]);
+      try {
+        encounters.push(this.$store.state.initialRegistration["encounter_id"]);
+      } catch (error) {
+        
+      }
 
+      try {
+        encounters.push(this.$store.state.initialVitals["encounter_id"]);
+      } catch (error) {
+        
+      }
+
+      try {
+        encounters.push(this.$store.state.initialStaging["encounter_id"]);
+      } catch (error) {
+        
+      }     
+      
       this.voidEncounters(encounters);
     }
   },
