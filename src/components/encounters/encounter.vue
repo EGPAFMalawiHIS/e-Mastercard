@@ -1,5 +1,5 @@
 <template>
-<b-modal id="encounter-modal" title="encounter" size="xl">
+<b-modal id="encounter-modal" title="encounter" size="xl" no-close-on-backdrop>
 
     <vitals v-on:addEncounter="addEncounter" ref="vitals"></vitals>
     <consultation ref="consultation" v-on:addEncounter="addEncounter" />
