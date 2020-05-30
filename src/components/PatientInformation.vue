@@ -195,6 +195,16 @@
         </div>
         <div class="col-md-3">
           <div class="row">
+            <div class="col-md-6">
+              <p>WHO Stage</p>
+            </div>
+            <div class="col-md-6 information">
+              <p>{{whoStage}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="row">
             <div class="col-md-12">
               <p>Staging conditions</p>
               <ul style="padding: 0;">
@@ -320,6 +330,7 @@ export default {
       nameOfGuardian: null,
       dateOfHIVTest: null,
       placeOfHIVTest: null,
+      whoStage: null,
       followUp: null,
       startDate: null,
       startReason: null,
@@ -454,6 +465,12 @@ export default {
           variableName: "startReason",
           valueType: "value_coded",
           secondType: "value_text"
+        },
+        {
+          conceptID: 7562,
+          variableName: "whoStage",
+          valueType: "value_text",
+          secondType: "value_coded"
         },
         {
           conceptID: 2743,
