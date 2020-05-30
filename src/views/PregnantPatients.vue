@@ -26,9 +26,19 @@
                 <th scope="col">Last name</th>
                 <th class="center-text" scope="col">Gender</th>
                 <th class="center-text" scope="col">DOB</th>
-                <th class="center-text" scope="col">&nbsp;</th>
+                <th class="center-text" scope="col">Action</th>
               </tr>
             </thead>
+            <tbody>
+              <tr v-for="(item, index) in reportData" :key="index">
+                <td>{{item.arv_number}}</td>
+                <td>{{item.given_name}}</td>
+                <td>{{item.family_name}}</td>
+                <td>{{item.gender}}</td>
+                <td>{{item.birthdate}}</td>
+                <td><button @click="$router.push(`/patient/mastercard/${item.patient_id}`)" class="btn-warning show-btn">Show</button></td>
+              </tr>
+            </tbody>
           </table>
    </b-overlay>
 
@@ -90,15 +100,15 @@ export default {
       if (response.status === 200) {
         response.json().then((data) => this.checkResult(data) );
       }else{
-        setTimeout(() => this.fetchData(), 5000);
+        // setTimeout(() => this.fetchData(), 5000);
       }
     },
     initDataTable(){
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: true,
-        data: this.formatedData,
         dom: 'Bfrtip',
+        retrieve: true,
         buttons: [
           {
             extend: 'copy',
@@ -118,47 +128,16 @@ export default {
           }
         ],
         columnDefs: [
-          {"className": "center-text", "targets": 3},
-          {"className": "center-text", "targets": 4}
+          // {"className": "center-text", "targets": 3},
+          // {"className": "center-text", "targets": 4}
         ]
       });
     },
     checkResult(data){
-      const url_string = window.location;
-      const parsedURL = new URL(url_string);
-      const resource_id = parsedURL.searchParams.get("resource_id");
       this.reportData = data;
       this.reportLoading = false;
-      setTimeout(() => this.datatableEnable(data), 400);
+      setTimeout(() => this.initDataTable(), 1000);
     },
-    datatableEnable(data){
-      this.formatedData = []; 
-      for(let i = 0; i < data.length; i++){
-        /*this.dTable.fnAddData( [data[i].arv_number,
-          data[i].given_name, data[i].family_name,
-          data[i].gender, data[i].birthdate] );*/
-        let birthdate;
-        try {
-          birthdate = moment(data[i].birthdate).format('DD/MMM/YYYY');
-        }catch(e) {
-          birthdate = 'N/A';
-        }
-        this.formatedData.push( [data[i].arv_number,
-          data[i].given_name, data[i].family_name,
-          data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
-      }
-
-      setTimeout(() => this.initDataTable(), 400);
-    },
-    createdShowBTN(person_id){
-      var span = document.createElement('span');
-      var button  = document.createElement('button');
-      button.setAttribute("onclick", 'javascript:location="/patient/mastercard/' + person_id + '"');
-      button.innerHTML = "Show";
-      button.setAttribute('class','btn-warning show-btn');
-      span.appendChild(button);
-      return span.innerHTML;
-    }
   },
   mounted() {
     // setTimeout(() => this.initDataTable(), 300);
