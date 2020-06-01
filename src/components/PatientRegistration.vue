@@ -752,33 +752,8 @@ export default {
         .then(response => {
           if (response.status === 201) {
             return response.json().then(data => {
-              this.enrollIntoART(data.patient_id);
+              this.createRegistrationEncounter(data.patient_id);
               console.log(data);
-            });
-          }
-        })
-        .catch(err => {
-          console.log("Something went wrong!", err);
-        });
-    },
-
-    enrollIntoART(patientId = "") {
-      const PARAMS = `/${patientId}/programs/`;
-      fetch(`${this.config.api_base_url}/patients${PARAMS}`, {
-        method: "POST",
-        headers: {
-          Authorization: this.config.token,
-          "Content-type": "application/json"
-        },
-        body: JSON.stringify({
-          program_id: 1,
-          date_enrolled: this.Date
-        })
-      })
-        .then(response => {
-          if (response.status === 201) {
-            return response.json().then(data => {
-              this.createRegistrationEncounter(patientId);
             });
           }
         })
