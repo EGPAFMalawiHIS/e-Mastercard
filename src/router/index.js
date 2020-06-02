@@ -201,7 +201,12 @@ const routes = [
     path: "/pregnant_patients",
     name: "Pregnant client report",
     component: () => import("../views/PregnantPatients.vue")
-  }
+  },
+  {
+    path: "/viral_load_report",
+    name: "viral_load_report",
+    component: () => import("../views/ViralLoadReport.vue")
+  },
 ]
 
 const router = new VueRouter({
