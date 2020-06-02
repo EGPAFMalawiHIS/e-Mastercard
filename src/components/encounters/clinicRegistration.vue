@@ -991,9 +991,9 @@ export default {
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        this.$bvToast.toast(`Failed to enroll patient in HIV Program: ${error['message']}`, {
-          variant: 'Danger'
+        const {errors} = await response.json();
+        this.$bvToast.toast(`Failed to enroll patient in HIV Program: ${errors.join('; ')}`, {
+          variant: 'warning'
         });
 
         return null;
