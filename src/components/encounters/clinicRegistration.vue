@@ -1,6 +1,80 @@
 <template>
   <div style="margin: auto; width: 95%">
     <div class="row">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-6">
+            <label style="float: left; font-weight: bold;">ARV Number (*)</label>
+          </div>
+        </div>
+        <div class="form-group" style="font-weight: bold; color: rgba(300, 149, 100, 1);">
+          <div style="float: left; margin-top: 7px">
+            <label style=" display: inline-block">{{`${sitePrefix}-ARV-`}}</label>
+          </div>
+          <div style="float: right; width: 80%; margin: auto">
+            <input
+              type="number"
+              class="form-control"
+              name
+              placeholder="Enter ARV Number"
+              v-model="arvNumber"
+              :disabled="arvNumberUnkown"
+              v-on:input="setRegistration"
+              style="display: inline"
+            />
+          </div>
+        </div>
+      </div>
+ 
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <label style="float: left; font-weight: bold">Initial Visit Date (*)</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <input
+                  v-model="visitDateDay"
+                  type="number"
+                  class="form-control"
+                  placeholder="DD"
+                  maxlength="2"
+                  minlength="2"
+                  v-on:input="setRegistration"
+                />
+              </div>
+              <div class="col-md-4">
+                <input
+                  v-model="visitDateMonth"
+                  type="number"
+                  class="form-control"
+                  placeholder="MM"
+                  maxlength="2"
+                  minlength="2"
+                  v-on:input="setRegistration"
+                />
+              </div>
+              <div class="col-md-4">
+                <input
+                  v-model="visitDateYear"
+                  type="number"
+                  class="form-control"
+                  placeholder="YYYY"
+                  maxlength="4"
+                  minlength="4"
+                  v-on:input="setRegistration"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
       <div class="col-md-6" style="float: left">
         <div style="float: left">
           <span style="font-weight: bold;">Agrees to follow up? (*)</span>
@@ -103,7 +177,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-6" style="padding-right: 0">
                 <label style="float: left; font-weight: bold">Location of ART Initiation (*)</label>
               </div>
               <div class="col-md-6">
@@ -181,28 +255,50 @@
     <div v-if="recievedTreatment && registered" class="row">
       <div class="col-md-6">
         <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <label style="float: left; font-weight: bold">Initial Vitals (*)</label>
+              </div>
+              <div class="col-md-6">
+                <span
+                  style="float: left; font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic; margin-left: 38px"
+                >Vitals Unknown?</span>
+                <input
+                  type="checkbox"
+                  @click="initialVitalsCheck()"
+                  style="margin-left: 10px; float:left; margin-top: 6px"
+                />
+              </div>
+            </div>
+          </div>
           <div class="col-md-6">
-            <label style="float: left; font-weight: bold">ARV Number (*)</label>
+            <div class="form-group">
+              <input
+                type="number"
+                class="form-control"
+                name
+                v-model="initialWeight"
+                :placeholder="initialVitalsUnknown ? 'Unknown Weight' : 'Enter Weight'"
+                v-on:input="setRegistration"
+                :disabled="initialVitalsUnknown"
+              />
+            </div>
           </div>
-        </div>
-        <div class="form-group" style="font-weight: bold;">
-          <div style="float: left; margin-top: 7px; color: rgba(300, 149, 100, 1); ">
-            <label style=" display: inline-block">{{`${sitePrefix}-ARV-`}}</label>
-          </div>
-          <div style="float: right; width: 80%; margin: auto">
+          <div class="form-group">
             <input
               type="number"
               class="form-control"
               name
-              placeholder="Enter ARV Number"
-              v-model="arvNumber"
-              :disabled="arvNumberUnkown"
+              v-model="initialHeight"
+              :placeholder="initialVitalsUnknown ?  'Unknown Height' : 'Enter Height'"
               v-on:input="setRegistration"
-              style="display: inline"
+              :disabled="initialVitalsUnknown"
             />
           </div>
         </div>
       </div>
+      
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
@@ -233,153 +329,7 @@
         </div>
       </div>
     </div>
-    <div v-if="recievedTreatment && registered" class="row">
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-12">
-                <label style="float: left; font-weight: bold">Initial Weigh (Vitals) (*)</label>
-                <span
-                  style="float: left; font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic; margin-left: 38px"
-                >Vitals Unknown?</span>
-                <input
-                  type="checkbox"
-                  @click="initialVitalsCheck()"
-                  style="margin-left: 10px; float:left; margin-top: 6px"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="form-group">
-              <input
-                v-if="!initialVitalsUnknown"
-                type="number"
-                class="form-control"
-                name
-                v-model="initialWeight"
-                placeholder="Enter Weight"
-                v-on:input="setRegistration"
-              />
-              <input
-                v-if="initialVitalsUnknown"
-                type="text"
-                class="form-control"
-                name
-                v-model="initialWeight"
-                placeholder="Unknown"
-                disabled
-              />
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <label style="float: left; font-weight: bold">Initial Height (Vitals) (*)</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <input
-            v-if="!initialVitalsUnknown"
-            type="number"
-            class="form-control"
-            name
-            v-model="initialHeight"
-            placeholder="Enter Height"
-            v-on:input="setRegistration"
-          />
-          <input
-            v-if="initialVitalsUnknown"
-            type="text"
-            class="form-control"
-            name
-            v-model="initialHeight"
-            placeholder="Unknown"
-            disabled
-          />
-        </div>
-      </div>
-    </div>
-    <div
-      v-if="everRegisteredAtClinicValue == 'No' || receievedARVTreatmentBefore == 'No'"
-      class="row"
-    >
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-6">
-                <label style="float: left; font-weight: bold">Visit Date (*)</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-4">
-                <input
-                  v-model="visitDateDay"
-                  type="number"
-                  class="form-control"
-                  placeholder="DD"
-                  maxlength="2"
-                  minlength="2"
-                  v-on:input="setRegistration"
-                />
-              </div>
-              <div class="col-md-4">
-                <input
-                  v-model="visitDateMonth"
-                  type="number"
-                  class="form-control"
-                  placeholder="MM"
-                  maxlength="2"
-                  minlength="2"
-                  v-on:input="setRegistration"
-                />
-              </div>
-              <div class="col-md-4">
-                <input
-                  v-model="visitDateYear"
-                  type="number"
-                  class="form-control"
-                  placeholder="YYYY"
-                  maxlength="4"
-                  minlength="4"
-                  v-on:input="setRegistration"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-6">
-            <label style="float: left; font-weight: bold;">ARV Number (*)</label>
-          </div>
-        </div>
-        <div class="form-group" style="font-weight: bold; color: rgba(300, 149, 100, 1);">
-          <div style="float: left; margin-top: 7px">
-            <label style=" display: inline-block">{{`${sitePrefix}-ARV-`}}</label>
-          </div>
-          <div style="float: right; width: 80%; margin: auto">
-            <input
-              type="number"
-              class="form-control"
-              name
-              placeholder="Enter ARV Number"
-              v-model="arvNumber"
-              :disabled="arvNumberUnkown"
-              v-on:input="setRegistration"
-              style="display: inline"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="row">
       <div class="col-md-12">
         <div class="row">
@@ -402,7 +352,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-6" style="padding-right: 0">
                 <label style="float: left; font-weight: bold">Location of confirmatory (*)</label>
               </div>
               <div class="col-md-6">
@@ -533,7 +483,6 @@ export default {
       visitDateDay: null,
       visitDateMonth: null,
       visitDateYear: null,
-      visitDate: null,
       TB_STATUS: {
         "TB NOT suspected": 7454,
         "TB suspected": 7455,
@@ -647,6 +596,11 @@ export default {
       },
       locations: []
     };
+  },
+  computed: {
+    visitDate() {
+      return this.makeISODateString(this.visitDateYear, this.visitDateMonth, this.visitDateDay);
+    }
   },
   methods: {
     initial() {
@@ -789,13 +743,10 @@ export default {
         });
       });
     },
-
     buildForRegistrationGlobalState() {
 
       if (!this.registered) {
-        const dateInput = `${this.visitDateYear}-${this.visitDateMonth}-${this.visitDateDay}`;
-        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
-        this.clinicRegistration.encounter_datetime = date;
+        this.clinicRegistration.encounter_datetime = this.visitDate;
       }
 
       if (
@@ -819,9 +770,7 @@ export default {
       }
 
       if (this.registered) {
-        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
-        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
-        this.clinicRegistration.encounter_datetime = date;
+        this.clinicRegistration.encounter_datetime = this.visitDate;
       }
 
       if (this.arvNumber != null) {
@@ -872,8 +821,7 @@ export default {
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = date;
       } else {
-        const todaysDate = moment(new Date()).format("YYYY-MM-DD");
-        this.vitalsEncounter.encounter_datetime = todaysDate;
+        this.vitalsEncounter.encounter_datetime = this.visitDate;
       }
     },
 
@@ -881,9 +829,7 @@ export default {
       // YEAR LAST TAKEN
 
       if (!this.registered) {
-        const dateInput = `${this.visitDateYear}-${this.visitDateMonth}-${this.visitDateDay}`;
-        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
-        this.clinicRegistration.encounter_datetime = date;
+        this.clinicRegistration.encounter_datetime = this.visitDate;
       }
 
       // optional
@@ -1006,8 +952,9 @@ export default {
       this.encounters.push(val);
     },
     saveEncounter() {
+      this.ifPatientIsInHIVProgram(this.enrollPatientIntoHIVProgram);
+
       this.buildObservations();
-      console.log(this.clinicRegistration);
       this.$emit("addEncounter", {
         clinicRegistration: this.clinicRegistration
       });
@@ -1019,6 +966,40 @@ export default {
           initialVitals: this.vitalsEncounter
         });
       }
+    },
+    makeISODateString(year, month, day) {
+      year = String(year).padStart(4, '0');
+      month = String(month).padStart(2, '0');
+      day = String(day).padStart(2, '0');
+      
+      return `${year}-${month}-${day}`;
+    },
+    async ifPatientIsInHIVProgram(success, fail = () => null) {
+      const response = await ApiClient.get(`patients/${this.patientId}/programs`);
+      const programs = await response.json();
+
+      if (programs.findIndex(program => program.program_id === 1) >= 0) {
+        success();
+      } else {
+        fail();
+      }
+    },
+    async enrollPatientIntoHIVProgram() {
+      const response = await ApiClient.post(`patients/${this.patientId}/programs`, {
+        program_id: 1,
+        date_enrolled: this.visitDate
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        this.$bvToast.toast(`Failed to enroll patient in HIV Program: ${error['message']}`, {
+          variant: 'Danger'
+        });
+
+        return null;
+      }
+
+      return await response.json();
     },
     getPrefix: async function() {
       this.sitePrefix = await GlobalProperties.getSitePrefix();
