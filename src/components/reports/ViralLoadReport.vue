@@ -39,7 +39,37 @@
           <th class="disaggregated-numbers">Unknown</th>
         </tr>
       </thead>
-      <tbody ref="tableBody"></tbody>
+      <tbody ref="tableBody">
+        <tr v-for="(item, index) in viralLoadReport" :key="index">
+          <th scope="row">{{index + 1}}</th>
+          <td>{{item.age_group}}</td>
+          <td>{{item.zero_a}}</td>
+          <td>{{item.two_a}}</td>
+          <td>{{item.four_a}}</td>
+          <td>{{item.five_a}}</td>
+          <td>{{item.six_a}}</td>
+          <td>{{item.seven_a}}</td>
+          <td>{{item.eight_a}}</td>
+          <td>{{item.nine_a}}</td>
+          <td>{{item.ten_a}}</td>
+          <td>{{item.eleven_a}}</td>
+          <td>{{item.twelve_a}}</td>
+          <td>{{item.thirteen_a}}</td>
+          <td>{{item.fourteen_a}}</td>
+          <td>{{item.fifteen_a}}</td>
+          <td>{{item.sixteen_a}}</td>
+          <td>{{item.seventeen_a}}</td>
+          <td>{{item.zero_p}}</td>
+          <td>{{item.two_p}}</td>
+          <td>{{item.four_p}}</td>
+          <td>{{item.nine_p}}</td>
+          <td>{{item.eleven_p}}</td>
+          <td>{{item.fourteen_p}}</td>
+          <td>{{item.fifteen_p}}</td>
+          <td>{{item.sixteen_p}}</td>
+          <td>{{item.seventeen_p}}</td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </template>
@@ -100,7 +130,7 @@ export default {
         "40 - 44 Years",
         "45 - 50 Years",
         "50 Years +"
-      ].reverse(),
+      ],
       viralLoadReportData: {},
       viralLoadReport: {}
     };
@@ -183,7 +213,8 @@ export default {
       this.viralLoadReport = this.AGE_GROUPS.map(ageGroup => {
         return this.viralLoadData(ageGroup);
       });
-      console.log(this.viralLoadReport)
+      this.initDataTable()
+      console.log(this.viralLoadReport);
     },
 
     viralLoadData(ageGroup = {}) {
@@ -201,6 +232,7 @@ export default {
         eleven_a: this.report(ageGroup, "11A") || 0,
         twelve_a: this.report(ageGroup, "12A") || 0,
         thirteen_a: this.report(ageGroup, "13A") || 0,
+        fourteen_a: this.report(ageGroup, "14A") || 0,
         fifteen_a: this.report(ageGroup, "15A") || 0,
         sixteen_a: this.report(ageGroup, "16A") || 0,
         seventeen_a: this.report(ageGroup, "17A") || 0,
@@ -218,16 +250,14 @@ export default {
 
     // return the count
     report(ageGroup, regimen) {
-
-      if(this.viralLoadReportData[ageGroup] != undefined){
-        return this.viralLoadReportData[ageGroup][regimen]
-      }else{
-        return 0
+      if (this.viralLoadReportData[ageGroup] != undefined) {
+        return this.viralLoadReportData[ageGroup][regimen];
+      } else {
+        return 0;
       }
     }
   },
-  mounted() {
-    setTimeout(() => this.initDataTable(), 300);
+  created() {
   }
 };
 </script>
