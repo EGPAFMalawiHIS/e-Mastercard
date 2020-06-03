@@ -252,13 +252,10 @@ export default {
       };
     },
 
-    // return the count
     report(ageGroup, regimen) {
-      if (this.viralLoadReportData[ageGroup] != undefined) {
-        return this.viralLoadReportData[ageGroup][regimen];
-      } else {
-        return 0;
-      }
+      return this.viralLoadReportData[ageGroup] != undefined
+        ? this.viralLoadReportData[ageGroup][regimen]
+        : 0;
     }
   },
   mounted() {
