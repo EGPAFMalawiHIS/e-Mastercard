@@ -68,6 +68,7 @@
           <td>{{item.fifteen_p}}</td>
           <td>{{item.sixteen_p}}</td>
           <td>{{item.seventeen_p}}</td>
+          <td>{{item.unknown}}</td>
         </tr>
       </tbody>
     </table>
@@ -244,7 +245,8 @@ export default {
         fourteen_p: this.report(ageGroup, "14P") || 0,
         fifteen_p: this.report(ageGroup, "15P") || 0,
         sixteen_p: this.report(ageGroup, "16P") || 0,
-        seventeen_p: this.report(ageGroup, "17P") || 0
+        seventeen_p: this.report(ageGroup, "17P") || 0,
+        unknown: this.report(ageGroup, "N/A") || 0
       };
     },
 
