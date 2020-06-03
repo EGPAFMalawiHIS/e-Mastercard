@@ -39,7 +39,7 @@
           <th class="disaggregated-numbers">Unknown</th>
         </tr>
       </thead>
-      <tbody ref="tableBody">
+      <tbody>
         <tr v-for="(item, index) in viralLoadReport" :key="index">
           <th scope="row">{{index + 1}}</th>
           <td>{{item.age_group}}</td>
@@ -214,8 +214,10 @@ export default {
       this.viralLoadReport = this.AGE_GROUPS.map(ageGroup => {
         return this.viralLoadData(ageGroup);
       });
-      this.initDataTable()
-      console.log(this.viralLoadReport);
+      this.dTable.api().destroy();
+      this.$nextTick(() => {
+        this.initDataTable();
+      });
     },
 
     viralLoadData(ageGroup = {}) {
@@ -259,7 +261,8 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
+    setTimeout(() => this.initDataTable(), 300);
   }
 };
 </script>
