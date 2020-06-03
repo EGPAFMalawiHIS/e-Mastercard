@@ -952,7 +952,7 @@ export default {
       this.encounters.push(val);
     },
     saveEncounter() {
-      this.ifPatientIsInHIVProgram(this.enrollPatientIntoHIVProgram);
+      this.ifPatientIsNotInHIVProgram(this.enrollPatientIntoHIVProgram);
 
       this.buildObservations();
       this.$emit("addEncounter", {
@@ -974,11 +974,11 @@ export default {
       
       return `${year}-${month}-${day}`;
     },
-    async ifPatientIsInHIVProgram(success, fail = () => null) {
+    async ifPatientIsNotInHIVProgram(success, fail = () => null) {
       const response = await ApiClient.get(`patients/${this.patientId}/programs`);
       const programs = await response.json();
 
-      if (programs.findIndex(program => program.program_id === 1) >= 0) {
+      if (programs.findIndex(program => program.program_id === 1) < 0) {
         success();
       } else {
         fail();
