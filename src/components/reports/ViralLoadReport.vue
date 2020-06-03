@@ -5,7 +5,45 @@
       {{report_title}}
       <button @click="$router.go(-1)" class="btn btn-primary">Back</button>
     </span>
-    <sdPicker :onSubmit="fetchDates"></sdPicker>
+    <div class="row">
+      <div class="col-md-5" style="margin-top: 17px">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="form-group">
+              <input
+                type="number"
+                class="form-control"
+                id="min-viral-load"
+                aria-describedby="mini-viral-load"
+                placeholder="Min Viral Load"
+                v-model="minViralLoad"
+              />
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="form-group">
+              <input
+                type="number"
+                class="form-control"
+                id="min-viral-load"
+                aria-describedby="mini-viral-load"
+                placeholder="Max Viral Load"
+                v-model="maxViralLoad"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+          <div class="col-md-2">
+
+          </div>
+      <div class="col-md-5">
+        <div class="form-group">
+          <sdPicker :onSubmit="fetchDates"></sdPicker>
+        </div>
+      </div>
+    </div>
+
     <table class="table table-striped report" id="cohort-clients">
       <thead>
         <tr>
@@ -117,6 +155,8 @@ export default {
       rebuildOutcome: true,
       startDate: null,
       endDate: null,
+      minViralLoad: null,
+      maxViralLoad: null,
       AGE_GROUPS: [
         "0 - 1 Years",
         "2 - 4 Years",
@@ -192,8 +232,8 @@ export default {
       const startDate = moment(dates[0]).format("YYYY-MM-DD");
       const endDate = moment(dates[1]).format("YYYY-MM-DD");
 
-      const url = `programs/1/reports/vl_disaggregated?start_date=${startDate}&end_date=${endDate}&from=0&to=10000000`; // rememeber to Fix From and To
-
+      const url = `programs/1/reports/vl_disaggregated?start_date=${startDate}&end_date=${endDate}&from=${this.minViralLoad}&to=${this.maxViralLoad}`; // rememeber to Fix From and To
+      
       let btns = document.getElementsByClassName("dt-button");
       for (let i = 0; i < btns.length; i++) {
         btns[i].setAttribute("disabled", true);
