@@ -42,7 +42,7 @@
             </div>
 
             <div class="col-sm">
-              <div class="btn-container">
+              <div class="btn-container" @click="redirect('/viral_load_report')">
                 <div class="card">
                   <img src="../assets/report-icons/vl.png" class="btn-icon"/>
                   <p>Viral load</p>
