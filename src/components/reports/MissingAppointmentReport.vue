@@ -28,7 +28,18 @@
                 <th class="disaggregated-numbers">Date(s)</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              <tr v-for="(item, index) in missingAppointmentReport" :key="index">
+                <th scope="row">{{index + 1}}</th>
+                <td>{{item.arv_number}}</td>
+                <td>{{item.national_id}}</td>
+                <td>{{item.given_name}}</td>
+                <td>{{item.family_name}}</td>
+                <td>{{item.gender}}</td>
+                <td>{{item.birthdate}}</td>
+                <td>{{item.dates.join(", ")}}</td>
+              </tr>
+            </tbody>
           </table>
         </ReportOverlay>
       </div>
@@ -110,7 +121,8 @@ export default {
     initDataTable() {
       let start_date = moment(this.startDate).format("DD/MMM/YYYY");
       let end_date = moment(this.endDate).format("DD/MMM/YYYY");
-      this.report_title = sessionStorage.location_name + " Missing Appointment Report. ";
+      this.report_title =
+        sessionStorage.location_name + " Missing Appointment Report. ";
 
       if (!start_date == "Invalid date") {
         this.report_title += " Reporting  period: " + start_date;
@@ -121,7 +133,7 @@ export default {
         order: [[0, "asc"]],
         fixedHeader: false,
         searching: false,
-        paging: false,
+        paging: true,
         Processing: false,
         ServerSide: false,
         scrollY: "50vh",
@@ -159,9 +171,7 @@ export default {
       const startDate = moment(dates[0]).format("YYYY-MM-DD");
       const endDate = moment(dates[1]).format("YYYY-MM-DD");
 
-      const URL = `incomplete_visits?program_id=1&start_date=${startDate}&end_date=${endDate}&tool_name=INCOMPLETE VISITS`
-
-      console.log(URL)
+      const URL = `incomplete_visits?program_id=1&start_date=${startDate}&end_date=${endDate}&tool_name=INCOMPLETE VISITS`;
 
       let btns = document.getElementsByClassName("dt-button");
       for (let i = 0; i < btns.length; i++) {
@@ -174,10 +184,15 @@ export default {
         response.json().then(data => {
           this.missingAppointmentReport = data;
           console.log(this.missingAppointmentReport);
-        }); 
+          this.dTable.api().destroy();
+          this.$nextTick(() => {
+            this.initDataTable();
+          });
+        });
       }
-    },
+    }
   },
+
   mounted() {
     setTimeout(() => this.initDataTable(), 300);
   }
