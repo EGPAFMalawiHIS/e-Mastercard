@@ -15,7 +15,7 @@
 <script>
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
-import Report from "@/components/reports/MissingAppointmentReport.vue";
+import Report from "@/components/reports/IncompleteVisitingsReport.vue";
 
 export default {
   name: "home",

@@ -208,9 +208,9 @@ const routes = [
     component: () => import("../views/ViralLoadReport.vue")
   },
   {
-    path: "/missing_appointment_report",
-    name: "missing_appointment_report",
-    component: () => import("../views/MissingAppointmentReport.vue")
+    path: "/incomplete_visits_report",
+    name: "incomplete_visits_report",
+    component: () => import("../views/IncompleteVisitingsReport.vue")
   },
 ]
 
