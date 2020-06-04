@@ -82,22 +82,7 @@ export default {
       endDate: null,
       minViralLoad: null,
       maxViralLoad: null,
-      AGE_GROUPS: [
-        "0 - 1 Years",
-        "2 - 4 Years",
-        "5 - 9 Years",
-        "10 - 14 Years",
-        "15 - 17 Years",
-        "18 - 19 Years",
-        "20 - 24 Years",
-        "25 - 29 Years",
-        "30 - 34 Years",
-        "35 - 39 Years",
-        "40 - 44 Years",
-        "45 - 50 Years",
-        "50 Years +"
-      ],
-      viralLoadReportData: {},
+      missingAppointmentReport: {},
       viralLoadReport: {},
       reportLoading: false,
       reportSelected: false
@@ -125,7 +110,7 @@ export default {
     initDataTable() {
       let start_date = moment(this.startDate).format("DD/MMM/YYYY");
       let end_date = moment(this.endDate).format("DD/MMM/YYYY");
-      this.report_title = sessionStorage.location_name + " Viral Load Report. ";
+      this.report_title = sessionStorage.location_name + " Missing Appointment Report. ";
 
       if (!start_date == "Invalid date") {
         this.report_title += " Reporting  period: " + start_date;
@@ -173,6 +158,24 @@ export default {
     fetchReport: async function(dates = {}) {
       const startDate = moment(dates[0]).format("YYYY-MM-DD");
       const endDate = moment(dates[1]).format("YYYY-MM-DD");
+
+      const URL = `incomplete_visits?program_id=1&start_date=${startDate}&end_date=${endDate}&tool_name=INCOMPLETE VISITS`
+
+      console.log(URL)
+
+      let btns = document.getElementsByClassName("dt-button");
+      for (let i = 0; i < btns.length; i++) {
+        btns[i].setAttribute("disabled", true);
+        btns[i].style = "display: none;";
+      }
+
+      const response = await ApiClient.get(URL, {}, {});
+      if (response.status === 200) {
+        response.json().then(data => {
+          this.missingAppointmentReport = data;
+          console.log(this.missingAppointmentReport);
+        }); 
+      }
     },
   },
   mounted() {
