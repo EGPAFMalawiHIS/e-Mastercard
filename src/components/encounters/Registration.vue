@@ -10,7 +10,11 @@
           >
             <h5 style="font-weight: bold">HIV Clinic Registration</h5>
 
-            <clinic-registration v-bind:patientId="PATIENT_ID" v-on:addEncounter="addEncounter" ref="clinicRegistration"></clinic-registration>
+            <clinic-registration
+              v-bind:patientId="PATIENT_ID"
+              v-on:addEncounter="addEncounter"
+              ref="clinicRegistration"
+            ></clinic-registration>
 
             <input
               type="button"
@@ -248,11 +252,11 @@ export default {
   computed: {
     conditionList() {
       const conditionsKeysFilters = Object.keys(
-        this.stagingEncounter['encounter']["obs"]
+        this.stagingEncounter["encounter"]["obs"]
       ).filter(reason => reason.match(/condition/));
 
       const conditions = conditionsKeysFilters.map(
-        filter => this.stagingEncounter['encounter']["obs"][filter]
+        filter => this.stagingEncounter["encounter"]["obs"][filter]
       );
 
       return conditions.map(name => name["value_text"]);
@@ -423,28 +427,32 @@ export default {
               if (treatment["ever_registered"] === "Yes") {
                 if (gotRegistered()) {
                   this.clinicRegistrationFormValidations.push(true);
+
+                  const vitals = registration["vitals"]["obs"];
+                  const weight =
+                    vitals["weight"]["value_numeric"] != null &&
+                    vitals["weight"]["value_numeric"] != "";
+                  const height =
+                    vitals["height"]["value_numeric"] != null &&
+                    vitals["height"]["value_numeric"] != "";
+
+                  if (weight && height) {
+                    this.clinicRegistrationFormValidations.push(true);
+                  } else {
+                    this.clinicRegistrationFormValidations.push(false);
+                  }
+
+                  if (
+                    initialTbStatus != "Select Option" &&
+                    initialTbStatus != ""
+                  ) {
+                    this.clinicRegistrationFormValidations.push(true);
+                  } else {
+                    this.clinicRegistrationFormValidations.push(false);
+                  }
                 } else {
                   this.clinicRegistrationFormValidations.push(false);
                 }
-              }
-              if (initialTbStatus != "Select Option" && initialTbStatus != "") {
-                this.clinicRegistrationFormValidations.push(true);
-              } else {
-                this.clinicRegistrationFormValidations.push(false);
-              }
-
-              const vitals = registration["vitals"]["obs"];
-              const weight =
-                vitals["weight"]["value_numeric"] != null &&
-                vitals["weight"]["value_numeric"] != "";
-              const height =
-                vitals["height"]["value_numeric"] != null &&
-                vitals["height"]["value_numeric"] != "";
-
-              if (weight && height) {
-                this.clinicRegistrationFormValidations.push(true);
-              } else {
-                this.clinicRegistrationFormValidations.push(false);
               }
             } else {
               this.clinicRegistrationFormValidations.push(false);
@@ -545,7 +553,6 @@ export default {
           // if CD4Count available
           const cd4Available = Registration.stagingEncounter["cd4_available"];
 
-
           if (cd4Available) {
             if (
               staging["cd4CountDate"]["value_datetime"] != null &&
@@ -586,7 +593,6 @@ export default {
               this.stagingFormValidations.push(false);
             }
           }
-
 
           // validate if checkbox checked to register
           if (!this.stagingFormValidations.includes(false)) {
@@ -717,7 +723,7 @@ export default {
     removeEncounter: async function(encounter = "") {
       return await ApiClient.remove(`encounters/${encounter}`);
     },
-    voidEncounters: function(encounters = []) { 
+    voidEncounters: function(encounters = []) {
       encounters.forEach(encounter => {
         this.removeEncounter(encounter).then(data => {
           console.log(data);
@@ -725,27 +731,20 @@ export default {
       });
     },
     voidFirstVisitEncounters() {
-
       let encounters = [];
 
       try {
         encounters.push(this.$store.state.initialRegistration["encounter_id"]);
-      } catch (error) {
-        
-      }
+      } catch (error) {}
 
       try {
         encounters.push(this.$store.state.initialVitals["encounter_id"]);
-      } catch (error) {
-        
-      }
+      } catch (error) {}
 
       try {
         encounters.push(this.$store.state.initialStaging["encounter_id"]);
-      } catch (error) {
-        
-      }     
-      
+      } catch (error) {}
+
       this.voidEncounters(encounters);
     }
   },
