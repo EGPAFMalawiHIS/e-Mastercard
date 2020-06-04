@@ -90,6 +90,7 @@ export default {
       formatedData: [],
       rebuildOutcome: true,
       startDate: null,
+      padding: false,
       endDate: null,
       minViralLoad: null,
       maxViralLoad: null,
@@ -131,14 +132,11 @@ export default {
 
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[0, "asc"]],
-        fixedHeader: false,
+        fixedHeader: true,
         searching: false,
         paging: true,
-        Processing: false,
+        Processing: true,
         ServerSide: false,
-        scrollY: "50vh",
-        scrollX: true,
-        scrollCollapse: true,
         fixedColumns: {
           leftColumns: 2,
           rightColumns: 1
