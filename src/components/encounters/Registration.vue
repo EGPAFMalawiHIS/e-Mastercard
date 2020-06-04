@@ -227,7 +227,7 @@ import clinicRegistration from "./clinicRegistration.vue";
 import staging from "./staging.vue";
 import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
-import { isMoment } from "moment";
+import moment from "moment";
 import $ from "jquery";
 
 export default {
@@ -401,10 +401,29 @@ export default {
             return (
               treatment["last_date_received"] != null &&
               treatment["last_date_received"] != "" &&
+              treatment["last_date_received"] != "Invalid date" &&
               treatment["ever_registered"] != "Select Option" &&
               treatment["ever_registered"] != ""
             );
           };
+
+          const initialVisitDate = moment(new Date(registration["initial_visit_date"])).format("YYYY-MM-DD");
+
+          const initialVisitDateValid = () => {
+            return (
+              initialVisitDate != "Select Option" &&
+              initialVisitDate != null &&
+              initialVisitDate != "" &&
+              initialVisitDate != "Invalid date" &&
+              initialVisitDate != "null-null-null"
+            );
+          };
+
+          if(initialVisitDateValid()){
+            this.clinicRegistrationFormValidations.push(true);
+          }else{
+            this.clinicRegistrationFormValidations.push(false);
+          }
 
           const artReg = registration["art_registration"];
 
@@ -413,6 +432,7 @@ export default {
               artReg["location"] != "Select Option" &&
               artReg["start_date"] != null &&
               artReg["start_date"] != "" &&
+              artReg["start_date"] != "Invalid date" &&
               artReg["arv_number"] != null &&
               artReg["arv_number"] != ""
             );
@@ -468,6 +488,7 @@ export default {
             return (
               confirmatoryTest["test_date"] != null &&
               confirmatoryTest["test_date"] != "" &&
+              confirmatoryTest["test_date"] != "Invalid date" &&
               confirmatoryTest["location"] != "Select Option" &&
               confirmatoryTest["location"] != ""
             );
@@ -556,7 +577,8 @@ export default {
           if (cd4Available) {
             if (
               staging["cd4CountDate"]["value_datetime"] != null &&
-              staging["cd4CountDate"]["value_datetime"] != ""
+              staging["cd4CountDate"]["value_datetime"] != "" &&
+              staging["cd4CountDate"]["value_datetime"] != "Invalid date"
             ) {
               this.stagingFormValidations.push(true);
             } else {
