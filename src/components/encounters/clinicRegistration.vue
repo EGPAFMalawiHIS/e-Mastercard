@@ -442,13 +442,26 @@ import VueSelect from "vue-select";
 import vitals from "@/components/encounters/vitals.vue";
 import moment from "moment";
 import GlobalProperties from "@/services/global_properties";
+import { validationMixin } from "vuelidate";
+
 export default {
   components: {
     "v-select": VueSelect
   },
   props: ["patientId"],
+  mixins: [validationMixin],
+  validations() {
+    return {
+      form: {
+        
+      }
+    };
+  },
   data: function() {
     return {
+      form: {
+        
+      },
       recievedTreatment: false,
       receievedARVTreatmentBefore: "Select Option",
       everRegisteredAtClinicValue: "Select Option",
