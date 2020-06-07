@@ -50,6 +50,9 @@
             </tbody>
           </table>
         </div>
+
+        <img src="../assets/load.gif" id="spinner" />
+        <div id="report-cover"></div>
         <!-- Page Content end -->
     </div>
   </div>
@@ -210,6 +213,9 @@ export default {
       url += "&start_date=" + this.startDate;
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
+
+      document.getElementById("spinner").style =  "display:inline;";
+      document.getElementById("report-cover").style =  "display:inline;";
 
       let btns = document.getElementsByClassName("dt-button");
       for(let i = 0; i < btns.length; i++){
@@ -595,6 +601,10 @@ export default {
       }else{
         this.dTable.api().destroy();
         this.initDataTable();
+
+        document.getElementById("spinner").style =  "display:none;";
+        document.getElementById("report-cover").style =  "display:none;";
+
       }
 
     }
@@ -675,4 +685,27 @@ div.dataTables_wrapper {
    /* width: 800px;*/
     margin: 0 auto;
 }
+
+#report-cover {
+  position: absolute;
+  background-color: black;
+  width: 100%;
+  height: 102%;
+  left: 0%;
+  top: 0%;
+  z-index: 990;
+  opacity: 0.65;
+  display: none;
+}
+
+#spinner {
+  position: absolute;
+  top: 35%;
+  left: auto;
+  z-index: 991;
+  width: 100px;
+  height: 100px;
+  display: none;
+}
+
 </style>
