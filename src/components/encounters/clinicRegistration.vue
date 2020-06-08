@@ -913,6 +913,7 @@ export default {
       registration = {
         encounter: this.clinicRegistration,
         agrees_to_follow: this.shouldFollowUp,
+        initial_visit_date: this.visitDate,
         receieved_treatment: {
           ever_received: this.receievedARVTreatmentBefore,
           last_date_received: date,
@@ -920,7 +921,7 @@ export default {
         },
         art_registration: {
           ever_registered: this.everRegisteredAtClinicValue,
-          location: this.everRegisteredAtClinicValue,
+          location: this.locationOfInitiation,
           start_date: startDate,
           arv_number: this.arvNumber
         },
@@ -931,6 +932,8 @@ export default {
         },
         vitals: this.vitalsEncounter
       };
+
+      console.log(registration)
 
       this.$store.commit("setRegistration", registration);
     },

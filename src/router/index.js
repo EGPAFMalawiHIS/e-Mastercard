@@ -207,6 +207,11 @@ const routes = [
     name: "viral_load_report",
     component: () => import("../views/ViralLoadReport.vue")
   },
+  {
+    path: "/incomplete_visits_report",
+    name: "incomplete_visits_report",
+    component: () => import("../views/IncompleteVisitingsReport.vue")
+  },
 ]
 
 const router = new VueRouter({
