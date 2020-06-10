@@ -21,6 +21,7 @@
               :disabled="arvNumberUnkown"
               v-on:input="setRegistration"
               style="display: inline"
+              v-bind:style="!$v.form.arv_number.required && $v.form.arv_number.$dirty  ? 'border: 1.5px solid red;' : ''"
             />
           </div>
         </div>
@@ -44,6 +45,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.visit_date_day.required || !$v.form.visit_date_day.minLength || !$v.form.visit_date_day.maxLength || !$v.form.visit_date_day.dayRange) && $v.form.visit_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -55,6 +57,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.visit_date_month.required || !$v.form.visit_date_month.minLength || !$v.form.visit_date_month.maxLength || !$v.form.visit_date_month.monthRange) && $v.form.visit_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -66,6 +69,7 @@
                   maxlength="4"
                   minlength="4"
                   v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.visit_date_year.required || !$v.form.visit_date_year.minLength || !$v.form.visit_date_year.maxLength || !$v.form.visit_date_year.between) && $v.form.visit_date_year.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
             </div>
@@ -82,10 +86,13 @@
         <div class="form-group">
           <select name="stage" class="form-control" 
             v-model="$v.form.should_follow_up.$model"
-            @change="followUp">
+            @change="followUp"
+            v-bind:style="(!$v.form.should_follow_up.required || !$v.form.should_follow_up.filterOption) && $v.form.should_follow_up.$dirty  ? 'border: 1.5px solid red;' : ''"
+            >
             <option disabled selected>Select Option</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
+            
           </select>
         </div>
       </div>
@@ -99,6 +106,7 @@
             class="form-control"
             v-model="$v.form.received_arv_treatment_before.$model"
             @change="everRecieved"
+            v-bind:style="(!$v.form.received_arv_treatment_before.required || !$v.form.received_arv_treatment_before.filterOption) && $v.form.received_arv_treatment_before.$dirty  ? 'border: 1.5px solid red;' : ''"
           >
             <option disabled selected>Select Option</option>
             <option value="Yes">Yes</option>
@@ -345,6 +353,7 @@
             v-model="$v.form.confirmatory.$model"
             :reduce="option => option.value"
             v-on:input="setRegistration"
+            v-bind:style="(!$v.form.confirmatory.required || !$v.form.confirmatory.filterOption) && $v.form.confirmatory.$dirty  ? 'border: 1.5px solid red;' : ''"
           ></v-select>
         </div>
       </div>
@@ -377,6 +386,7 @@
                 @input="getVal"
                 v-model="$v.form.location_of_confirmatory.$model"
                 :disabled="locationOfConfirmatoryUnknown"
+                v-bind:style="(!$v.form.location_of_confirmatory.required || !$v.form.location_of_confirmatory.filterOption) && $v.form.location_of_confirmatory.$dirty  ? 'border: 1.5px solid red;' : ''"
               ></v-select>
             </div>
           </div>
@@ -402,6 +412,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.hiv_test_date_day.required || !$v.form.hiv_test_date_day.minLength || !$v.form.hiv_test_date_day.maxLength || !$v.form.hiv_test_date_day.dayRange) && $v.form.hiv_test_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -413,6 +424,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.hiv_test_date_month.required || !$v.form.hiv_test_date_month.minLength || !$v.form.hiv_test_date_month.maxLength || !$v.form.hiv_test_date_month.monthRange) && $v.form.hiv_test_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -424,6 +436,7 @@
                   maxlength="4"
                   minlength="4"
                   v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.hiv_test_date_year.required || !$v.form.hiv_test_date_year.minLength || !$v.form.hiv_test_date_year.maxLength || !$v.form.hiv_test_date_year.between) && $v.form.hiv_test_date_year.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
             </div>
@@ -453,6 +466,7 @@ import {
   sameAs,
   between
 } from "vuelidate/lib/validators";
+import EventBus from "../../services/event-bus.js";
 
 export default {
   components: {
@@ -463,13 +477,44 @@ export default {
   validations() {
     return {
       form: {
-        arv_number: {},
-        visit_date_day: {},
-        visit_date_month: {},
-        visit_date_year: {},
-        should_follow_up: {},
+        arv_number: {
+          required
+        },
+        visit_date_day: {
+          required,
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          dayRange(visit_date_day) {
+            return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(visit_date_day);
+          }
+        },
+        visit_date_month: {
+          required,
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          monthRange(visit_date_month) {
+            return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(visit_date_month);
+          }
+        },
+        visit_date_year: {
+          required,
+          maxLength: maxLength(4),
+          minLength: minLength(4),
+          between: between(1850, moment(this.DATE).format("YYYY")) // date range could adjusted
+        },
+        should_follow_up: {
+          required,
+          filterOption(should_follow_up) {
+            return !/Select Option/.test(should_follow_up);
+          }
+        },
         agrees_to_follow_up: {},
-        received_arv_treatment_before: {},
+        received_arv_treatment_before: {
+          required,
+          filterOption(received_arv_treatment_before) {
+            return !/Select Option/.test(received_arv_treatment_before);
+          }
+        },
         date_last_taken_arv_day: {},
         date_last_taken_arv_month: {},
         date_last_taken_arv_year: {},
@@ -481,11 +526,40 @@ export default {
         initial_weight: {},
         initial_height: {},
         initial_tb_status: {},
-        confirmatory: {},
-        location_of_confirmatory: {},
-        hiv_test_date_day: {},
-        hiv_test_date_month: {},
-        hiv_test_date_year: {}
+        confirmatory: {
+          required,
+          filterOption(confirmatory) {
+            return !/Select Option/.test(confirmatory);
+          }
+        },
+        location_of_confirmatory: {
+          required: requiredIf(() => false),
+          filterOption(location_of_confirmatory) {
+            return !/Select Option/.test(location_of_confirmatory);
+          }
+        },
+        hiv_test_date_day: {
+          required: requiredIf(() => false),
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          dayRange(hiv_test_date_day) {
+            return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(hiv_test_date_day);
+          }
+        },
+        hiv_test_date_month: {
+          required: requiredIf(() => false),
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          monthRange(hiv_test_date_month) {
+            return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(hiv_test_date_month);
+          }
+        },
+        hiv_test_date_year: {
+          required: requiredIf(() => false),
+          maxLength: maxLength(4),
+          minLength: minLength(4),
+          between: between(1850, moment(this.DATE).format("YYYY"))
+        }
       }
     };
   },
@@ -982,7 +1056,10 @@ export default {
         vitals: this.vitalsEncounter
       };
 
-      console.log(registration)
+
+      if(this.form.confirmatory == 1118){
+        this.form.location_of_confirmatory = "Select Location";
+      }
 
       this.$store.commit("setRegistration", registration);
     },
@@ -1080,6 +1157,10 @@ export default {
   created() {
     this.getPrefix();
     this.getlocations(sessionStorage.location_name);
+    EventBus.$on('validate-clinic-registration', data => {
+      //Set State of validity here as global state
+      console.log("Form Valide:  "+ this.validateForm())
+    });
   },
   mounted() {
     this.initial();
