@@ -229,6 +229,7 @@ import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
 import moment from "moment";
 import $ from "jquery";
+import EventBus from "../../services/event-bus.js";
 
 export default {
   data: function() {
@@ -732,7 +733,9 @@ export default {
         });
       });
     },
+
     registrationObject() {
+      EventBus.$emit('validate-clinic-registration', '');
       this.registrationEncounter = this.$store.state.registration.registration;
       console.log(this.registrationEncounter);
       this.initileWizard(this.registrationEncounter);
