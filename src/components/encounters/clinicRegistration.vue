@@ -17,7 +17,7 @@
               class="form-control"
               name
               placeholder="Enter ARV Number"
-              v-model="arvNumber"
+              v-model="$v.form.arv_number.$model"
               :disabled="arvNumberUnkown"
               v-on:input="setRegistration"
               style="display: inline"
@@ -37,7 +37,7 @@
             <div class="row">
               <div class="col-md-4">
                 <input
-                  v-model="visitDateDay"
+                  v-model="$v.form.visit_date_day.$model"
                   type="number"
                   class="form-control"
                   placeholder="DD"
@@ -48,7 +48,7 @@
               </div>
               <div class="col-md-4">
                 <input
-                  v-model="visitDateMonth"
+                  v-model="$v.form.visit_date_month.$model"
                   type="number"
                   class="form-control"
                   placeholder="MM"
@@ -59,7 +59,7 @@
               </div>
               <div class="col-md-4">
                 <input
-                  v-model="visitDateYear"
+                  v-model="$v.form.visit_date_year.$model"
                   type="number"
                   class="form-control"
                   placeholder="YYYY"
@@ -80,7 +80,9 @@
           <span style="font-weight: bold;">Agrees to follow up? (*)</span>
         </div>
         <div class="form-group">
-          <select name="stage" class="form-control" v-model="shouldFollowUp" @change="followUp">
+          <select name="stage" class="form-control" 
+            v-model="$v.form.should_follow_up.$model"
+            @change="followUp">
             <option disabled selected>Select Option</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
@@ -95,7 +97,7 @@
           <select
             name="stage"
             class="form-control"
-            v-model="receievedARVTreatmentBefore"
+            v-model="$v.form.received_arv_treatment_before.$model"
             @change="everRecieved"
           >
             <option disabled selected>Select Option</option>
@@ -115,7 +117,7 @@
         <div class="row">
           <div class="col-md-4">
             <input
-              v-model="dateLastTakenARVday"
+              v-model="$v.form.date_last_taken_arv_day.$model"
               type="number"
               class="form-control"
               placeholder="DD"
@@ -126,7 +128,7 @@
           </div>
           <div class="col-md-4">
             <input
-              v-model="dateLastTakenARVmonth"
+              v-model="$v.form.date_last_taken_arv_month.$model"
               type="number"
               class="form-control"
               placeholder="MM"
@@ -137,7 +139,7 @@
           </div>
           <div class="col-md-4">
             <input
-              v-model="dateLastTakenARVyear"
+              v-model="$v.form.date_last_taken_arv_year.$model"
               type="number"
               class="form-control"
               placeholder="YYYY"
@@ -160,7 +162,7 @@
               <select
                 name="stage"
                 class="form-control"
-                v-model="everRegisteredAtClinicValue"
+                v-model="$v.form.ever_registered_at_clinic_value.$model"
                 @change="everRegistered"
               >
                 <option disabled selected>Select Option</option>
@@ -198,7 +200,7 @@
                 :options="locations"
                 @search="getlocations"
                 @input="getLoc"
-                v-model="locationOfInitiation"
+                v-model="$v.form.location_of_initiation.$model"
                 :disabled="locationOfInitiationUnknown"
               ></v-select>
             </div>
@@ -216,7 +218,7 @@
             <div class="row">
               <div class="col-md-4">
                 <input
-                  v-model="artStartDateDay"
+                  v-model="$v.form.art_start_date_day.$model"
                   type="number"
                   class="form-control"
                   placeholder="DD"
@@ -227,7 +229,7 @@
               </div>
               <div class="col-md-4">
                 <input
-                  v-model="artStartDateMonth"
+                  v-model="$v.form.art_start_date_month.$model"
                   type="number"
                   class="form-control"
                   placeholder="MM"
@@ -238,7 +240,7 @@
               </div>
               <div class="col-md-4">
                 <input
-                  v-model="artStartDateYear"
+                  v-model="$v.form.art_start_date_year.$model"
                   type="number"
                   class="form-control"
                   placeholder="YYYY"
@@ -278,7 +280,7 @@
                 type="number"
                 class="form-control"
                 name
-                v-model="initialWeight"
+                v-model="$v.form.initial_weight.$model"
                 :placeholder="initialVitalsUnknown ? 'Unknown Weight' : 'Enter Weight'"
                 v-on:input="setRegistration"
                 :disabled="initialVitalsUnknown"
@@ -290,7 +292,7 @@
               type="number"
               class="form-control"
               name
-              v-model="initialHeight"
+              v-model="$v.form.initial_height.$model"
               :placeholder="initialVitalsUnknown ?  'Unknown Height' : 'Enter Height'"
               v-on:input="setRegistration"
               :disabled="initialVitalsUnknown"
@@ -314,7 +316,7 @@
                 class="form-control"
                 name
                 id
-                v-model="initialTbStatus"
+                v-model="$v.form.initial_tb_status.$model"
                 @change="setRegistration"
               >
                 <option disabled selected>Select Option</option>
@@ -340,14 +342,14 @@
         <div class="form-group">
           <v-select
             :options="options"
-            v-model="confirmatory"
+            v-model="$v.form.confirmatory.$model"
             :reduce="option => option.value"
             v-on:input="setRegistration"
           ></v-select>
         </div>
       </div>
     </div>
-    <div v-if="confirmatory == 1040 || confirmatory == 844" class="row">
+    <div v-if="form.confirmatory == 1040 || form.confirmatory == 844" class="row">
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
@@ -373,14 +375,14 @@
                 :options="locations"
                 @search="getlocations"
                 @input="getVal"
-                v-model="locationOfConfirmatory"
+                v-model="$v.form.location_of_confirmatory.$model"
                 :disabled="locationOfConfirmatoryUnknown"
               ></v-select>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="confirmatory == 1040 || confirmatory == 844" class="col-md-6">
+      <div v-if="form.confirmatory == 1040 || form.confirmatory == 844" class="col-md-6">
         <div class="row">
           <div class="col-md-12">
             <div class="row">
@@ -393,7 +395,7 @@
             <div class="row">
               <div class="col-md-4">
                 <input
-                  v-model="hivTestDateDay"
+                  v-model="$v.form.hiv_test_date_day.$model"
                   type="number"
                   class="form-control"
                   placeholder="DD"
@@ -404,7 +406,7 @@
               </div>
               <div class="col-md-4">
                 <input
-                  v-model="hivTestDateMonth"
+                  v-model="$v.form.hiv_test_date_month.$model"
                   type="number"
                   class="form-control"
                   placeholder="MM"
@@ -415,7 +417,7 @@
               </div>
               <div class="col-md-4">
                 <input
-                  v-model="hivTestDateYear"
+                  v-model="$v.form.hiv_test_date_year.$model"
                   type="number"
                   class="form-control"
                   placeholder="YYYY"
@@ -443,6 +445,14 @@ import vitals from "@/components/encounters/vitals.vue";
 import moment from "moment";
 import GlobalProperties from "@/services/global_properties";
 import { validationMixin } from "vuelidate";
+import {
+  required,
+  requiredIf,
+  minLength,
+  maxLength,
+  sameAs,
+  between
+} from "vuelidate/lib/validators";
 
 export default {
   components: {
@@ -453,14 +463,59 @@ export default {
   validations() {
     return {
       form: {
-        
+        arv_number: {},
+        visit_date_day: {},
+        visit_date_month: {},
+        visit_date_year: {},
+        should_follow_up: {},
+        agrees_to_follow_up: {},
+        received_arv_treatment_before: {},
+        date_last_taken_arv_day: {},
+        date_last_taken_arv_month: {},
+        date_last_taken_arv_year: {},
+        ever_registered_at_clinic_value: {},
+        location_of_initiation: {},
+        art_start_date_day: {},
+        art_start_date_month: {},
+        art_start_date_year: {},
+        initial_weight: {},
+        initial_height: {},
+        initial_tb_status: {},
+        confirmatory: {},
+        location_of_confirmatory: {},
+        hiv_test_date_day: {},
+        hiv_test_date_month: {},
+        hiv_test_date_year: {}
       }
     };
   },
   data: function() {
     return {
       form: {
-        
+        arv_number: "",
+        visit_date_day: "",
+        visit_date_month: "",
+        visit_date_year: "",
+        should_follow_up: "Select Option",
+        agrees_to_follow_up: "",
+        received_arv_treatment_before: "Select Option",
+        date_last_taken_arv_day: "",
+        date_last_taken_arv_month: "",
+        date_last_taken_arv_year: "",
+        ever_registered_at_clinic_value: "Select Option",
+        location_of_initiation: "Select Option",
+        art_start_date_day: "",
+        art_start_date_month: "",
+        art_start_date_year: "",
+        initial_weight: "",
+        initial_height: "",
+        initial_tb_status: "Select Option",
+        confirmatory: "Select Option",
+        location_of_confirmatory: "Select Option",
+        hiv_test_date_day: "",
+        hiv_test_date_month: "",
+        hiv_test_date_year: ""
+
       },
       recievedTreatment: false,
       receievedARVTreatmentBefore: "Select Option",
@@ -612,10 +667,16 @@ export default {
   },
   computed: {
     visitDate() {
-      return this.makeISODateString(this.visitDateYear, this.visitDateMonth, this.visitDateDay);
+      return this.makeISODateString(this.form.visit_date_year, this.form.visit_date_month, this.form.visit_date_day);
     }
   },
   methods: {
+
+    validateForm() {
+      this.$v.$touch();
+      return !this.$v.$invalid; //send this as a global state to the Registration component
+    },
+
     initial() {
       this.setRegistration();
       this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1066; // No answer
@@ -626,12 +687,12 @@ export default {
 
     followUp() {
       this.setRegistration();
-      if (this.shouldFollowUp == "No") {
+      if (this.form.should_follow_up == "No") {
         console.log("No");
         this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1066; // No answer
         this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1066; // No answer
         this.agreesToFollowUp = false;
-      } else if (this.shouldFollowUp == "Yes") {
+      } else if (this.form.should_follow_up == "Yes") {
         console.log("Yes");
         this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1065; // No answer
         this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1065; // No answer
@@ -642,12 +703,11 @@ export default {
     // Ever recieved ARVs for treatment
     everRecieved() {
       this.setRegistration();
-      console.log(this.receievedARVTreatmentBefore);
-      if (this.receievedARVTreatmentBefore == "No") {
+      if (this.form.received_arv_treatment_before == "No") {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1066;
         this.registered = false;
         this.recievedTreatment = false;
-      } else if (this.receievedARVTreatmentBefore == "Yes") {
+      } else if (this.form.received_arv_treatment_before == "Yes") {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1065;
         this.recievedTreatment = true;
       }
@@ -656,10 +716,10 @@ export default {
     // Ever registered at an ART Clinic
     everRegistered() {
       this.setRegistration();
-      if (this.everRegisteredAtClinicValue == "No") {
+      if (this.form.ever_registered_at_clinic_value == "No") {
         this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1066;
         this.registered = false;
-      } else if (this.everRegisteredAtClinicValue == "Yes") {
+      } else if (this.form.ever_registered_at_clinic_value == "Yes") {
         this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1065;
         this.registered = true;
       }
@@ -669,10 +729,10 @@ export default {
     locationOfInitiationCheck() {
       this.setRegistration();
       if (this.locationOfInitiationUnknown == true) {
-        this.locationOfInitiation = "Select Location";
+        this.form.location_of_initiation = "Select Location";
         this.locationOfInitiationUnknown = false;
       } else if (this.locationOfInitiationUnknown == false) {
-        this.locationOfInitiation = "Unknown";
+        this.form.location_of_initiation = "Unknown";
         this.clinicRegistration.obs.ARTStartLocation.value_text = "Unknown";
         this.locationOfInitiationUnknown = true;
       }
@@ -681,10 +741,10 @@ export default {
     arvNumberUnkownCheckbox() {
       this.setRegistration();
       if (this.arvNumberUnkown == true) {
-        this.arvNumber = "";
+        this.form.arv_number = "";
         this.arvNumberUnkown = false;
       } else if (this.arvNumberUnkown == false) {
-        this.arvNumber = "Unknown";
+        this.form.arv_number = "Unknown";
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text =
           "Unknown";
         this.arvNumberUnkown = true;
@@ -694,10 +754,10 @@ export default {
     locationOfConfirmatoryCheck() {
       this.setRegistration();
       if (this.locationOfConfirmatoryUnknown == true) {
-        this.locationOfConfirmatory = "Select Location";
+        this.form.location_of_confirmatory = "Select Location";
         this.locationOfConfirmatoryUnknown = false;
       } else if (this.locationOfConfirmatoryUnknown == false) {
-        this.locationOfConfirmatory = "Unknown";
+        this.form.location_of_confirmatory = "Unknown";
         this.clinicRegistration.obs.testLocation.value_text = "Unknown";
         this.locationOfConfirmatoryUnknown = true;
       }
@@ -763,21 +823,21 @@ export default {
       }
 
       if (
-        this.dateLastTakenARVyear != null &&
-        this.dateLastTakenARVmonth != null &&
-        this.dateLastTakenARVday != null
+        this.form.date_last_taken_arv_year != null &&
+        this.form.date_last_taken_arv_month != null &&
+        this.form.date_last_taken_arv_day != null
       ) {
-        const dateInput = `${this.dateLastTakenARVyear}-${this.dateLastTakenARVmonth}-${this.dateLastTakenARVday}`;
+        const dateInput = `${this.form.date_last_taken_arv_year}-${this.form.date_last_taken_arv_month}-${this.form.date_last_taken_arv_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = date;
       }
 
       if (
-        this.artStartDateYear != null &&
-        this.artStartDateMonth != null &&
-        this.artStartDateDay != null
+        this.form.art_start_date_year != null &&
+        this.form.art_start_date_month != null &&
+        this.form.art_start_date_day != null
       ) {
-        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const dateInput = `${this.form.art_start_date_year}-${this.form.art_start_date_month}-${this.form.art_start_date_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.clinicRegistration.obs.dateARTStarted.value_datetime = date;
       }
@@ -786,51 +846,51 @@ export default {
         this.clinicRegistration.encounter_datetime = this.visitDate;
       }
 
-      if (this.arvNumber != null) {
-        this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.arvNumber}`;
+      if (this.form.arv_number != null) {
+        this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
       }
 
-      if (this.confirmatory != null) {
-        this.clinicRegistration.obs.confirmatoryTest.value_coded = this.confirmatory;
+      if (this.form.confirmatory != null) {
+        this.clinicRegistration.obs.confirmatoryTest.value_coded = this.form.confirmatory;
       }
 
-      if (this.hivTestDateYear != null && this.hivTestDateMonth !=  null && this.hivTestDateDay) {
-        const dateInput = `${this.hivTestDateYear}-${this.hivTestDateMonth}-${this.hivTestDateDay}`;
+      if (this.form.hiv_test_date_year != null && this.form.hiv_test_date_month !=  null && this.form.hiv_test_date_day) {
+        const dateInput = `${this.form.hiv_test_date_year}-${this.form.hiv_test_date_month}-${this.form.hiv_test_date_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
 
         this.clinicRegistration.obs.testDate.value_datetime = date;
       }
 
-      if (this.initialTbStatus) {
-        const dateInput = `${this.hivTestDateYear}-${this.hivTestDateMonth}-${this.hivTestDateDay}`;
+      if (this.form.initial_tb_status) {
+        const dateInput = `${this.form.hiv_test_date_year}-${this.form.hiv_test_date_month}-${this.form.hiv_test_date_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.clinicRegistration.obs.testDate.value_datetime = date;
       }
 
-      if (this.initialWeight != null) {
-        this.vitalsEncounter.obs.height.value_numeric = this.initialWeight;
+      if (this.form.initial_weight != null) {
+        this.vitalsEncounter.obs.height.value_numeric = this.form.initial_weight;
       }
 
-      if (this.initialHeight != null) {
-        this.vitalsEncounter.obs.weight.value_numeric = this.initialHeight;
+      if (this.form.initial_height != null) {
+        this.vitalsEncounter.obs.weight.value_numeric = this.form.initial_height;
       }
 
-      if (this.initialTbStatus != null) {
-        this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
+      if (this.form.initial_tb_status != null) {
+        this.clinicRegistration.obs.initialTbStatus.value_coded = this.form.initial_tb_status;
       }
 
       if (
-        this.artStartDateYear != null &&
-        this.artStartDateMonth != null &&
-        this.artStartDateDay != null
+        this.form.art_start_date_year != null &&
+        this.form.art_start_date_month != null &&
+        this.form.art_start_date_day != null
       ) {
-        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const dateInput = `${this.form.art_start_date_year}-${this.form.art_start_date_month}-${this.form.art_start_date_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = date;
       }
 
       if (this.registered) {
-        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const dateInput = `${this.form.art_start_date_year}-${this.form.art_start_date_month}-${this.form.art_start_date_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = date;
       } else {
@@ -847,7 +907,7 @@ export default {
 
       // optional
       if (this.recievedTreatment) {
-        const dateInput = `${this.dateLastTakenARVyear}-${this.dateLastTakenARVmonth}-${this.dateLastTakenARVday}`;
+        const dateInput = `${this.form.date_last_taken_arv_year}-${this.form.date_last_taken_arv_month}-${this.form.date_last_taken_arv_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.clinicRegistration.obs.yearLastTakenARVs.value_datetime = date;
       } else {
@@ -858,11 +918,11 @@ export default {
       //optional
       if (this.registered) {
         // ART Number
-        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const dateInput = `${this.form.art_start_date_year}-${this.form.art_start_date_month}-${this.form.art_start_date_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.clinicRegistration.obs.dateARTStarted.value_datetime = date; // this looks ok
-        this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.arvNumber}`;
-        this.clinicRegistration.obs.initialTbStatus.value_coded = this.initialTbStatus;
+        this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
+        this.clinicRegistration.obs.initialTbStatus.value_coded = this.form.initial_tb_status;
       } else {
         //ART start date
         delete this.clinicRegistration.obs.dateARTStarted;
@@ -875,9 +935,9 @@ export default {
       }
 
       //optional
-      if (this.confirmatory == 1040 || this.confirmatory == 844) {
-        this.clinicRegistration.obs.confirmatoryTest.value_coded = this.confirmatory;
-        const dateInput = `${this.hivTestDateYear}-${this.hivTestDateMonth}-${this.hivTestDateDay}`;
+      if (this.form.confirmatory == 1040 || this.form.confirmatory == 844) {
+        this.clinicRegistration.obs.confirmatoryTest.value_coded = this.form.confirmatory;
+        const dateInput = `${this.form.hiv_test_date_year}-${this.form.hiv_test_date_month}-${this.form.hiv_test_date_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.clinicRegistration.obs.testDate.value_datetime = date;
       } else {
@@ -893,15 +953,15 @@ export default {
     },
 
     buildVitalsObservations() {
-      if (this.initialHeight != null && this.initialWeight != null) {
-        this.vitalsEncounter.obs.height.value_numeric = this.initialHeight;
-        this.vitalsEncounter.obs.weight.value_numeric = this.initialWeight;
+      if (this.form.initial_height != null && this.form.initial_weight != null) {
+        this.vitalsEncounter.obs.height.value_numeric = this.form.initial_height;
+        this.vitalsEncounter.obs.weight.value_numeric = this.form.initial_weight;
       } else {
         delete this.vitalsEncounter.obs;
       }
 
       if (this.registered) {
-        const dateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+        const dateInput = `${this.form.art_start_date_year}-${this.form.art_start_date_month}-${this.form.art_start_date_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
         this.vitalsEncounter.encounter_datetime = date;
       } else {
@@ -911,13 +971,13 @@ export default {
     },
 
     setRegistration() {
-      const dateInput = `${this.dateLastTakenARVyear}-${this.dateLastTakenARVmonth}-${this.dateLastTakenARVday}`;
+      const dateInput = `${this.form.date_last_taken_arv_year}-${this.form.date_last_taken_arv_month}-${this.form.date_last_taken_arv_day}`;
       const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
 
-      const startDateInput = `${this.artStartDateYear}-${this.artStartDateMonth}-${this.artStartDateDay}`;
+      const startDateInput = `${this.form.art_start_date_year}-${this.form.art_start_date_month}-${this.form.art_start_date_day}`;
       const startDate = moment(new Date(startDateInput)).format("YYYY-MM-DD");
 
-      const testDateInput = `${this.hivTestDateYear}-${this.hivTestDateMonth}-${this.hivTestDateDay}`;
+      const testDateInput = `${this.form.hiv_test_date_year}-${this.form.hiv_test_date_month}-${this.form.hiv_test_date_day}`;
       const testDate = moment(new Date(testDateInput)).format("YYYY-MM-DD");
 
       this.buildForRegistrationGlobalState();
@@ -925,22 +985,22 @@ export default {
       let registration = {};
       registration = {
         encounter: this.clinicRegistration,
-        agrees_to_follow: this.shouldFollowUp,
+        agrees_to_follow: this.form.should_follow_up,
         initial_visit_date: this.visitDate,
         receieved_treatment: {
-          ever_received: this.receievedARVTreatmentBefore,
+          ever_received: this.form.received_arv_treatment_before,
           last_date_received: date,
-          ever_registered: this.everRegisteredAtClinicValue
+          ever_registered: this.form.ever_registered_at_clinic_value
         },
         art_registration: {
-          ever_registered: this.everRegisteredAtClinicValue,
-          location: this.locationOfInitiation,
+          ever_registered: this.form.ever_registered_at_clinic_value,
+          location: this.form.location_of_initiation,
           start_date: startDate,
-          arv_number: this.arvNumber
+          arv_number: this.form.arv_number
         },
         confirmatory_test: {
-          test: this.confirmatory,
-          location: this.locationOfConfirmatory,
+          test: this.form.confirmatory,
+          location: this.form.location_of_confirmatory,
           test_date: testDate
         },
         vitals: this.vitalsEncounter
@@ -975,7 +1035,7 @@ export default {
         clinicRegistration: this.clinicRegistration
       });
 
-      if (!this.initialVitalsUnknown && this.everRegisteredAtClinicValue == 'Yes' && this.receievedARVTreatmentBefore == 'Yes') {
+      if (!this.initialVitalsUnknown && this.form.ever_registered_at_clinic_value == 'Yes' && this.form.received_arv_treatment_before == 'Yes') {
         this.buildVitalsObservations();
         console.log(this.vitalsEncounter);
         this.$emit("addEncounter", {
@@ -1024,7 +1084,7 @@ export default {
     },
     //find site prefix
     saveARVNumber: async function() {
-      let finalNum = `${this.sitePrefix}-ARV-${this.arvNumber}`;
+      let finalNum = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
       let identifier_data = {
         identifier: finalNum,
         identifier_type: 4,
