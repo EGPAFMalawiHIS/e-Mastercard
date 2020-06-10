@@ -533,13 +533,13 @@ export default {
           }
         },
         location_of_confirmatory: {
-          required: requiredIf(() => false),
+          required: requiredIf(() => (this.form.confirmatory == 1040 || this.form.confirmatory == 844)),
           filterOption(location_of_confirmatory) {
             return !/Select Option/.test(location_of_confirmatory);
           }
         },
         hiv_test_date_day: {
-          required: requiredIf(() => false),
+          required: requiredIf(() => (this.form.confirmatory == 1040 || this.form.confirmatory == 844)),
           maxLength: maxLength(2),
           minLength: minLength(2),
           dayRange(hiv_test_date_day) {
@@ -547,7 +547,7 @@ export default {
           }
         },
         hiv_test_date_month: {
-          required: requiredIf(() => false),
+          required: requiredIf(() => (this.form.confirmatory == 1040 || this.form.confirmatory == 844)),
           maxLength: maxLength(2),
           minLength: minLength(2),
           monthRange(hiv_test_date_month) {
@@ -555,7 +555,7 @@ export default {
           }
         },
         hiv_test_date_year: {
-          required: requiredIf(() => false),
+          required: requiredIf(() => (this.form.confirmatory == 1040 || this.form.confirmatory == 844)),
           maxLength: maxLength(4),
           minLength: minLength(4),
           between: between(1850, moment(this.DATE).format("YYYY"))
