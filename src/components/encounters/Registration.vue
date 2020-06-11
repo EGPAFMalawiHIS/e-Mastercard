@@ -229,6 +229,7 @@ import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
 import moment from "moment";
 import $ from "jquery";
+import EventBus from "../../services/event-bus.js";
 
 export default {
   data: function() {
@@ -357,14 +358,12 @@ export default {
       return key;
     },
     initileWizard(registration) {
-      console.log(registration);
       let Registration = this;
       $(document).ready(function() {
         let current_fs, next_fs, previous_fs; //fieldsets
         let opacity;
 
-        console.log(registration);
-        console.log(registration["agrees_to_follow"]);
+        console.log(registration['form_is_valid'])
 
         let pDetails = $("#pDetails");
         const message =
@@ -373,142 +372,9 @@ export default {
         // CLINICAL
 
         $(".clinical").click(function() {
-          console.log(Registration.registrationEncounter);
           const registration = Registration.registrationEncounter;
 
-          this.clinicRegistrationFormValidations = [];
-
-          if (
-            registration["agrees_to_follow"] != "Select Option" &&
-            registration["agrees_to_follow"] != ""
-          ) {
-            this.clinicRegistrationFormValidations.push(true);
-          } else {
-            this.clinicRegistrationFormValidations.push(false);
-          }
-
-          const treatment = registration["receieved_treatment"];
-          console.log(treatment);
-          const everReceivedART = treatment["ever_received"];
-
-          if (everReceivedART != "Select Option" || everReceivedART != "") {
-            this.clinicRegistrationFormValidations.push(true);
-          } else {
-            this.clinicRegistrationFormValidations.push(false);
-          }
-
-          const gotTreatment = () => {
-            return (
-              treatment["last_date_received"] != null &&
-              treatment["last_date_received"] != "" &&
-              treatment["last_date_received"] != "Invalid date" &&
-              treatment["ever_registered"] != "Select Option" &&
-              treatment["ever_registered"] != ""
-            );
-          };
-
-          const initialVisitDate = moment(new Date(registration["initial_visit_date"])).format("YYYY-MM-DD");
-
-          const initialVisitDateValid = () => {
-            return (
-              initialVisitDate != "Select Option" &&
-              initialVisitDate != null &&
-              initialVisitDate != "" &&
-              initialVisitDate != "Invalid date" &&
-              initialVisitDate != "null-null-null"
-            );
-          };
-
-          if(initialVisitDateValid()){
-            this.clinicRegistrationFormValidations.push(true);
-          }else{
-            this.clinicRegistrationFormValidations.push(false);
-          }
-
-          const artReg = registration["art_registration"];
-
-          const gotRegistered = () => {
-            return (
-              artReg["location"] != "Select Option" &&
-              artReg["start_date"] != null &&
-              artReg["start_date"] != "" &&
-              artReg["start_date"] != "Invalid date" &&
-              artReg["arv_number"] != null &&
-              artReg["arv_number"] != ""
-            );
-          };
-
-          const initialTbStatus =
-            registration["encounter"]["obs"]["initialTbStatus"]["value_coded"];
-
-          if (everReceivedART === "Yes") {
-            if (gotTreatment()) {
-              this.clinicRegistrationFormValidations.push(true);
-              if (treatment["ever_registered"] === "Yes") {
-                if (gotRegistered()) {
-                  this.clinicRegistrationFormValidations.push(true);
-
-                  const vitals = registration["vitals"]["obs"];
-                  const weight =
-                    vitals["weight"]["value_numeric"] != null &&
-                    vitals["weight"]["value_numeric"] != "";
-                  const height =
-                    vitals["height"]["value_numeric"] != null &&
-                    vitals["height"]["value_numeric"] != "";
-
-                  if (weight && height) {
-                    this.clinicRegistrationFormValidations.push(true);
-                  } else {
-                    this.clinicRegistrationFormValidations.push(false);
-                  }
-
-                  if (
-                    initialTbStatus != "Select Option" &&
-                    initialTbStatus != ""
-                  ) {
-                    this.clinicRegistrationFormValidations.push(true);
-                  } else {
-                    this.clinicRegistrationFormValidations.push(false);
-                  }
-                } else {
-                  this.clinicRegistrationFormValidations.push(false);
-                }
-              }
-            } else {
-              this.clinicRegistrationFormValidations.push(false);
-            }
-          }
-
-          //Confirmatory Test
-          const confirmatoryTest = registration["confirmatory_test"];
-
-          const test = confirmatoryTest["test"];
-
-          const gotConfirmatoryTest = () => {
-            return (
-              confirmatoryTest["test_date"] != null &&
-              confirmatoryTest["test_date"] != "" &&
-              confirmatoryTest["test_date"] != "Invalid date" &&
-              confirmatoryTest["location"] != "Select Option" &&
-              confirmatoryTest["location"] != ""
-            );
-          };
-
-          if (test != null && test != "Select Option") {
-            this.clinicRegistrationFormValidations.push(true);
-            if (test == 1040 || test == 844) {
-              if (gotConfirmatoryTest()) {
-                this.clinicRegistrationFormValidations.push(true);
-              } else {
-                this.clinicRegistrationFormValidations.push(false);
-              }
-            }
-          } else {
-            this.clinicRegistrationFormValidations.push(false);
-          }
-
-          //!this.clinicRegistrationFormValidations.includes(false)
-          if (!this.clinicRegistrationFormValidations.includes(false)) {
+          if (registration['form_is_valid']) {
             $(".errorTxt").html("");
             current_fs = $(this).parent();
             next_fs = $(this)
@@ -547,77 +413,11 @@ export default {
         // STAGING
 
         $(".staging").click(function() {
-          this.stagingFormValidations = [];
-          console.log(Registration.stagingEncounter["encounter"]["obs"]);
-          const staging = Registration.stagingEncounter["encounter"]["obs"];
-
-          if (
-            staging["stage"]["value_text"] != null &&
-            staging["stage"]["value_text"] != "" &&
-            staging["stage"]["value_text"] != "Select Option"
-          ) {
-            this.stagingFormValidations.push(true);
-          } else {
-            this.stagingFormValidations.push(false);
-          }
-
-          if (
-            staging["reason"]["value_text"] != null &&
-            staging["reason"]["value_text"] != "" &&
-            staging["reason"]["value_text"] != "Select Option"
-          ) {
-            this.stagingFormValidations.push(true);
-          } else {
-            this.stagingFormValidations.push(false);
-          }
-
-          // if CD4Count available
-          const cd4Available = Registration.stagingEncounter["cd4_available"];
-
-          if (cd4Available) {
-            if (
-              staging["cd4CountDate"]["value_datetime"] != null &&
-              staging["cd4CountDate"]["value_datetime"] != "" &&
-              staging["cd4CountDate"]["value_datetime"] != "Invalid date"
-            ) {
-              this.stagingFormValidations.push(true);
-            } else {
-              this.stagingFormValidations.push(false);
-            }
-
-            //console.log(staging["cd4Count"])
-
-            if (
-              staging["cd4Count"]["value_numeric"] != null &&
-              staging["cd4Count"]["value_numeric"] != ""
-            ) {
-              this.stagingFormValidations.push(true);
-            } else {
-              this.stagingFormValidations.push(false);
-            }
-
-            if (
-              staging["cd4Count"]["value_modifier"] != null &&
-              staging["cd4Count"]["value_modifier"] != ""
-            ) {
-              this.stagingFormValidations.push(true);
-            } else {
-              this.stagingFormValidations.push(false);
-            }
-
-            if (
-              staging["cd4CountLocation"]["value_text"] != null &&
-              staging["cd4CountLocation"]["value_text"] != "" &&
-              staging["cd4CountLocation"]["value_text"] != "Select Option"
-            ) {
-              this.stagingFormValidations.push(true);
-            } else {
-              this.stagingFormValidations.push(false);
-            }
-          }
+          
+          const formIsValid = Registration.stagingEncounter["form_is_valid"];
 
           // validate if checkbox checked to register
-          if (!this.stagingFormValidations.includes(false)) {
+          if (formIsValid) {
             $(".guardianError").html("");
             current_fs = $(this).parent();
             next_fs = $(this)
@@ -732,12 +532,15 @@ export default {
         });
       });
     },
+
     registrationObject() {
+      EventBus.$emit('validate-clinic-registration', '');
       this.registrationEncounter = this.$store.state.registration.registration;
       console.log(this.registrationEncounter);
       this.initileWizard(this.registrationEncounter);
     },
     stagingObject() {
+      EventBus.$emit('validate-staging', '');
       this.stagingEncounter = this.$store.state.staging.staging;
       this.initileWizard(this.registrationEncounter);
       console.log(this.stagingEncounter);
