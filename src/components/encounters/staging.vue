@@ -14,6 +14,7 @@
               :options="filterReasons(this.person)"
               v-model="$v.form.reason_for_eligibility.$model"
               v-on:input="setStaging"
+              v-bind:style="(!$v.form.reason_for_eligibility.required || !$v.form.reason_for_eligibility.filterOption) && $v.form.reason_for_eligibility.$dirty  ? 'border: 1.5px solid red;' : ''"
             ></v-select>
           </div>
         </div>
@@ -33,6 +34,7 @@
               :options="Object.keys(whoStageConceptMapHash)"
               v-model="$v.form.who_stage.$model"
               v-on:input="setStaging"
+              v-bind:style="(!$v.form.who_stage.required || !$v.form.who_stage.filterOption) && $v.form.who_stage.$dirty  ? 'border: 1.5px solid red;' : ''"
             ></v-select>
           </div>
         </div>
@@ -61,6 +63,7 @@
               aria-describedby="emailHelp"
               placeholder="Search condition"
               v-model="$v.form.cd4_count_date.$model"
+              v-bind:style="!$v.form.cd4_count_date.required && $v.form.cd4_count_date.$dirty  ? 'border: 1.5px solid red;' : ''"
               @change="setStaging"
             />
           </div>
@@ -80,6 +83,7 @@
                 class="form-control"
                 v-model="$v.form.cd4_count_modifier.$model"
                 @change="setStaging"
+                v-bind:style="(!$v.form.cd4_count_modifier.required || !$v.form.cd4_count_modifier.filterOption) && $v.form.cd4_count_modifier.$dirty  ? 'border: 1.5px solid red;' : ''"
               >
                 <option disabled selected>Select</option>
                 <option value="<">&lt;</option>
@@ -90,7 +94,8 @@
                 class="form-control"
                 aria-describedby="emailHelp"
                 placeholder="Enter Count"
-                v-model="cd4Count"
+                v-model="$v.form.cd4_count.$model"
+                v-bind:style="!$v.form.cd4_count.required && $v.form.cd4_count.$dirty  ? 'border: 1.5px solid red;' : ''"
                 style="margin-left: 5px; width: 80%"
                 v-on:input="setStaging"
               />
@@ -112,6 +117,7 @@
               :options="locations"
               @search="getlocations"
               v-model="$v.form.cd4_count_location.$model"
+              v-bind:style="(!$v.form.cd4_count_location.required || !$v.form.cd4_count_location.filterOption) && $v.form.cd4_count_location.$dirty  ? 'border: 1.5px solid red;' : ''"
               v-on:input="setStaging"
             ></v-select>
           </div>
@@ -132,15 +138,19 @@
         </div>
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-12">
         <ul
           class="list-group list-group-flush list-group-striped"
           style="height:150px; overflow:hidden; overflow-y:scroll; text-align:left"
+          v-bind:style="!$v.form.stage_value.required && $v.form.stage_value.$dirty  ? 'border: 1.5px solid red;' : ''"
         >
           <li class="list-group-item" v-for="(stage, index) in filteredList" :key="index">
             <label class="checkbox-label">
-              <input type="checkbox" v-bind:value="stage" v-model="$v.form.stage_value.$model" @change="setStaging" />
+              <input type="checkbox" v-bind:value="stage" 
+              v-model="$v.form.stage_value.$model" 
+              @change="setStaging" />
               <span class="checkbox-custom rectangular" style="margin-top: 12px; margin-left: 5px"></span>
             </label>
             <label style="margin-left: 16px">{{ stage }}</label>
@@ -175,13 +185,39 @@ export default {
   validations(){
     return{
       form:{
-        reason_for_eligibility: {},
-        who_stage: {},
-        cd4_count_date: {},
-        cd4_count: {},
-        cd4_count_modifier: {},
-        cd4_count_location: {},
-        stage_value: {}
+        reason_for_eligibility: {
+          required,
+          filterOption(reason_for_eligibility) {
+            return !/Select Option/.test(reason_for_eligibility);
+          }
+        },
+        who_stage: {
+          required,
+          filterOption(who_stage) {
+            return !/Select Option/.test(who_stage);
+          }
+        },
+        cd4_count_date: {
+          required: requiredIf(() => this.cdCountAvailable)
+        },
+        cd4_count: {
+          required: requiredIf(() => this.cdCountAvailable)
+        },
+        cd4_count_modifier: {
+          required: requiredIf(() => this.cdCountAvailable),
+          filterOption(cd4_count_modifier) {
+            return !/Select/.test(cd4_count_modifier);
+          }
+        },
+        cd4_count_location: {
+          required: requiredIf(() => this.cdCountAvailable),
+          filterOption(cd4_count_location) {
+            return !/Select Option/.test(cd4_count_location);
+          }
+        },
+        stage_value: {
+          required
+        }
       }
     }
   },
@@ -192,7 +228,7 @@ export default {
         who_stage: "Select Option",
         cd4_count_date: "",
         cd4_count: "",
-        cd4_count_modifier: "Select Option",
+        cd4_count_modifier: "Select",
         cd4_count_location: "Select Option",
         stage_value: []
       },
@@ -615,9 +651,14 @@ export default {
     c4dCountAvailableCheck() {
       if (this.cdCountAvailable) {
         this.cdCountAvailable = false;
+        this.form.cd4_count_modifier = "Modifier"
+        this.form.cd4_count_location = "Location"
       } else if (this.cdCountAvailable == false) {
         this.cdCountAvailable = true;
+        this.form.cd4_count_modifier = "Select"
+      this.form.cd4_count_location = "Select Option"
       }
+
       this.setStaging();
     },
 
@@ -895,6 +936,11 @@ export default {
       this.$store.commit("setStaging", staging);
     },
     initialize() {
+      // prevent false submission
+      if (!this.cdCountAvailable) {
+        this.form.cd4_count_modifier = "Modifier"
+        this.form.cd4_count_location = "Location"
+      }
       this.encounterObject;
       console.log(this.encounterObject);
     },
@@ -929,8 +975,8 @@ export default {
     this.fetchDemographics();
     this.getlocations(sessionStorage.location_name);
     EventBus.$on('validate-staging', data => {
-      console.log("Validating Staging!!!!")
       this.formIsValid = this.validateForm()
+      console.log("Validating Staging!!!!" + this.formIsValid)
       this.setStaging()
     });
   },
