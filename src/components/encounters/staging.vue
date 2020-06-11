@@ -155,14 +155,35 @@
 import VueSelect from "vue-select";
 import ApiClient from "../../services/api_client";
 import moment from "moment";
+import { validationMixin } from "vuelidate";
+import {
+  required,
+  requiredIf,
+  minLength,
+  maxLength,
+  sameAs,
+  between
+} from "vuelidate/lib/validators";
+import EventBus from "../../services/event-bus.js";
 
 export default {
   components: {
     "v-select": VueSelect
   },
   props: ["patientId"],
+  mixins: [validationMixin],
+  validations(){
+    return{
+      form:{
+
+      }
+    }
+  },
   data: function() {
     return {
+      form: {
+
+      },
       languages: [],
       encounterObject: {
         encounter_id: 52,
@@ -243,6 +264,7 @@ export default {
       stageListing: [],
       search: null,
       locations: [],
+      formIsValid: false,
       // Age groups 0-15
       lymphocyteThresholds: {
         "0-2": 4000,
@@ -426,6 +448,12 @@ export default {
     }
   },
   methods: {
+
+    validateForm() {
+      this.$v.$touch();
+      return !this.$v.$invalid; //send this as a global state to the Registration component
+    },
+
     saveEncounter: function() {
       console.log(this.encounterObject);
       this.buildObservations();
@@ -888,6 +916,11 @@ export default {
     this.initialize();
     this.fetchDemographics();
     this.getlocations(sessionStorage.location_name);
+    EventBus.$on('validate-staging', data => {
+      console.log("Validating Staging!!!!")
+      this.formIsValid = this.validateForm()
+      this.setStaging()
+    });
   },
 
   mounted() {
