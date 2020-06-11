@@ -214,6 +214,7 @@
                 @input="getLoc"
                 v-model="$v.form.location_of_initiation.$model"
                 :disabled="locationOfInitiationUnknown"
+                v-bind:style="(!$v.form.location_of_initiation.required || !$v.form.location_of_initiation.filterOption ) && $v.form.location_of_initiation.$dirty  ? 'border: 1.5px solid red;' : ''"
               ></v-select>
             </div>
           </div>
@@ -237,6 +238,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.art_start_date_day.required || !$v.form.art_start_date_day.minLength || !$v.form.art_start_date_day.maxLength || !$v.form.art_start_date_day.dayRange ) && $v.form.art_start_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -248,6 +250,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.art_start_date_month.required || !$v.form.art_start_date_month.minLength || !$v.form.art_start_date_month.maxLength || !$v.form.art_start_date_month.monthRange ) && $v.form.art_start_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -259,6 +262,7 @@
                   maxlength="4"
                   minlength="4"
                   v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.art_start_date_year.required || !$v.form.art_start_date_year.minLength || !$v.form.art_start_date_year.maxLength || !$v.form.art_start_date_year.between ) && $v.form.art_start_date_year.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
             </div>
@@ -296,6 +300,7 @@
                 :placeholder="initialVitalsUnknown ? 'Unknown Weight' : 'Enter Weight'"
                 v-on:input="setRegistration"
                 :disabled="initialVitalsUnknown"
+                v-bind:style="(!$v.form.initial_weight.required) && $v.form.initial_weight.$dirty  ? 'border: 1.5px solid red;' : ''"
               />
             </div>
           </div>
@@ -308,6 +313,7 @@
               :placeholder="initialVitalsUnknown ?  'Unknown Height' : 'Enter Height'"
               v-on:input="setRegistration"
               :disabled="initialVitalsUnknown"
+              v-bind:style="(!$v.form.initial_height.required) && $v.form.initial_height.$dirty  ? 'border: 1.5px solid red;' : ''"
             />
           </div>
         </div>
@@ -330,6 +336,7 @@
                 id
                 v-model="$v.form.initial_tb_status.$model"
                 @change="setRegistration"
+                v-bind:style="(!$v.form.initial_tb_status.required || !$v.form.initial_tb_status.filterOption) && $v.form.initial_tb_status.$dirty  ? 'border: 1.5px solid red;' : ''"
               >
                 <option disabled selected>Select Option</option>
                 <option
@@ -547,13 +554,46 @@ export default {
             return !/Select Option/.test(ever_registered_at_clinic_value);
           }
         },
-        location_of_initiation: {},
-        art_start_date_day: {},
-        art_start_date_month: {},
-        art_start_date_year: {},
-        initial_weight: {},
-        initial_height: {},
-        initial_tb_status: {},
+        location_of_initiation: {
+          required: requiredIf(() => this.recievedTreatment && this.registered),
+          filterOption(location_of_initiation) {
+            return !/Select Option/.test(location_of_initiation);
+          }
+        },
+        art_start_date_day: {
+          required: requiredIf(() => this.recievedTreatment && this.registered), 
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          dayRange(art_start_date_day) {
+            return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(art_start_date_day);
+          }
+        },
+        art_start_date_month: {
+          required: requiredIf(() => this.recievedTreatment && this.registered), 
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          monthRange(art_start_date_month) {
+            return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(art_start_date_month);
+          }
+        },
+        art_start_date_year: {
+          required: requiredIf(() => this.recievedTreatment && this.registered), 
+          maxLength: maxLength(4),
+          minLength: minLength(4),
+          between: between(1850, moment(this.DATE).format("YYYY"))
+        },
+        initial_weight: {
+          required: requiredIf(() => this.recievedTreatment && this.registered), 
+        },
+        initial_height: {
+          required: requiredIf(() => this.recievedTreatment && this.registered), 
+        },
+        initial_tb_status: {
+          required: requiredIf(() => this.recievedTreatment && this.registered),
+          filterOption(confirmatory) {
+            return !/Select Option/.test(confirmatory);
+          } 
+        },
         confirmatory: {
           required,
           filterOption(confirmatory) {
