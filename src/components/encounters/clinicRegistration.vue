@@ -3,8 +3,9 @@
     <div class="row">
       <div class="col-md-6">
         <div class="row">
-          <div class="col-md-6">
-            <label style="float: left; font-weight: bold;">ARV Number (*)</label>
+          <div class="col-md-12">
+            <label style="float: left; font-weight: bold;">ARV Number (*) </label>
+            <label v-if="!arvNumberAvailable" style="font-weight: bold; color: red"> ARV number already in use</label>
           </div>
         </div>
         <div class="form-group" style="font-weight: bold; color: rgba(300, 149, 100, 1);">
@@ -19,9 +20,9 @@
               placeholder="Enter ARV Number"
               v-model="$v.form.arv_number.$model"
               :disabled="arvNumberUnkown"
-              v-on:input="setRegistration"
+              v-on:input="validateArvNumberAvailability"
               style="display: inline"
-              v-bind:style="!$v.form.arv_number.required && $v.form.arv_number.$dirty  ? 'border: 1.5px solid red;' : ''"
+              v-bind:style="(!$v.form.arv_number.required || !$v.form.arv_number.numberTaken) && $v.form.arv_number.$dirty  ? 'border: 1.5px solid red;' : ''"
             />
           </div>
         </div>
@@ -489,7 +490,10 @@ export default {
     return {
       form: {
         arv_number: {
-          required
+          required,
+          numberTaken(arv_number){
+            return this.arvNumberAvailable == true
+          }
         },
         visit_date_day: {
           required,
@@ -670,6 +674,7 @@ export default {
       initialVitalsUnknown: false,
       sitePrefix: null,
       formIsValid: false,
+      arvNumberAvailable: true,
       TB_STATUS: {
         "TB NOT suspected": 7454,
         "TB suspected": 7455,
@@ -794,6 +799,23 @@ export default {
     validateForm() {
       this.$v.$touch();
       return !this.$v.$invalid; //send this as a global state to the Registration component
+    },
+
+    validateArvNumberAvailability: async function() {
+
+      const NUMBER = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
+      await ApiClient.get(`/search/patients/by_identifier?type_id=4&identifier=${NUMBER}`).then(res => {
+        res.json().then(data => {
+          if(data.length > 0){
+            this.arvNumberAvailable = false
+          }else{
+            this.arvNumberAvailable = true
+          }
+          console.log(data)
+        })
+      });
+
+      this.setRegistration()
     },
 
     initial() {
