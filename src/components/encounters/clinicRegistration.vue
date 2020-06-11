@@ -555,13 +555,13 @@ export default {
           }
         },
         location_of_initiation: {
-          required: requiredIf(() => this.recievedTreatment && this.registered),
+          required: requiredIf(() => (this.recievedTreatment && this.registered)),
           filterOption(location_of_initiation) {
             return !/Select Option/.test(location_of_initiation);
           }
         },
         art_start_date_day: {
-          required: requiredIf(() => this.recievedTreatment && this.registered), 
+          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
           maxLength: maxLength(2),
           minLength: minLength(2),
           dayRange(art_start_date_day) {
@@ -569,7 +569,7 @@ export default {
           }
         },
         art_start_date_month: {
-          required: requiredIf(() => this.recievedTreatment && this.registered), 
+          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
           maxLength: maxLength(2),
           minLength: minLength(2),
           monthRange(art_start_date_month) {
@@ -577,19 +577,19 @@ export default {
           }
         },
         art_start_date_year: {
-          required: requiredIf(() => this.recievedTreatment && this.registered), 
+          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
           maxLength: maxLength(4),
           minLength: minLength(4),
           between: between(1850, moment(this.DATE).format("YYYY"))
         },
         initial_weight: {
-          required: requiredIf(() => this.recievedTreatment && this.registered), 
+          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
         },
         initial_height: {
-          required: requiredIf(() => this.recievedTreatment && this.registered), 
+          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
         },
         initial_tb_status: {
-          required: requiredIf(() => this.recievedTreatment && this.registered),
+          required: requiredIf(() => (this.recievedTreatment && this.registered)),
           filterOption(confirmatory) {
             return !/Select Option/.test(confirmatory);
           } 
@@ -825,9 +825,13 @@ export default {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1066;
         this.registered = false;
         this.recievedTreatment = false;
+        this.form.initial_tb_status = "Select Status"
+        this.form.ever_registered_at_clinic_value = "Select Regi"
       } else if (this.form.received_arv_treatment_before == "Yes") {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1065;
         this.recievedTreatment = true;
+        this.form.initial_tb_status = "Select Option"
+        this.form.ever_registered_at_clinic_value = "Select Option"
       }
     },
 
@@ -837,9 +841,15 @@ export default {
       if (this.form.ever_registered_at_clinic_value == "No") {
         this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1066;
         this.registered = false;
+        this.form.initial_tb_status = "Select Status"
+        this.form.location_of_initiation = "Select Location";
+        this.form.location_of_confirmatory = "Select Location";
       } else if (this.form.ever_registered_at_clinic_value == "Yes") {
         this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1065;
         this.registered = true;
+        this.form.initial_tb_status = "Select Option"
+        this.form.location_of_initiation = "Select Option";
+        this.form.location_of_confirmatory = "Select Option";
       }
     },
 
