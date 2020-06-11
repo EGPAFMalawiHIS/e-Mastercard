@@ -413,77 +413,11 @@ export default {
         // STAGING
 
         $(".staging").click(function() {
-          this.stagingFormValidations = [];
-          console.log(Registration.stagingEncounter["encounter"]["obs"]);
-          const staging = Registration.stagingEncounter["encounter"]["obs"];
-
-          if (
-            staging["stage"]["value_text"] != null &&
-            staging["stage"]["value_text"] != "" &&
-            staging["stage"]["value_text"] != "Select Option"
-          ) {
-            this.stagingFormValidations.push(true);
-          } else {
-            this.stagingFormValidations.push(false);
-          }
-
-          if (
-            staging["reason"]["value_text"] != null &&
-            staging["reason"]["value_text"] != "" &&
-            staging["reason"]["value_text"] != "Select Option"
-          ) {
-            this.stagingFormValidations.push(true);
-          } else {
-            this.stagingFormValidations.push(false);
-          }
-
-          // if CD4Count available
-          const cd4Available = Registration.stagingEncounter["cd4_available"];
-
-          if (cd4Available) {
-            if (
-              staging["cd4CountDate"]["value_datetime"] != null &&
-              staging["cd4CountDate"]["value_datetime"] != "" &&
-              staging["cd4CountDate"]["value_datetime"] != "Invalid date"
-            ) {
-              this.stagingFormValidations.push(true);
-            } else {
-              this.stagingFormValidations.push(false);
-            }
-
-            //console.log(staging["cd4Count"])
-
-            if (
-              staging["cd4Count"]["value_numeric"] != null &&
-              staging["cd4Count"]["value_numeric"] != ""
-            ) {
-              this.stagingFormValidations.push(true);
-            } else {
-              this.stagingFormValidations.push(false);
-            }
-
-            if (
-              staging["cd4Count"]["value_modifier"] != null &&
-              staging["cd4Count"]["value_modifier"] != ""
-            ) {
-              this.stagingFormValidations.push(true);
-            } else {
-              this.stagingFormValidations.push(false);
-            }
-
-            if (
-              staging["cd4CountLocation"]["value_text"] != null &&
-              staging["cd4CountLocation"]["value_text"] != "" &&
-              staging["cd4CountLocation"]["value_text"] != "Select Option"
-            ) {
-              this.stagingFormValidations.push(true);
-            } else {
-              this.stagingFormValidations.push(false);
-            }
-          }
+          
+          const formIsValid = Registration.stagingEncounter["form_is_valid"];
 
           // validate if checkbox checked to register
-          if (!this.stagingFormValidations.includes(false)) {
+          if (formIsValid) {
             $(".guardianError").html("");
             current_fs = $(this).parent();
             next_fs = $(this)
@@ -606,6 +540,7 @@ export default {
       this.initileWizard(this.registrationEncounter);
     },
     stagingObject() {
+      EventBus.$emit('validate-staging', '');
       this.stagingEncounter = this.$store.state.staging.staging;
       this.initileWizard(this.registrationEncounter);
       console.log(this.stagingEncounter);

@@ -928,7 +928,8 @@ export default {
 
       staging = {
         encounter: this.encounterObject,
-        cd4_available: this.cdCountAvailable
+        cd4_available: this.cdCountAvailable,
+        form_is_valid: this.formIsValid
       }
 
       console.log(staging)
