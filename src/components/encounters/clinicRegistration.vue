@@ -363,7 +363,7 @@
             :options="options"
             v-model="$v.form.confirmatory.$model"
             :reduce="option => option.value"
-            v-on:input="setRegistration"
+            v-on:input="setConfirmatory"
             v-bind:style="(!$v.form.confirmatory.required || !$v.form.confirmatory.filterOption) && $v.form.confirmatory.$dirty  ? 'border: 1.5px solid red;' : ''"
           ></v-select>
         </div>
@@ -858,6 +858,17 @@ export default {
       }
     },
 
+    setConfirmatory(){
+      this.setRegistration()
+      if(this.form.confirmatory == 1118){
+        this.form.location_of_confirmatory = "Select Location";
+      }
+
+      if((this.form.confirmatory == 1040 || this.form.confirmatory == 844)){
+        this.form.location_of_confirmatory = "Select Option";
+      }
+    },
+
     //Location of ART initiation
     locationOfInitiationCheck() {
       this.setRegistration();
@@ -1139,11 +1150,6 @@ export default {
         vitals: this.vitalsEncounter,
         form_is_valid: this.formIsValid
       };
-
-
-      if(this.form.confirmatory == 1118){
-        this.form.location_of_confirmatory = "Select Location";
-      }
 
       this.$store.commit("setRegistration", registration);
     },
