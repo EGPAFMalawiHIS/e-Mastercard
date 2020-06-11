@@ -12,7 +12,7 @@
             <!-- this.person["gender"] == "F" -->
             <v-select
               :options="filterReasons(this.person)"
-              v-model="reasonForArtEligibility"
+              v-model="$v.form.reason_for_eligibility.$model"
               v-on:input="setStaging"
             ></v-select>
           </div>
@@ -31,7 +31,7 @@
           <div class="col-md-12">
             <v-select
               :options="Object.keys(whoStageConceptMapHash)"
-              v-model="whoStage"
+              v-model="$v.form.who_stage.$model"
               v-on:input="setStaging"
             ></v-select>
           </div>
@@ -60,7 +60,7 @@
               class="form-control"
               aria-describedby="emailHelp"
               placeholder="Search condition"
-              v-model="cd4CountDate"
+              v-model="$v.form.cd4_count_date.$model"
               @change="setStaging"
             />
           </div>
@@ -78,7 +78,7 @@
               <select
                 name="stage"
                 class="form-control"
-                v-model="cd4CountModifier"
+                v-model="$v.form.cd4_count_modifier.$model"
                 @change="setStaging"
               >
                 <option disabled selected>Select</option>
@@ -111,7 +111,7 @@
             <v-select
               :options="locations"
               @search="getlocations"
-              v-model="cd4CountLocation"
+              v-model="$v.form.cd4_count_location.$model"
               v-on:input="setStaging"
             ></v-select>
           </div>
@@ -140,7 +140,7 @@
         >
           <li class="list-group-item" v-for="(stage, index) in filteredList" :key="index">
             <label class="checkbox-label">
-              <input type="checkbox" v-bind:value="stage" v-model="stageValue" @change="setStaging" />
+              <input type="checkbox" v-bind:value="stage" v-model="$v.form.stage_value.$model" @change="setStaging" />
               <span class="checkbox-custom rectangular" style="margin-top: 12px; margin-left: 5px"></span>
             </label>
             <label style="margin-left: 16px">{{ stage }}</label>
@@ -175,14 +175,26 @@ export default {
   validations(){
     return{
       form:{
-
+        reason_for_eligibility: {},
+        who_stage: {},
+        cd4_count_date: {},
+        cd4_count: {},
+        cd4_count_modifier: {},
+        cd4_count_location: {},
+        stage_value: {}
       }
     }
   },
   data: function() {
     return {
       form: {
-
+        reason_for_eligibility: "Select Option",
+        who_stage: "Select Option",
+        cd4_count_date: "",
+        cd4_count: "",
+        cd4_count_modifier: "Select Option",
+        cd4_count_location: "Select Option",
+        stage_value: []
       },
       languages: [],
       encounterObject: {
@@ -462,7 +474,7 @@ export default {
 
     buildObservations() {
       // required
-      if (this.reasonForArtEligibility != null) {
+      if (this.form.reason_for_eligibility != null) {
         this.addReason();
       }
 
@@ -470,12 +482,12 @@ export default {
       this.addCd4Count(); // need to fix this
 
       //required
-      if (this.whoStage != null) {
+      if (this.form.who_stage != null) {
         this.addWhoStages();
       }
 
       //optional fields
-      if (this.stageValue != null) {
+      if (this.form.stage_value != null) {
         this.addConditions();
       }
 
@@ -496,8 +508,8 @@ export default {
       this.addReason();
 
       //CD4 Count
-      if (this.cd4CountDate != null) {
-        this.encounterObject.obs.cd4CountDate.value_datetime = this.cd4CountDate;
+      if (this.form.cd4_count_date != null) {
+        this.encounterObject.obs.cd4CountDate.value_datetime = this.form.cd4_count_date;
       }
 
       if (this.cd4Count != null) {
@@ -505,21 +517,21 @@ export default {
         this.cd4CountRanges();
       }
 
-      if (this.cd4CountModifier != null) {
-        this.encounterObject.obs.cd4Count.value_modifier = this.cd4CountModifier;
+      if (this.form.cd4_count_modifier != null) {
+        this.encounterObject.obs.cd4Count.value_modifier = this.form.cd4_count_modifier;
       }
 
-      if (Object.entries(this.cd4CountLocation).length > 0) {
-        this.encounterObject.obs.cd4CountLocation.location_id = this.cd4CountLocation.location_id;
-        this.encounterObject.obs.cd4CountLocation.value_text = this.cd4CountLocation.label;
+      if (Object.entries(this.form.cd4_count_location).length > 0) {
+        this.encounterObject.obs.cd4CountLocation.location_id = this.form.cd4_count_location.location_id;
+        this.encounterObject.obs.cd4CountLocation.value_text = this.form.cd4_count_location.label;
       }
 
-      if (this.whoStage != null) {
+      if (this.form.who_stage != null) {
         //Stage
         this.addWhoStages();
       }
       //Conditions
-      if (this.stageValue != null) {
+      if (this.form.stage_value != null) {
         this.addConditions();
       }
 
@@ -539,9 +551,9 @@ export default {
     },
 
     buildEncounter() {
-      console.log(this.reasonForArtEligibility);
-      console.log(this.whoStage);
-      console.log(this.stageValue);
+      console.log(this.form.reason_for_eligibility);
+      console.log(this.form.who_stage);
+      console.log(this.form.stage_value);
     },
 
     filterReasons(params = {}) {
@@ -575,7 +587,7 @@ export default {
     },
 
     addConditions() {
-      this.stageValue.map((stage, index) => {
+      this.form.stage_value.map((stage, index) => {
         console.log(stage);
         return (this.encounterObject.obs[
           `condition${index}`
@@ -595,9 +607,9 @@ export default {
 
     addWhoStages() {
       this.encounterObject.obs.stage.value_coded = this.whoStageConceptMapHash[
-        this.whoStage
+        this.form.who_stage
       ];
-      this.encounterObject.obs.stage.value_text = this.whoStage;
+      this.encounterObject.obs.stage.value_text = this.form.who_stage;
     },
 
     c4dCountAvailableCheck() {
@@ -674,11 +686,11 @@ export default {
       console.log(this.cdCountAvailable)
 
       if (this.cdCountAvailable) {
-        this.encounterObject.obs.cd4CountDate.value_datetime = this.cd4CountDate;
+        this.encounterObject.obs.cd4CountDate.value_datetime = this.form.cd4_count_date;
         this.encounterObject.obs.cd4Count.value_numeric = this.cd4Count;
-        this.encounterObject.obs.cd4Count.value_modifier = this.cd4CountModifier;
-        this.encounterObject.obs.cd4CountLocation.location_id = this.cd4CountLocation.location_id;
-        this.encounterObject.obs.cd4CountLocation.value_text = this.cd4CountLocation.label;
+        this.encounterObject.obs.cd4Count.value_modifier = this.form.cd4_count_modifier;
+        this.encounterObject.obs.cd4CountLocation.location_id = this.form.cd4_count_location.location_id;
+        this.encounterObject.obs.cd4CountLocation.value_text = this.form.cd4_count_location.label;
         this.cd4CountRanges();
       } else if (this.cdCountAvailable == false) {
         delete this.encounterObject.obs.cd4CountDate;
@@ -704,34 +716,34 @@ export default {
     // encounterObject.consultation.obs[`curr` + el] = {
     addReason() {
       this.encounterObject.obs.reason.value_coded = this.REASON_FOR_ART[
-        this.reasonForArtEligibility
+        this.form.reason_for_eligibility
       ];
-      this.encounterObject.obs.reason.value_text = this.reasonForArtEligibility;
+      this.encounterObject.obs.reason.value_text = this.form.reason_for_eligibility;
     },
 
     buildReasonForArt() {
       if (this.patientAge > 14) {
         console.log("Patient Age");
-        if (this.whoStage >= 3) {
+        if (this.form.who_stage >= 3) {
           console.log("Who stage...");
-          this.reasonForArtEligibility = "";
+          this.form.reason_for_eligibility = "";
         } else if (this.cd4Count < 250) {
-          this.reasonForArtEligibility = "CD4 count less than or equal to 250";
+          this.form.reason_for_eligibility = "CD4 count less than or equal to 250";
         } else if (this.cd4Count < 350) {
-          this.reasonForArtEligibility = "CD4 COUNT LESS THAN OR EQUAL TO 350";
+          this.form.reason_for_eligibility = "CD4 COUNT LESS THAN OR EQUAL TO 350";
         } else if (this.cd4Count < 500) {
-          this.reasonForArtEligibility = "CD4 COUNT LESS THAN OR EQUAL TO 500";
+          this.form.reason_for_eligibility = "CD4 COUNT LESS THAN OR EQUAL TO 500";
         } else {
-          if (this.whoStage == 1 && this.lymphocyteCount < 1200) {
-            this.reasonForArtEligibility =
+          if (this.form.who_stage == 1 && this.lymphocyteCount < 1200) {
+            this.form.reason_for_eligibility =
               "LYMPHOCYTE COUNT BELOW THRESHOLD WITH WHO STAGE 1";
-          } else if (this.whoStage == 2 && this.lymphocyteCount < 1200) {
-            this.reasonForArtEligibility =
+          } else if (this.form.who_stage == 2 && this.lymphocyteCount < 1200) {
+            this.form.reason_for_eligibility =
               "LYMPHOCYTE COUNT BELOW THRESHOLD WITH WHO STAGE 2";
           } else if (this.isPregnant) {
-            this.reasonForArtEligibility = "PATIENT PREGNANT";
+            this.form.reason_for_eligibility = "PATIENT PREGNANT";
           } else if (this.isBreastFeeding) {
-            this.reasonForArtEligibility = "BREASTFEEDING";
+            this.form.reason_for_eligibility = "BREASTFEEDING";
           }
         }
       } else {
@@ -758,19 +770,19 @@ export default {
           let isConditionFound = false;
 
           PRESUMED_SEVERE_HIV_CONDITIONS.forEach(value => {
-            this.stageValue.includes(value)
+            this.form.stage_value.includes(value)
               ? (isConditionFound = true)
               : isConditionFound;
           });
 
           let candidiasisSepsis =
-            this.stageValue.includes("Oral candidiasis") &&
+            this.form.stage_value.includes("Oral candidiasis") &&
             this.stageVAlue.includes("Severe sepsis");
           let candidiasisPneumonia =
-            this.stageValue.includes("Oral candidiasis") &&
+            this.form.stage_value.includes("Oral candidiasis") &&
             this.stageVAlue.includes("Severe pneumonia");
           let pneumoniaSepsis =
-            this.stageValue.includes("Severe pneumonia") &&
+            this.form.stage_value.includes("Severe pneumonia") &&
             this.stageVAlue.includes("Severe sepsis");
 
           console.log(isConditionFound);
@@ -788,8 +800,8 @@ export default {
           }
         }
 
-        if (this.reasonForArtEligibility == "NONE") {
-          this.reasonForArtEligibility = "Asymptomatic";
+        if (this.form.reason_for_eligibility == "NONE") {
+          this.form.reason_for_eligibility = "Asymptomatic";
         }
         console.log(this.presumedSevereHiv);
       }
@@ -826,11 +838,11 @@ export default {
 
       // CD4 Location
       this.encounterObject.obs.CD4Location.concept_id = 6830;
-      this.encounterObject.obs.CD4Location.value_text = this.cd4CountLocation;
+      this.encounterObject.obs.CD4Location.value_text = this.form.cd4_count_location;
 
       // CD4 Date
       this.encounterObject.obs.CD4Date.concept_id = 6830;
-      this.encounterObject.obs.CD4Date.value_datetime = this.cd4CountDate;
+      this.encounterObject.obs.CD4Date.value_datetime = this.form.cd4_count_date;
 
       // CD4 Count
       this.encounterObject.obs.CD4Count.concept_id = 5497;
