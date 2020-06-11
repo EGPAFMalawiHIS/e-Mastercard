@@ -669,6 +669,7 @@ export default {
       arvsTakenTwoWeeksPrior: "Select Option",
       initialVitalsUnknown: false,
       sitePrefix: null,
+      formIsValid: false,
       TB_STATUS: {
         "TB NOT suspected": 7454,
         "TB suspected": 7455,
@@ -825,13 +826,17 @@ export default {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1066;
         this.registered = false;
         this.recievedTreatment = false;
-        this.form.initial_tb_status = "Select Status"
         this.form.ever_registered_at_clinic_value = "Select Regi"
+        this.form.initial_tb_status = "Select Status"
+        this.form.location_of_initiation = "Select Location";
+        this.form.location_of_confirmatory = "Select Location";
       } else if (this.form.received_arv_treatment_before == "Yes") {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1065;
         this.recievedTreatment = true;
-        this.form.initial_tb_status = "Select Option"
         this.form.ever_registered_at_clinic_value = "Select Option"
+        this.form.initial_tb_status = "Select Option"
+        this.form.location_of_initiation = "Select Option";
+        this.form.location_of_confirmatory = "Select Option";
       }
     },
 
@@ -1131,7 +1136,8 @@ export default {
           location: this.form.location_of_confirmatory,
           test_date: testDate
         },
-        vitals: this.vitalsEncounter
+        vitals: this.vitalsEncounter,
+        form_is_valid: this.formIsValid
       };
 
 
@@ -1237,7 +1243,8 @@ export default {
     this.getlocations(sessionStorage.location_name);
     EventBus.$on('validate-clinic-registration', data => {
       //Set State of validity here as global state
-      console.log("Form Valide:  "+ this.validateForm())
+      this.formIsValid = this.validateForm()
+      this.setRegistration()
     });
   },
   mounted() {
