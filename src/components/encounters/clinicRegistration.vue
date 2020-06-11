@@ -132,6 +132,7 @@
               maxlength="2"
               minlength="2"
               v-on:input="setRegistration"
+              v-bind:style="(!$v.form.date_last_taken_arv_day.required || !$v.form.date_last_taken_arv_day.minLength || !$v.form.date_last_taken_arv_day.maxLength || !$v.form.date_last_taken_arv_day.dayRange) && $v.form.date_last_taken_arv_day.$dirty  ? 'border: 1.5px solid red;' : ''"
             />
           </div>
           <div class="col-md-4">
@@ -143,6 +144,7 @@
               maxlength="2"
               minlength="2"
               v-on:input="setRegistration"
+              v-bind:style="(!$v.form.date_last_taken_arv_month.required || !$v.form.date_last_taken_arv_month.minLength || !$v.form.date_last_taken_arv_month.maxLength || !$v.form.date_last_taken_arv_month.monthRange) && $v.form.date_last_taken_arv_month.$dirty  ? 'border: 1.5px solid red;' : ''"
             />
           </div>
           <div class="col-md-4">
@@ -154,6 +156,7 @@
               maxlength="4"
               minlength="4"
               v-on:input="setRegistration"
+              v-bind:style="(!$v.form.date_last_taken_arv_year.required || !$v.form.date_last_taken_arv_year.minLength || !$v.form.date_last_taken_arv_year.maxLength || !$v.form.date_last_taken_arv_year.between) && $v.form.date_last_taken_arv_year.$dirty  ? 'border: 1.5px solid red;' : ''"
             />
           </div>
         </div>
@@ -172,6 +175,7 @@
                 class="form-control"
                 v-model="$v.form.ever_registered_at_clinic_value.$model"
                 @change="everRegistered"
+                v-bind:style="(!$v.form.ever_registered_at_clinic_value.required || !$v.form.ever_registered_at_clinic_value.filterOption ) && $v.form.ever_registered_at_clinic_value.$dirty  ? 'border: 1.5px solid red;' : ''"
               >
                 <option disabled selected>Select Option</option>
                 <option value="Yes">Yes</option>
@@ -515,10 +519,34 @@ export default {
             return !/Select Option/.test(received_arv_treatment_before);
           }
         },
-        date_last_taken_arv_day: {},
-        date_last_taken_arv_month: {},
-        date_last_taken_arv_year: {},
-        ever_registered_at_clinic_value: {},
+        date_last_taken_arv_day: {
+          required: requiredIf(() => this.recievedTreatment), 
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          dayRange(date_last_taken_arv_day) {
+            return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(date_last_taken_arv_day);
+          }
+        },
+        date_last_taken_arv_month: {
+          required: requiredIf(() => this.recievedTreatment), 
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          monthRange(date_last_taken_arv_month) {
+            return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(date_last_taken_arv_month);
+          }
+        },
+        date_last_taken_arv_year: {
+          required: requiredIf(() => this.recievedTreatment), 
+          maxLength: maxLength(4),
+          minLength: minLength(4),
+          between: between(1850, moment(this.DATE).format("YYYY"))
+        },
+        ever_registered_at_clinic_value: {
+          required: requiredIf(() => this.recievedTreatment),
+          filterOption(ever_registered_at_clinic_value) {
+            return !/Select Option/.test(ever_registered_at_clinic_value);
+          }
+        },
         location_of_initiation: {},
         art_start_date_day: {},
         art_start_date_month: {},
