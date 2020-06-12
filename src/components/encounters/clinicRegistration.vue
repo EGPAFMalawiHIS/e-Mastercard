@@ -46,7 +46,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.visit_date_day.required || !$v.form.visit_date_day.minLength || !$v.form.visit_date_day.maxLength || !$v.form.visit_date_day.dayRange) && $v.form.visit_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.visit_date_day.required || !$v.form.visit_date_day.minLength || !$v.form.visit_date_day.maxLength || !$v.form.visit_date_day.dayRange || !$v.form.visit_date_day.checkDayMonth) && $v.form.visit_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -58,7 +58,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.visit_date_month.required || !$v.form.visit_date_month.minLength || !$v.form.visit_date_month.maxLength || !$v.form.visit_date_month.monthRange) && $v.form.visit_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.visit_date_month.required || !$v.form.visit_date_month.minLength || !$v.form.visit_date_month.maxLength || !$v.form.visit_date_month.monthRange || !$v.form.visit_date_month.checkMonthYear) && $v.form.visit_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -133,7 +133,7 @@
               maxlength="2"
               minlength="2"
               v-on:input="setRegistration"
-              v-bind:style="(!$v.form.date_last_taken_arv_day.required || !$v.form.date_last_taken_arv_day.minLength || !$v.form.date_last_taken_arv_day.maxLength || !$v.form.date_last_taken_arv_day.dayRange) && $v.form.date_last_taken_arv_day.$dirty  ? 'border: 1.5px solid red;' : ''"
+              v-bind:style="(!$v.form.date_last_taken_arv_day.required || !$v.form.date_last_taken_arv_day.minLength || !$v.form.date_last_taken_arv_day.maxLength || !$v.form.date_last_taken_arv_day.dayRange || !$v.form.date_last_taken_arv_day.checkDayMonth) && $v.form.date_last_taken_arv_day.$dirty  ? 'border: 1.5px solid red;' : ''"
             />
           </div>
           <div class="col-md-4">
@@ -145,7 +145,7 @@
               maxlength="2"
               minlength="2"
               v-on:input="setRegistration"
-              v-bind:style="(!$v.form.date_last_taken_arv_month.required || !$v.form.date_last_taken_arv_month.minLength || !$v.form.date_last_taken_arv_month.maxLength || !$v.form.date_last_taken_arv_month.monthRange) && $v.form.date_last_taken_arv_month.$dirty  ? 'border: 1.5px solid red;' : ''"
+              v-bind:style="(!$v.form.date_last_taken_arv_month.required || !$v.form.date_last_taken_arv_month.minLength || !$v.form.date_last_taken_arv_month.maxLength || !$v.form.date_last_taken_arv_month.monthRange || !$v.form.date_last_taken_arv_month.checkMonthYear) && $v.form.date_last_taken_arv_month.$dirty  ? 'border: 1.5px solid red;' : ''"
             />
           </div>
           <div class="col-md-4">
@@ -239,7 +239,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.art_start_date_day.required || !$v.form.art_start_date_day.minLength || !$v.form.art_start_date_day.maxLength || !$v.form.art_start_date_day.dayRange ) && $v.form.art_start_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.art_start_date_day.required || !$v.form.art_start_date_day.minLength || !$v.form.art_start_date_day.maxLength || !$v.form.art_start_date_day.dayRange || !$v.form.art_start_date_day.checkDayMonth ) && $v.form.art_start_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -251,7 +251,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.art_start_date_month.required || !$v.form.art_start_date_month.minLength || !$v.form.art_start_date_month.maxLength || !$v.form.art_start_date_month.monthRange ) && $v.form.art_start_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.art_start_date_month.required || !$v.form.art_start_date_month.minLength || !$v.form.art_start_date_month.maxLength || !$v.form.art_start_date_month.monthRange || !$v.form.art_start_date_month.checkMonthYear ) && $v.form.art_start_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -424,7 +424,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.hiv_test_date_day.required || !$v.form.hiv_test_date_day.minLength || !$v.form.hiv_test_date_day.maxLength || !$v.form.hiv_test_date_day.dayRange) && $v.form.hiv_test_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.hiv_test_date_day.required || !$v.form.hiv_test_date_day.minLength || !$v.form.hiv_test_date_day.maxLength || !$v.form.hiv_test_date_day.dayRange || !$v.form.hiv_test_date_day.checkDayMonth) && $v.form.hiv_test_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -436,7 +436,7 @@
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.hiv_test_date_month.required || !$v.form.hiv_test_date_month.minLength || !$v.form.hiv_test_date_month.maxLength || !$v.form.hiv_test_date_month.monthRange) && $v.form.hiv_test_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.hiv_test_date_month.required || !$v.form.hiv_test_date_month.minLength || !$v.form.hiv_test_date_month.maxLength || !$v.form.hiv_test_date_month.monthRange || !$v.form.hiv_test_date_month.checkMonthYear) && $v.form.hiv_test_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
@@ -501,6 +501,9 @@ export default {
           minLength: minLength(2),
           dayRange(visit_date_day) {
             return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(visit_date_day);
+          },
+          checkDayMonth(visit_date_day){
+            return !(this.form.visit_date_year == moment(new Date()).format("YYYY") && this.form.visit_date_month == moment(new Date()).format("MM") && visit_date_day > moment(new Date()).format("DD"))
           }
         },
         visit_date_month: {
@@ -509,6 +512,9 @@ export default {
           minLength: minLength(2),
           monthRange(visit_date_month) {
             return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(visit_date_month);
+          },
+          checkMonthYear(visit_date_month){
+            return !(this.form.visit_date_year == moment(new Date()).format("YYYY") && visit_date_month > moment(new Date()).format("MM"))
           }
         },
         visit_date_year: {
@@ -536,6 +542,9 @@ export default {
           minLength: minLength(2),
           dayRange(date_last_taken_arv_day) {
             return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(date_last_taken_arv_day);
+          },
+          checkDayMonth(date_last_taken_arv_day){
+            return !(this.form.date_last_taken_arv_year == moment(new Date()).format("YYYY") && this.form.date_last_taken_arv_month == moment(new Date()).format("MM") && date_last_taken_arv_day > moment(new Date()).format("DD"))
           }
         },
         date_last_taken_arv_month: {
@@ -544,6 +553,9 @@ export default {
           minLength: minLength(2),
           monthRange(date_last_taken_arv_month) {
             return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(date_last_taken_arv_month);
+          },
+          checkMonthYear(date_last_taken_arv_month){
+            return !(this.form.date_last_taken_arv_year == moment(new Date()).format("YYYY") && date_last_taken_arv_month > moment(new Date()).format("MM"))
           }
         },
         date_last_taken_arv_year: {
@@ -570,6 +582,9 @@ export default {
           minLength: minLength(2),
           dayRange(art_start_date_day) {
             return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(art_start_date_day);
+          },
+          checkDayMonth(art_start_date_day){
+            return !(this.form.art_start_date_year == moment(new Date()).format("YYYY") && this.form.art_start_date_month == moment(new Date()).format("MM") && art_start_date_day > moment(new Date()).format("DD"))
           }
         },
         art_start_date_month: {
@@ -578,6 +593,9 @@ export default {
           minLength: minLength(2),
           monthRange(art_start_date_month) {
             return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(art_start_date_month);
+          },
+          checkMonthYear(art_start_date_month){
+            return !(this.form.art_start_date_year == moment(new Date()).format("YYYY") && art_start_date_month > moment(new Date()).format("MM"))
           }
         },
         art_start_date_year: {
@@ -616,6 +634,9 @@ export default {
           minLength: minLength(2),
           dayRange(hiv_test_date_day) {
             return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(hiv_test_date_day);
+          },
+          checkDayMonth(hiv_test_date_day){
+            return !(this.form.hiv_test_date_year == moment(new Date()).format("YYYY") && this.form.hiv_test_date_month == moment(new Date()).format("MM") && hiv_test_date_day > moment(new Date()).format("DD"))
           }
         },
         hiv_test_date_month: {
@@ -624,6 +645,9 @@ export default {
           minLength: minLength(2),
           monthRange(hiv_test_date_month) {
             return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(hiv_test_date_month);
+          },
+          checkMonthYear(hiv_test_date_month){
+            return !(this.form.hiv_test_date_year == moment(new Date()).format("YYYY") && hiv_test_date_month > moment(new Date()).format("MM"))
           }
         },
         hiv_test_date_year: {
