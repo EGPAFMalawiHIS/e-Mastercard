@@ -77,7 +77,7 @@
                       id="patient-date-of-birth-day"
                       name="patient-date-of-birth-day"
                       placeholder="DD"
-                      v-bind:style="(!$v.form.date_of_birth_day.required || !$v.form.date_of_birth_day.maxLength || !$v.form.date_of_birth_day.minLength || !$v.form.date_of_birth_day.dayRange) && $v.form.date_of_birth_day.$dirty ? 'border: 1.5px solid red;' : ''"
+                      v-bind:style="(!$v.form.date_of_birth_day.required || !$v.form.date_of_birth_day.maxLength || !$v.form.date_of_birth_day.minLength || !$v.form.date_of_birth_day.dayRange || !$v.form.date_of_birth_day.checkDayMonth) && $v.form.date_of_birth_day.$dirty ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
 
@@ -89,7 +89,7 @@
                       id="patient-date-of-birth-month"
                       name="patient-date-of-birth-month"
                       placeholder="MM"
-                      v-bind:style="(!$v.form.date_of_birth_month.required || !$v.form.date_of_birth_month.maxLength || !$v.form.date_of_birth_month.minLength || !$v.form.date_of_birth_month.monthRange) && $v.form.date_of_birth_month.$dirty ? 'border: 1.5px solid red;' : ''"
+                      v-bind:style="(!$v.form.date_of_birth_month.required || !$v.form.date_of_birth_month.maxLength || !$v.form.date_of_birth_month.minLength || !$v.form.date_of_birth_month.monthRange || !$v.form.date_of_birth_month.checkMonthYear) && $v.form.date_of_birth_month.$dirty ? 'border: 1.5px solid red;' : ''"
                     />
                   </div>
 
@@ -477,6 +477,9 @@ export default {
           minLength: minLength(2),
           dayRange(date_of_birth_day) {
             return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(date_of_birth_day);
+          },
+          checkDayMonth(date_of_birth_day){
+            return !(this.form.date_of_birth_year == moment(this.DATE).format("YYYY") && this.form.date_of_birth_month == moment(this.DATE).format("MM") && date_of_birth_day > moment(this.DATE).format("DD"))
           }
         },
         date_of_birth_month: {
@@ -485,6 +488,9 @@ export default {
           minLength: minLength(2),
           monthRange(date_of_birth_month) {
             return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(date_of_birth_month);
+          },
+          checkMonthYear(date_of_birth_month){
+            return !(this.form.date_of_birth_year == moment(this.DATE).format("YYYY") && date_of_birth_month > moment(this.DATE).format("MM"))
           }
         },
         date_of_birth_year: {
