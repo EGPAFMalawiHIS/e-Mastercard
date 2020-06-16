@@ -782,6 +782,8 @@ export default {
 
               if (this.registerGuardian) {
                 this.submitGuardianCreate(data.patient_id);
+              }else{
+                this.redirect(`/registration/${data.patient_id}/true`);
               }
             });
           }
