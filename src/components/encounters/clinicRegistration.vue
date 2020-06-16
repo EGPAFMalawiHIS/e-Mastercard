@@ -719,6 +719,10 @@ export default {
           value: 1118
         }
       ],
+      PATIENT_TYPES: {
+        "New patient": 7572,
+        "External consultation": 9684
+      },
       clinicRegistration: {
         encounter_id: 9,
         encounter_datetime: null,
@@ -810,6 +814,18 @@ export default {
           }
         }
       },
+
+      registrationEncounter: {
+        encounter_id: 5,
+        encounter_datetime: null,
+        obs: {
+          patient_type: {
+            concept_id: 3289,
+            value_coded: 7572
+          }
+        }
+      },
+
       locations: []
     };
   },
@@ -1008,9 +1024,9 @@ export default {
     },
     buildForRegistrationGlobalState() {
 
-      if (!this.registered) {
-        this.clinicRegistration.encounter_datetime = this.visitDate;
-      }
+      this.registrationEncounter.encounter_datetime = this.visitDate;
+      this.clinicRegistration.encounter_datetime = this.visitDate;
+
 
       if (
         this.form.date_last_taken_arv_year != null &&
@@ -1032,9 +1048,8 @@ export default {
         this.clinicRegistration.obs.dateARTStarted.value_datetime = date;
       }
 
-      if (this.registered) {
-        this.clinicRegistration.encounter_datetime = this.visitDate;
-      }
+      this.clinicRegistration.encounter_datetime = this.visitDate;
+
 
       if (this.form.arv_number != null) {
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
@@ -1069,31 +1084,16 @@ export default {
         this.clinicRegistration.obs.initialTbStatus.value_coded = this.form.initial_tb_status;
       }
 
-      if (
-        this.form.art_start_date_year != null &&
-        this.form.art_start_date_month != null &&
-        this.form.art_start_date_day != null
-      ) {
-        const dateInput = `${this.form.art_start_date_year}-${this.form.art_start_date_month}-${this.form.art_start_date_day}`;
-        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
-        this.vitalsEncounter.encounter_datetime = date;
-      }
-
       if (this.registered) {
-        const dateInput = `${this.form.art_start_date_year}-${this.form.art_start_date_month}-${this.form.art_start_date_day}`;
-        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
-        this.vitalsEncounter.encounter_datetime = date;
-      } else {
         this.vitalsEncounter.encounter_datetime = this.visitDate;
-      }
+      } 
     },
 
     buildObservations() {
       // YEAR LAST TAKEN
 
-      if (!this.registered) {
-        this.clinicRegistration.encounter_datetime = this.visitDate;
-      }
+      this.registrationEncounter.encounter_datetime = this.visitDate;
+      this.clinicRegistration.encounter_datetime = this.visitDate;
 
       // optional
       if (this.recievedTreatment) {
@@ -1151,13 +1151,8 @@ export default {
       }
 
       if (this.registered) {
-        const dateInput = `${this.form.art_start_date_year}-${this.form.art_start_date_month}-${this.form.art_start_date_day}`;
-        const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
-        this.vitalsEncounter.encounter_datetime = date;
-      } else {
-        const todaysDate = moment(new Date()).format("YYYY-MM-DD");
-        this.vitalsEncounter.encounter_datetime = todaysDate;
-      }
+        this.vitalsEncounter.encounter_datetime = this.visitDate;
+      } 
     },
 
     setRegistration() {
@@ -1220,6 +1215,11 @@ export default {
       this.ifPatientIsNotInHIVProgram(this.enrollPatientIntoHIVProgram);
 
       this.buildObservations();
+
+      this.$emit("addEncounter", {
+        registrationEncounter: this.registrationEncounter
+      });
+
       this.$emit("addEncounter", {
         clinicRegistration: this.clinicRegistration
       });

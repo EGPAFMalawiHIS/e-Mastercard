@@ -779,8 +779,12 @@ export default {
         .then(response => {
           if (response.status === 201) {
             return response.json().then(data => {
-              this.createRegistrationEncounter(data.patient_id);
-              console.log(data);
+
+              if (this.registerGuardian) {
+                this.submitGuardianCreate(data.patient_id);
+              }else{
+                this.redirect(`/registration/${data.patient_id}/true`);
+              }
             });
           }
         })
@@ -946,81 +950,9 @@ export default {
         });
     },
 
-    buildRegistrationEncounter(patientId = "") {
-      return {
-        encounter_type_id: 5,
-        patient_id: patientId,
-        program_id: 1,
-        encounter_datetime: this.Date
-      };
-    },
 
-    createRegistrationEncounter(patientId = "") {
-      fetch(`${this.config.api_base_url}/encounters`, {
-        method: "POST",
-        headers: {
-          Authorization: this.config.token,
-          "Content-type": "application/json"
-        },
-        body: JSON.stringify(this.buildRegistrationEncounter(patientId))
-      })
-        .then(response => {
-          if (response.status === 201) {
-            return response.json().then(data => {
-              console.log(data);
-              const ob = {
-                encounter_id: data.encounter_id,
-                answer: this.PATIENT_TYPES["New patient"]
-              };
-              console.log(this.buildPatientTypeObs(ob));
-              if (this.registerGuardian) {
-                this.submitGuardianCreate(patientId);
-              }
-              this.createPatientTypeObs(
-                this.buildPatientTypeObs(ob),
-                patientId
-              );
-            });
-          }
-        })
-        .catch(err => {
-          console.log("Something went wrong!", err);
-        });
-    },
 
-    buildPatientTypeObs(params = {}) {
-      return {
-        encounter_id: params.encounter_id,
-        observations: [
-          {
-            concept_id: 3289,
-            value_coded: params.answer
-          }
-        ]
-      };
-    },
 
-    createPatientTypeObs(params = {}, patientId) {
-      fetch(`${this.config.api_base_url}/observations`, {
-        method: "POST",
-        headers: {
-          Authorization: this.config.token,
-          "Content-type": "application/json"
-        },
-        body: JSON.stringify(params)
-      })
-        .then(response => {
-          if (response.status === 201) {
-            return response.json().then(data => {
-              this.redirect(`/registration/${patientId}/true`);
-              console.log(data);
-            });
-          }
-        })
-        .catch(err => {
-          console.log("Something went wrong!", err);
-        });
-    },
 
     greyOut() {
       if (this.estimageAge == false) {
