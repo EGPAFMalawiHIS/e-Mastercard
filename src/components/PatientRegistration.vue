@@ -212,13 +212,33 @@
               </div>
               <div class="form-group col-md-6 input-column" style="height: 70px">
                 <label style="font-weight: bold">Closest Land Mark or Plot Number (*)</label>
+                <span
+                  style="font-size: 14px; margin-left: 15px; margin-top: 10px; font-style: italic; font-weight: bold; color: rgba(67, 149, 204, 1)"
+                >Landmark not listed?</span>
+                <input
+                  @click="landmarkOtherUncheck($event)"
+                  type="checkbox"
+                  class="form-check-input"
+                  id="exampleCheck1"
+                  style="margin-left:6px; margin-top:7px"
+                />
                 <v-select
+                  v-if="!landmarkUnknown"
                   id="patient-landmark"
                   name="patient-landmark"
                   :options="LANDMARKS"
                   v-model="$v.form.land_mark.$model"
                   v-bind:style="(!$v.form.land_mark.required || !$v.form.land_mark.filterOption ) && $v.form.land_mark.$dirty ? 'border: 1.5px solid red;' : ''"
                 ></v-select>
+                <input
+                  v-if="landmarkUnknown"
+                  type="text"
+                  class="form-control"
+                  id="exampleCheck1"
+                  placeholder="Enter Landmark"
+                  v-model="$v.form.land_mark.$model"
+                  v-bind:style="(!$v.form.land_mark.required || !$v.form.land_mark.filterOption ) && $v.form.land_mark.$dirty ? 'border: 1.5px solid red;' : ''"
+                />
               </div>
             </div>
 
@@ -354,7 +374,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Physical Address</th>
-                      <td>{{`${!locationOther ? form.home_village.code : form.other_location_name} near ${form.land_mark.code}`}}</td>
+                      <td>{{`${!locationOther ? form.home_village.code : form.other_location_name} near ${ landmarkUnknown ? form.land_mark : form.land_mark.code }`}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Guardian Name</th>
@@ -624,6 +644,7 @@ export default {
       homeVillageSelection: true,
       disabledPhoneNumber: false,
       disabledGuardianPhoneNumber: false,
+      landmarkUnknown: false,
       PATIENT_TYPES: {
         "New patient": 7572,
         "External consultation": 9684
@@ -1044,6 +1065,8 @@ export default {
 
       const dob = moment(new Date(dobInput)).format("YYYY-MM-DD");
 
+      const LANDMARK = this.landmarkUnknown ? this.form.land_mark : this.form.land_mark.code
+
       this.person = {
         given_name: this.form.first_name,
         middle_name: this.form.middle_name || "",
@@ -1059,7 +1082,7 @@ export default {
         current_district: !this.locationOther ? this.homeDistrict : "N/A",
         current_traditional_authority: !this.locationOther ? this.homeTA : "N/A",
         current_village: !this.locationOther ? this.form.home_village.code : this.form.other_location_name, //CONFIRM IF THIS IS WORKING
-        landmark: `${!this.locationOther ? this.form.home_village.code : this.form.other_location_name} near ${this.form.land_mark.code}`,
+        landmark: `${!this.locationOther ? this.form.home_village.code : this.form.other_location_name} near ${LANDMARK}`,
         cell_phone_number: this.form.phone_number,
         occupation: null,
         relationship: this.registerGuardian ? "Yes" : "No",
@@ -1190,6 +1213,16 @@ export default {
       } else if (this.locationOther == true) {
         this.homeVillageSelection = true;
         this.locationOther = false;
+      }
+    },
+
+    landmarkOtherUncheck() {
+      if (this.landmarkUnknown == false) {
+        this.form.land_mark = "";
+        this.landmarkUnknown = true;
+      } else if (this.landmarkUnknown == true) {
+        this.form.land_mark = "Select Landmark";
+        this.landmarkUnknown = false;
       }
     },
 
