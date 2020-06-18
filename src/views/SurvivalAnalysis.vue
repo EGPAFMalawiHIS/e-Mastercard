@@ -18,7 +18,7 @@
                 <option>Select sub group</option>
                 <option value="General">General</option>
                 <option value="Children">Children</option>
-                <option value="Option B+">Option B+</option>
+                <option value="Women">Option B+</option>
             </select>
         </div>
         <report-overlay :reportLoading="reportLoading" :reportSelected="reportSelected">
