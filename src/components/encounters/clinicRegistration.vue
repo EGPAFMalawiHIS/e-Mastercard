@@ -1217,7 +1217,7 @@ export default {
       this.encounters.push(val);
     },
     saveEncounter() {
-      this.ifPatientIsNotInHIVProgram(this.enrollPatientIntoHIVProgram);
+      this.enrollPatientIntoHIVProgram();
 
       this.buildObservations();
       this.$emit("addEncounter", {
@@ -1239,32 +1239,46 @@ export default {
       
       return `${year}-${month}-${day}`;
     },
-    async ifPatientIsNotInHIVProgram(success, fail = () => null) {
-      const response = await ApiClient.get(`patients/${this.patientId}/programs`);
-      const programs = await response.json();
+    async ifPatientInHIVProgram({then, otherwise}) {
+      function safelyCall(func, ...args) {
+        if (!func) return;
 
-      if (programs.findIndex(program => program.program_id === 1) < 0) {
-        success();
+        return func(args);
+      }
+
+      const response = await ApiClient.get(`patients/${this.patientId}/programs/1`);
+      
+      if (response.ok) {
+        return safelyCall(then, await response.json());
+      } else if (response.status === 404) {
+        return safelyCall(otherwise);
       } else {
-        fail();
+        const error = await response.text();
+        throw new Error(`Failed to check if patient in HIV program: ${response.status} - ${error}`);
       }
     },
     async enrollPatientIntoHIVProgram() {
-      const response = await ApiClient.post(`patients/${this.patientId}/programs`, {
+      console.log('Enrolling patient into HIV program...')
+
+      const createPatientHIVProgram = () => ApiClient.post(`patients/${this.patientId}/programs`, {
         program_id: 1,
         date_enrolled: this.visitDate
       });
 
+      const updatePatientHIVProgram = (_program) => ApiClient.put(`patients/${this.patientId}/programs/1`, {
+        date_enrolled: this.visitDate
+      });
+
+      const response = await this.ifPatientInHIVProgram({then: updatePatientHIVProgram, otherwise: createPatientHIVProgram});
+
       if (!response.ok) {
         const {errors} = await response.json();
-        this.$bvToast.toast(`Failed to enroll patient in HIV Program: ${errors.join('; ')}`, {
-          variant: 'warning'
-        });
+        this.$bvToast.toast(`Failed to enroll patient in HIV Program: ${errors.join('; ')}`, {variant: 'warning'});
 
-        return null;
+        return;
       }
-
-      return await response.json();
+      
+      return response.json();
     },
     getPrefix: async function() {
       this.sitePrefix = await GlobalProperties.getSitePrefix();
@@ -1273,6 +1287,8 @@ export default {
     },
     //find site prefix
     saveARVNumber: async function() {
+      if (!this.form.arvNumber) return;
+      
       let finalNum = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
       let identifier_data = {
         identifier: finalNum,
