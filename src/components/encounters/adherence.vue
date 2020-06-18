@@ -98,8 +98,11 @@ methods: {
   });
 },
 watch: { 
-      	date: function(newVal, oldVal) { // watch it
+      	date: function(newVal, oldVal) { 
           this.getLastOrder(newVal);
+        },
+        pillCount: function(newVal, oldVal) { 
+          EventBus.$emit('drugs-remaining', parseInt(newVal) || 0);
         }
       },
   computed: {
