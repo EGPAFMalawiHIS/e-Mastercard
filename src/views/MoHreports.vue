@@ -50,14 +50,7 @@
               </div>
             </div>
           
-            <div class="col-sm">
-              <div class="btn-container" @click="redirect('/ipt_coverage')">
-                <div class="card">
-                  <img src="../assets/report-icons/ipt-coverage.png" class="btn-icon"/>
-                  <p>IPT (coverage)</p>
-                </div>
-              </div>
-            </div>
+            
 
             <div class="col-sm">
               <div class="btn-container" @click="redirect('/moh_disaggregated_regimen')">
@@ -76,7 +69,14 @@
                 </div>
               </div>
             </div>           
-
+            <div class="col-sm">
+              <!-- <div class="btn-container" @click="redirect('/ipt_coverage')">
+                <div class="card">
+                  <img src="../assets/report-icons/ipt-coverage.png" class="btn-icon"/>
+                  <p>IPT (coverage)</p>
+                </div>
+              </div> -->
+            </div>
             <div class="col-sm">
               <!--div class="btn-container" @click="redirect">
                 <div class="card">
