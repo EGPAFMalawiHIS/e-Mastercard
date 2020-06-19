@@ -17,6 +17,7 @@
 
 <script>
 import ApiClient from "../../services/api_client";
+import GlobalProperties from "@/services/global_properties";
 export default {
   components: {
   },
@@ -44,7 +45,14 @@ export default {
       } else {
         console.log("Failed to update");
       }
+    },
+    getSitePrefix: async function() {
+      const sitePrefix = await GlobalProperties.getSitePrefix();
+      this.sitePrefix = sitePrefix;
     }
+  },
+  mounted() {
+    this.getSitePrefix();
   }
 };
 </script>

@@ -21,7 +21,8 @@ data: function() {
         value_datetime: null,
         concept_id: 5096
       },
-      earliestExpiry: null,
+      prescribed_drugs: 0,
+      remaining_drugs: 0,
     }
 },
 methods: {
@@ -39,9 +40,20 @@ methods: {
 },
     mounted() {
     EventBus.$on('earliest-expiry-date', payload => {
-      this.earliestExpiry = moment(this.date).add(payload, 'days').format("YYYY-MM-DD");
+      this.prescribed_drugs = payload;
     });
+    EventBus.$on('drugs-remaining', payload => {
+      this.remaining_drugs = payload;
+    });
+  },
+  
+  computed: {
+    earliestExpiry() {
+      let earliestExpiry = moment(this.date).add((this.prescribed_drugs + this.remaining_drugs), 'days').format("YYYY-MM-DD");
+      return earliestExpiry;
+    }
   }
+
 }
 </script>
 

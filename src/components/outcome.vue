@@ -26,7 +26,7 @@
     <div class="col" v-if="state.name === 'Patient transferred out'">
 
     <div class="form-group" >
-      <v-select :options="locations" @search="getlocations" @input="getVal" placeholder="test location"></v-select>
+      <v-select :options="locations" @search="getlocations" @input="getVal" placeholder="Transfer Location"></v-select>
     </div>
     </div>
     <div class="col" >

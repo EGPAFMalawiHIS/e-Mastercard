@@ -549,6 +549,7 @@ export default {
           if (conceptSet.returnValue) {
             context[conceptSet.variableName] = conceptSet.returnValue;
           } else if (conceptSet.subConcepts) {
+            context.stagingConditions = [];
             res.forEach(ret => {
               context.stagingConditions.push(conditions[ret.value_coded]);
             });
