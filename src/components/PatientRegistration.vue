@@ -950,10 +950,6 @@ export default {
         });
     },
 
-
-
-
-
     greyOut() {
       if (this.estimageAge == false) {
         this.requireDateOfBirth = false;
