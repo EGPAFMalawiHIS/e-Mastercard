@@ -4,8 +4,11 @@
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
-            <label style="float: left; font-weight: bold;">ARV Number (*) </label>
-            <label v-if="!arvNumberAvailable" style="font-weight: bold; color: red"> ARV number already in use</label>
+            <label style="float: left; font-weight: bold;">ARV Number (*)</label>
+            <label
+              v-if="!arvNumberAvailable"
+              style="font-weight: bold; color: red"
+            >ARV number already in use</label>
           </div>
         </div>
         <div class="form-group" style="font-weight: bold; color: rgba(300, 149, 100, 1);">
@@ -19,7 +22,7 @@
               name
               placeholder="Enter ARV Number"
               v-model="$v.form.arv_number.$model"
-              :disabled="arvNumberUnkown"
+              :disabled="arvNumberUnkown || !isNotEditVoid()"
               v-on:input="validateArvNumberAvailability"
               style="display: inline"
               v-bind:style="(!$v.form.arv_number.required || !$v.form.arv_number.numberTaken) && $v.form.arv_number.$dirty  ? 'border: 1.5px solid red;' : ''"
@@ -27,7 +30,7 @@
           </div>
         </div>
       </div>
- 
+
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
@@ -85,15 +88,16 @@
           <span style="font-weight: bold;">Agrees to follow up? (*)</span>
         </div>
         <div class="form-group">
-          <select name="stage" class="form-control" 
+          <select
+            name="stage"
+            class="form-control"
             v-model="$v.form.should_follow_up.$model"
             @change="followUp"
             v-bind:style="(!$v.form.should_follow_up.required || !$v.form.should_follow_up.filterOption) && $v.form.should_follow_up.$dirty  ? 'border: 1.5px solid red;' : ''"
-            >
+          >
             <option disabled selected>Select Option</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
-            
           </select>
         </div>
       </div>
@@ -319,7 +323,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
@@ -490,9 +494,9 @@ export default {
     return {
       form: {
         arv_number: {
-          required,
-          numberTaken(arv_number){
-            return this.arvNumberAvailable == true
+          required: requiredIf(() => this.isNotEditVoid()),
+          numberTaken(arv_number) {
+            return this.arvNumberAvailable == true;
           }
         },
         visit_date_day: {
@@ -502,8 +506,12 @@ export default {
           dayRange(visit_date_day) {
             return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(visit_date_day);
           },
-          checkDayMonth(visit_date_day){
-            return !(this.form.visit_date_year == moment(new Date()).format("YYYY") && this.form.visit_date_month == moment(new Date()).format("MM") && visit_date_day > moment(new Date()).format("DD"))
+          checkDayMonth(visit_date_day) {
+            return !(
+              this.form.visit_date_year == moment(new Date()).format("YYYY") &&
+              this.form.visit_date_month == moment(new Date()).format("MM") &&
+              visit_date_day > moment(new Date()).format("DD")
+            );
           }
         },
         visit_date_month: {
@@ -513,8 +521,11 @@ export default {
           monthRange(visit_date_month) {
             return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(visit_date_month);
           },
-          checkMonthYear(visit_date_month){
-            return !(this.form.visit_date_year == moment(new Date()).format("YYYY") && visit_date_month > moment(new Date()).format("MM"))
+          checkMonthYear(visit_date_month) {
+            return !(
+              this.form.visit_date_year == moment(new Date()).format("YYYY") &&
+              visit_date_month > moment(new Date()).format("MM")
+            );
           }
         },
         visit_date_year: {
@@ -537,29 +548,43 @@ export default {
           }
         },
         date_last_taken_arv_day: {
-          required: requiredIf(() => this.recievedTreatment), 
+          required: requiredIf(() => this.recievedTreatment),
           maxLength: maxLength(2),
           minLength: minLength(2),
           dayRange(date_last_taken_arv_day) {
-            return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(date_last_taken_arv_day);
+            return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(
+              date_last_taken_arv_day
+            );
           },
-          checkDayMonth(date_last_taken_arv_day){
-            return !(this.form.date_last_taken_arv_year == moment(new Date()).format("YYYY") && this.form.date_last_taken_arv_month == moment(new Date()).format("MM") && date_last_taken_arv_day > moment(new Date()).format("DD"))
+          checkDayMonth(date_last_taken_arv_day) {
+            return !(
+              this.form.date_last_taken_arv_year ==
+                moment(new Date()).format("YYYY") &&
+              this.form.date_last_taken_arv_month ==
+                moment(new Date()).format("MM") &&
+              date_last_taken_arv_day > moment(new Date()).format("DD")
+            );
           }
         },
         date_last_taken_arv_month: {
-          required: requiredIf(() => this.recievedTreatment), 
+          required: requiredIf(() => this.recievedTreatment),
           maxLength: maxLength(2),
           minLength: minLength(2),
           monthRange(date_last_taken_arv_month) {
-            return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(date_last_taken_arv_month);
+            return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(
+              date_last_taken_arv_month
+            );
           },
-          checkMonthYear(date_last_taken_arv_month){
-            return !(this.form.date_last_taken_arv_year == moment(new Date()).format("YYYY") && date_last_taken_arv_month > moment(new Date()).format("MM"))
+          checkMonthYear(date_last_taken_arv_month) {
+            return !(
+              this.form.date_last_taken_arv_year ==
+                moment(new Date()).format("YYYY") &&
+              date_last_taken_arv_month > moment(new Date()).format("MM")
+            );
           }
         },
         date_last_taken_arv_year: {
-          required: requiredIf(() => this.recievedTreatment), 
+          required: requiredIf(() => this.recievedTreatment),
           maxLength: maxLength(4),
           minLength: minLength(4),
           between: between(1850, moment(this.DATE).format("YYYY"))
@@ -571,50 +596,62 @@ export default {
           }
         },
         location_of_initiation: {
-          required: requiredIf(() => (this.recievedTreatment && this.registered)),
+          required: requiredIf(() => this.recievedTreatment && this.registered),
           filterOption(location_of_initiation) {
             return !/Select Option/.test(location_of_initiation);
           }
         },
         art_start_date_day: {
-          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
+          required: requiredIf(() => this.recievedTreatment && this.registered),
           maxLength: maxLength(2),
           minLength: minLength(2),
           dayRange(art_start_date_day) {
-            return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(art_start_date_day);
+            return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(
+              art_start_date_day
+            );
           },
-          checkDayMonth(art_start_date_day){
-            return !(this.form.art_start_date_year == moment(new Date()).format("YYYY") && this.form.art_start_date_month == moment(new Date()).format("MM") && art_start_date_day > moment(new Date()).format("DD"))
+          checkDayMonth(art_start_date_day) {
+            return !(
+              this.form.art_start_date_year ==
+                moment(new Date()).format("YYYY") &&
+              this.form.art_start_date_month ==
+                moment(new Date()).format("MM") &&
+              art_start_date_day > moment(new Date()).format("DD")
+            );
           }
         },
         art_start_date_month: {
-          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
+          required: requiredIf(() => this.recievedTreatment && this.registered),
           maxLength: maxLength(2),
           minLength: minLength(2),
           monthRange(art_start_date_month) {
             return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(art_start_date_month);
           },
-          checkMonthYear(art_start_date_month){
-            return !(this.form.art_start_date_year == moment(new Date()).format("YYYY") && art_start_date_month > moment(new Date()).format("MM"))
+          checkMonthYear(art_start_date_month) {
+            return !(
+              this.form.art_start_date_year ==
+                moment(new Date()).format("YYYY") &&
+              art_start_date_month > moment(new Date()).format("MM")
+            );
           }
         },
         art_start_date_year: {
-          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
+          required: requiredIf(() => this.recievedTreatment && this.registered),
           maxLength: maxLength(4),
           minLength: minLength(4),
           between: between(1850, moment(this.DATE).format("YYYY"))
         },
         initial_weight: {
-          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
+          required: requiredIf(() => this.recievedTreatment && this.registered)
         },
         initial_height: {
-          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
+          required: requiredIf(() => this.recievedTreatment && this.registered)
         },
         initial_tb_status: {
-          required: requiredIf(() => (this.recievedTreatment && this.registered)),
+          required: requiredIf(() => this.recievedTreatment && this.registered),
           filterOption(confirmatory) {
             return !/Select Option/.test(confirmatory);
-          } 
+          }
         },
         confirmatory: {
           required,
@@ -623,35 +660,57 @@ export default {
           }
         },
         location_of_confirmatory: {
-          required: requiredIf(() => (this.form.confirmatory == 1040 || this.form.confirmatory == 844)),
+          required: requiredIf(
+            () =>
+              this.form.confirmatory == 1040 || this.form.confirmatory == 844
+          ),
           filterOption(location_of_confirmatory) {
             return !/Select Option/.test(location_of_confirmatory);
           }
         },
         hiv_test_date_day: {
-          required: requiredIf(() => (this.form.confirmatory == 1040 || this.form.confirmatory == 844)),
+          required: requiredIf(
+            () =>
+              this.form.confirmatory == 1040 || this.form.confirmatory == 844
+          ),
           maxLength: maxLength(2),
           minLength: minLength(2),
           dayRange(hiv_test_date_day) {
             return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(hiv_test_date_day);
           },
-          checkDayMonth(hiv_test_date_day){
-            return !(this.form.hiv_test_date_year == moment(new Date()).format("YYYY") && this.form.hiv_test_date_month == moment(new Date()).format("MM") && hiv_test_date_day > moment(new Date()).format("DD"))
+          checkDayMonth(hiv_test_date_day) {
+            return !(
+              this.form.hiv_test_date_year ==
+                moment(new Date()).format("YYYY") &&
+              this.form.hiv_test_date_month ==
+                moment(new Date()).format("MM") &&
+              hiv_test_date_day > moment(new Date()).format("DD")
+            );
           }
         },
         hiv_test_date_month: {
-          required: requiredIf(() => (this.form.confirmatory == 1040 || this.form.confirmatory == 844)),
+          required: requiredIf(
+            () =>
+              this.form.confirmatory == 1040 || this.form.confirmatory == 844
+          ),
           maxLength: maxLength(2),
           minLength: minLength(2),
           monthRange(hiv_test_date_month) {
             return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(hiv_test_date_month);
           },
-          checkMonthYear(hiv_test_date_month){
-            return !(this.form.hiv_test_date_year == moment(new Date()).format("YYYY") && hiv_test_date_month > moment(new Date()).format("MM"))
+          checkMonthYear(hiv_test_date_month) {
+            return !(
+              this.form.hiv_test_date_year ==
+                moment(new Date()).format("YYYY") &&
+              hiv_test_date_month > moment(new Date()).format("MM")
+            );
           }
         },
         hiv_test_date_year: {
-          required: requiredIf(() => (this.form.confirmatory == 1040 || this.form.confirmatory == 844)),
+          required: requiredIf(
+            () =>
+              this.form.confirmatory == 1040 || this.form.confirmatory == 844
+          ),
           maxLength: maxLength(4),
           minLength: minLength(4),
           between: between(1850, moment(this.DATE).format("YYYY"))
@@ -685,7 +744,6 @@ export default {
         hiv_test_date_day: "",
         hiv_test_date_month: "",
         hiv_test_date_year: ""
-
       },
       recievedTreatment: false,
       agreesToFollowUp: false,
@@ -831,31 +889,47 @@ export default {
   },
   computed: {
     visitDate() {
-      return this.makeISODateString(this.form.visit_date_year, this.form.visit_date_month, this.form.visit_date_day);
+      return this.makeISODateString(
+        this.form.visit_date_year,
+        this.form.visit_date_month,
+        this.form.visit_date_day
+      );
     }
   },
   methods: {
-
     validateForm() {
       this.$v.$touch();
       return !this.$v.$invalid; //send this as a global state to the Registration component
     },
 
-    validateArvNumberAvailability: async function() {
+    isNotEditVoid() {
+      return !(
+        this.$route.params.new == false || this.$route.params.new == "false"
+      );
+    },
 
+    setArvNumber() {
+      if (!this.isNotEditVoid()) {
+        this.form.arv_number = this.$store.state.patient.arvNumber.replace("KGON-ARV-", "")
+      }
+    },
+
+    validateArvNumberAvailability: async function() {
       const NUMBER = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
-      await ApiClient.get(`/search/patients/by_identifier?type_id=4&identifier=${NUMBER}`).then(res => {
+      await ApiClient.get(
+        `/search/patients/by_identifier?type_id=4&identifier=${NUMBER}`
+      ).then(res => {
         res.json().then(data => {
-          if(data.length > 0){
-            this.arvNumberAvailable = false
-          }else{
-            this.arvNumberAvailable = true
+          if (data.length > 0) {
+            this.arvNumberAvailable = false;
+          } else {
+            this.arvNumberAvailable = true;
           }
-          console.log(data)
-        })
+          console.log(data);
+        });
       });
 
-      this.setRegistration()
+      this.setRegistration();
     },
 
     initial() {
@@ -888,15 +962,15 @@ export default {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1066;
         this.registered = false;
         this.recievedTreatment = false;
-        this.form.ever_registered_at_clinic_value = "Select Regi"
-        this.form.initial_tb_status = "Select Status"
+        this.form.ever_registered_at_clinic_value = "Select Regi";
+        this.form.initial_tb_status = "Select Status";
         this.form.location_of_initiation = "Select Location";
         this.form.location_of_confirmatory = "Select Location";
       } else if (this.form.received_arv_treatment_before == "Yes") {
         this.clinicRegistration.obs.everReceivedART.value_coded = 1065;
         this.recievedTreatment = true;
-        this.form.ever_registered_at_clinic_value = "Select Option"
-        this.form.initial_tb_status = "Select Option"
+        this.form.ever_registered_at_clinic_value = "Select Option";
+        this.form.initial_tb_status = "Select Option";
         this.form.location_of_initiation = "Select Option";
         this.form.location_of_confirmatory = "Select Option";
       }
@@ -908,25 +982,25 @@ export default {
       if (this.form.ever_registered_at_clinic_value == "No") {
         this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1066;
         this.registered = false;
-        this.form.initial_tb_status = "Select Status"
+        this.form.initial_tb_status = "Select Status";
         this.form.location_of_initiation = "Select Location";
         this.form.location_of_confirmatory = "Select Location";
       } else if (this.form.ever_registered_at_clinic_value == "Yes") {
         this.clinicRegistration.obs.everRegisteredAtClinic.value_coded = 1065;
         this.registered = true;
-        this.form.initial_tb_status = "Select Option"
+        this.form.initial_tb_status = "Select Option";
         this.form.location_of_initiation = "Select Option";
         this.form.location_of_confirmatory = "Select Option";
       }
     },
 
-    setConfirmatory(){
-      this.setRegistration()
-      if(this.form.confirmatory == 1118){
+    setConfirmatory() {
+      this.setRegistration();
+      if (this.form.confirmatory == 1118) {
         this.form.location_of_confirmatory = "Select Location";
       }
 
-      if((this.form.confirmatory == 1040 || this.form.confirmatory == 844)){
+      if (this.form.confirmatory == 1040 || this.form.confirmatory == 844) {
         this.form.location_of_confirmatory = "Select Option";
       }
     },
@@ -1023,10 +1097,8 @@ export default {
       });
     },
     buildForRegistrationGlobalState() {
-
       this.registrationEncounter.encounter_datetime = this.visitDate;
       this.clinicRegistration.encounter_datetime = this.visitDate;
-
 
       if (
         this.form.date_last_taken_arv_year != null &&
@@ -1050,7 +1122,6 @@ export default {
 
       this.clinicRegistration.encounter_datetime = this.visitDate;
 
-
       if (this.form.arv_number != null) {
         this.clinicRegistration.obs.artNumberAtPreviousLocation.value_text = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
       }
@@ -1059,7 +1130,11 @@ export default {
         this.clinicRegistration.obs.confirmatoryTest.value_coded = this.form.confirmatory;
       }
 
-      if (this.form.hiv_test_date_year != null && this.form.hiv_test_date_month !=  null && this.form.hiv_test_date_day) {
+      if (
+        this.form.hiv_test_date_year != null &&
+        this.form.hiv_test_date_month != null &&
+        this.form.hiv_test_date_day
+      ) {
         const dateInput = `${this.form.hiv_test_date_year}-${this.form.hiv_test_date_month}-${this.form.hiv_test_date_day}`;
         const date = moment(new Date(dateInput)).format("YYYY-MM-DD");
 
@@ -1086,7 +1161,7 @@ export default {
 
       if (this.registered) {
         this.vitalsEncounter.encounter_datetime = this.visitDate;
-      } 
+      }
     },
 
     buildObservations() {
@@ -1138,12 +1213,17 @@ export default {
         delete this.clinicRegistration.obs.testLocation;
       }
 
-      this.saveARVNumber();
-
+      if(this.isNotEditVoid()){
+        alert("Saving ARV Number!!")
+        this.saveARVNumber()
+      }
     },
 
     buildVitalsObservations() {
-      if (this.form.initial_height != null && this.form.initial_weight != null) {
+      if (
+        this.form.initial_height != null &&
+        this.form.initial_weight != null
+      ) {
         this.vitalsEncounter.obs.height.value_numeric = this.form.initial_height;
         this.vitalsEncounter.obs.weight.value_numeric = this.form.initial_weight;
       } else {
@@ -1152,7 +1232,7 @@ export default {
 
       if (this.registered) {
         this.vitalsEncounter.encounter_datetime = this.visitDate;
-      } 
+      }
     },
 
     setRegistration() {
@@ -1224,7 +1304,11 @@ export default {
         clinicRegistration: this.clinicRegistration
       });
 
-      if (!this.initialVitalsUnknown && this.form.ever_registered_at_clinic_value == 'Yes' && this.form.received_arv_treatment_before == 'Yes') {
+      if (
+        !this.initialVitalsUnknown &&
+        this.form.ever_registered_at_clinic_value == "Yes" &&
+        this.form.received_arv_treatment_before == "Yes"
+      ) {
         this.buildVitalsObservations();
         console.log(this.vitalsEncounter);
         this.$emit("addEncounter", {
@@ -1233,14 +1317,16 @@ export default {
       }
     },
     makeISODateString(year, month, day) {
-      year = String(year).padStart(4, '0');
-      month = String(month).padStart(2, '0');
-      day = String(day).padStart(2, '0');
-      
+      year = String(year).padStart(4, "0");
+      month = String(month).padStart(2, "0");
+      day = String(day).padStart(2, "0");
+
       return `${year}-${month}-${day}`;
     },
     async ifPatientIsNotInHIVProgram(success, fail = () => null) {
-      const response = await ApiClient.get(`patients/${this.patientId}/programs`);
+      const response = await ApiClient.get(
+        `patients/${this.patientId}/programs`
+      );
       const programs = await response.json();
 
       if (programs.findIndex(program => program.program_id === 1) < 0) {
@@ -1250,16 +1336,22 @@ export default {
       }
     },
     async enrollPatientIntoHIVProgram() {
-      const response = await ApiClient.post(`patients/${this.patientId}/programs`, {
-        program_id: 1,
-        date_enrolled: this.visitDate
-      });
+      const response = await ApiClient.post(
+        `patients/${this.patientId}/programs`,
+        {
+          program_id: 1,
+          date_enrolled: this.visitDate
+        }
+      );
 
       if (!response.ok) {
-        const {errors} = await response.json();
-        this.$bvToast.toast(`Failed to enroll patient in HIV Program: ${errors.join('; ')}`, {
-          variant: 'warning'
-        });
+        const { errors } = await response.json();
+        this.$bvToast.toast(
+          `Failed to enroll patient in HIV Program: ${errors.join("; ")}`,
+          {
+            variant: "warning"
+          }
+        );
 
         return null;
       }
@@ -1293,11 +1385,12 @@ export default {
   created() {
     this.getPrefix();
     this.getlocations(sessionStorage.location_name);
-    EventBus.$on('validate-clinic-registration', data => {
+    EventBus.$on("validate-clinic-registration", data => {
       //Set State of validity here as global state
-      this.formIsValid = this.validateForm()
-      this.setRegistration()
+      this.formIsValid = this.validateForm();
+      this.setRegistration();
     });
+    this.setArvNumber();
   },
   mounted() {
     this.initial();
