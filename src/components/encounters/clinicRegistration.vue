@@ -605,10 +605,10 @@ export default {
           between: between(1850, moment(this.DATE).format("YYYY"))
         },
         initial_weight: {
-          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
+          required: requiredIf(() => (this.recievedTreatment && this.registered && !this.initialVitalsUnknown)), 
         },
         initial_height: {
-          required: requiredIf(() => (this.recievedTreatment && this.registered)), 
+          required: requiredIf(() => (this.recievedTreatment && this.registered && !this.initialVitalsUnknown)), 
         },
         initial_tb_status: {
           required: requiredIf(() => (this.recievedTreatment && this.registered)),
