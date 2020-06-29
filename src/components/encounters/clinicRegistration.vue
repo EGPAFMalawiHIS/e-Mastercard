@@ -479,6 +479,7 @@ import {
   between
 } from "vuelidate/lib/validators";
 import EventBus from "../../services/event-bus.js";
+import {mapState} from 'vuex';
 
 export default {
   components: {
@@ -825,6 +826,15 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      arvNumber: state => {
+        if (!state.patient.arvNumber || state.patient.arvNumber === 'N/A') {
+          return null;
+        }
+
+        return state.patient.arvNumber;
+      }
+    }),
     visitDate() {
       return this.makeISODateString(this.form.visit_date_year, this.form.visit_date_month, this.form.visit_date_day);
     }
@@ -843,8 +853,8 @@ export default {
     },
 
     setArvNumber() {
-      if (!this.isNotEditVoid()) {
-        this.form.arv_number = this.$store.state.patient.arvNumber.replace("KGON-ARV-", "")
+      if (this.arvNumber && !this.isNotEditVoid()) {
+        this.form.arv_number = this.arvNumber.split("-").pop();
       }
     },
 
