@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid card" style="margin-top: 35px;">
     <button
-      @click="redirect(`/registration/${patientID}/false`)"
+      @click="voidEditRedict()"
       class="btn btn-info"
       style="z-index: 1; position: absolute; left: 47.5%; bottom: 99%; font-size: 13px;"
     >Edit/Void</button>
@@ -485,6 +485,23 @@ export default {
     
   },
   methods: {
+
+    voidEditRedict(){
+      this.setPersonObject()
+      this.redirect(`/registration/${this.patientID}/false`)
+    },
+
+    setPersonObject(){
+      const PERSON = {
+        name: this.name,
+        dob: "",
+        age: "",
+        arvNumber: this.arvNumber,
+        sex: this.sex
+      };
+      this.$store.commit("setPatient", PERSON);
+    },
+
     getPatient: async function() {
       let f = await ApiClient.get(`/patients/${this.patientID}`);
       return await f.json();

@@ -19,7 +19,7 @@
               name
               placeholder="Enter ARV Number"
               v-model="$v.form.arv_number.$model"
-              :disabled="arvNumberUnkown"
+              :disabled="arvNumberUnkown || !isNotEditVoid()"
               v-on:input="validateArvNumberAvailability"
               style="display: inline"
               v-bind:style="(!$v.form.arv_number.required || !$v.form.arv_number.numberTaken) && $v.form.arv_number.$dirty  ? 'border: 1.5px solid red;' : ''"
@@ -490,7 +490,7 @@ export default {
     return {
       form: {
         arv_number: {
-          required,
+          required: requiredIf(() => this.isNotEditVoid()),
           numberTaken(arv_number){
             return this.arvNumberAvailable == true
           }
@@ -825,6 +825,18 @@ export default {
       return !this.$v.$invalid; //send this as a global state to the Registration component
     },
 
+    isNotEditVoid() {
+      return !(
+        this.$route.params.new == false || this.$route.params.new == "false"
+      );
+    },
+
+    setArvNumber() {
+      if (!this.isNotEditVoid()) {
+        this.form.arv_number = this.$store.state.patient.arvNumber.replace("KGON-ARV-", "")
+      }
+    },
+
     validateArvNumberAvailability: async function() {
 
       const NUMBER = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
@@ -1138,7 +1150,9 @@ export default {
         delete this.clinicRegistration.obs.testLocation;
       }
 
-      this.saveARVNumber();
+      if(this.isNotEditVoid()){
+        this.saveARVNumber()
+      }
 
     },
 
@@ -1314,6 +1328,8 @@ export default {
       this.formIsValid = this.validateForm()
       this.setRegistration()
     });
+    
+    this.setArvNumber()
   },
   mounted() {
     this.initial();
