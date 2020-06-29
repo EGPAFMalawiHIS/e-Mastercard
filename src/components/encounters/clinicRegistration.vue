@@ -810,6 +810,17 @@ export default {
           }
         }
       },
+      registrationEncounter: {
+        encounter_id: 5,
+        encounter_datetime: null,
+        obs: {
+          patient_type: {
+            concept_id: 3289,
+            value_coded: 7572
+          }
+        }
+      },
+
       locations: []
     };
   },
@@ -1020,9 +1031,8 @@ export default {
     },
     buildForRegistrationGlobalState() {
 
-      if (!this.registered) {
-        this.clinicRegistration.encounter_datetime = this.visitDate;
-      }
+      this.registrationEncounter.encounter_datetime = this.visitDate;
+      this.clinicRegistration.encounter_datetime = this.visitDate;
 
       if (
         this.form.date_last_taken_arv_year != null &&
@@ -1102,10 +1112,8 @@ export default {
 
     buildObservations() {
       // YEAR LAST TAKEN
-
-      if (!this.registered) {
-        this.clinicRegistration.encounter_datetime = this.visitDate;
-      }
+      this.registrationEncounter.encounter_datetime = this.visitDate;
+      this.clinicRegistration.encounter_datetime = this.visitDate;
 
       // optional
       if (this.recievedTreatment) {
@@ -1234,6 +1242,11 @@ export default {
       this.enrollPatientIntoHIVProgram();
 
       this.buildObservations();
+
+      this.$emit("addEncounter", {
+        registrationEncounter: this.registrationEncounter
+      });
+
       this.$emit("addEncounter", {
         clinicRegistration: this.clinicRegistration
       });
@@ -1328,7 +1341,7 @@ export default {
       this.formIsValid = this.validateForm()
       this.setRegistration()
     });
-    
+
     this.setArvNumber()
   },
   mounted() {
