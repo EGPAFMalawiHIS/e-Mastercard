@@ -240,7 +240,7 @@ export default {
                 
               }
               if(innerElement.prepend) {
-                tempob[innerElement.variableName]= res[res.length - 1][innerElement.prepend] + " " + val;
+                tempob[innerElement.variableName]= ((innerElement.conceptID === 856 && val === 1) ? "LDL" : res[res.length - 1][innerElement.prepend] + " " + val);
               }
             }
           } else {

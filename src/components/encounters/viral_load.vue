@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-4">
         <div class="form-group">
-          <v-select :options="options" v-model="modifier" placeholder="modifier"></v-select>
+          <v-select :options="options" v-model="modifier" placeholder="modifier" :disabled="ldl"></v-select>
         </div>
       </div>
       <div class="col-md-8">
@@ -18,7 +18,9 @@
               placeholder
               aria-describedby="helpId"
               v-model="viralLoad"
+              :disabled="ldl"
             />
+
             <label for>Date</label>
             <input
               type="date"
@@ -28,6 +30,16 @@
               placeholder
               aria-describedby="helpId"
               v-model="date"
+            />
+            <label >LDL</label>
+            <input
+              type="checkbox"
+              name
+              id="ldl"
+              class="form-control"
+              placeholder
+              aria-describedby="helpId"
+              v-model="ldl"
             />
           </div>
         </div>
@@ -61,7 +73,8 @@ export default {
       options: ["=", ">", "<", "=>", "=<"],
       modifier: null,
       viralLoad: null,
-      date: null
+      date: null,
+      ldl: false,
     };
   },
   methods: {
@@ -74,8 +87,8 @@ export default {
         observation: {
           concept_id: 856,
           obs_datetime: this.date,
-          value_numeric: this.viralLoad,
-          value_text: this.modifier
+          value_numeric: (this.ldl === true? 1 : this.viralLoad),
+          value_text: (this.ldl === true? "=" : this.modifier)
         }
       };
       let order= {
