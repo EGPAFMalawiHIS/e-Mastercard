@@ -1314,7 +1314,6 @@ export default {
     },
     //find site prefix
     saveARVNumber: async function() {
-      if (!this.form.arvNumber) return;
       
       let finalNum = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
       let identifier_data = {
