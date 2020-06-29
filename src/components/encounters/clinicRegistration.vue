@@ -479,6 +479,7 @@ import {
   between
 } from "vuelidate/lib/validators";
 import EventBus from "../../services/event-bus.js";
+import { mapState } from 'vuex';
 
 export default {
   components: {
@@ -814,6 +815,10 @@ export default {
     };
   },
   computed: {
+    ...mapState({arvNumber: state => {
+      const arvNumber = state.patient.arvNumber;
+      return !arvNumber || arvNumber === 'N/A' ? null: arvNumber;
+    }}),
     visitDate() {
       return this.makeISODateString(this.form.visit_date_year, this.form.visit_date_month, this.form.visit_date_day);
     }
@@ -826,8 +831,13 @@ export default {
     },
 
     validateArvNumberAvailability: async function() {
-
       const NUMBER = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
+
+      if (this.$route.params.new.toLowerCase() === 'false' && this.arvNumber === NUMBER.toUpperCase()) {
+        this.arvNumberAvailable = true;
+        return;
+      }
+
       await ApiClient.get(`/search/patients/by_identifier?type_id=4&identifier=${NUMBER}`).then(res => {
         res.json().then(data => {
           if(data.length > 0){
@@ -1287,7 +1297,7 @@ export default {
     },
     //find site prefix
     saveARVNumber: async function() {
-      if (!this.form.arvNumber) return;
+      if (!this.form.arv_number) return;
       
       let finalNum = `${this.sitePrefix}-ARV-${this.form.arv_number}`;
       let identifier_data = {
@@ -1317,6 +1327,10 @@ export default {
   },
   mounted() {
     this.initial();
+
+    if (this.$route.params.new.toLowerCase() === 'false' && this.arvNumber) {
+      this.form.arv_number = this.arvNumber.split('-').pop();
+    }
   }
 };
 </script>
