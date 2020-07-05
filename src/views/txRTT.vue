@@ -31,9 +31,7 @@
                   <th>#</th>
                   <th>Age group</th>
                   <th>Gender</th>
-                  <th class="disaggregated-numbers">Returned after 14 - 27 days</th>
-                  <th class="disaggregated-numbers">Returned after 28 - 59 days</th>
-                  <th class="disaggregated-numbers">Returned after 60 or more days</th>
+                  <th class="disaggregated-numbers">Returned after 30+ days</th>
                 </tr>
               </thead>
               <tbody ref="tableBody">
@@ -175,7 +173,7 @@ export default {
             for(let sex in gender){
               if (age_group == set_age_groups[i]  &&  sex == report_gender[j]) {  
                 let numbers = gender[sex];
-                this.dTable.fnAddData([ counter++, age_group, sex, numbers[0].length, numbers[1].length, numbers[2].length ]);
+                this.dTable.fnAddData([ counter++, age_group, sex, numbers.length ]);
                 age_group_found = true;
                 break;
               }
@@ -189,7 +187,7 @@ export default {
           }
           
           if(!age_group_found){
-            this.dTable.fnAddData([ counter++, set_age_groups[i], report_gender[j], 0,0,0 ]);
+            this.dTable.fnAddData([ counter++, set_age_groups[i], report_gender[j], 0 ]);
           }else{
             age_group_found = false
           }
