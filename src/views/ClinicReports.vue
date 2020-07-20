@@ -90,6 +90,14 @@
               </div>
             </div>
             
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/retention')">
+                <div class="card">
+                  <img src="../assets/report-icons/keep.png" class="btn-icon"/>
+                  <p>Retention</p>
+                </div>
+              </div>
+            </div>
             <!-- <div class="col-sm"> -->
               <!--div class="btn-container" @click="redirect">
                 <div class="card">

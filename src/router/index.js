@@ -212,6 +212,11 @@ const routes = [
     name: "incomplete_visits_report",
     component: () => import("../views/IncompleteVisitingsReport.vue")
   },
+  {
+    path: "/retention",
+    name: "Retention Report",
+    component: () => import("../views/RetentionReport.vue")
+  },
 ]
 
 const router = new VueRouter({
