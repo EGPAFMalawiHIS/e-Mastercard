@@ -33,7 +33,9 @@
                   <th>#</th>
                   <th>Age group</th>
                   <th>Gender</th>
+                  <th>Total Dispensed</th>
                   <th>Total Retained</th>
+                  <th>Percentage Retained</th>
                 </tr>
               </thead>
               <tbody ref="tableBody">
@@ -178,7 +180,17 @@ export default {
                 clients++;
               }
             });
-            this.dTable.fnAddData([ counter++, set_age_groups[i], report_gender[j], clients ]);
+            let dispensed = 0;
+            data.all.forEach(element => {
+              
+              if (element.age_group === set_age_groups[i]  &&  element.gender == report_gender[j]) {  
+                age_group_found = true;
+                dispensed++;
+
+              }
+            });
+            let percentage =(clients !== 0 ? parseFloat((clients / dispensed) * 100).toFixed(2) : 0);
+            this.dTable.fnAddData([ counter++, set_age_groups[i], report_gender[j], dispensed, clients, percentage ]);
         }
       }
 
