@@ -1,28 +1,26 @@
-
-
 <template>
-
 <div class="d-flex" id="wrapper">
   <side-bar />
   <div id="page-content-wrapper">
     <top-nav />
     <!-- Page Content -->
     <div id="main-container">
-      <span>{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span >
-      
-        <b-row>
-              <b-col>
-            <div class="form-group">
-            <label for="">Retention (Months)</label>
-           <input type="number" name="" id="" v-model="retention"> 
-          </div>
-              </b-col>
-             
-              <b-col>
 
-           <sdPicker :onSubmit="fetchDates"></sdPicker>
-              </b-col>
-          </b-row>
+      <b-row style="margin: 0px 5px 0px 5px;">
+        <span style="padding-bottom: 0px;">{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span >
+      </b-row>
+
+      <b-row>
+        <b-col style="padding: 18px;">
+          <div class="form-group" style="padding: 2px; font-size: 18px; margin-top: 1px;">
+            <label for="">Retention (Months) </label>
+            <input type="number" name="" id="" v-model="retention"> 
+          </div>
+        </b-col>
+        <b-col>
+          <sdPicker :onSubmit="fetchDates"></sdPicker>
+        </b-col>
+      </b-row>
 
       <div class="row">
         <div class="col-sm-12">
@@ -49,15 +47,7 @@
   </div>
 </div>
 
-
 </template>
-
-<style scope>
-
-</style>
-
-
-
 
 <script>
 // @ is an alias to /src
