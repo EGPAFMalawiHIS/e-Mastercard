@@ -35,10 +35,16 @@
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="/settings">Settings</a>
             <a class="dropdown-item" href="/login">Logout</a>
+            <b-button class="dropdown-item" v-b-modal.modal-center>About</b-button>
           </div>
         </li>
       </ul>
     </div>
+    <b-modal id="modal-center" centered title="Application Information" ok-only="">
+     <p class="">e-Mastercard version: {{appVersion()}}</p>
+      <br>
+     <p class="">API version: {{APIVersion}}</p>
+     </b-modal>
   </nav>
 </template>
 
@@ -48,12 +54,23 @@ import EventBus from "@/services/event-bus.js";
 import { mapState, mapMutations } from 'vuex';
 
 export default {
+  data: function() {
+    return {
+      APIVersion: null,
+    }
+  },
     methods: {
       ...mapMutations(['setLocation']),
       fetchLocationID: async function() {
         const response = await ApiClient.get("global_properties?property=current_health_center_id", {}, {});
         if (response.status === 200) {
           response.json().then((data) => this.fetchLocationName(data.current_health_center_id) );
+        }
+      },
+      async fetchAPIVersion() {
+        const response = await ApiClient.get("version", {}, {});
+        if (response.status === 200) {
+          response.json().then((data) => this.APIVersion = data["System version"] );
         }
       },
       async fetchLocationName(location_id) {
@@ -67,7 +84,10 @@ export default {
         this.setLocation(data);
         sessionStorage.location = data.name;
         sessionStorage.location_name = data.name;
-      }
+      },
+      appVersion() {
+      return ApiClient.config.version || '2.0-dev';
+     },
     },
     computed: {
         ...mapState(['location']),
@@ -81,6 +101,7 @@ export default {
       EventBus.$on('change-location', payload => {
         this.fetchLocationID();
       });
+      this.fetchAPIVersion();
       setTimeout(() => this.fetchLocationID(), 300);
     }
 };
