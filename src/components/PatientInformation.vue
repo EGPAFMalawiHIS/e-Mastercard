@@ -823,10 +823,19 @@ export default {
       let url = `/patients/${this.$route.params.id}/drugs_orders_by_program?program_id=1`;
       let observations = await ApiClient.get(url);
       return await observations.json();
+    },
+    /**
+     * Clear all cached patient data in global state.
+     */
+    clearStore() {
+      this.$store.commit('setInitialRegistration', {});
+      this.$store.commit('setInitialVitals', {});
+      this.$store.commit('setInitialStaging', {});
     }
   },
   mounted() {
     this.getPrefix();
+    this.clearStore(); 
     this.patientID = this.$route.params.id;
     this.getPatient().then(patient => {
       this.name = `${patient["person"].names[0].given_name} ${patient.person.names[0].family_name}`;
