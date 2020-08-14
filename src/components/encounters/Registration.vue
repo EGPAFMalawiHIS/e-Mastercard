@@ -556,21 +556,14 @@ export default {
       });
     },
     voidFirstVisitEncounters() {
-      let encounters = [];
+      const encounters = [this.$store.state.initialRegistration,
+                          this.$store.state.initialVitals,
+                          this.$store.state.initialStaging];
 
-      try {
-        encounters.push(this.$store.state.initialRegistration["encounter_id"]);
-      } catch (error) {}
+      const encounterIds = encounters.map(encounter => encounter?.encounter_id)
+                                     .filter(encounter_id => encounter_id != null);
 
-      try {
-        encounters.push(this.$store.state.initialVitals["encounter_id"]);
-      } catch (error) {}
-
-      try {
-        encounters.push(this.$store.state.initialStaging["encounter_id"]);
-      } catch (error) {}
-
-      this.voidEncounters(encounters);
+      this.voidEncounters(encounterIds);
     }
   },
   mounted() {
