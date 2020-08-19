@@ -59,11 +59,13 @@
 </template>
 
 <script>
-import Config from "../../../public/config.json";
 import ApiClient from "../../services/api_client";
 import moment from "moment";
 import DateItem from "./DateItem.vue";
 import LoadingItem from "./LoadingItem";
+
+// TODO: Replace all fetch calls with ApiClient.[get|post|delete]
+const Config = ApiClient.config.source;
 
 export default {
   name: "PepfarReport",

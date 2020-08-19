@@ -7,7 +7,8 @@ const ApiClient = (() => {
     username: null,
     password: null,
     router: null,
-    version: null
+    version: null,
+    source: null  // The actual config object stored on the server
   }
 
   function expandPath(resourcePath) {
@@ -40,6 +41,7 @@ const ApiClient = (() => {
           sessionStorage.setItem("apiProtocol", data.apiProtocol);
           config.protocol = data.apiProtocol;
           config.version = data.version;
+          config.source = data;
         });
       }
     )
