@@ -214,7 +214,7 @@ export default {
     reportTitle() {
       const period = this.startDate && this.endDate ? `${DateUtils.localDate(this.startDate)} - ${DateUtils.localDate(this.endDate)}`
                                                     : '';
-      return `${this.location.name} TX ML: ${period}`
+      return `${this.location.name} TX ML: ${period} ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
     }
   },
   mounted(){

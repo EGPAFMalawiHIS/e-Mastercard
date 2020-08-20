@@ -473,7 +473,7 @@ export default {
       return this.reportLoading || !this.reportSelected;
     },
     reportTitle() {
-      return `${this.location.name} MoH Disaggregated`;
+      return `${this.location.name} MoH Disaggregated ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
     }
   }
 }

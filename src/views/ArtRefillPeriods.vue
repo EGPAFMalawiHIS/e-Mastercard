@@ -137,6 +137,7 @@ export default {
       const formatDate = date => moment(date).format('dddd, Do of MMM YYYY');
 
       this.report_title = `${this.location.name} TX CURR MMD between ${formatDate(dates[0])} and ${formatDate(dates[1])}`;
+      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
       
       this.initReportingGroups();
       this.fetchData();

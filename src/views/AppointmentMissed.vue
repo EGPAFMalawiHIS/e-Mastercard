@@ -70,6 +70,7 @@ export default {
       this.report_title = sessionStorage.location_name + "  Appointment missed";
       this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
       this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
+      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
       let url_path = "/missed_appointments?start_date=" + dates[0] + "&end_date=" + dates[1]
       url_path += "&program_id=1&date=" +  moment().format('YYYY-MM-DD');
       const response = await ApiClient.get(url_path, {}, {});

@@ -468,7 +468,7 @@ export default {
     computed: {
       ...mapState(['location']),
       reportTitle() {
-        return `${this.location.name} PEPFAR Disaggregated report`;
+        return `${this.location.name} PEPFAR Disaggregated report ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
       }
     }
 }

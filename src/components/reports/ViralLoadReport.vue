@@ -209,6 +209,7 @@ export default {
       let start_date = moment(this.startDate).format("DD/MMM/YYYY");
       let end_date = moment(this.endDate).format("DD/MMM/YYYY");
       this.report_title = sessionStorage.location_name + " Viral Load Report. ";
+      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
 
       if (!start_date == "Invalid date") {
         this.report_title += " Reporting  period: " + start_date;

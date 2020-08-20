@@ -65,6 +65,7 @@ export default {
   },methods: {
     fetchDate: async function(date) {
       this.report_title = sessionStorage.location_name + "  Clients booked on " + moment(date).format('dddd, Do of MMM YYYY');
+      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
       let url_path = '/programs/1/scheduled_appointments?date=' + date;
       url_path += '&paginate=false';
       const response = await ApiClient.get(url_path, {}, {});

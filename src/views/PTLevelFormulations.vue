@@ -97,6 +97,7 @@ export default {
       this.report_title = this.$store.state.location.name + " Regimen Formulation: patient level: ";
       this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
       this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
+      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
       let url_path = `/programs/1/reports/regimens_and_formulations?start_date=${dates[0]}&end_date=${dates[1]}
         &regimen=${this.selectedRegimen}&formulation=${this.formulation}`; 
         this.reportLoading = true;

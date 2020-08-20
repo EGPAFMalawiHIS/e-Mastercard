@@ -190,7 +190,7 @@ export default {
       let formattedDate = this.startDate && this.endDate ? `${moment(this.startDate).format('DD/MMM/YYYY')}- ${moment(this.endtDate).format('DD/MMM/YYYY')}`
                                                          : '';
 
-      return `${this.location.name} IPT coverage (those completed six months: 168 days) ${formattedDate}`;
+      return `${this.location.name} IPT coverage (those completed six months: 168 days) ${formattedDate} ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
     }
   },
   mounted(){

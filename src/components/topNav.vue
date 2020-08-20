@@ -70,7 +70,10 @@ export default {
       async fetchAPIVersion() {
         const response = await ApiClient.get("version", {}, {});
         if (response.status === 200) {
-          response.json().then((data) => this.APIVersion = data["System version"] );
+          response.json().then((data) =>  {
+            this.APIVersion = data["System version"];
+            sessionStorage.EMCVersion = data["System version"]; 
+            });
         }
       },
       async fetchLocationName(location_id) {
@@ -86,7 +89,9 @@ export default {
         sessionStorage.location_name = data.name;
       },
       appVersion() {
-      return ApiClient.config.version || '2.0-dev';
+        let applicationVersion  = ApiClient.config.version || '2.0-dev';
+        sessionStorage.APIVersion = applicationVersion;
+      return applicationVersion;
      },
     },
     computed: {
