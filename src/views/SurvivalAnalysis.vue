@@ -236,7 +236,7 @@ export default {
   computed: {
     ...mapState(['location']),
     reportTitle() {
-      return `${this.location.name} MoH cohort report (Survival analysis)`;
+      return `${this.location.name} MoH cohort report (Survival analysis) ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
     }
   },
   mounted(){

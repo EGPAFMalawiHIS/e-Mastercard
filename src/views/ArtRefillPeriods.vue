@@ -119,7 +119,7 @@ export default {
       if (this.startDate && this.endDate) {
         const formatDate = date => moment(date).format('dddd, Do of MMM YYYY');
 
-        return `${this.location.name} TX CURR MMD between ${formatDate(this.startDate)} and ${formatDate(this.endDate)}`;
+        return `${this.location.name} TX CURR MMD between ${formatDate(this.startDate)} and ${formatDate(this.endDate)} ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
       } else {
         return `${this.location.name} TX CURR MMD`;
       }

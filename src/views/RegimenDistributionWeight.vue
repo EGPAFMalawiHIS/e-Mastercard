@@ -269,7 +269,7 @@ export default {
       return this.reportLoading || !this.reportSelected;
     },
     reportTitle() {
-      return `${this.$store.state.location.name} Regimen Distribution by weight`;
+      return `${this.$store.state.location.name} Regimen Distribution by weight ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
     }
   },
 }
