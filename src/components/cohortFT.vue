@@ -1485,6 +1485,9 @@ export default {
       if(this.params[i].name == 'eleven_a')
         this.eleven_a = this.params[i].contents;
 
+      if (this.params[i].name === 'twelve_a')
+        this.twelve_a = this.params[i].contents;
+
       if(this.params[i].name == 'thirteen_a')
         this.thirteen_a = this.params[i].contents;
 
