@@ -53,6 +53,15 @@
                     <td><b-button variant="primary" @click="$router.push(`/patient/mastercard/${patient.patient_id}`)">show</b-button></td>
                 </tr>
             </tbody>
+            <tfoot>
+              <tr>
+                <td>
+                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                  e-Mastercard Version : {{EMCVersion}} 
+                  API Version {{APIVersion}}
+                </td>
+              </tr>
+            </tfoot>
           </table>
             </b-overlay>
         </div>
@@ -97,7 +106,6 @@ export default {
       this.report_title = this.$store.state.location.name + " Regimen Formulation: patient level: ";
       this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
       this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
-      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
       let url_path = `/programs/1/reports/regimens_and_formulations?start_date=${dates[0]}&end_date=${dates[1]}
         &regimen=${this.selectedRegimen}&formulation=${this.formulation}`; 
         this.reportLoading = true;
@@ -123,7 +131,8 @@ export default {
           },
           {
             extend: 'csv',
-            title:  this.report_title
+            title:  this.report_title,
+            footer: true
           },
           {
             extend: 'pdf',
@@ -164,8 +173,10 @@ export default {
         formulation: null,
         reportSelected: false,
         reportLoading: false,
-        formatedData: []
-        ,regimens: ["0A",
+        formatedData: [],
+        APIVersion: sessionStorage.APIVersion,
+        EMCVersion: sessionStorage.EMCVersion,
+        regimens: ["0A",
                 "2A",
                 "4A",
                 "5A",

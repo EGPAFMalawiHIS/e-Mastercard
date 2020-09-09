@@ -28,6 +28,15 @@
                 </thead>
                 <tbody ref="tableBody">
                 </tbody>
+                  <tfoot>
+              <tr>
+                <td>
+                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                  e-Mastercard Version : {{EMCVersion}} 
+                  API Version {{APIVersion}}
+                </td>
+              </tr>
+            </tfoot>
               </table>
              </ReportOverlay>
             </div>
@@ -112,7 +121,8 @@ export default {
           },
           {
             extend: 'csv',
-            title:  this.reportTitle
+            title:  this.reportTitle,
+            footer: true
           },
           {
             extend: 'pdf',
@@ -462,13 +472,15 @@ export default {
           '45-49 years', '50 plus years'
         ].reverse(),
         reportLoading: false,
-        reportSelected: false
+        reportSelected: false,
+        APIVersion: sessionStorage.APIVersion,
+        EMCVersion: sessionStorage.EMCVersion,
       }
     },
     computed: {
       ...mapState(['location']),
       reportTitle() {
-        return `${this.location.name} PEPFAR Disaggregated report ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
+        return `${this.location.name} PEPFAR Disaggregated report `;
       }
     }
 }

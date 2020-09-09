@@ -19,6 +19,15 @@
                 <th class="center-text" scope="col">Dispensed date</th>
               </tr>
             </thead>
+            <tfoot>
+              <tr>
+                <td>
+                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                  e-Mastercard Version : {{EMCVersion}} 
+                  API Version {{APIVersion}}
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
         <!-- Page Content end -->
@@ -69,7 +78,6 @@ export default {
       this.report_title = this.location.name + "  Regimen switch report: ";
       this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
       this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
-      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
       let url_path = '/regimen_switch?start_date=' + dates[0] + "&date=" + dates[1];
       url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=false"; 
       const response = await ApiClient.get(url_path, {}, {});
@@ -93,7 +101,8 @@ export default {
           },
           {
             extend: 'csv',
-            title:  this.report_title
+            title:  this.report_title,
+            footer: true
           },
           {
             extend: 'pdf',
@@ -163,7 +172,9 @@ export default {
         report_title: 'Regimen switch report',
         reportData: null,
         dTable: null,
-        formatedData: []
+        formatedData: [],
+        APIVersion: sessionStorage.APIVersion,
+        EMCVersion: sessionStorage.EMCVersion,
       }
     },
     computed: {

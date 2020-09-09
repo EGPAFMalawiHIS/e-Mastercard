@@ -35,7 +35,16 @@ the difference in days between their clinical dispensation visit and next appoin
                       <th class="center-text" scope="col"># of clients on 3 - 5 months of ARVs</th>
                       <th class="center-text" scope="col"># of clients on >= 6 months of ARVs</th>
                     </tr>
-                  </thead>
+                  </thead> 
+                  <tfoot>
+                    <tr>
+                      <td>
+                        Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                        e-Mastercard Version : {{EMCVersion}} 
+                        API Version {{APIVersion}}
+                      </td>
+                    </tr>
+                  </tfoot>
                 </table>
               </ReportOverlay>
             </div>
@@ -119,7 +128,7 @@ export default {
       if (this.startDate && this.endDate) {
         const formatDate = date => moment(date).format('dddd, Do of MMM YYYY');
 
-        return `${this.location.name} TX CURR MMD between ${formatDate(this.startDate)} and ${formatDate(this.endDate)} ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
+        return `${this.location.name} TX CURR MMD between ${formatDate(this.startDate)} and ${formatDate(this.endDate)} `;
       } else {
         return `${this.location.name} TX CURR MMD`;
       }
@@ -203,7 +212,8 @@ export default {
           },
           {
             extend: 'csv',
-            title:  this.reportTitle
+            title:  this.reportTitle,
+            footer: true
           },
           {
             extend: 'pdf',
@@ -396,7 +406,9 @@ export default {
         selectedAgeGroup:  null,
         selectedGender: null,
         reportingGroups: [],
-        reportLoading: false
+        reportLoading: false,
+        APIVersion: sessionStorage.APIVersion,
+        EMCVersion: sessionStorage.EMCVersion,
       }
     }
 }

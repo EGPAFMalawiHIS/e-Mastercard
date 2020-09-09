@@ -36,6 +36,15 @@
               </thead>
               <tbody ref="tableBody">
               </tbody>
+                <tfoot>
+              <tr>
+                <td>
+                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                  e-Mastercard Version : {{EMCVersion}} 
+                  API Version {{APIVersion}}
+                </td>
+              </tr>
+            </tfoot>
             </table>
           </report-overlay>
         </div>
@@ -119,7 +128,8 @@ export default {
           },
           {
             extend: 'csv',
-            title:  this.reportTitle
+            title:  this.reportTitle,
+            footer: true
           },
           {
             extend: 'pdf',
@@ -200,6 +210,8 @@ export default {
         reportLoading: false,
         startDate: null,
         endDate: null,
+        APIVersion: sessionStorage.APIVersion,
+        EMCVersion: sessionStorage.EMCVersion,
         ageGroups: [
           '0-5 months', '6-11 months','12-23 months',
           '2-4 years', '5-9 years',
@@ -216,7 +228,7 @@ export default {
     reportTitle() {
       const period = this.startDate && this.endDate ? `${DateUtils.localDate(this.startDate)} - ${DateUtils.localDate(this.endDate)}`
                                                     : '';
-      return `${this.location.name} TX RTT: ${period} ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
+      return `${this.location.name} TX RTT: ${period} `;
     }
   },
   mounted(){

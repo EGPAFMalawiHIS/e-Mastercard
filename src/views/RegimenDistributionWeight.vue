@@ -71,6 +71,15 @@
                 </td>
               </tr>
             </tbody>
+            <tfoot>
+              <tr>
+                <td>
+                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                  e-Mastercard Version : {{EMCVersion}} 
+                  API Version {{APIVersion}}
+                </td>
+              </tr>
+            </tfoot>
           </table>
                </b-overlay>
              </div>
@@ -145,7 +154,6 @@ export default {
       this.report_title = sessionStorage.location_name + " MoH Disaggregated regimen distribution by weight report. ";
       this.report_title += " Reporting  period: " + moment(this.startDate).format("DD/MMM/YYYY");
       this.report_title += " " + moment(this.endDate).format("DD/MMM/YYYY");
-      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
       
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
@@ -172,7 +180,9 @@ export default {
           },
           {
             extend: 'csv',
-            title:  this.report_title
+            title:  this.report_title,
+            footer: true
+
           },
           {
             extend: 'pdf',
@@ -256,6 +266,8 @@ export default {
         initialize: false,
         reportSelected: false,
         reportLoading: false,
+        APIVersion: sessionStorage.APIVersion,
+        EMCVersion: sessionStorage.EMCVersion,
         reportData: [
             
         ]
@@ -269,7 +281,7 @@ export default {
       return this.reportLoading || !this.reportSelected;
     },
     reportTitle() {
-      return `${this.$store.state.location.name} Regimen Distribution by weight ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
+      return `${this.$store.state.location.name} Regimen Distribution by weight `;
     }
   },
 }

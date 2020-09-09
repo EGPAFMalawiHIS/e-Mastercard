@@ -32,6 +32,15 @@
                     </thead>
                     <tbody ref="tableBody">
                     </tbody>
+                    <tfoot>
+                      <tr>
+                        <td>
+                          Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                          e-Mastercard Version : {{EMCVersion}} 
+                          API Version {{APIVersion}}
+                        </td>
+                      </tr>
+                    </tfoot>
                   </table>
                </b-overlay>
              </div>
@@ -108,7 +117,8 @@ export default {
           },
           {
             extend: 'csv',
-            title:  this.reportTitle
+            title:  this.reportTitle,
+            footer: true
           },
           {
             extend: 'pdf',
@@ -456,6 +466,8 @@ export default {
         fpRow: null,
         fbfRow: null,
         initialize: false,
+        APIVersion: sessionStorage.APIVersion,
+        EMCVersion: sessionStorage.EMCVersion,
         ageGroups: [
           '0-5 months', '6-11 months','12-23 months',
           '2-4 years', '5-9 years',
@@ -473,7 +485,7 @@ export default {
       return this.reportLoading || !this.reportSelected;
     },
     reportTitle() {
-      return `${this.location.name} MoH Disaggregated ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
+      return `${this.location.name} MoH Disaggregated `;
     }
   }
 }

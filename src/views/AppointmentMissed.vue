@@ -21,6 +21,15 @@
                 <th class="center-text" scope="col">&nbsp;</th>
               </tr>
             </thead>
+            <tfoot>
+              <tr>
+                <td>
+                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                  e-Mastercard Version : {{EMCVersion}} 
+                  API Version {{APIVersion}}
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
         <!-- Page Content end -->
@@ -93,7 +102,8 @@ export default {
           },
           {
             extend: 'csv',
-            title:  this.report_title
+            title:  this.report_title,
+            footer: true
           },
           {
             extend: 'pdf',
@@ -175,7 +185,9 @@ export default {
         report_title: 'Appointment missed ',
         reportData: null,
         dTable: null,
-        formatedData: []
+        formatedData: [],
+        APIVersion: sessionStorage.APIVersion,
+        EMCVersion: sessionStorage.EMCVersion,
       }
     }
 }
