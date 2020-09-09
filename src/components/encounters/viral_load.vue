@@ -99,7 +99,8 @@ export default {
       }
       const encounter = await EncounterService.createEncounter(
         personId,
-       13 
+       13,
+       this.date 
       );
       if (encounter.status === 201 || encounter.status === 200) {
         let encounterID = encounter.encounter_id;
