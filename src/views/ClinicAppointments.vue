@@ -6,7 +6,7 @@
         <!-- Page Content -->
         <div id="main-container" class="col-12 table-col">
           <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-           <edPicker :onSubmit="fetchDate"></edPicker>
+           <datePicker :onSubmit="fetchDate"></datePicker>
           <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
@@ -47,7 +47,7 @@ import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
-import EndDatePicker from "@/components/EndDatePicker.vue";
+import DatePicker from "@/components/DatePicker.vue";
 
 import jQuery from 'jquery';
 import datatable from 'datatables';
@@ -70,7 +70,7 @@ export default {
   components: {
     "top-nav": TopNav,
     "side-bar": Sidebar,
-    "edPicker": EndDatePicker
+    "datePicker": DatePicker
   },methods: {
     fetchDate: async function(date) {
       this.report_title = sessionStorage.location_name + "  Clients booked on " + moment(date).format('dddd, Do of MMM YYYY');
