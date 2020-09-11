@@ -76,8 +76,8 @@ export default {
   },methods: {
     fetchDates: async function(dates) {
       this.report_title = this.location.name + "  Regimen switch report: ";
-      this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
-      this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
+       this.report_title += moment(dates[0]).format('DDMMMYYYY');
+        this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
       let url_path = '/regimen_switch?start_date=' + dates[0] + "&date=" + dates[1];
       url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=false"; 
       const response = await ApiClient.get(url_path, {}, {});

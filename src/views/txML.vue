@@ -114,6 +114,9 @@ export default {
       this.$router.push(url);
     },
     initDataTable(){
+      this.reportTitle ='PEPFAR ' + sessionStorage.location_name + ' TX ML report ';
+      this.reportTitle += moment(dates[0]).format('DDMMMYYYY');
+      this.reportTitle += " - " + moment(dates[1]).format('DDMMMYYYY');
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: true,
@@ -210,6 +213,7 @@ export default {
         reportLoading: false,
         APIVersion: sessionStorage.APIVersion,
         EMCVersion: sessionStorage.EMCVersion,
+        reportTitle: null,
         ageGroups: [
           '0-5 months', '6-11 months','12-23 months',
           '2-4 years', '5-9 years',
@@ -223,11 +227,6 @@ export default {
   },
   computed: {
     ...mapState(['location']),
-    reportTitle() {
-      const period = this.startDate && this.endDate ? `${DateUtils.localDate(this.startDate)} - ${DateUtils.localDate(this.endDate)}`
-                                                    : '';
-      return `${this.location.name} TX ML: ${period} ` ;
-    }
   },
   mounted(){
     this.$nextTick(this.initDataTable);

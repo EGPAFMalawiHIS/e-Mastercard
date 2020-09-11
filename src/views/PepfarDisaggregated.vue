@@ -86,6 +86,9 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     async fetchDates(dates) {
+      this.reportTitle ='PEPFAR ' + sessionStorage.location_name + ' Disaggregated report ';
+      this.reportTitle += moment(dates[0]).format('DDMMMYYYY');
+      this.reportTitle += " - " + moment(dates[1]).format('DDMMMYYYY');
       try {
         [this.startDate, this.endDate] = dates;
 
@@ -460,6 +463,7 @@ export default {
         givenIPT: [],
         totalMales: [0, 0, 0, 0],
         totalFemales: [0, 0, 0, 0],
+        reportTitle: null,
         fpRow: null,
         fbfRow: null,
         ageGroups: [
@@ -479,9 +483,7 @@ export default {
     },
     computed: {
       ...mapState(['location']),
-      reportTitle() {
-        return `${this.location.name} PEPFAR Disaggregated report `;
-      }
+      
     }
 }
 

@@ -103,9 +103,9 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     fetchDates: async function(dates) {
-      this.report_title = this.$store.state.location.name + " Regimen Formulation: patient level: ";
-      this.report_title += " between " + moment(dates[0]).format('dddd, Do of MMM YYYY');
-      this.report_title += " and " + moment(dates[1]).format('dddd, Do of MMM YYYY');
+      this.report_title ='Clinic' + this.$store.state.location.name + " Regimen Formulation: patient level: ";
+      this.report_title += moment(dates[0]).format('DDMMMYYYY');
+      this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
       let url_path = `/programs/1/reports/regimens_and_formulations?start_date=${dates[0]}&end_date=${dates[1]}
         &regimen=${this.selectedRegimen}&formulation=${this.formulation}`; 
         this.reportLoading = true;

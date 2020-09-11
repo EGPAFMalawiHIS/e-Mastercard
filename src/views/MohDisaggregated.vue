@@ -7,7 +7,7 @@
         <div id="main-container">
           <div class="row">
             <div class="col-sm-12" style="z-index: 20"> <!-- elevate date picker above overlay below -->
-              <span>{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+              <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
               <sdPicker :onSubmit="fetchDates"></sdPicker>
             </div>
           </div>
@@ -91,6 +91,9 @@ export default {
       try {
         this.startDate = dates[0];
         this.endDate = dates[1];
+        this.report_title = 'MoH ' + sessionStorage.location_name + ' Cohort dissagregated report ';
+        this.report_title += moment(dates[0]).format('DDMMMYYYY');
+        this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
         await this.initializeReport();
         this.reportLoading = false;
       } catch (e) {
@@ -113,20 +116,20 @@ export default {
         buttons: [
           {
             extend: 'copy',
-            title:  this.reportTitle
+            title:  this.report_title
           },
           {
             extend: 'csv',
-            title:  this.reportTitle,
+            title:  this.report_title,
             footer: true
           },
           {
             extend: 'pdf',
-            title:  this.reportTitle
+            title:  this.report_title
           },
           {
             extend: 'print',
-            title:  this.reportTitle
+            title:  this.report_title
           }
         ]
       });
@@ -466,6 +469,7 @@ export default {
         fpRow: null,
         fbfRow: null,
         initialize: false,
+        report_title: null,
         APIVersion: sessionStorage.APIVersion,
         EMCVersion: sessionStorage.EMCVersion,
         ageGroups: [
@@ -484,9 +488,7 @@ export default {
     hideReport() {
       return this.reportLoading || !this.reportSelected;
     },
-    reportTitle() {
-      return `${this.location.name} MoH Disaggregated `;
-    }
+    
   }
 }
 

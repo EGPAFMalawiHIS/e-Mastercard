@@ -226,9 +226,9 @@ export default {
   computed: {
     ...mapState(['location']),
     reportTitle() {
-      const period = this.startDate && this.endDate ? `${DateUtils.localDate(this.startDate)} - ${DateUtils.localDate(this.endDate)}`
-                                                    : '';
-      return `${this.location.name} TX RTT: ${period} `;
+      let endTime = this.startDate;
+      endTime += " - " + this.endDate;
+      return `Pepfar' ${this.location.name} TX RTT: ${endTime} `;
     }
   },
   mounted(){

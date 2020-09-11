@@ -151,10 +151,9 @@ export default {
 
     },
     initDataTable(){
-      this.report_title = sessionStorage.location_name + " MoH Disaggregated regimen distribution by weight report. ";
-      this.report_title += " Reporting  period: " + moment(this.startDate).format("DD/MMM/YYYY");
-      this.report_title += " " + moment(this.endDate).format("DD/MMM/YYYY");
-      
+      this.report_title ="MoH "+ sessionStorage.location_name + " MoH Disaggregated regimen distribution by weight report. ";
+      this.report_title += moment(this.startDate).format('DDMMMYYYY');
+      this.report_title += " - " + moment(this.endDate).format('DDMMMYYYY'); 
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: false,

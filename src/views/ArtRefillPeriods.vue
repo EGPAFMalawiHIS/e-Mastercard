@@ -143,11 +143,10 @@ export default {
 
       this.reportLoading = true;
 
-      const formatDate = date => moment(date).format('dddd, Do of MMM YYYY');
 
-      this.report_title = `${this.location.name} TX CURR MMD between ${formatDate(dates[0])} and ${formatDate(dates[1])}`;
-      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
-      
+      this.report_title = 'PEPFAR ' + sessionStorage.location_name + ' TX CURR MMD report ';
+      this.report_title += moment(dates[0]).format('DDMMMYYYY');
+      this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
       this.initReportingGroups();
       this.fetchData();
     },
