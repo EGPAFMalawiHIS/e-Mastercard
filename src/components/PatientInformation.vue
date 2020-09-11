@@ -942,6 +942,14 @@ export default {
       
       return type;
     }
+  },
+  watch: {
+     startDate: {
+     handler(val){
+      EventBus.$emit("set-start-date", this.startDate);
+     },
+     deep: true
+  }
   }
 };
 </script>

@@ -18,7 +18,7 @@
     </thead>
     <tbody>
       <tr v-for="(visit, index) in patientVisits" :key="index">
-        <td>{{moment(visit.visitDate).format("DD-MMM-YYYY")}}</td>
+        <td>{{moment(visit.visitDate).format("DD-MMM-YYYY")}} ({{Math.round(moment(visit.visitDate).diff(moment(startDate), 'months', true))}}M)</td>
         <td>{{visit.givenTo}}</td>
         <td>{{visit.weight}}</td>
         <td>{{visit.height}}</td>
@@ -59,6 +59,7 @@ export default {
   data: function() {
     return {
       patientVisits: [],
+      startDate: null,
       mockOBJ: {
         visitDate: null,
         givenTo: null,
@@ -326,7 +327,9 @@ export default {
       this.encountersToDelete = [];
       this.getVisits();
     });
-
+    EventBus.$on('set-start-date', payload => {
+      this.startDate = payload;
+    });
     // this.getEncounters('2020-02-24');
   }
 };
