@@ -106,10 +106,7 @@ export default {
       this.report_title ="MoH" + sessionStorage.location_name + " Disaggregated regimen  distribution report. ";
       this.report_title += moment(this.startDate).format('DDMMMYYYY');
       this.report_title += " - " + moment(this.endDate).format('DDMMMYYYY');
-      if(!start_date == 'Invalid date'){
-        this.report_title += " Reporting  period: " + start_date;
-        this.report_title += " " + end_date;
-      }
+      
 
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],

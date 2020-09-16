@@ -7,7 +7,7 @@
     <!-- Page Content -->
     <div id="main-container" class="col-12 table-col">
       <div class="row">
-        <span>{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+        <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
         <sdPicker :onSubmit="fetchDates"></sdPicker>
       </div>
       <div class="row">
@@ -24,6 +24,15 @@
               </thead>
               <tbody ref="tableBody">
               </tbody>
+             <tfoot>
+              <tr>
+                <td>
+                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                  e-Mastercard Version : {{EMCVersion}} 
+                  API Version {{APIVersion}}
+                </td>
+              </tr>
+            </tfoot>
             </table>
           </report-overlay>
         </div>
@@ -102,19 +111,20 @@ export default {
         buttons: [
           {
             extend: 'copy',
-            title:  this.reportTitle
+            title:  this.report_title
           },
           {
             extend: 'csv',
-            title:  this.reportTitle
+            title:  this.report_title,
+            footer: true
           },
           {
             extend: 'pdf',
-            title:  this.reportTitle
+            title:  this.report_title
           },
           {
             extend: 'print',
-            title:  this.reportTitle
+            title:  this.report_title
           }
         ],
         columnDefs: [
@@ -130,6 +140,9 @@ export default {
         this.reportLoading = true;
         this.startDate = dates[0];
         this.endDate = dates[1];
+        this.report_title = 'MOH ' + sessionStorage.location_name + ' IPT coverage (those completed six months: 168 days) report ';
+        this.report_title += moment(dates[0]).format('DDMMMYYYY');
+        this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
         await this.loadXLdata();
       } finally {
         this.reportLoading = false;
@@ -149,6 +162,7 @@ export default {
     },
     loadGroupData(data){
       //this.loadXLdata();
+      this.initDataTable();
       let counter = 1;
       this.dTable.fnClearTable();
       let age_groups = this.ageGroups;
@@ -173,6 +187,9 @@ export default {
         startDate: null,
         endDate: null,
         reportLoading: false,
+        APIVersion: sessionStorage.APIVersion,
+        EMCVersion: sessionStorage.EMCVersion,
+        report_title: null,
         ageGroups: [
           '0-5 months', '6-11 months','12-23 months',
           '2-4 years', '5-9 years',
@@ -186,12 +203,7 @@ export default {
   },
   computed: {
     ...mapState(['location']),
-    reportTitle() {
-      let formattedDate = this.startDate && this.endDate ? `${moment(this.startDate).format('DD/MMM/YYYY')}- ${moment(this.endtDate).format('DD/MMM/YYYY')}`
-                                                         : '';
-
-      return `${this.location.name} IPT coverage (those completed six months: 168 days) ${formattedDate} ` +  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
-    }
+    
   },
   mounted(){
     setTimeout(() => this.initDataTable(), 300);

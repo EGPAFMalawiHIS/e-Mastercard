@@ -81,7 +81,7 @@ export default {
       let url_path = '/defaulter_list?start_date=' + dates[0] + "&date=" + dates[1];
       url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=true"; 
       const response = await ApiClient.get(url_path, {}, {});
-
+      this.initDataTable();
       if (response.status === 200) {
         response.json().then((data) => this.checkResult(data) );
       }else{
@@ -160,7 +160,7 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => this.initDataTable(), 300);
+    // setTimeout(() => this.initDataTable(), 300);
   }, data: function() {
       return {
         report_title: 'PEPFAR Defaulted clients ',

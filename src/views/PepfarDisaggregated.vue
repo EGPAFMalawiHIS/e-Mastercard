@@ -7,7 +7,7 @@
         <div id="main-container">
           <div class="row">
             <div class="col-sm-12" style="z-index: 30">
-              <span>{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+              <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
               <sdPicker :onSubmit="fetchDates"></sdPicker>
             </div>
           </div>
@@ -86,16 +86,16 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     async fetchDates(dates) {
-      this.reportTitle ='PEPFAR ' + sessionStorage.location_name + ' Disaggregated report ';
-      this.reportTitle += moment(dates[0]).format('DDMMMYYYY');
-      this.reportTitle += " - " + moment(dates[1]).format('DDMMMYYYY');
+      
       try {
         [this.startDate, this.endDate] = dates;
 
         const isValidDate = date => date && date !== 'Invalid date';
 
         if (!(isValidDate(this.startDate) && isValidDate(this.endDate))) return;
-
+        this.report_title ='PEPFAR ' + sessionStorage.location_name + ' Disaggregated report ';
+        this.report_title += moment(dates[0]).format('DDMMMYYYY');
+        this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
         this.reportLoading = true;
         this.reportSelected = true;
         await this.initializeReport();
@@ -120,20 +120,20 @@ export default {
         buttons: [
           {
             extend: 'copy',
-            title:  this.reportTitle
+            title:  this.report_title
           },
           {
             extend: 'csv',
-            title:  this.reportTitle,
+            title:  this.report_title,
             footer: true
           },
           {
             extend: 'pdf',
-            title:  this.reportTitle
+            title:  this.report_title
           },
           {
             extend: 'print',
-            title:  this.reportTitle
+            title:  this.report_title
           }
         ]
       });
@@ -463,7 +463,7 @@ export default {
         givenIPT: [],
         totalMales: [0, 0, 0, 0],
         totalFemales: [0, 0, 0, 0],
-        reportTitle: null,
+        report_title: null,
         fpRow: null,
         fbfRow: null,
         ageGroups: [

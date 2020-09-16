@@ -77,9 +77,8 @@ export default {
   },methods: {
     fetchDates: async function(dates) {
       this.report_title = sessionStorage.location_name + "  Appointment missed";
-       this.report_title += moment(dates[0]).format('DDMMMYYYY');
-        this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
-      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
+      this.report_title += moment(dates[0]).format('DDMMMYYYY');
+      this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
       let url_path = "/missed_appointments?start_date=" + dates[0] + "&end_date=" + dates[1]
       url_path += "&program_id=1&date=" +  moment().format('YYYY-MM-DD');
       const response = await ApiClient.get(url_path, {}, {});

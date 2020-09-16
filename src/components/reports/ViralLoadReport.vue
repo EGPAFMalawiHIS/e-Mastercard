@@ -109,6 +109,15 @@
                 <td>{{item.unknown}}</td>
               </tr>
             </tbody>
+           <tfoot>
+              <tr>
+                <td>
+                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                  e-Mastercard Version : {{EMCVersion}} 
+                  API Version {{APIVersion}}
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </ReportOverlay>
       </div>
@@ -206,15 +215,12 @@ export default {
       }
     },
     initDataTable() {
-      let start_date = moment(this.startDate).format("DD/MMM/YYYY");
-      let end_date = moment(this.endDate).format("DD/MMM/YYYY");
-      this.report_title = sessionStorage.location_name + " Viral Load Report. ";
-      this.report_title +=  moment().format('YYYY_MM_DD_h_m_s')+" EMC("+sessionStorage.EMCVersion+") " + "API("+sessionStorage.APIVersion+")";
-
-      if (!start_date == "Invalid date") {
-        this.report_title += " Reporting  period: " + start_date;
-        this.report_title += " " + end_date;
-      }
+      let start_date = moment(this.startDate).format('DDMMMYYYY');
+      let end_date = moment(this.endDate).format('DDMMMYYYY');
+      this.report_title = "MOH " + sessionStorage.location_name + " Viral Load Report. ";
+      this.report_title += start_date;
+      this.report_title += " - " + end_date;
+      
 
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[0, "asc"]],
@@ -241,7 +247,8 @@ export default {
           },
           {
             extend: "csv",
-            title: this.report_title
+            title: this.report_title,
+            footer: true
           },
           {
             extend: "pdf",

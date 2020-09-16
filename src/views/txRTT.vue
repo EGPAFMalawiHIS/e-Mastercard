@@ -15,7 +15,7 @@
         </div>
       </div>
       
-      <!--span>{{reportTitle}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
+      <!--span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span-->  
       <div class="row">
         <div class="col-sm-12" style="z-index: 40"> <!-- Report overlay below is at z-index === 30 -->
           <sdPicker :onSubmit="fetchDates"></sdPicker>
@@ -124,20 +124,20 @@ export default {
         buttons: [
           {
             extend: 'copy',
-            title:  this.reportTitle
+            title:  this.report_title
           },
           {
             extend: 'csv',
-            title:  this.reportTitle,
+            title:  this.report_title,
             footer: true
           },
           {
             extend: 'pdf',
-            title:  this.reportTitle
+            title:  this.report_title
           },
           {
             extend: 'print',
-            title:  this.reportTitle
+            title:  this.report_title
           }
         ]
       });
@@ -146,7 +146,9 @@ export default {
       try {
         this.startDate = dates[0];
         this.endDate = dates[1];
-        
+        this.report_title = 'PEPFAR ' + sessionStorage.location_name + ' TX RTT report ';
+        this.report_title += moment(dates[0]).format('DDMMMYYYY');
+        this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
         this.reportLoading = true;
         await this.loadXLdata();
         this.reportLoading = false;
@@ -169,6 +171,7 @@ export default {
     },
     loadGroupData(data){
       //this.loadXLdata();
+      this.initDataTable();
       let counter = 1;
       let report_gender = ['F','M'];
       let set_age_groups = this.ageGroups;
@@ -210,6 +213,7 @@ export default {
         reportLoading: false,
         startDate: null,
         endDate: null,
+        report_title: null,
         APIVersion: sessionStorage.APIVersion,
         EMCVersion: sessionStorage.EMCVersion,
         ageGroups: [
@@ -225,14 +229,10 @@ export default {
   },
   computed: {
     ...mapState(['location']),
-    reportTitle() {
-      let endTime = this.startDate;
-      endTime += " - " + this.endDate;
-      return `Pepfar' ${this.location.name} TX RTT: ${endTime} `;
-    }
+    
   },
   mounted(){
-    this.$nextTick(this.initDataTable);
+    // this.$nextTick(this.initDataTable);
   }
 };
 </script>

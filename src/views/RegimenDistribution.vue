@@ -120,6 +120,7 @@ export default {
       });
     },
     checkResult(data){
+      this.initDataTable();
       const url_string = window.location;
       const parsedURL = new URL(url_string);
       const resource_id = parsedURL.searchParams.get("resource_id");
@@ -169,7 +170,7 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => this.initDataTable(), 300);
+    // setTimeout(() => this.initDataTable(), 300);
   }, data: function() {
       return {
         report_title: 'Regimen distribution ',

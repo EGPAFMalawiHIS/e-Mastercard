@@ -207,20 +207,20 @@ export default {
         buttons: [
           {
             extend: 'copy',
-            title:  this.reportTitle
+            title:  this.report_title
           },
           {
             extend: 'csv',
-            title:  this.reportTitle,
+            title:  this.report_title,
             footer: true
           },
           {
             extend: 'pdf',
-            title:  this.reportTitle
+            title:  this.report_title
           },
           {
             extend: 'print',
-            title:  this.reportTitle
+            title:  this.report_title
           }
         ],
         columnDefs: [
@@ -351,7 +351,7 @@ export default {
       buttons.forEach((method, i) => {
         table.button().add(i, {
           extend: method,
-          title: this.reportTitle
+          title: this.report_title
         });
       });
 

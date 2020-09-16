@@ -114,9 +114,7 @@ export default {
       this.$router.push(url);
     },
     initDataTable(){
-      this.reportTitle ='PEPFAR ' + sessionStorage.location_name + ' TX ML report ';
-      this.reportTitle += moment(dates[0]).format('DDMMMYYYY');
-      this.reportTitle += " - " + moment(dates[1]).format('DDMMMYYYY');
+
       this.dTable = jQuery("#cohort-clients").dataTable({
         order: [[ 0, "asc" ]],
         fixedHeader: true,
@@ -153,7 +151,9 @@ export default {
       try {
         this.startDate = dates[0];
         this.endDate = dates[1];
-        
+        this.reportTitle ='PEPFAR ' + sessionStorage.location_name + ' TX ML report ';
+        this.reportTitle += moment(dates[0]).format('DDMMMYYYY');
+        this.reportTitle += " - " + moment(dates[1]).format('DDMMMYYYY');       
         this.reportLoading = true;
         await this.loadXLdata();
         this.reportLoading = false;
@@ -175,6 +175,7 @@ export default {
       }
     },
     loadGroupData(data){
+      this.initDataTable();
       //this.loadXLdata();
       let counter = 1;
       let report_gender = ['F','M'];
@@ -229,7 +230,7 @@ export default {
     ...mapState(['location']),
   },
   mounted(){
-    this.$nextTick(this.initDataTable);
+    // this.$nextTick(this.initDataTable);
   }
 };
 </script>
