@@ -12,6 +12,7 @@
             <label for>Viral Load</label>
             <input
               type="number"
+              step="any"
               name
               id
               class="form-control"

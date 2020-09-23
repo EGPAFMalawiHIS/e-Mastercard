@@ -14,6 +14,7 @@
           aria-label="Default"
           aria-describedby="inputGroup-sizing-default"
           v-on:input="setWeight"
+          step="any"
         />
       </div>
     </div>
@@ -28,6 +29,7 @@
           v-model="height.value_numeric"
           aria-label="Default"
           aria-describedby="inputGroup-sizing-default"
+          step="any"
         />
       </div>
     </div>
