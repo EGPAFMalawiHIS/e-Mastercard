@@ -14,6 +14,7 @@
                 <th scope="col">Last name</th>
                 <th class="center-text" scope="col">Gender</th>
                 <th class="center-text" scope="col">DOB</th>
+                <th class="center-text" scope="col">Outcome</th>
                 <th class="center-text" scope="col">&nbsp;</th>
               </tr>
             </thead>
@@ -126,7 +127,8 @@ export default {
         
         this.formatedData.push( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
-          data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
+          data[i].gender, birthdate, data[i].outcome || 'N/A',
+          this.createdShowBTN(data[i].person_id)] );
       }
       this.dTable.api().destroy();
       this.initDataTable();
