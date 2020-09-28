@@ -93,11 +93,13 @@ export default {
         const isValidDate = date => date && date !== 'Invalid date';
 
         if (!(isValidDate(this.startDate) && isValidDate(this.endDate))) return;
-        this.report_title ='PEPFAR ' + sessionStorage.location_name + ' Disaggregated report ';
+        this.report_title ='PEPFAR ' + sessionStorage.location_name + ' cohort disaggregated report ';
         this.report_title += moment(dates[0]).format('DDMMMYYYY');
         this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
         this.reportLoading = true;
         this.reportSelected = true;
+
+      this.initDataTable();
         await this.initializeReport();
       } catch (e) {
         this.$router.push({name: 'error', params: {message: e.message}});
@@ -190,7 +192,7 @@ export default {
           }
         }
       }
-      setTimeout(() => this.initDataTable(), 300);
+      // setTimeout(() => this.initDataTable(), 300);
     },
     initializeReport: async function() {
       let url = 'cohort_disaggregated';
@@ -203,6 +205,7 @@ export default {
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
       
+      // setTimeout(() => this.initDataTable(), 300);
       const response = await ApiClient.get(url);
 
       if (response.status === 200) {
@@ -258,6 +261,7 @@ export default {
       if(this.ageGroups.length < 1)
         await this.addTBscreenedData();
 
+      // this.initDataTable();
     },
     addTBscreenedData: async function() {
       if (this.screenedTB.length === 0) return;
@@ -446,7 +450,7 @@ export default {
         this.totalFemales[1], this.totalFemales[2], this.totalFemales[3] ]);
       
       this.dTable.fnDestroy();
-      this.initDataTable();
+      // this.initDataTable();
     }
   },
   mounted() {

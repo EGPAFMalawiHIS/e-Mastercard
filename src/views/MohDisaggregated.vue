@@ -91,7 +91,7 @@ export default {
       try {
         this.startDate = dates[0];
         this.endDate = dates[1];
-        this.report_title = 'MoH ' + sessionStorage.location_name + ' Cohort dissagregated report ';
+        this.report_title = 'MoH ' + sessionStorage.location_name + ' cohort dissagregated report ';
         this.report_title += moment(dates[0]).format('DDMMMYYYY');
         this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
         await this.initializeReport();

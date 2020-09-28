@@ -76,7 +76,7 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     fetchDates: async function(dates) {
-      this.report_title = sessionStorage.location_name + "  Appointment missed";
+      this.report_title ="Clinic" + sessionStorage.location_name + " Appointment missed report";
       this.report_title += moment(dates[0]).format('DDMMMYYYY');
       this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
       let url_path = "/missed_appointments?start_date=" + dates[0] + "&end_date=" + dates[1]

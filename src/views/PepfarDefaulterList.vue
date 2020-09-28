@@ -75,7 +75,7 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     fetchDates: async function(dates) {
-      this.report_title ='PEPFAR ' + sessionStorage.location_name + ' Defaulter list ';
+      this.report_title ='PEPFAR ' + sessionStorage.location_name + ' Defaulter list report ';
       this.report_title += moment(dates[0]).format('DDMMMYYYY');
       this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
       let url_path = '/defaulter_list?start_date=' + dates[0] + "&date=" + dates[1];

@@ -99,7 +99,7 @@ export default {
     fetchDates: async function(date) {
       this.reportLoading = true;
       this.reportSelected = true;
-      this.report_title = 'Clinic ' + sessionStorage.location_name + " Patients pregnant ";
+      this.report_title = 'Clinic ' + sessionStorage.location_name + " patients pregnant report ";
       this.report_title += moment(date[0]).format('DDMMMYYYY');
       this.report_title += " - " + moment(date[1]).format('DDMMMYYYY');
       let url_path = '/programs/1/reports/pregnant_patients?start_date=' + date[0] + 'end_date='+date[1];

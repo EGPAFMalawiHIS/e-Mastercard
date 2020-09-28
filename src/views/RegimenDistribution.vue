@@ -75,7 +75,7 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     fetchDates: async function(dates) {
-      this.report_title = 'Clinic '+ sessionStorage.location_name + "  Regimen dispensation report: ";
+      this.report_title = 'Clinic '+ sessionStorage.location_name + " regimen dispensation report ";
       this.report_title += moment(dates[0]).format('DDMMMYYYY');
       this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
       let url_path = '/regimen_report?start_date=' + dates[0] + "&date=" + dates[1];

@@ -171,6 +171,8 @@ export default {
       endDate: null,
       minViralLoad: null,
       maxViralLoad: null,
+      APIVersion: sessionStorage.APIVersion,
+      EMCVersion: sessionStorage.EMCVersion,
       AGE_GROUPS: [
         "0 - 1 Years",
         "2 - 4 Years",
@@ -217,7 +219,7 @@ export default {
     initDataTable() {
       let start_date = moment(this.startDate).format('DDMMMYYYY');
       let end_date = moment(this.endDate).format('DDMMMYYYY');
-      this.report_title = "MOH " + sessionStorage.location_name + " Viral Load Report. ";
+      this.report_title = "MoH " + sessionStorage.location_name + " viral load report ";
       this.report_title += start_date;
       this.report_title += " - " + end_date;
       

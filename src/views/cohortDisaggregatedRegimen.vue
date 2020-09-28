@@ -103,7 +103,7 @@ export default {
     initDataTable(){
       let start_date  = moment(this.startDate).format("DD/MMM/YYYY");
       let end_date = moment(this.endDate).format("DD/MMM/YYYY");
-      this.report_title ="MoH" + sessionStorage.location_name + " Disaggregated regimen  distribution report. ";
+      this.report_title ="MoH" + sessionStorage.location_name + " disaggregated regimen  distribution report ";
       this.report_title += moment(this.startDate).format('DDMMMYYYY');
       this.report_title += " - " + moment(this.endDate).format('DDMMMYYYY');
       
