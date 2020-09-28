@@ -351,7 +351,8 @@ export default {
       buttons.forEach((method, i) => {
         table.button().add(i, {
           extend: method,
-          title: this.report_title
+          title: this.report_title,
+          footer: true
         });
       });
 
