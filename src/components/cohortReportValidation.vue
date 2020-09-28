@@ -335,6 +335,10 @@ export default {
         if(this.dataparams[i].name == 'eleven_a')
             this.eleven_a = parseInt(this.dataparams[i].contents);
 
+        // Why not `this[name] = parseInt(dataparams[i].contents)`?
+        if(this.dataparams[i].name == 'twelve_a')
+            this.eleven_a = parseInt(this.dataparams[i].contents);
+
         if(this.dataparams[i].name == 'thirteen_a')
             this.thirteen_a = parseInt(this.dataparams[i].contents);
 
@@ -626,16 +630,22 @@ export default {
 
         /* ############Section 64  - 80: Total Alive and On ART should be equal to (64 - 80)
         */
-        let total_64_80 = (this.zero_p + this.zero_a + this.two_p + this.two_a + this.four_p + this.four_a);
-        total_64_80 += (this.five_a + this.six_a + this.seven_a + this.eight_a + this.nine_p + this.nine_a);
-        total_64_80 += (this.ten_a + this.eleven_p + this.eleven_a + this.twelve_a + this.unknown_regimen);
-        total_64_80 += (this.thirteen_a + this.fourteen_a + this.fifteen_a + this.sixteen_a + this.seventeen_a);
-        total_64_80 += (this.fourteen_p + this.fifteen_p + this.sixteen_p + this.seventeen_p);
+        function isEqualToSumOf(base, otherValues) {
+            const sum = otherValues.reduce((previous, current) => previous + current, 0);
 
-        if(this.total_alive_and_on_art != total_64_80){
-          html_string = "Section 64 - 80: Total alive and on ART is not equal to ";
-          html_string += " + Regimens sections";
-          this.report_consistency_string.push(html_string);
+            return base === sum;
+        }
+
+        const regimens = [this.zero_p, this.zero_a, this.two_p, this.two_a, this.four_p, this.four_a,
+                          this.five_a, this.six_a, this.seven_a, this.eight_a, this.nine_p, this.nine_a,
+                          this.ten_a, this.eleven_p, this.eleven_a, this.twelve_a, this.unknown_regimen,
+                          this.thirteen_a, this.fourteen_a, this.fifteen_a, this.sixteen_a, this.seventeen_a,
+                          this.fourteen_p, this.fifteen_p, this.sixteen_p, this.seventeen_p];
+
+        if (!isEqualToSumOf(this.total_alive_and_on_art, regimens)) {
+            this.report_consistency_string.push(
+                "Section 64 - 80: Total alive and on ART is not equal to Regimens sections"
+            );
         }
         /*#####################################*/
 
