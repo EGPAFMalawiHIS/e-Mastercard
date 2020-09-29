@@ -88,6 +88,16 @@ const routes = [
     component: () => import("../views/ArtRefillPeriods.vue")
   },
   {
+    path: "/art_refill_periods_moh",
+    name: "art_refill_periods moh",
+    component: () => import("../views/ArtRefillPeriodsMoH.vue")
+  },
+  {
+    path: "/tb_prev",
+    name: "TB Prev Report",
+    component: () => import("../views/TBPrev.vue")
+  },
+  {
     path: "/patient_registration",
     name: "patient_registration",
     component: () => import("../views/PatientRegistration.vue")

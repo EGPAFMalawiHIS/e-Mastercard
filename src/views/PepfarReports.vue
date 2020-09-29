@@ -60,7 +60,30 @@
                 </div>
               </div>
             </div>
-
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/tb_prev')">
+                <div class="card">
+                  <img src="../assets/report-icons/previous.png" class="btn-icon" />
+                  <p>TB Prev</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm">
+              <!-- <div class="btn-container" @click="redirect('/tb_prev')">
+                <div class="card">
+                  <img src="../assets/report-icons/previous.png" class="btn-icon" />
+                  <p>TB Prev</p>
+                </div>
+              </div> -->
+            </div>            
+            <div class="col-sm">
+              <!-- <div class="btn-container" @click="redirect('/tb_prev')">
+                <div class="card">
+                  <img src="../assets/report-icons/previous.png" class="btn-icon" />
+                  <p>TB Prev</p>
+                </div>
+              </div> -->
+            </div>
           </div>
 
 

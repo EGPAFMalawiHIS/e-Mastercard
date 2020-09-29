@@ -70,12 +70,12 @@
               </div>
             </div>           
             <div class="col-sm">
-              <!-- <div class="btn-container" @click="redirect('/ipt_coverage')">
+              <div class="btn-container" @click="redirect('/art_refill_periods_moh')">
                 <div class="card">
-                  <img src="../assets/report-icons/ipt-coverage.png" class="btn-icon"/>
-                  <p>IPT (coverage)</p>
+                  <img src="../assets/report-icons/px.png" class="btn-icon" />
+                  <p>TX CURR MMD</p>
                 </div>
-              </div> -->
+              </div>
             </div>
             <div class="col-sm">
               <!--div class="btn-container" @click="redirect">
