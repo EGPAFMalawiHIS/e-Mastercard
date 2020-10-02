@@ -63,25 +63,30 @@ export default {
       ...mapMutations(['setLocation']),
       fetchLocationID: async function() {
         const response = await ApiClient.get("global_properties?property=current_health_center_id", {}, {});
-        if (response.status === 200) {
-          response.json().then((data) => this.fetchLocationName(data.current_health_center_id) );
-        }
+
+        if (!response || response.status !== 200) return; // NOTE: Targeting Firefox 65, can't `response?.status`
+
+        const data = await response.json();
+        this.fetchLocationName(data.current_health_center_id);
       },
       async fetchAPIVersion() {
         const response = await ApiClient.get("version", {}, {});
-        if (response.status === 200) {
-          response.json().then((data) =>  {
-            this.APIVersion = data["System version"];
-            sessionStorage.EMCVersion = data["System version"]; 
-            });
-        }
+
+        if (!response || response.status !== 200) return;
+
+        const data = await response.json();
+
+        this.APIVersion = data["System version"];
+        sessionStorage.EMCVersion = data["System version"]; 
       },
       async fetchLocationName(location_id) {
         const response = await ApiClient.get("locations/" + location_id, {}, {});
-        if (response.status === 200) {
-          response.json().then((data) => this.createSessionLocationName(data) );
-          //this.setLocation(await response.json());
-        }
+
+        if (!response || response.status !== 200) return;
+
+        const data = await response.json();
+        this.createSessionLocationName(data);
+        //this.setLocation(await response.json());
       },
       createSessionLocationName(data){
         this.setLocation(data);
@@ -106,8 +111,9 @@ export default {
       EventBus.$on('change-location', payload => {
         this.fetchLocationID();
       });
-      this.fetchAPIVersion();
-      setTimeout(() => this.fetchLocationID(), 300);
+
+      this.fetchAPIVersion()
+          .then(this.fetchLocationID);
     }
 };
 

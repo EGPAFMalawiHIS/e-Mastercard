@@ -11,7 +11,9 @@ const ApiClient = (() => {
     source: null  // The actual config object stored on the server
   }
 
-  function expandPath(resourcePath) {
+  async function expandPath(resourcePath) {
+    const config = await getConfig();
+
     return `${config.protocol}://${config.host}:${config.port}/api/${config.apiVersion}/${resourcePath}`
   }
 
@@ -22,32 +24,33 @@ const ApiClient = (() => {
     }
   }
 
-  function getConfig() {
-    fetch('/config.json')
-    .then(
-      function(response) {
-        if (response.status !== 200) {
-          console.log('Looks like there was a problem. Status Code: ' +
-            response.status);
-          return;
-        }
+  async function getConfig() {
+    try {
+      if (config.source) return config;
 
-        // Examine the text in the response
-        response.json().then(function(data) {
-          sessionStorage.setItem("apiURL", data.apiURL);
-          config.host = data.apiURL;
-          sessionStorage.setItem("apiPort", data.apiPort);
-          config.port = data.apiPort;
-          sessionStorage.setItem("apiProtocol", data.apiProtocol);
-          config.protocol = data.apiProtocol;
-          config.version = data.version;
-          config.source = data;
-        });
+      const response = await fetch('/config.json');
+
+      if (response.status !== 200) {
+        console.error(`Looks like there was a problem. Status Code: ${response.status}`);
+        return;
       }
-    )
-    .catch(function(err) {
+
+      const data = await response.json()
+
+      sessionStorage.setItem("apiURL", data.apiURL);
+      config.host = data.apiURL;
+      sessionStorage.setItem("apiPort", data.apiPort);
+      config.port = data.apiPort;
+      sessionStorage.setItem("apiProtocol", data.apiProtocol);
+      config.protocol = data.apiProtocol;
+      config.version = data.version;
+      config.source = data;
+
+      return config;
+    } catch(err) {
       console.log('Fetch Error :-S', err);
-    });
+      return null;
+    }
   }
 
   function getRouter() {
@@ -59,29 +62,33 @@ const ApiClient = (() => {
   }
 
   async function execFetch(uri, params, {noRedirectCodes = []}) {
+    const url = await expandPath(uri)
+    params = {...params, mode: 'cors'}
+
+    if (!('headers' in params)) {
+      params = {...params, headers: headers()}
+    }
+
+    let response
+
     try {
-      params = {...params, mode: 'cors'};
-
-      if (!('headers' in params)) {
-        params = {...params, headers: headers()}
-      }
-
-      const response = await fetch(expandPath(uri), params)
-
-      if (response.status === 401 && !noRedirectCodes.includes(response.status)
-                                  && window.location.href.search(/login\/?$/) < 0) {
-        getRouter().push('/login')
-        return null;
-      } else if (response.status >= 500 && !noRedirectCodes.includes(response.status)) {
-        const {error, exception} = await response.json();
-        getRouter().push({name: 'error', query: {message: `${error} - ${exception}`}});
-        return null;
-      }
-      
-      return response
+      response = await fetch(url, params)
     } catch(e) {
-      console.log(e)
-      getRouter().push({name: 'error', query: {'message': `${e.name} - ${e.message}`}})
+      console.error(`Failed to fetch ${url}`, e);
+      getRouter().push({name: 'error', query: {'message': `Could not fetch ${url} due to ${e.name} - ${e.message}`}})
+      return null
+    }
+
+    if (response.status === 401 && !noRedirectCodes.includes(response.status)
+                                && window.location.href.search(/login\/?$/) < 0) {
+      getRouter().push('/login')
+      return null
+    } else if (response.status >= 500 && !noRedirectCodes.includes(response.status)) {
+      const {error, exception} = await response.json();
+      getRouter().push({name: 'error', query: {message: `${error} - ${exception}`}})
+      return null
+    } else {
+      return response
     }
   }
 
