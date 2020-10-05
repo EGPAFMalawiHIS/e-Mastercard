@@ -29,6 +29,10 @@
         <label for="IPT-quantity">IPT Quantity</label>
         <input type="number" class="form-control" id="IPT-quantity" v-model="IPTquantity" />
     </b-col>
+    <b-col> 
+        <label for="3HP-quantity">3HP Quantity</label>
+        <input type="number" class="form-control" id="IPT-quantity" v-model="threeHPquantity" />
+    </b-col>
   </b-row>
 </template>
 
@@ -48,13 +52,16 @@ export default {
       ARVquantity: null,
       CPTquantity: null,
       IPTquantity: null,
+      threeHPquantity: null,
       prescribeARVs: false,
       prescribeCPT: false,
       prescribeIPT: false,
+      prescribeThreeHP: false,
       weight: null,
       latestWeight: null,
       CPTRegimens: [], 
       IPTRegimens: [],
+      rifapepentineRegimens: [],
       onTb: false, 
       "Unknown Regimen": [{
         "drug_id": 1046,
@@ -92,6 +99,15 @@ export default {
         res => {
           res.json().then(ret => {
             this.IPTRegimens = ret;
+          });
+        }
+      );
+    },getThreeHP: async function() {
+      let patientID = this.$route.params.id;
+      await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=Rifapentine`).then(
+        res => {
+          res.json().then(ret => {
+            this.rifapepentineRegimens = ret;
           });
         }
       );
@@ -165,6 +181,22 @@ export default {
           value_coded : 656
         }
       }
+      if(this.threeHPquantity) {
+        this.rifapepentineRegimens.forEach(element => {
+          this.selectedDrugs.push({
+            drug_name: element.drug_name,
+            drug_id: element.drug_id,
+            units: element.units,
+            am: element.am,
+            pm: element.pm,
+            quantity: this.threeHPquantity
+          });
+        });
+        consultationObs.prescribeThreeHP= {
+          concept_id :1282,
+          value_coded : 9974
+        }
+      }
       for (let i = 0; i < this.selectedDrugs.length; i++) {
         let morning_tabs = parseFloat(this.selectedDrugs[i]["am"]);
         let evening_tabs = parseFloat(this.selectedDrugs[i]["pm"]);
@@ -235,6 +267,7 @@ export default {
     this.getRegimens();
     this.getCPT();
     this.getIPT();
+    this.getThreeHP();
     EventBus.$on('set-weight', payload => {
       this.selectedRegimen = null;
       this.ARVquantity = null;
@@ -246,6 +279,7 @@ export default {
       this.getRegimens();
       this.getCPT();
       this.getIPT();
+      this.getThreeHP();
     });
     EventBus.$on('set-initial-weight', payload => {
       this.latestWeight = payload;
@@ -253,6 +287,7 @@ export default {
       this.getRegimens();
       this.getCPT();
       this.getIPT();
+      this.getThreeHP();
     });
  
     EventBus.$on('set-tb', payload => {
