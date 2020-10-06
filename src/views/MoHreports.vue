@@ -52,14 +52,14 @@
           
             
 
-            <div class="col-sm">
-              <div class="btn-container" @click="redirect('/moh_disaggregated_regimen')">
+            <!-- <div class="col-sm">
+               <div class="btn-container" @click="redirect('/moh_disaggregated_regimen')">
                 <div class="card">
                   <img src="../assets/report-icons/distribution.png" class="btn-icon"/>
                   <p>Regimen distribution</p>
                 </div>
-              </div>
-            </div>
+              </div> 
+            </div> -->
 
              <div class="col-sm">
               <div class="btn-container" @click="redirect('/regimen_distribution_weight')">
@@ -85,7 +85,14 @@
                 </div>
               </div-->
             </div>
-
+<div class="col-sm">
+              <!--div class="btn-container" @click="redirect">
+                <div class="card">
+                  <img src="../assets/report-icons/cohort.png" class="btn-icon"/>
+                  <p>IPT (usage)</p>
+                </div>
+              </div-->
+            </div>
 
           </div>
 

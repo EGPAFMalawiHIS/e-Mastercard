@@ -450,7 +450,7 @@ export default {
         this.totalFemales[1], this.totalFemales[2], this.totalFemales[3] ]);
       
       this.dTable.fnDestroy();
-      // this.initDataTable();
+      this.initDataTable();
     }
   },
   mounted() {

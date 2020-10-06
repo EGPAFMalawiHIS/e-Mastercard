@@ -195,7 +195,8 @@ const routes = [
   {
     path: "/moh_disaggregated",
     name: "MohDisaggregated",
-    component: () => import("../views/MohDisaggregated.vue")
+    component: () => import("../views/cohortDisaggregatedRegimen.vue")
+    // component: () => import("../views/MohDisaggregated.vue")
   },
   {
     path: "/moh_disaggregated_regimen",
