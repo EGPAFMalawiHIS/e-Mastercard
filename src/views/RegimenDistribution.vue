@@ -11,10 +11,9 @@
             <thead>
               <tr>
                 <th scope="col">ARV number</th>
-                <th scope="col">First name</th>
-                <th scope="col">Last name</th>
                 <th class="center-text" scope="col">Gender</th>
                 <th class="center-text" scope="col">DOB</th>
+                <th class="center-text" scope="col">Weight (KG)</th>
                 <th class="center-text" scope="col">Regimen</th>
                 <th class="center-text" scope="col">ARVs</th>
                 <th class="center-text" scope="col">Dispensed date</th>
@@ -79,7 +78,7 @@ export default {
       this.report_title += moment(dates[0]).format('DDMMMYYYY');
       this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
       let url_path = '/regimen_report?start_date=' + dates[0] + "&date=" + dates[1];
-      url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=false"; 
+      url_path += "&end_date=" + dates[1] + "&program_id=1&type=moh"; 
       const response = await ApiClient.get(url_path, {}, {});
 
       if (response.status === 200) {
@@ -114,8 +113,9 @@ export default {
           }
         ],
         columnDefs: [
-          {"className": "center-text", "targets": 5},
-          {"className": "center-text", "targets": 7}
+          {"className": "center-text", "targets": 1},
+          {"className": "center-text", "targets": 3},
+          {"className": "center-text", "targets": 4}
         ]
       });
     },
@@ -142,6 +142,7 @@ export default {
         }
         
         let current_reg = data.current_regimen;
+        let current_weight = data.current_weight;
         let medications = [];
         let meds = data.medication;
         let prescription_date;
@@ -152,8 +153,7 @@ export default {
         }  
 
         this.formatedData.push( [data.arv_number,
-          data.given_name, data.family_name,
-          data.gender, birthdate, current_reg,
+          data.gender, birthdate, current_weight, current_reg,
           medications.join('<br />'), prescription_date ] );
       }
       this.dTable.api().destroy();
