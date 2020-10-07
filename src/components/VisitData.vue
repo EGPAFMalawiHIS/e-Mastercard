@@ -26,7 +26,7 @@
         <td>{{visit.breastfeeding}}</td>
         <td>{{visit.tbStatus}}</td>
         <td>{{visit.sideEffects}}</td>
-        <td>{{visit.ARTRegimen}} ({{visit.dispensed}})</td>
+        <td>{{visit.ARTRegimen}} {{ visit.dispensed ? `(${visit.dispensed})` : '' }}</td>
         <td>{{visit.nextAppointment}}</td>
         <td>{{visit.outcome}}</td>
         <td>{{visit.viralLoad}}</td>
@@ -157,7 +157,7 @@ export default {
     },
     getLastOrder: async function(encounterDate) {
     let patientID = this.$route.params.id;
-    let response =  await ApiClient.get(`/programs/1/patients/${patientID}/last_drugs_received?date=`+encounterDate);
+    let response =  await ApiClient.get(`/programs/1/patients/${patientID}/regimens?date=`+encounterDate);
     return await response.json();
   },
     removeEncounter: async function(encounter) {
@@ -256,9 +256,8 @@ export default {
         });
         });
         this.getCurrentPatientInfo(element).then(el=> {
-          element.ARTRegimen = el.current_regimen;
           element.outcome = el.current_outcome;
-          tempob.ARTRegimen = el.current_regimen;
+          
           tempob.outcome = el.current_outcome;
 
         })
@@ -305,10 +304,21 @@ export default {
             tempob.encounters = [...j];
         });
         this.getLastOrder(element.visitDate).then(el => {
-              if(el.length > 0) {
-                element.dispensed = el[0].quantity;            
-                tempob.dispensed = el[0].quantity;            
+              // this.ARTRegimen = 
+            if(!el.errors) {
+            tempob.ARTRegimen = el.regimen;
+            element.ARTRegimen = el.regimen;
+            let quantities = [];
+            
+              if(el.drugs.length > 0) {
+               el.drugs.forEach(element => {
+                quantities.push(element.quantity);
+              });
+              let min_quantity = Math.min(...quantities);
+                element.dispensed = min_quantity;            
+                tempob.dispensed = min_quantity;            
               }
+            }
         });
         this.patientVisits.push(tempob);
       });
