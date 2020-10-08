@@ -31,7 +31,8 @@
                   <th>#</th>
                   <th>Age group</th>
                   <th>Gender</th>
-                  <th class="disaggregated-numbers">Defaulted</th>
+                  <th class="disaggregated-numbers">Defaulted (new registration)</th>
+                  <th class="disaggregated-numbers">Defaulted (old registration)</th>
                   <th class="disaggregated-numbers">Died</th>
                   <th class="disaggregated-numbers">Stopped</th>
                   <th class="disaggregated-numbers">Transferred out</th>
@@ -192,14 +193,14 @@ export default {
               if (age_group == set_age_groups[i]  &&  sex == report_gender[j]) {  
                 let numbers = gender[sex];
                 this.dTable.fnAddData([ counter++, age_group, sex, numbers[0].length,
-                    numbers[1].length, numbers[2].length, numbers[3].length, numbers[4].length]);
+                    numbers[1].length, numbers[2].length, numbers[3].length, numbers[4].length, numbers[4].length]);
                 age_group_found = true;
 
               }
             }
           }
           if(!age_group_found){
-            this.dTable.fnAddData([ counter++, set_age_groups[i], report_gender[j], 0,0,0,0,0 ]);
+            this.dTable.fnAddData([ counter++, set_age_groups[i], report_gender[j], 0,0,0,0,0,0 ]);
           }else{
             age_group_found = false;
           }
