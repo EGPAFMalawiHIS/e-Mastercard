@@ -337,7 +337,7 @@ export default {
 
         // Why not `this[name] = parseInt(dataparams[i].contents)`?
         if(this.dataparams[i].name == 'twelve_a')
-            this.eleven_a = parseInt(this.dataparams[i].contents);
+            this.twelve_a = parseInt(this.dataparams[i].contents);
 
         if(this.dataparams[i].name == 'thirteen_a')
             this.thirteen_a = parseInt(this.dataparams[i].contents);
