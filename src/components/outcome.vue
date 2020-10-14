@@ -1,10 +1,17 @@
 <template>
   <div>
+    <div class="alert alert-dark">
+      Patient is <strong v-if="!isEnrolled"> not </strong> enrolled in porgram.
+      <span v-if="enrollDate">Date enrolled is  {{moment(enrollDate).format('DD-MMM-YYYY')}}</span>
+
+    </div>
+    <programs></programs>
+    <br>
     <div class="row">
     <div class="col">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <span class="input-group-text" id="height">Outcome</span>
+            <span class="input-group-text" id="height">Outcome </span>
           </div>
            <select class="form-control" name="" id="" v-if="states.length > 0" v-model="state">
             
@@ -80,9 +87,11 @@ import "vue-select/dist/vue-select.css";
 import VueSelect from "vue-select";
 import moment from "moment";
 import EventBus from "../services/event-bus.js";
+import programs from "@/components/Programs.vue"
 export default {
   components: {
     "v-select": VueSelect,
+    "programs": programs
   },
   data: function() {
     return {
@@ -95,6 +104,7 @@ export default {
         location: null,
         voiding: false,
         enrollDate: null,
+        programs: [],
 
     };
   }, methods: {
@@ -108,10 +118,14 @@ export default {
     getPatientOutcomes: async function() {
       await ApiClient.get(`/patients/${this.$route.params.id}/programs`).then(res => {
         res.json().then(f => {
+          if(f.length > 0) {
+            this.programs = f;
             this.outcomes = f.filter(y =>  {
               return y.program_id === 1;
             })[0]["patient_states"];
             this.enrollDate = f[0].date_enrolled;
+
+          }
         })
       });
     },
@@ -187,7 +201,12 @@ export default {
       this.getOutcomes();
       this.getlocations(sessionStorage.location_name);
       this.getPatientOutcomes();
-  }
+  },
+  computed: {
+      isEnrolled() {
+          return this.programs.filter( l => {return l.program.name === "HIV PROGRAM"}).length > 0 ? true : false  
+    }
+}
 };
 </script>
 
