@@ -70,9 +70,13 @@ export default {
       seven_a: 0,
       eight_a: 0,
       nine_p: 0,
+      nine_p_tabs: 0,
+      nine_p_granules: 0,
       nine_a: 0,
       ten_a: 0,
       eleven_p: 0,
+      eleven_p_tabs: 0,
+      eleven_p_granules: 0,
       eleven_a: 0,
       twelve_a: 0,
       thirteen_a: 0,
@@ -320,8 +324,11 @@ export default {
         if(this.dataparams[i].name == 'eight_a')
             this.eight_a = parseInt(this.dataparams[i].contents);
 
-        if(this.dataparams[i].name == 'nine_p')
-            this.nine_p = parseInt(this.dataparams[i].contents);
+        if(this.dataparams[i].name == 'nine_p_tabs')
+            this.nine_p_tabs = parseInt(this.dataparams[i].contents);
+
+        if(this.dataparams[i].name == 'nine_p_granules')
+            this.nine_p_granules = parseInt(this.dataparams[i].contents);
 
         if(this.dataparams[i].name == 'nine_a')
             this.nine_a = parseInt(this.dataparams[i].contents);
@@ -329,8 +336,11 @@ export default {
         if(this.dataparams[i].name == 'ten_a')
             this.ten_a = parseInt(this.dataparams[i].contents);
 
-        if(this.dataparams[i].name == 'eleven_p')
-            this.eleven_p = parseInt(this.dataparams[i].contents);
+        if(this.dataparams[i].name == 'eleven_p_tabs')
+            this.eleven_p_tabs = parseInt(this.dataparams[i].contents);
+
+        if(this.dataparams[i].name == 'eleven_p_granules')
+            this.eleven_p_granules = parseInt(this.dataparams[i].contents);
 
         if(this.dataparams[i].name == 'eleven_a')
             this.eleven_a = parseInt(this.dataparams[i].contents);
@@ -637,9 +647,10 @@ export default {
         }
 
         const regimens = [this.zero_p, this.zero_a, this.two_p, this.two_a, this.four_p, this.four_a,
-                          this.five_a, this.six_a, this.seven_a, this.eight_a, this.nine_p, this.nine_a,
-                          this.ten_a, this.eleven_p, this.eleven_a, this.twelve_a, this.unknown_regimen,
-                          this.thirteen_a, this.fourteen_a, this.fifteen_a, this.sixteen_a, this.seventeen_a,
+                          this.five_a, this.six_a, this.seven_a, this.eight_a, this.nine_p_tabs,this.nine_p_granules, 
+                          this.nine_a, this.ten_a, this.eleven_p_tabs, this.eleven_p_granules, this.eleven_a, 
+                          this.twelve_a, this.unknown_regimen, this.thirteen_a, this.fourteen_a, 
+                          this.fifteen_a, this.sixteen_a, this.seventeen_a,
                           this.fourteen_p, this.fifteen_p, this.sixteen_p, this.seventeen_p];
 
         if (!isEqualToSumOf(this.total_alive_and_on_art, regimens)) {

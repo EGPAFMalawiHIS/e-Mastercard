@@ -148,7 +148,7 @@ export default {
     setTimeout(() => this.fetchData(), 300);
   }, data: function() {
       return {
-        report_title: 'MoH cohort report drill down (version 24)',
+        report_title: 'MoH cohort report drill down (version 25)',
         reportData: null,
         dTable: null,
         formatedData: []

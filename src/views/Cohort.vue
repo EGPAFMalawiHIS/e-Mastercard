@@ -107,7 +107,7 @@ export default {
   },
   data () {
     return {
-      msg: 'MoH cohort report version 24',
+      msg: 'MoH cohort report version 25',
       cohortData: [],
       validationData: [],
       reportData: null,

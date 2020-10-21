@@ -747,7 +747,22 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">9</td>
-      <td><a href="#" @click="drillDown('nine_p');">{{nine_p}}</a></td>
+      <td>
+        <div class="granules">
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td"><span>Tabs</span></div>
+            <div class="granules-cell"><span>Granules</span></div>
+          </div>
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td">
+              <a href="#" @click="drillDown('nine_p_tabs');" id="nine_p_tabs">{{nine_p_tabs}}</a>
+            </div>
+            <div class="granules-cell">
+              <a href="#" @click="drillDown('nine_p_granules');" id="nine_p_granules">{{nine_p_granules}}</a>
+            </div>
+          </div>
+        </div>
+      </td>
       <td><a href="#" @click="drillDown('nine_a');">{{nine_a}}</a></td>
     </tr>
     
@@ -777,7 +792,22 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">11</td>
-      <td><a href="#" @click="drillDown('eleven_p');">{{eleven_p}}</a></td>
+      <td>
+        <div class="granules">
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td"><span>Tabs</span></div>
+            <div class="granules-cell"><span>Granules</span></div>
+          </div>
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td">
+              <a href="#" @click="drillDown('eleven_p_tabs');" id="eleven_p_tabs">{{eleven_p_tabs}}</a>
+            </div>
+            <div class="granules-cell">
+              <a href="#" @click="drillDown('eleven_p_granules');" id="eleven_p_granules">{{eleven_p_granules}}</a>
+            </div>
+          </div>
+        </div>
+      </td>
       <td><a href="#" @click="drillDown('eleven_a');">{{eleven_a}}</a></td>
     </tr>
     
@@ -1213,9 +1243,13 @@ export default {
       seven_a: 0,
       eight_a: 0,
       nine_p: 0,
+      nine_p_tabs: 0,
+      nine_p_granules: 0,
       nine_a: 0,
       ten_a: 0,
       eleven_p: 0,
+      eleven_p_tabs: 0,
+      eleven_p_granules: 0,
       eleven_a: 0,
       twelve_a: 0,
       thirteen_a: 0,
@@ -1473,6 +1507,12 @@ export default {
       if(this.params[i].name == 'nine_p')
         this.nine_p = this.params[i].contents;
 
+      if(this.params[i].name == 'nine_p_tabs')
+        this.nine_p_tabs = this.params[i].contents;
+
+      if(this.params[i].name == 'nine_p_granules')
+        this.nine_p_granules = this.params[i].contents;
+
       if(this.params[i].name == 'nine_a')
         this.nine_a = this.params[i].contents;
 
@@ -1481,6 +1521,12 @@ export default {
 
       if(this.params[i].name == 'eleven_p')
         this.eleven_p = this.params[i].contents;
+
+      if(this.params[i].name == 'eleven_p_tabs')
+        this.eleven_p_tabs = this.params[i].contents;
+
+      if(this.params[i].name == 'eleven_p_granules')
+        this.eleven_p_granules = this.params[i].contents;
 
       if(this.params[i].name == 'eleven_a')
         this.eleven_a = this.params[i].contents;
@@ -1682,5 +1728,29 @@ td {
   left: -40px;
 }
 
+.granules {
+  width: 100%;
+  height: 32px;
+  margin: 10px;
+  display: table;
+}
+
+.granules-row {
+  display: table-row;
+}
+
+.granules-cell {
+  display: table-cell;
+  text-align: center;
+}
+
+.granules span{
+  font-size: 10px;
+}
+
+.granules-right-td {
+  border-right-style: dotted !important;
+  border-right-width: 1px;
+}
 
 </style>
