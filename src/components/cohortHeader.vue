@@ -2,7 +2,7 @@
   <table>
     <tr id="version-row">
       <td class="numbers">&nbsp;</td>
-      <td colspan="4" id="version">Version 24</td>
+      <td colspan="4" id="version">Version 25</td>
     </tr>
     <tr>
       <td class="numbers">1.</td>
