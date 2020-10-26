@@ -193,7 +193,7 @@ export default {
               if (age_group == set_age_groups[i]  &&  sex == report_gender[j]) {  
                 let numbers = gender[sex];
                 this.dTable.fnAddData([ counter++, age_group, sex, numbers[0].length,
-                    numbers[1].length, numbers[2].length, numbers[3].length, numbers[4].length, numbers[4].length]);
+                    numbers[1].length, numbers[2].length, numbers[3].length, numbers[4].length, numbers[5].length]);
                 age_group_found = true;
 
               }
