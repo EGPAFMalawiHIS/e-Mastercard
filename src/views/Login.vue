@@ -60,18 +60,10 @@
               <div v-for="(error, index) in errors" v-bind:key="index">
 <h4 style="color:#ff3548;">{{error}}</h4>
               </div>
-              
-              <div class="row">
-                <div class="center" style="margin:auto;">
-                  <input
-                    type="submit"
-                    class="btn btn-primary btn-block btn-flat btnnice"
-                    value="Log in"
-                  />
-                </div>
-                <!-- /.col -->
-              </div>
+              <b-button pill size="lg" style="margin:auto;" variant="primary" type="submit">Login</b-button>
             </form>
+            <br>
+            <configuration/>
           </div>
         </div>
       </div>
@@ -80,7 +72,7 @@
 </template>
 <script>
 import ApiClient from "../services/api_client";
-
+import configuration from "@/components/configuration.vue";
 const MIN_USERNAME_LENGTH = 4;
 const MIN_PASSWORD_LENGTH = 4;
 
@@ -160,6 +152,9 @@ export default {
   created() {
     sessionStorage.clear();
     this.$store.user = null;
+  },
+  components: {
+    "configuration": configuration
   }
 };
 </script>

@@ -25,31 +25,48 @@ const ApiClient = (() => {
   }
 
   async function getConfig() {
-    try {
-      if (config.source) return config;
+    if(localStorage.useLocalStorage && JSON.parse(localStorage.useLocalStorage)) {
+        if (config.source) return config;
+        sessionStorage.setItem("apiURL", localStorage.getItem("ip-address"));
+        let apiURL = localStorage.getItem("ip-address");
+        sessionStorage.setItem("apiPort", localStorage.port);
+        let apiPort = localStorage.getItem("port");
+        sessionStorage.setItem("apiProtocol", "http");
+        let apiProtocol = "http";
+        config.host = apiURL;
+        config.port = apiPort;
+        config.protocol = apiProtocol;
+        config.version = 'dev';
+        config.source = config;
 
-      const response = await fetch('/config.json');
+        return config;
+    }else {
+      try {
+        if (config.source) return config;
 
-      if (response.status !== 200) {
-        console.error(`Looks like there was a problem. Status Code: ${response.status}`);
-        return;
+        const response = await fetch('/config.json');
+
+        if (response.status !== 200) {
+          console.error(`Looks like there was a problem. Status Code: ${response.status}`);
+          return;
+        }
+
+        const data = await response.json()
+
+        sessionStorage.setItem("apiURL", data.apiURL);
+        config.host = data.apiURL;
+        sessionStorage.setItem("apiPort", data.apiPort);
+        config.port = data.apiPort;
+        sessionStorage.setItem("apiProtocol", data.apiProtocol);
+        config.protocol = data.apiProtocol;
+        config.version = data.version;
+        config.source = data;
+
+        return config;
+      } catch(err) {
+        console.log('Fetch Error :-S', err);
+        return null;
       }
-
-      const data = await response.json()
-
-      sessionStorage.setItem("apiURL", data.apiURL);
-      config.host = data.apiURL;
-      sessionStorage.setItem("apiPort", data.apiPort);
-      config.port = data.apiPort;
-      sessionStorage.setItem("apiProtocol", data.apiProtocol);
-      config.protocol = data.apiProtocol;
-      config.version = data.version;
-      config.source = data;
-
-      return config;
-    } catch(err) {
-      console.log('Fetch Error :-S', err);
-      return null;
     }
   }
 
