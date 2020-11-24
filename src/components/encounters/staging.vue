@@ -548,8 +548,8 @@ export default {
         this.encounterObject.obs.cd4CountDate.value_datetime = this.form.cd4_count_date;
       }
 
-      if (this.cd4Count != null) {
-        this.encounterObject.obs.cd4Count.value_numeric = this.cd4Count;
+      if (this.form.cd4_count != null) {
+        this.encounterObject.obs.cd4Count.value_numeric = this.form.cd4_count;
         this.cd4CountRanges();
       }
 
@@ -663,7 +663,7 @@ export default {
     },
 
     cd4CountRanges() {
-      if (this.cd4Count <= 250) {
+      if (this.form.cd4_count <= 250) {
         this.encounterObject.obs.cd4250 = this.buildC4DCountAnswer({
           id: 8262,
           coded: 1065,
@@ -677,7 +677,7 @@ export default {
         });
       }
 
-      if (this.cd4Count <= 350) {
+      if (this.form.cd4_count <= 350) {
         this.encounterObject.obs.cd4350 = this.buildC4DCountAnswer({
           id: 8207,
           coded: 1065,
@@ -691,7 +691,7 @@ export default {
         });
       }
 
-      if (this.cd4Count <= 500) {
+      if (this.form.cd4_count <= 500) {
         this.encounterObject.obs.cd4500 = this.buildC4DCountAnswer({
           id: 9389,
           coded: 1065,
@@ -705,7 +705,7 @@ export default {
         });
       }
 
-      if (this.cd4Count <= 750) {
+      if (this.form.cd4_count <= 750) {
         this.encounterObject.obs.cd4750 = this.buildC4DCountAnswer({
           id: 8208,
           coded: 1065,
@@ -728,7 +728,7 @@ export default {
 
       if (this.cdCountAvailable) {
         this.encounterObject.obs.cd4CountDate.value_datetime = this.form.cd4_count_date;
-        this.encounterObject.obs.cd4Count.value_numeric = this.cd4Count;
+        this.encounterObject.obs.cd4Count.value_numeric = this.form.cd4_count;
         this.encounterObject.obs.cd4Count.value_modifier = this.form.cd4_count_modifier;
         this.encounterObject.obs.cd4CountLocation.location_id = this.form.cd4_count_location.location_id;
         this.encounterObject.obs.cd4CountLocation.value_text = this.form.cd4_count_location.label;
@@ -887,8 +887,8 @@ export default {
 
       // CD4 Count
       this.encounterObject.obs.CD4Count.concept_id = 5497;
-      this.encounterObject.obs.CD4Count.value_numeric = this.cd4Count;
-      this.encounterObject.obs.CD4Count.value_modifier = this.cd4CountModfier;
+      this.encounterObject.obs.CD4Count.value_numeric = this.form.cd4_count;
+      this.encounterObject.obs.CD4Count.value_modifier = this.form.cd4_count_modifier;
     },
 
     fetchDemographics: async function() {
