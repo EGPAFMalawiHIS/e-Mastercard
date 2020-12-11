@@ -236,17 +236,17 @@ export default {
         for(let sex in gender){
            let e = (sex == 'F' ?  female_row : male_row);
            let row_data = data[age_group][sex];
-           e.children[3].innerHTML = row_data.tx_new;
-           e.children[4].innerHTML = row_data.tx_curr;
+           e.children[3].innerHTML = row_data.tx_new.length;
+           e.children[4].innerHTML = row_data.tx_curr.length;
            this.screenedTB.push( [e.children[6], sex, age_group] );
            this.givenIPT.push( [e.children[5], sex, age_group] );
 
            if(sex == 'M') {
-             this.totalMales[0] += row_data.tx_new;
-             this.totalMales[1] += row_data.tx_curr;
+             this.totalMales[0] += row_data.tx_new.length;
+             this.totalMales[1] += row_data.tx_curr.length;
            }else{
-             this.totalFemales[0] += row_data.tx_new;
-             this.totalFemales[1] += row_data.tx_curr;
+             this.totalFemales[0] += row_data.tx_new.length;
+             this.totalFemales[1] += row_data.tx_curr.length;
            }
 
         }
@@ -374,10 +374,10 @@ export default {
       for(let age in data) {
         let gender = data[age];
         for(let sex in gender) {
-          let tx_new = data[age][sex].tx_new;
-          let tx_curr = data[age][sex].tx_curr;
-          let tx_screened_for_tb = data[age][sex].tx_screened_for_tb;
-          let tx_given_ipt = data[age][sex].tx_given_ipt;
+          let tx_new = data[age][sex].tx_new.length;
+          let tx_curr = data[age][sex].tx_curr.length;
+          let tx_screened_for_tb = data[age][sex].tx_screened_for_tb.length;
+          let tx_given_ipt = data[age][sex].tx_given_ipt.length;
 
           if(age_group == 'Pregnant'){
             let newRow = this.dTable.fnAddData([ "32", "All", "FP", tx_new,
@@ -429,9 +429,9 @@ export default {
     },
     assignValueTD(el, count, rowNum){
       if(rowNum == 1){
-        console.log(jQuery('td', el)[5].innerHTML = count);
+        // console.log(jQuery('td', el)[5].innerHTML = count);
       }else{
-        console.log(jQuery('td', el)[6].innerHTML = count);
+        // console.log(jQuery('td', el)[6].innerHTML = count);
       }
     },addAllFemaleRow(){
       let rows = this.$refs.tableBody.children;
