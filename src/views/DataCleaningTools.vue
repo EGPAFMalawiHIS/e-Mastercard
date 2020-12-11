@@ -97,6 +97,11 @@ export default {
           path: "/cleaning_tools/merging",
           name: "Patient Merging",
           icon_path: require("../assets/merge.png")
+        },
+        {
+          path: "/cleaning_tools/visit_stats",
+          name: "Patient visit stats",
+          icon_path: require("../assets/report-icons/line-chart.png")
         }
       ]
     };
