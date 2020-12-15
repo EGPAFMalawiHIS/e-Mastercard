@@ -5,8 +5,20 @@
          <top-nav />
         <!-- Page Content -->
         <div id="main-container" class="col-12 table-col">
-          <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
+    
+ <div class="row">
+            <div class="col-sm-12" style="z-index: 30">
+      <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
            <sdPicker :onSubmit="fetchDates"></sdPicker>
+              
+            </div>
+          </div>
+ <div class="row">
+                 <div class="col-sm12">
+             <ReportOverlay :reportLoading="reportLoading" :reportSelected="reportSelected">
+              
+
+                 
           <table class="table table-striped report" id="cohort-clients">
             <thead>
               <tr>
@@ -47,13 +59,74 @@
               </tr>
             </thead>
             <tbody ref="tableBody">
+              <template v-for="s in genders" >
+                <tr v-for="(i, index) in Object.keys(patientData)" :key="s+index">
+                  <td>{{index}}</td>
+                  <td>{{i}}</td>
+                  <td>{{s}}</td>
+                  <td @click="fetchDrillDown(s, i, 'tx_new')">{{patientData[i][s]['tx_new'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, 'tx_curr')">{{patientData[i][s]['tx_curr'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, 'tx_curr_ipt')">{{patientData[i][s]['tx_curr_ipt'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, 'tx_curr_screened_tb')">{{patientData[i][s]['tx_curr_screened_tb'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '0A')">{{patientData[i][s]['0A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '2A')">{{patientData[i][s]['2A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '4A')">{{patientData[i][s]['4A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '5A')">{{patientData[i][s]['5A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '6A')">{{patientData[i][s]['6A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '7A')">{{patientData[i][s]['7A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '8A')">{{patientData[i][s]['8A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '9A')">{{patientData[i][s]['9A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '10A')">{{patientData[i][s]['10A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '11A')">{{patientData[i][s]['11A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '12A')">{{patientData[i][s]['12A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '13A')">{{patientData[i][s]['13A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '14A')">{{patientData[i][s]['14A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '15A')">{{patientData[i][s]['15A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '16A')">{{patientData[i][s]['16A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '17A')">{{patientData[i][s]['17A'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '0P')">{{patientData[i][s]['0P'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '2P')">{{patientData[i][s]['2P'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '4P')">{{patientData[i][s]['4P'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '9P')">{{patientData[i][s]['9P'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '11P')">{{patientData[i][s]['11P'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '14P')">{{patientData[i][s]['14P'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '15P')">{{patientData[i][s]['15P'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '16P')">{{patientData[i][s]['16P'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, '17P')">{{patientData[i][s]['17P'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, 'Unknown')">{{patientData[i][s]['Unknown'].length}}</td>
+                  <td @click="fetchDrillDown(s, i, 'tx_new')">{{getTotal(i,s)}}</td>
+                </tr>
+              </template>
             </tbody>
           </table>
+
+        </ReportOverlay>
+ </div>
+        </div>       
         </div>
 
         <img src="../assets/load.gif" id="spinner" />
         <div id="report-cover"></div>
         <!-- Page Content end -->
+        <b-modal id="modal-1" :title="`Drill Down Clients`">
+          <!-- btable  -->
+          <b-table striped 
+          hover id="my-table" 
+          :items="drillClients" 
+          :fields="columns" 
+          :per-page="perPage" 
+          
+          :current-page="currentPage"></b-table>
+          <b-pagination
+      v-model="currentPage"
+      :per-page="perPage"
+      :total-rows="rows"
+      aria-controls="my-table"
+    ></b-pagination>
+
+    <p class="mt-3">Current Page: {{ currentPage }}</p>
+          <!-- <p class="my-4">Hello from modal!</p> -->
+        </b-modal>
     </div>
   </div>
 </template>
@@ -74,6 +147,7 @@ import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
+import ReportOverlay from "../components/reports/ReportOverlay";
 import jQuery from 'jquery';
 import datatable from 'datatables';
 
@@ -91,6 +165,7 @@ require("@/assets/datatable/js/dataTables.fixedHeader.min.js");
 export default {
   name: "reports",
   components: {
+    ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
@@ -98,6 +173,8 @@ export default {
     fetchDates: function(dates) {
       this.startDate = dates[0];
       this.endDate = dates[1];
+      this.reportLoading = true;
+      this.reportSelected = true;
       this.initializeReport();
     },
     initDataTable(){
@@ -156,50 +233,61 @@ export default {
       //this.dTable.api().destroy();
       //this.initDataTable();
     },
+    fetchDrillDown(gender, age_group, key){
+      this.$bvModal.show('modal-1');
+      let clients = this.patientData[age_group][gender][key];
+      this.drillClients = [];
+      clients.forEach(element => {
+        this.getClient(element);
+      });
+      console.log(clients);
+    },
     addTableBody() {
-      let columns = [
-        '0-5 months', '6-11 months','12-23 months',
-        '2-4 years', '5-9 years',
-        '10-14 years', '15-17 years',
-        '18-19 years', '20-24 years',
-        '25-29 years', '30-34 years',
-        '35-39 years', '40-44 years',
-        '45-49 years', '50 plus years'
-      ];
+      // let columns = [
+      //   '0-5 months', '6-11 months','12-23 months',
+      //   '2-4 years', '5-9 years',
+      //   '10-14 years', '15-17 years',
+      //   '18-19 years', '20-24 years',
+      //   '25-29 years', '30-34 years',
+      //   '35-39 years', '40-44 years',
+      //   '45-49 years', '50 plus years'
+      // ];
 
-      let table_body  = this.$refs.tableBody;
-      let row_count = 1;
-      let gender = ['Female', 'Male'];
+      // let table_body  = this.$refs.tableBody;
+      // let row_count = 1;
+      // let gender = ['Female', 'Male'];
 
-      for(let s = 0 ; s < gender.length; s++){
-        for(let i = 0 ; i < columns.length; i++){
-          let tr = document.createElement('tr');
-          tr.setAttribute('class', gender[s] + '_row');
-          table_body.appendChild(tr);
-          let td_count = 0;
+      // for(let s = 0 ; s < gender.length; s++){
+      //   for(let i = 0 ; i < columns.length; i++){
+      //     let tr = document.createElement('tr');
+      //     tr.setAttribute('class', gender[s] + '_row');
+      //     table_body.appendChild(tr);
+      //     let td_count = 0;
 
-          while (td_count < 34) {
-            var td = document.createElement('td');
-            tr.appendChild(td);
-            if(td_count == 0)
-              td.innerHTML = (row_count++);
+      //     while (td_count < 34) {
+      //       var td = document.createElement('td');
+      //       tr.appendChild(td);
+      //       if(td_count == 0)
+      //         td.innerHTML = `<a>${(row_count++)}</a>`;
             
-            if(td_count == 1)
-              td.innerHTML = columns[i];
+      //       if(td_count == 1)
+      //         td.innerHTML = `<a>${(columns[i])}</a>`;
+      //         // td.innerHTML = columns[i];
                
-            if(td_count == 2)
-              td.innerHTML = gender[s];
+      //       if(td_count == 2)
+      //         td.innerHTML = `<a>${(gender[s])}</a>`;
+      //         // td.innerHTML = gender[s];
                
-            if(td_count > 2){
-              td.innerHTML = 0;
-              td.setAttribute('class','disaggregated-numbers');
-            }   
-            tr.appendChild(td);
-            td_count++;
-          }
-        }
-      }
-      setTimeout(() => this.initDataTable(), 300);
+      //       if(td_count > 2){
+      //         td.innerHTML = 0;
+      //         td.setAttribute('class','disaggregated-numbers');
+      //       }   
+      //       tr.appendChild(td);
+      //       td_count++;
+      //     }
+      //   }
+      // }
+      // setTimeout(() => this.initDataTable(), 300);
     },
     initializeReport: async function() {
       this.report_title = sessionStorage.location_name + " MoH Disaggregated report";
@@ -214,8 +302,8 @@ export default {
       url += "&end_date=" + this.endDate;
       url += '&program_id=1';
 
-      document.getElementById("spinner").style =  "display:inline;";
-      document.getElementById("report-cover").style =  "display:inline;";
+      // document.getElementById("spinner").style =  "display:inline;";
+      // document.getElementById("report-cover").style =  "display:inline;";
 
       let btns = document.getElementsByClassName("dt-button");
       for(let i = 0; i < btns.length; i++){
@@ -231,40 +319,50 @@ export default {
         this.rebuildOutcome = false;
         response.json().then((data) =>  setTimeout(() => this.addData(data), 5000) );
       }else{
-        //setTimeout(() => this.fetchData(), 5000);
+        setTimeout(() => this.fetchData(), 5000);
       }
 
     },
     addData(data) {
-      let rows = this.$refs.tableBody.children;
+      console.log(data);
+      // let rows = this.$refs.tableBody.children;
       let female_row;
       let male_row;
 
-      for(let i = 0 ; i < rows.length; i++){
-        let tds = rows[i].children;
-        for(let j = 0; j < tds.length; j++){
-           if(tds[j].innerHTML == this.ageGroups[0]){
-             tds[2].innerHTML == 'Female' ? female_row = rows[i] : male_row = rows[i];
-           } 
-        }
-      }
+      // for(let i = 0 ; i < rows.length; i++){
+      //   let tds = rows[i].children;
+      //   for(let j = 0; j < tds.length; j++){
+      //      if(tds[j].innerHTML == this.ageGroups[0]){
+      //        tds[2].innerHTML == 'Female' ? female_row = rows[i] : male_row = rows[i];
+      //      } 
+      //   }
+      // }
 
       for(let age_group in data){
         let gender = data[age_group];
         for(let sex in gender){
-           let e = (sex == 'F' ?  female_row : male_row);
+           let e = (sex === 'F' ?  'female' : 'male');
            let row_data = data[age_group][sex];
-           let children  = e.children;
+          // age_group][e]['tx_new']) ;= row_data.tx_e= row_data.tx_new
+          // this.patientData[age_group][e]['tx_curr'] = row_data.tx_curr;
+          // this.patientData[age_group][e]['tx_new'] = row_data.tx_new;
+          //  let children  = e.children;
 
-           children[3].innerHTML = row_data.tx_new.length;
-           children[4].innerHTML = row_data.tx_curr.length;
-           this.screenedTB.push( [children[6], sex, age_group] );
-           this.givenIPT.push( [children[5], sex, age_group] );
+          //  children[3].innerHTML = row_data.tx_new.length;
+          //  children[4].innerHTML = row_data.tx_curr.length;
 
+           this.screenedTB.push( [row_data.tx_screened_for_tb, sex, age_group] );
+           this.givenIPT.push( [row_data.tx_given_ipt, sex, age_group] );
            if(sex == 'M') {
+            this.patientData[age_group]['male']['tx_curr'] = row_data.tx_curr;
+            this.patientData[age_group]['male']['tx_new'] = row_data.tx_new;
+
              this.totalMales[0] += row_data.tx_new.length;
              this.totalMales[1] += row_data.tx_curr.length;
-           }else{
+           }else if (sex == 'F'){
+
+            this.patientData[age_group]['female']['tx_curr'] = row_data.tx_curr;
+            this.patientData[age_group]['female']['tx_new'] = row_data.tx_new;
              this.totalFemales[0] += row_data.tx_new.length;
              this.totalFemales[1] += row_data.tx_curr.length;
            }
@@ -300,8 +398,15 @@ export default {
 
       if (response.status === 200) {
         //response.json().then((data) => this.checkResult(data) );
+         
         this.screenedTB.shift();
-        response.json().then((data) =>  this.TBscreened(el, gender, data) );
+        response.json().then((data) => { 
+          let g = gender === 'F'? 'female' : 'male';
+          // console.log(age_group, g)
+        this.patientData[age_group][g]['tx_curr_screened_tb'] = data; 
+          this.TBscreened(el, gender, data); 
+          
+          });
 
         if(this.screenedTB.length < 1) {
            this.addGivenIPTdata();
@@ -329,13 +434,25 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
-        //response.json().then((data) => this.checkResult(data) );
         this.givenIPT.shift();
-        response.json().then((data) =>  this.iptGiven(el, gender, data) );
+        response.json().then((data) => {
+          let g = gender === 'F'? 'female' : 'male';
+          this.patientData[age_group][g]['tx_curr_ipt'] = data; 
+          this.iptGiven(el, gender, data) });
 
         if(this.givenIPT.length < 1) {
+          ['female', 'male'].forEach(element => {
+            Object.keys(this.patientData).forEach(innerElement => {
+              this.getRegimenInfo(element, innerElement);
+            });  
+          });
+         
+          // document.getElementById("spinner").style =  "display:none;";
+          // document.getElementById("report-cover").style =  "display:none;";
+        this.reportLoading = false;
+      this.initDataTable();
            //Go to All males();
-           this.allMales();
+          //  this.allMales();
         }else{
           setTimeout(() => this.addGivenIPTdata(), 500);
         }
@@ -344,7 +461,6 @@ export default {
       }
     },
     iptGiven(el, gender, data){
-      el.innerHTML = data.length;
       if(gender == 'M') {
         this.totalMales[2] += data.length;
       }else{
@@ -387,6 +503,56 @@ export default {
       }
 
     },
+    getClient: async function(id) {
+      let url = 'patients/'+id;
+     
+      const response = await ApiClient.get(url, {}, {});
+
+      if (response.status === 200) {
+        response.json().then((data) =>  this.drillClients.push(this.parsePatient(data)) );
+      }
+
+    },
+    parsePatient(results) {
+    // var results = JSON.parse(this.responseText);
+    var age = results.person.birthdate;
+    var gender = results.person.gender;
+    var identifier = "";
+    var patient_name = results.person.names[0].given_name + " " + results.person.names[0].family_name;
+
+    var arv_number = results.patient_identifiers.filter((el) => {
+      return el.identifier_type === 4 ? el.identifier : '';
+    });
+    try {
+        var addressl1 = results.person.addresses[0].city_village;
+        var addressl2 = results.person.addresses[0].address2;
+        var phone_number = results.person.person_attributes[1].value;
+    }
+    catch (e) {
+        var addressl1 = "";
+        var addressl2 = "";
+        var phone_number = "";
+    }
+    try {
+        for (var index = 0; index < results.patient_identifiers.length; index++) {
+            if(results.patient_identifiers[index]["identifier_type"] == 4) {
+            identifier =  results.patient_identifiers[index]["identifier"];
+            }
+        }
+    } catch (e) {
+        console.log(e); 
+    }
+    var toPush ={};
+    toPush.dob = age;
+    toPush.arv_number = identifier;
+    toPush.gender = gender;
+    toPush.current_village = addressl1;
+    // toPush.arv_number = identifier;
+    // renderDrillDownData(toPush);
+    return toPush;
+
+    // console.log(patient_name, gender, age, addressl1, addressl2, phone_number, identifier, arv_number);
+},
     addNewFemaleRow(age_group, data){
       for(let age in data) {
         let gender = data[age];
@@ -431,6 +597,7 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200 && age_group == 'pregnant' && urlPath == 'screened_for_tb') {
+
         response.json().then((data) =>  this.assignValueTD(this.fpRow, data.length, 2) );
         this.loadFPdata("breastfeeding", urlPath);
       }else if(response.status === 200 && age_group == 'breastfeeding' && urlPath == 'screened_for_tb'){
@@ -479,13 +646,13 @@ export default {
       
       }
 
-      this.getRegimenInfo(this.allRows[0]);
+      // this.getRegimenInfo(this.allRows[0]);
       /*............ Here ......................... */
     },
-    getRegimenInfo: async function(row){
-      let tds = row.children;
-      let  age_group = tds[1].innerHTML;
-      let gender  = tds[2].innerHTML;
+    getRegimenInfo: async function(gender, age_group){
+      // let tds = row.children;
+      // let  age_group = tds[1].innerHTML;
+      // let gender  = tds[2].innerHTML;
 
       let url = "disaggregated_regimen_distribution";
       url += "?date=" + moment().format('YYYY-MM-DD');
@@ -496,121 +663,52 @@ export default {
       url += "&outcome_table=temp_patient_outcomes";
       url += '&program_id=1';
     
-      let btns = document.getElementsByClassName("dt-button");
-      for(let i = 0; i < btns.length; i++){
-        btns[i].setAttribute("disabled", true); 
-        btns[i].style = "display: none;";
-      }
+      // let btns = document.getElementsByClassName("dt-button");
+      // for(let i = 0; i < btns.length; i++){
+      //   btns[i].setAttribute("disabled", true); 
+      //   btns[i].style = "display: none;";
+      // }
 
       const response = await ApiClient.get(url, {}, {});
       if (response.status === 200) {
-        response.json().then((data) =>  this.addRegimen(data, tds) );
+        response.json().then((data) =>  this.addRegimen(data, gender, age_group) );
       }
 
     },
-    addRegimen(data, tds){
-      this.allRows.shift();
+    getTotal(age_group, gender){
       let total = 0;
+      Object.keys(this.patientData[age_group][gender]).forEach(element => {
+      if(element === 'tx_curr' || element === 'tx_new' ||element === 'tx_curr_ipt' ||element === 'tx_curr_screened_tb') {
+
+      }else {
+
+       total += this.patientData[age_group][gender][element].length; 
+      }
+      });
+      return total;
+      
+    },
+    addRegimen(data, gender, age_group){
 
       for(let regimen in  data){
-        if(regimen == '0A')
-          tds[7].innerHTML = data[regimen].length;
-
-        if(regimen == '2A')
-          tds[8].innerHTML = data[regimen].length;
-
-        if(regimen == '4A')
-          tds[9].innerHTML = data[regimen].length;
-
-        if(regimen == '5A')
-          tds[10].innerHTML = data[regimen].length;
-
-        if(regimen == '6A')
-          tds[11].innerHTML = data[regimen].length;
-
-        if(regimen == '7A')
-          tds[12].innerHTML = data[regimen].length;
-
-        if(regimen == '8A')
-          tds[13].innerHTML = data[regimen].length;
-
-        if(regimen == '9A')
-          tds[14].innerHTML = data[regimen].length;
-
-        if(regimen == '10A')
-          tds[15].innerHTML = data[regimen].length;
-
-        if(regimen == '11A')
-          tds[16].innerHTML = data[regimen].length;
-
-        if(regimen == '12A')
-          tds[17].innerHTML = data[regimen].length;
-
-        if(regimen == '13A')
-          tds[18].innerHTML = data[regimen].length;
-
-        if(regimen == '14A')
-          tds[19].innerHTML = data[regimen].length;
-
-        if(regimen == '15A')
-          tds[20].innerHTML = data[regimen].length;
-
-        if(regimen == '16A')
-          tds[21].innerHTML = data[regimen].length;
-
-        if(regimen == '17A')
-          tds[22].innerHTML = data[regimen].length;
-
-        if(regimen == '0P')
-          tds[23].innerHTML = data[regimen].length;
-
-        if(regimen == '2P')
-          tds[24].innerHTML = data[regimen].length;
-
-        if(regimen == '4P')
-          tds[25].innerHTML = data[regimen].length;
-
-        if(regimen == '9P')
-          tds[26].innerHTML = data[regimen].length;
-
-        if(regimen == '11P')
-          tds[27].innerHTML = data[regimen].length;
-
-        if(regimen == '14P')
-          tds[28].innerHTML = data[regimen].length;
-
-        if(regimen == '15P')
-          tds[29].innerHTML = data[regimen].length;
-
-        if(regimen == '16P')
-          tds[30].innerHTML = data[regimen].length;
-
-        if(regimen == '17P')
-          tds[31].innerHTML = data[regimen].length;
-
-        if(regimen == 'N/A')
-          tds[32].innerHTML = data[regimen].length;
-
-      
-        total += data[regimen].length;
+        this.patientData[age_group][gender][regimen] = data[regimen];
       }
-      tds[33].innerHTML = total;
 
-      if(this.allRows.length > 0){
-        this.getRegimenInfo(this.allRows[0]);
-      }else{
-        this.dTable.api().destroy();
-        this.initDataTable();
+        // this.dTable.api().destroy();
+        // this.initDataTable();
 
-        document.getElementById("spinner").style =  "display:none;";
-        document.getElementById("report-cover").style =  "display:none;";
 
-      }
 
     }
+    
   },
+    computed: {
+      rows() {
+        return this.drillClients.length
+      }
+    },
   mounted() {
-    setTimeout(() => this.addTableBody(), 300);
+    // setTimeout(() => this.addTableBody(), 300);
   }, data: function() {
     return {
         reportData: null,
@@ -625,10 +723,30 @@ export default {
         givenIPT: [],
         totalMales: [0, 0, 0, 0],
         totalFemales: [0, 0, 0, 0],
+        // columns: ['ARV Number', 'DOB', 'Gender', 'Village'],
+        columns: [
+          {
+            key: 'arv_number',
+            label: 'ARV Number',
+          },
+          {
+            key: 'dob',
+            label: 'DOB',
+          },{
+            key: 'gender',
+            label: 'Gender',
+          },{
+            key: 'current_village',
+            label: 'Village',
+          }
+        ],
+        reportLoading: false,
+        reportSelected: false,
         fpRow: null,
         fbfRow: null,
         allRows: [],
         initialize: false,
+        genders: ['female', 'male'],
         ageGroups: [
           '0-5 months', '6-11 months','12-23 months',
           '2-4 years', '5-9 years',
@@ -637,7 +755,1002 @@ export default {
           '25-29 years', '30-34 years',
           '35-39 years', '40-44 years',
           '45-49 years', '50 plus years'
-        ].reverse()
+        ],
+        drillClients: [],
+        perPage: 10,
+        currentPage: 1,
+        patientData : {
+      '0-5 months' : {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '6-11 months': {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '12-23 months': {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '2-4 years': {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      }, 
+      '5-9 years': {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '10-14 years': {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      }, 
+      '15-17 years': {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '18-19 years' : {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      }, 
+      '20-24 years': {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '25-29 years' : {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '30-34 years': {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '35-39 years' : {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '40-44 years': {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '45-49 years' : {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      },
+      '50 plus years': {
+        "male": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+        "female": {
+          tx_new: [],
+          tx_curr: [],
+          tx_curr_ipt: [],
+          tx_curr_screened_tb: [],
+          "0A": [],
+          "2A": [],
+          "4A": [],
+          "5A": [],
+          "6A": [],
+          "7A": [],
+          "8A": [],
+          "9A": [],
+          "10A": [],
+          "11A": [],
+          "12A": [],
+          "13A": [],
+          "14A": [],
+          "15A": [],
+          "16A": [],
+          "17A": [],
+          "0P": [],
+          "2P": [],
+          "4P": [],
+          "9P": [],
+          "11P": [],
+          "14P": [],
+          "15P": [],
+          "16P": [],
+          "17P": [],
+          "Unknown": [],
+        },
+      }
+    }
       }
     }
 }
