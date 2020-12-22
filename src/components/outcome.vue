@@ -132,6 +132,7 @@ export default {
       date: null,
       locations: [],
       location: null,
+      location_name: null,
       voiding: false,
       enrollDate: null,
       programs: [],
@@ -208,7 +209,7 @@ export default {
               encounter_id: encounterID,
               observations: [
                 {
-                  value_text: this.locations[0].code,
+                  value_text: this.location_name,
                   value_coded: this.location,
                   concept_id: 3003,
                 },
@@ -253,7 +254,7 @@ export default {
     },
     getVal(val) {
       this.location = val.location_id;
-      this.location_name = val.location_name;
+      this.location_name = val.label;
     },
   },
   mounted() {
