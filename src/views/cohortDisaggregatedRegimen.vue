@@ -13,10 +13,12 @@
                 Back
               </button></span
             >
+
             <sdPicker :onSubmit="fetchDates"></sdPicker>
           </div>
         </div>
         <div class="row">
+          <button class="btn btn-secondary" id="csv" @click="printCSV" :disabled="!reportSelected"> CSV</button>
           <div class="col-sm12">
             <ReportOverlay
               :reportLoading="reportLoading"
@@ -131,13 +133,6 @@
 </template>
 
 <script>
-require("@/assets/datatable/css/bootstrap.css");
-require("@/assets/datatable/css/dataTables.bootstrap4.min.css");
-
-//require("@/assets/datatable/jquery-ui.css");
-require("@/assets/datatable/css/buttons.dataTables.min.css");
-require("@/assets/datatable/css/dataTables.jqueryui.min.css");
-require("@/assets/datatable/css/fixedColumns.dataTables.min.css");
 
 import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
@@ -146,9 +141,6 @@ import moment from "moment";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
 import ReportOverlay from "../components/reports/ReportOverlay";
-import jQuery from "jquery";
-import datatable from "datatables";
-// import { filter } from 'vue/types/umd';
 
 const keyList = {
   tx_new: [],
@@ -183,13 +175,6 @@ const keyList = {
   Unknown: [],
 };
 
-require("@/assets/datatable/js/buttons.flash.min.js");
-require("@/assets/datatable/js/jszip.min.js");
-require("@/assets/datatable/js/pdfmake.min.js");
-require("@/assets/datatable/js/vfs_fonts.js");
-require("@/assets/datatable/js/buttons.html5.min.js");
-require("@/assets/datatable/js/buttons.print.min.js");
-require("@/assets/datatable/js/dataTables.fixedHeader.min.js");
 
 export default {
   name: "reports",
@@ -209,6 +194,54 @@ export default {
       // this.allMales();
 
       // this.getAllFemale("Pregnant");
+    },
+    printCSV() {
+      let y = null;
+      let f = document.getElementsByTagName('thead')[0].getElementsByTagName('th');
+    f.forEach(element => {
+        if(y == null) {
+            y = `"${element.innerText}",`; 
+        }else {
+
+        
+        y += `"${element.innerText}",`;
+        }
+      });
+      let jj = f[0].getElementsByTagName("tr");
+      jj = document.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+      jj.forEach(element => {
+          y += "\n"; 
+          element.getElementsByTagName('td').forEach(innerElement => {
+              y += `"${innerElement.innerHTML}",`;
+          });
+      });
+
+      y += "\n"; 
+      y += `Date Created:  ${moment().format('YYYY-MM-DD:h:m:s')} 
+                          e-Mastercard Version : ${sessionStorage.EMCVersion} 
+                          API Version ${sessionStorage.APIVersion}`;
+      for (let index = 0; index < 34; index++) {
+        
+      y += ","; 
+      }
+      this.report_title =
+        "MoH " + sessionStorage.location_name + " cohort disaggregated report ";
+      this.report_title += moment(this.startDate).format("DDMMMYYYY");
+      this.report_title += " - " + moment(this.endDate).format("DDMMMYYYY");
+    var csvData = new Blob([y], {type: 'text/csv;charset=utf-8;'});
+    //IE11 & Edge
+    if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(csvData, exportFilename);
+    } else {
+        //In FF link must be added to DOM to be clicked
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(csvData);
+        link.setAttribute('download', `${this.report_title}.csv`);
+        document.body.appendChild(link);    
+        link.click();
+        document.body.removeChild(link);    
+    }
+
     },
     initDataTable() {
       let start_date = moment(this.startDate).format("DD/MMM/YYYY");
@@ -262,8 +295,6 @@ export default {
       this.formatedData = [];
       for (let patient_id in info) {
       }
-      //this.dTable.api().destroy();
-      //this.initDataTable();
     },
     fetchDrillDown(gender, age_group, key) {
       let clients = this.patientData[age_group][gender][key];
@@ -278,15 +309,9 @@ export default {
     },
     initializeReport: async function () {
       this.report_title =
-        sessionStorage.location_name + " MoH Disaggregated report";
-      this.report_title +=
-        moment().format("YYYY_MM_DD_h_m_s") +
-        " EMC(" +
-        sessionStorage.EMCVersion +
-        ") " +
-        "API(" +
-        sessionStorage.APIVersion +
-        ")";
+        "MoH " + sessionStorage.location_name + " cohort disaggregated report ";
+      this.report_title += moment(this.startDate).format("DDMMMYYYY");
+      this.report_title += " - " + moment(this.endDate).format("DDMMMYYYY");
       let url = "cohort_disaggregated";
       url += "?date=" + moment().format("YYYY-MM-DD");
       url += "&quarter=Custom";
@@ -308,7 +333,6 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
-        //response.json().then((data) => this.checkResult(data) );
         this.rebuildOutcome = false;
         response
           .json()
@@ -318,20 +342,8 @@ export default {
       }
     },
     addData(data) {
-      // console.log(data);
-      // let rows = this.$refs.tableBody.children;
       let female_row;
       let male_row;
-
-      // for(let i = 0 ; i < rows.length; i++){
-      //   let tds = rows[i].children;
-      //   for(let j = 0; j < tds.length; j++){
-      //      if(tds[j].innerHTML == this.ageGroups[0]){
-      //        tds[2].innerHTML == 'Female' ? female_row = rows[i] : male_row = rows[i];
-      //      }
-      //   }
-      // }
-
       for (let age_group in data) {
         let gender = data[age_group];
         for (let sex in gender) {
@@ -376,7 +388,6 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
-        //response.json().then((data) => this.checkResult(data) );
 
         this.screenedTB.shift();
         response.json().then((data) => {
@@ -425,11 +436,7 @@ export default {
             });
           });
 
-          // document.getElementById("spinner").style =  "display:none;";
-          // document.getElementById("report-cover").style =  "display:none;";
           this.reportLoading = false;
-          // this.initDataTable();
-          //Go to All males();
           this.allMales();
         } else {
           setTimeout(() => this.addGivenIPTdata(), 500);
@@ -459,10 +466,7 @@ export default {
         const j = this.getTotalByKey("male", element);
         this.allClients["male"][element] = j;
       });
-      // this.dTable.fnAddData([ "31", "All", "Male", this.totalMales[0],
-      //   this.totalMales[1], this.totalMales[2], this.totalMales[3], 0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0 ]);
-
-          this.getAllFemale("Pregnant");
+      this.getAllFemale("Pregnant");
     },
     getAllFemale: async function (age_group) {
       let url = "cohort_disaggregated";
@@ -494,7 +498,6 @@ export default {
       }
     },
     parsePatient(results) {
-      // var results = JSON.parse(this.responseText);
       var age = results.person.birthdate;
       var gender = results.person.gender;
       var identifier = "";
@@ -533,13 +536,8 @@ export default {
       toPush.arv_number = identifier;
       toPush.gender = gender;
       toPush.current_village = addressl1;
-      // toPush.arv_number = identifier;
-      // renderDrillDownData(toPush);
       return toPush;
-
-      // console.log(patient_name, gender, age, addressl1, addressl2, phone_number, identifier, arv_number);
     },
-
     addNewFemaleRow(age_group, data) {
       for (let age in data) {
         let gender = data[age];
@@ -597,20 +595,16 @@ export default {
         response
           .json()
           .then((data) => this.allClients['Fbf']['tx_curr_screened_tb'] = data);
-          // .then((data) => this.assignValueTD(this.FbfRow, data.length, 2));
         this.loadFPdata("pregnant", "clients_given_ipt");
       } else if (response.status === 200 && age_group == "pregnant") {
         response
           .json()
           .then((data) => this.allClients['FP']['tx_curr_ipt'] = data);
-          // .then((data) => this.assignValueTD(this.fpRow, data.length, 1));
         this.loadFPdata("breastfeeding", urlPath);
       } else if (response.status === 200 && age_group == "breastfeeding") {
         response
           .json()
           .then((data) => this.allClients['Fbf']['tx_curr_ipt'] = data);
-          // .then((data) => this.assignValueTD(this.FbfRow, data.length, 1));
-          //Go to All males();
 
         setTimeout(() => {
 
@@ -626,14 +620,9 @@ export default {
       }
     },
     addAllFemaleRow() {
-      // this.allClients
-      
-     
-      
       ['Fbf', 'FP'].forEach(el => {
         this.getRegimenInfo(el, null, true);
       })
-      
       Object.keys(this.allClients["male"]).forEach((element) => {
         const j = this.getTotalByKey("male", element);
         this.allClients["male"][element] = j;
@@ -650,94 +639,9 @@ export default {
         } );
         this.allClients['FNP'][ele] = jj;
       })
-      this.initDataTable();
-      // Object.keys(this.allClients).forEach((element) => {
-      //   total.push(...this.patientData[element][gender][key]);
-      // });
-
-      // Object.keys(this.allClients["female"]).forEach((element) => {
-      //   // console.log(this.allClients["male"][element]);
-      //   this.allClients["female"][element] = this.getTotalByKey("male", element);
-      // });
-      // let rows = this.$refs.tableBody.children;
-
-
-
-
-
-
-      // for (let i = 0; i < rows.length; i++) {
-      //   let td = rows[i].children[0];
-      //   let tds = rows[i].children;
-      //   if (td.innerHTML == "32" || td.innerHTML == "33") {
-      //     this.totalFemales[0] -= parseInt(tds[3].innerHTML);
-      //     this.totalFemales[1] -= parseInt(tds[4].innerHTML);
-      //     this.totalFemales[2] -= parseInt(tds[5].innerHTML);
-      //     this.totalFemales[3] -= parseInt(tds[6].innerHTML);
-      //   }
-      // }
-      // this.dTable.fnAddData([
-      //   "34",
-      //   "All",
-      //   "FNP",
-      //   this.totalFemales[0],
-      //   this.totalFemales[1],
-      //   this.totalFemales[2],
-      //   this.totalFemales[3],
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      //   0,
-      // ]);
-
-      // this.dTable.fnDestroy();
-      // this.initDataTable();
-
-      // /*............ Here ......................... */
-      // rows = this.$refs.tableBody.children;
-      // for (var i = 0; i < rows.length; i++) {
-      //   let tds = rows[i].children;
-      //   let innerHTML = tds[2].innerHTML;
-      //   if (
-      //     innerHTML == "Female" ||
-      //     innerHTML == "Male" ||
-      //     innerHTML == "FP" ||
-      //     innerHTML == "FNP" ||
-      //     innerHTML == "Fbf"
-      //   )
-      //     this.allRows.push(rows[i]);
-      // }
-
-      // this.getRegimenInfo(this.allRows[0]);
-      /*............ Here ......................... */
+      
     },
     getRegimenInfo: async function (gender, age_group, allPats) {
-      // let tds = row.children;
-      // let  age_group = tds[1].innerHTML;
-      // let gender  = tds[2].innerHTML;
 
       let url = "disaggregated_regimen_distribution";
       url += "?date=" + moment().format("YYYY-MM-DD");
@@ -747,11 +651,6 @@ export default {
       url += "&age_group=" + age_group;
       url += "&outcome_table=temp_patient_outcomes";
       url += "&program_id=1";
-      // let btns = document.getElementsByClassName("dt-button");
-      // for(let i = 0; i < btns.length; i++){
-      //   btns[i].setAttribute("disabled", true);
-      //   btns[i].style = "display: none;";
-      // }
 
       const response = await ApiClient.get(url, {}, {});
       if (response.status === 200) {
@@ -812,9 +711,6 @@ export default {
     },
   },
   mounted() {
-    // setTimeout(() => this.addTableBody(), 300);
-
-      // this.allMales();
   },
   data: function () {
     return {
@@ -832,7 +728,6 @@ export default {
       totalMales: [0, 0, 0, 0],
       totalRows: 0,
       totalFemales: [0, 0, 0, 0],
-      // columns: ['ARV Number', 'DOB', 'Gender', 'Village'],
       columns: [
         {
           key: "arv_number",
@@ -884,9 +779,6 @@ export default {
         FNP: { ...keyList },
         Fbf: { ...keyList },
       },
-      patientData1: 
-        {"0-5 months":{"male":{"tx_new":[],"tx_curr":[238],"tx_curr_ipt":[],"tx_curr_screened_tb":[238],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[238],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[],"tx_curr_ipt":[],"tx_curr_screened_tb":[],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"6-11 months":{"male":{"tx_new":[],"tx_curr":[19410],"tx_curr_ipt":[19410],"tx_curr_screened_tb":[19410],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[19410],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[111,1229,18663],"tx_curr_ipt":[],"tx_curr_screened_tb":[111,1229,18663],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[111,1229,18663],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"12-23 months":{"male":{"tx_new":[],"tx_curr":[],"tx_curr_ipt":[],"tx_curr_screened_tb":[],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[651,3049],"tx_curr_ipt":[3049],"tx_curr_screened_tb":[651,3049],"0A":[],"2A":[],"4A":[],"5A":[3049],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[651],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"2-4 years":{"male":{"tx_new":[],"tx_curr":[49,189,206,582,1040,1071,13741],"tx_curr_ipt":[1071],"tx_curr_screened_tb":[49,189,206,582,1040,1071,13741],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[49,206,582,1040,1071,13741],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[189],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[151,280,283,327,365,396,424,564,691,703,729,833,924,976,1033,1120,1204,7439],"tx_curr_ipt":[424],"tx_curr_screened_tb":[151,280,283,327,365,396,424,564,691,703,729,833,924,976,1033,1120,1204,7439],"0A":[],"2A":[],"4A":[],"5A":[365,729,1033],"6A":[],"7A":[396],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[151,280,283,327,424,564,691,703,833,924,976,1120,1204],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[7439],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"5-9 years":{"male":{"tx_new":[],"tx_curr":[353,569,1055,1194],"tx_curr_ipt":[353,569,1055],"tx_curr_screened_tb":[353,569,1055,1194],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[353,569,1055,1194],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[126,158,270,470,495,587,673,731,746,765,895,940,967,1021,1029,1060,1163,1249,3738,11922,15561,16821],"tx_curr_ipt":[11922],"tx_curr_screened_tb":[126,158,270,470,495,587,673,731,746,765,895,940,967,1021,1029,1060,1163,1249,3738,11922,15561,16821],"0A":[],"2A":[],"4A":[],"5A":[126,470,495,587,1249,3738,11922],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[158,270,673,731,746,765,895,940,967,1021,1029,1060,1163,15561,16821],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"10-14 years":{"male":{"tx_new":[],"tx_curr":[180,214,235,686,941,1027,1168,1209,1225,2351],"tx_curr_ipt":[235],"tx_curr_screened_tb":[180,214,235,686,941,1027,1168,1209,1225,2351],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[180,214,235,686,941,1027,1209,1225,2351],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[1168],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[90,97,269,296,426,504,611,646,655,674,758,890,959,1184,1199,1216,1272,5865,11166,16667],"tx_curr_ipt":[97,426,655,674,5865],"tx_curr_screened_tb":[90,97,269,296,426,504,611,646,655,674,758,890,959,1184,1199,1216,1272,5865,11166,16667],"0A":[],"2A":[97],"4A":[],"5A":[674,758,959,1184,1199],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[90,269,296,426,504,611,646,655,890,1216,1272,5865,11166],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[16667],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"15-17 years":{"male":{"tx_new":[],"tx_curr":[36,132,141,963],"tx_curr_ipt":[963],"tx_curr_screened_tb":[36,132,141,963],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[36,132,141,963],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[245,393,701,787,982,1035,1050,1078,1147],"tx_curr_ipt":[1078,1147],"tx_curr_screened_tb":[245,393,701,787,982,1035,1050,1078,1147],"0A":[],"2A":[],"4A":[],"5A":[245,393,1050],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[701,787,982,1035,1078,1147],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"18-19 years":{"male":{"tx_new":[],"tx_curr":[227,625,778,1004,1049,1206],"tx_curr_ipt":[1206],"tx_curr_screened_tb":[227,625,778,1004,1049,1206],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[227,625,778,1004,1049,1206],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[19777],"tx_curr":[644,662,727,834,844,971,1053,1062,1200,9293],"tx_curr_ipt":[644,662],"tx_curr_screened_tb":[644,662,727,834,844,971,1053,1062,1200,9293],"0A":[],"2A":[],"4A":[],"5A":[971,1053,1200,9293],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[644,662,727,834,844,1062],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"20-24 years":{"male":{"tx_new":[],"tx_curr":[363,409,658,678,829,1256,15679,16351,18224,18730,19258],"tx_curr_ipt":[678,829,15679,16351,18224,19258],"tx_curr_screened_tb":[363,409,658,678,829,1256,15679,16351,18224,18730,19258],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[363,409,658,678,829,15679,16351,18224,19258],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[1256,18730],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[48,85,124,154,163,241,265,498,583,851,898,919,974,1031,1086,1092,1226,1239,2596],"tx_curr_ipt":[48,1086],"tx_curr_screened_tb":[48,85,124,154,163,241,265,498,583,851,898,919,974,1031,1086,1092,1226,1239,2596],"0A":[],"2A":[],"4A":[],"5A":[85,498,851,1031,1086,1239],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[48,124,154,163,241,265,583,898,919,974,1092,1226,2596],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"25-29 years":{"male":{"tx_new":[],"tx_curr":[54,67,68,84,416,706,817,934,1059,19052],"tx_curr_ipt":[54,934,19052],"tx_curr_screened_tb":[54,67,68,84,416,706,817,934,1059,19052],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[54,67,68,84,416,706,817,934,1059,19052],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[47,302,308,342,679,700,757,870,883,930,957,961,978,1041,1047,1084,1162,1198,1253,1257],"tx_curr_ipt":[47,1198],"tx_curr_screened_tb":[47,302,308,342,679,700,757,870,883,930,957,961,978,1041,1047,1084,1162,1198,1253,1257],"0A":[],"2A":[],"4A":[],"5A":[679,930,957,961,1162],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[47,302,308,342,700,757,870,883,978,1041,1047,1084,1253,1257],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[1198],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"30-34 years":{"male":{"tx_new":[],"tx_curr":[185,538,590,666,742,983,4382,7985,16054,19261],"tx_curr_ipt":[983,7985,19261],"tx_curr_screened_tb":[185,538,590,666,742,983,4382,7985,16054,19261],"0A":[],"2A":[],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[666],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[185,538,590,742,983,4382,7985],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[16054],"4P":[],"9P":[19261],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[138,175,263,698,810,840,861,874,893,1087,1097,1098,1172,1185,1286,2491],"tx_curr_ipt":[1098,1172,1185],"tx_curr_screened_tb":[138,175,263,698,810,840,861,874,893,1087,1097,1098,1172,1185,1286,2491],"0A":[],"2A":[],"4A":[],"5A":[263,1087,1172,1286],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[138,175,698,810,861,874,893,1097,1098,1185,2491],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[840],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"35-39 years":{"male":{"tx_new":[],"tx_curr":[264,667,800,815,1067,1267],"tx_curr_ipt":[264,1067],"tx_curr_screened_tb":[264,667,800,815,1067,1267],"0A":[],"2A":[],"4A":[],"5A":[800],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[264,667,815,1067,1267],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[64,109,313,543,652,795,852,954,980,1014,1070,1268,16007,17200],"tx_curr_ipt":[64,109,543,652,980,16007],"tx_curr_screened_tb":[64,109,313,543,652,795,852,954,980,1014,1070,1268,16007,17200],"0A":[],"2A":[],"4A":[],"5A":[64,313,652,954,1070,1268,16007],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[109,543,795,852,980,1014,17200],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"40-44 years":{"male":{"tx_new":[],"tx_curr":[60,199,209,388,676,759,816,912,1015,1074,1103,1142,1210],"tx_curr_ipt":[1015],"tx_curr_screened_tb":[60,199,209,388,676,759,816,912,1015,1074,1103,1142,1210],"0A":[],"2A":[199,1103],"4A":[],"5A":[],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[60,209,388,676,759,816,912,1074,1142,1210],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[1015],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[],"tx_curr":[119,171,633,754,922,1005,1006,1076,1242,11927,12970],"tx_curr_ipt":[171,1076,12970],"tx_curr_screened_tb":[119,171,633,754,922,1005,1006,1076,1242,11927,12970],"0A":[],"2A":[],"4A":[],"5A":[171,11927,12970],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[119,633,754,922,1005,1006,1076,1242],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"45-49 years":{"male":{"tx_new":[21051],"tx_curr":[69,272,533,777,868,902,1207,11924,12037,13735,21051],"tx_curr_ipt":[777,12037],"tx_curr_screened_tb":[69,272,533,777,868,902,1207,11924,12037,13735,21051],"0A":[],"2A":[],"4A":[],"5A":[21051],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[69,272,533,777,868,902,1207,11924,12037,13735],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[21063],"tx_curr":[190,573,693,726,751,916,989,1119,1126,1176,5034,15161,21063],"tx_curr_ipt":[190,726,751,989],"tx_curr_screened_tb":[190,573,693,726,751,916,989,1119,1126,1176,5034,15161,21063],"0A":[],"2A":[],"4A":[],"5A":[693,751,1119,5034],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[190,573,726,916,989,1126,1176,15161,21063],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}},"50 plus years":{"male":{"tx_new":[1534],"tx_curr":[35,37,55,66,70,76,82,86,88,98,101,120,123,134,139,146,147,166,168,176,182,193,203,204,212,213,293,299,301,309,331,340,364,367,485,507,510,520,547,565,594,601,612,624,656,657,663,684,694,697,708,730,760,762,770,773,784,786,789,813,818,831,855,886,901,904,932,937,960,964,992,1034,1039,1044,1054,1064,1066,1079,1085,1114,1130,1131,1145,1152,1161,1167,1191,1203,1270,3755,5419,7930,13103,13104,14059,17095,17248],"tx_curr_ipt":[37,55,66,70,86,146,166,168,331,547,656,708,760,773,813,886,960,992,1066,1079,1145,14059,17095],"tx_curr_screened_tb":[35,37,55,66,70,76,82,86,88,98,101,120,123,134,139,146,147,166,168,176,182,193,203,204,212,213,293,299,301,309,331,340,364,367,485,507,510,520,547,565,594,601,612,624,656,657,663,684,694,697,708,730,760,762,770,773,784,786,789,813,818,831,855,886,901,904,932,937,960,964,992,1034,1039,1044,1054,1064,1066,1079,1085,1114,1130,1131,1145,1152,1161,1167,1191,1203,1270,3755,5419,7930,13103,13104,14059,17095,17248],"0A":[],"2A":[66],"4A":[],"5A":[],"6A":[],"7A":[134,964],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[35,37,55,70,76,82,86,88,98,101,120,123,139,146,147,166,168,176,182,193,203,204,212,213,293,299,301,309,331,340,364,367,485,507,510,520,547,565,594,601,612,657,684,694,697,708,730,760,762,770,773,784,786,789,818,831,855,886,901,904,932,937,960,992,1034,1039,1044,1054,1066,1079,1085,1114,1130,1131,1145,1152,1161,1167,1191,1203,1270,3755,5419,7930,13103,13104,14059,17095],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[624,656,663,813,1064,17248],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]},"female":{"tx_new":[19448,20721],"tx_curr":[34,46,56,57,58,65,74,75,77,81,93,94,108,116,118,128,133,142,153,159,161,164,174,187,192,196,197,201,210,215,220,231,244,247,253,261,279,288,323,325,328,337,346,360,382,395,410,430,458,464,480,486,491,511,516,519,546,576,585,596,604,610,613,614,617,618,622,635,637,643,654,660,661,664,665,670,672,683,688,689,690,705,710,711,717,719,720,721,723,734,735,739,743,749,750,755,763,768,776,781,796,799,803,806,821,823,824,843,849,854,867,875,879,897,900,905,907,908,910,926,929,938,946,947,949,951,969,973,996,999,1017,1022,1023,1046,1069,1073,1077,1082,1093,1095,1096,1121,1134,1138,1151,1153,1157,1170,1188,1195,1201,1205,1211,1214,1215,1218,1238,1254,1255,1258,1259,1262,1263,1264,1269,1285,2529,6727,11231,11545,12704,12971,16390,17392,17668,18535,18818,18970,19260,19448,20721],"tx_curr_ipt":[77,192,196,201,458,486,491,511,604,610,661,717,723,735,755,763,781,824,849,867,879,947,951,973,1046,1138,1195,1238,12971,17392,18818,18970,19260,19448],"tx_curr_screened_tb":[34,46,56,57,58,65,74,75,77,81,93,94,108,116,118,128,133,142,153,159,161,164,174,187,192,196,197,201,210,215,220,231,244,247,253,261,279,288,323,325,328,337,346,360,382,395,410,430,458,464,480,486,491,511,516,519,546,576,585,596,604,610,613,614,617,618,622,635,637,643,654,660,661,664,665,670,672,683,688,689,690,705,710,711,717,719,720,721,723,734,735,739,743,749,750,755,763,768,776,781,796,799,803,806,821,823,824,843,849,854,867,875,879,897,900,905,907,908,910,926,929,938,946,947,949,951,969,973,996,999,1017,1022,1023,1046,1069,1073,1077,1082,1093,1095,1096,1121,1134,1138,1151,1153,1157,1170,1188,1195,1201,1205,1211,1214,1215,1218,1238,1254,1255,1258,1259,1262,1263,1264,1269,1285,2529,6727,11231,11545,12704,12971,16390,17392,17668,18535,18818,18970,19260,19448,20721],"0A":[],"2A":[75,153,253,661],"4A":[],"5A":[34,46,57,65,81,93,118,133,142,161,174,197,215,231,244,279,323,325,458,480,511,519,576,585,613,614,643,654,665,683,688,689,690,705,734,735,750,799,803,806,821,854,910,1017,1093,1096,1151,1153,1157,1170,1188,1211,1218,1238,1254,1263,1285,11231,17668,18818,18970,19448],"6A":[],"7A":[],"8A":[],"9A":[],"10A":[],"11A":[],"12A":[],"13A":[56,58,74,77,94,108,116,128,159,164,187,192,196,210,220,247,261,288,328,337,346,360,382,395,410,430,464,486,491,516,546,596,604,610,617,618,622,635,637,660,664,670,672,710,711,717,719,720,723,739,743,749,755,763,768,776,781,796,823,824,843,849,867,875,879,897,900,905,907,908,926,929,938,946,947,949,951,969,973,996,999,1022,1023,1046,1069,1073,1077,1082,1095,1121,1134,1138,1195,1201,1205,1214,1215,1255,1258,1259,1262,1269,2529,6727,11545,12704,12971,16390,17392,18535,19260,20721],"14A":[],"15A":[],"16A":[],"17A":[],"0P":[],"2P":[201,721,1264],"4P":[],"9P":[],"11P":[],"14P":[],"15P":[],"16P":[],"17P":[],"Unknown":[]}}}
-      ,
       patientData: {
         "0-5 months": {
           male: { ...keyList },
