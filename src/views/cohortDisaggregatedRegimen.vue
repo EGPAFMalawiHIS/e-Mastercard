@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="row">
-          <button class="btn btn-secondary" id="csv" @click="printCSV" :disabled="!reportSelected"> CSV</button>
+          <button class="btn btn-secondary" id="csv" @click="printCSV" :disabled="!reportSelected" style="margin: 0 0 10px 50px;"> CSV</button>
           <div class="col-sm12">
             <ReportOverlay
               :reportLoading="reportLoading"
@@ -172,7 +172,7 @@ const keyList = {
   "15P": [],
   "16P": [],
   "17P": [],
-  Unknown: [],
+  'N/A': [],
 };
 
 
