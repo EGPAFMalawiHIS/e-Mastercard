@@ -223,6 +223,11 @@ const routes = [
     name: "incomplete_visits_report",
     component: () => import("../views/IncompleteVisitingsReport.vue")
   },
+  {
+    path: "/cleaning_tools/visit_stats",
+    name: "Visit stats",
+    component: () => import("../views/cleaning_tools/visit_stats.vue")
+  }
 ]
 
 const router = new VueRouter({
