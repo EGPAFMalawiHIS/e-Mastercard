@@ -333,7 +333,7 @@ setDrillClients(age_group, sex, patient_ids, column_number){
   html += ", '" +  sex + "','" +  age_group + "')";
 
   
-
+  a.setAttribute("href","#");
 
   return patient_ids.length;
 },

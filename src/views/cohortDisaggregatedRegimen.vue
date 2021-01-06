@@ -172,7 +172,7 @@ const keyList = {
   "15P": [],
   "16P": [],
   "17P": [],
-  'N/A': [],
+  Unknown: [],
 };
 
 
@@ -697,10 +697,20 @@ export default {
     },
     addRegimen(data, gender, age_group, allPats) {
       for (let regimen in data) {
+        
         if(allPats) {
-          this.allClients[gender][regimen] = data[regimen];
+          if(regimen === "N\A" || regimen === "Unknown") {
+
+            this.allClients[gender]["Unknown"].push(...data[regimen]);
+          }else {
+            this.allClients[gender][regimen] = data[regimen];
+          }
         }else{
-          this.patientData[age_group][gender][regimen] = data[regimen];
+          if(regimen === "N\A" || regimen === "Unknown") {
+            this.patientData[age_group][gender]["Unknown"].push(...data[regimen]);
+          }else {
+            this.patientData[age_group][gender][regimen] = data[regimen];
+          }
         }
       }
     },
