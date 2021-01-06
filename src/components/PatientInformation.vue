@@ -207,11 +207,12 @@
           <div class="row">
             <div class="col-md-12">
               <p>Staging conditions</p>
-              <ul style="padding: 0;">
+              {{stagingConditions.length > 0 ? stagingConditions[0] : ''}}
+              <!-- <ul style="padding: 0;">
                 <li v-for="(item, index) in stagingConditions" :key="index" class="horizontal-list">
                   {{item}}, 
                   </li>
-              </ul>
+              </ul> -->
             </div>
           </div>
         </div>
