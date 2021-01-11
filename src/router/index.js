@@ -164,7 +164,7 @@ const routes = [
   },
   {
     path: "/registration/:id/:new",
-    name: "registration",
+    name: "new registration",
     component: () => import("../views/Registration.vue")
   },
   {
