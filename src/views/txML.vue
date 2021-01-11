@@ -89,6 +89,7 @@ export default {
       this.$router.push(url);
     },
     async fetchDates(dates) {
+      this.rows = [];
       try {
         this.startDate = dates[0];
         this.endDate = dates[1];
