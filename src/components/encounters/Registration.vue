@@ -91,7 +91,7 @@
                       <td>{{CONCEPTS[registrationEncounter['encounter']['obs']['everRegisteredAtClinic']['value_coded']] || "N/A"}}</td>
                     </tr>
                     <tr>
-                      <td>ART # at previous location</td>
+                      <td>ART #</td>
                       <td>{{registrationEncounter['encounter']['obs']['artNumberAtPreviousLocation']['value_text'] || "N/A"}}</td>
                     </tr>
                     <tr>
