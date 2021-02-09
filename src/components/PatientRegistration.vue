@@ -461,7 +461,7 @@ import {
   sameAs,
   between
 } from "vuelidate/lib/validators";
-
+const nameRegex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
 // TODO: Replace all fetch calls with ApiClient.[get|post|delete]
 const Config = ApiClient.config.source;
 
@@ -475,14 +475,14 @@ export default {
           required,
           minLength: minLength(2),
           charsOnly(first_name) {
-            return /^[A-Za-z]+$/.test(first_name); //only allow characters
+            return nameRegex.test(first_name); //only allow characters
           }
         },
 
         //optional causing validation problem
         middle_name: {
           charsOnly(middle_name) {
-            return /^s*|[A-Za-z]+$/.test(middle_name); //only allow characters
+            return nameRegex.test(middle_name); //only allow characters
           }
         },
 
@@ -490,7 +490,7 @@ export default {
           required,
           minLength: minLength(2),
           charsOnly(last_name) {
-            return /^[A-Za-z]+$/.test(last_name); //only allow characters
+            return nameRegex.test(last_name); //only allow characters
           }
         },
         date_of_birth_day: {
@@ -537,7 +537,7 @@ export default {
           required,
           minLength: minLength(2),
           charsOnly(guardian_first_name) {
-            return /^[A-Za-z]+$/.test(guardian_first_name); //only allow characters
+            return nameRegex.test(guardian_first_name); //only allow characters
           }
         },
 
@@ -556,14 +556,14 @@ export default {
           // required if something
           minLength: minLength(2),
           charsOnly(guardian_first_name) {
-            return /^[A-Za-z]+$/.test(guardian_first_name); //only allow characters
+            return nameRegex.test(guardian_first_name); //only allow characters
           }
         },
 
         guardian_last_name: {
           minLength: minLength(2),
           charsOnly(guardian_last_name) {
-            return /^[A-Za-z]+$/.test(guardian_last_name); //only allow characters
+            return nameRegex.test(guardian_last_name); //only allow characters
           }
         },
 
