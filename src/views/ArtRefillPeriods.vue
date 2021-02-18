@@ -10,27 +10,27 @@
           </div>
         </div>
 
-          <report-overlay :reportLoading="reportLoading">
-        <vue-bootstrap4-table
-          :rows="rows"
-          :columns="columns"
-          :config="config"
-          :show-loader="reportLoading"
-          :actions="actions"
-          @on-download="onDownload"
-        >
-          <template v-for="slot in slots" :slot="slot" slot-scope="props">
-            <span
-              @click="fetchDrillDown(props.cell_value)"
-              :class="props.cell_value.length > 0 ? 'drillable' : ''"
-              :key="slot"
-              >{{
-                props.cell_value.length > 0 ? props.cell_value.length : 0
-              }}</span
-            >
-          </template>
-        </vue-bootstrap4-table>
-          </report-overlay>
+        <!-- <report-overlay :reportLoading="reportLoading"> -->
+          <vue-bootstrap4-table
+            :rows="rows"
+            :columns="columns"
+            :config="config"
+            :show-loader="reportLoading"
+            :actions="actions"
+            @on-download="onDownload"
+          >
+            <template v-for="slot in slots" :slot="slot" slot-scope="props">
+              <span
+                @click="fetchDrillDown(props.cell_value)"
+                :class="props.cell_value.length > 0 ? 'drillable' : ''"
+                :key="slot"
+                >{{
+                  props.cell_value.length > 0 ? props.cell_value.length : 0
+                }}</span
+              >
+            </template>
+          </vue-bootstrap4-table>
+        <!-- </report-overlay> -->
       </div>
     </div>
     <b-modal id="modal-1" :title="`Drill Down Clients`">
@@ -82,50 +82,118 @@ export default {
     redirect: function (url) {
       this.$router.push(url);
     },
-    async fetchDates(dates) {
+    initRows: function () {
       this.rows = [];
-      try {
+      var client_sex = ["Female", "Male"];
+      client_sex.forEach((element) => {
+        this.ageGroups.forEach((el, index) => {
+          let num = element === "Female" ? index + 1 : index + 12 + 1;
+          this.rows.push({
+            number: num,
+            age_group: el,
+            gender: element,
+            sixty: [],
+            ninety: [],
+            oneeighty: [],
+          });
+        });
+      });
+    },
+    async fetchDates(dates) {
+      // try {
+      this.initRows();  
       let group;
       let min_age;
       let max_age;
-      if(this.reportingGroups.length > 0){
-        let ages = this.setMinMaxAges(this.reportingGroups[0]);
+      this.startDate = dates[0];
+      this.endDate = dates[1];
+      this.reportTitle =
+        "PEPFAR " + sessionStorage.location_name + " TX CURR MMD report ";
+      this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
+      this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
+      this.reportLoading = true;
+      this.ageGroups.forEach((el, index) => {
+        let ages = this.setMinMaxAges(el);
         min_age = ages[0];
         max_age = ages[1];
-      } else {
-        this.reportLoading = false;
-        this.$nextTick(this.renderTable);
-        return;
-      }
-      
-      let url_path = 'arv_refill_periods?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');
-      url_path += "&end_date=" + this.endDate + "&program_id=1&org=pepfar";
-      url_path += "&min_age=" + min_age;
-      url_path += "&max_age=" + max_age;
-        this.startDate = dates[0];
-        this.endDate = dates[1];
-        this.reportTitle =
-          "PEPFAR " + sessionStorage.location_name + " TX RTT report ";
-        this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
-        this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
-        this.reportLoading = true;
-        await this.loadXLdata();
-      } catch (e) {
-        console.error(e);
-        this.router.push({ name: "error", params: { message: e.message } });
-      }
+        let url_path =
+          "arv_refill_periods?start_date=" +
+          dates[0] +
+          "&date=" +
+          moment().format("YYYY-MM-DD");
+        url_path += "&end_date=" + dates[1] + "&program_id=1&org=pepfar";
+        url_path += "&min_age=" + min_age;
+        url_path += "&max_age=" + max_age;
+        this.loadData(url_path, index, el);
+      });
     },
-    loadXLdata: async function () {
-      let url = "tx_rtt?date=" + moment().format("YYYY-MM-DD");
-      url += "&start_date=" + this.startDate;
-      url += "&end_date=" + this.endDate;
-      url += "&program_id=1";
+    async loadData(url, ind, agp) {
+      await ApiClient.get(url, {}, {}).then((res) => {
+        res.json().then((f) => {
+          this.addRow(f, ind, agp);
+          if(ind == 11){
+            this.reportLoading = false;
+          }
+        });
+      });
+      // const response = await ApiClient.get(url, {}, {});
+      // if (response.status === 200) {
+      // console.log(ind);
+      //   response.json().then((data) => this.addRow(data, ind, agp));
+      // } else {
+      // }
+    },
+    setMinMaxAges(group) {
+      if (group == "<1 year") return [0, 0];
 
-      const response = await ApiClient.get(url);
+      if (group == "1-4 years") return [1, 4];
 
-      if (response.status === 200) {
-        this.loadGroupData(await response.json());
-      }
+      if (group == "5-9 years") return [5, 9];
+
+      if (group == "10-14 years") return [10, 14];
+
+      if (group == "15-19 years") return [15, 19];
+
+      if (group == "20-24 years") return [20, 24];
+
+      if (group == "25-29 years") return [25, 29];
+
+      if (group == "30-34 years") return [30, 34];
+
+      if (group == "35-39 years") return [35, 39];
+
+      if (group == "40-44 years") return [40, 44];
+
+      if (group == "45-49 years") return [45, 49];
+
+      if (group == "50 plus years") return [50, 10000];
+    },
+    addRow(data, ind, agp) {
+      /* ................................................................ */
+      var client_sex = ["Female", "Male"];
+      client_sex.forEach((element) => {
+        let gen = element;
+        let sixty = [];
+        let ninety = [];
+        let oneeighty = [];
+        let num = element === "Female" ? ind + 1 : ind + 12 + 1;
+        let finObj = {
+          number: num,
+          age_group: agp,
+          gender: gen,
+          sixty: [],
+          ninety: [],
+          oneeighty: [],
+        };
+        for (let g in data[element]) {
+          let prescribed_days = data[element][g].prescribed_days;
+          if (prescribed_days < 60) this.rows[num - 1].sixty.push(g);
+          if (prescribed_days >= 60 && prescribed_days <= 150)
+            this.rows[num - 1].ninety.push(g);
+          if (prescribed_days > 150) this.rows[num - 1].oneeighty.push(g);
+        }
+      });
+      
     },
     fetchDrillDown(clients) {
       if (clients.length > 0) {
@@ -187,45 +255,6 @@ export default {
       toPush.gender = gender;
       toPush.current_village = addressl1;
       return toPush;
-    },
-    loadGroupData(data) {
-      let counter = 1;
-      let report_gender = ["F", "M"];
-      let set_age_groups = this.ageGroups;
-
-      for (let j = 0; j < report_gender.length; j++) {
-        let age_group_found = false;
-        for (let i = 0; i < set_age_groups.length; i++) {
-          for (let age_group in data) {
-            let gender = data[age_group];
-            for (let sex in gender) {
-              if (age_group == set_age_groups[i] && sex == report_gender[j]) {
-                let numbers = gender[sex];
-                this.rows.push({
-                  number: counter++,
-                  age_group: age_group,
-                  gender: sex,
-                  returned: numbers,
-                });
-                age_group_found = true;
-              }
-            }
-          }
-          if (!age_group_found) {
-            this.rows.push({
-              number: counter++,
-              age_group: set_age_groups[i],
-              gender: report_gender[j],
-              returned: 0   
-            });
-            age_group_found = true;
-          } else {
-            age_group_found = false;
-          }
-        }
-      }
-
-      this.reportLoading = false;
     },
     onDownload() {
       let y = null;
@@ -296,23 +325,21 @@ export default {
       EMCVersion: sessionStorage.EMCVersion,
       reportTitle: null,
       ageGroups: [
-          '<1 year',
-          '1-4 years',
-          '5-9 years',
-          '10-14 years',
-          '15-19 years',
-          '20-24 years',
-          '25-29 years',
-          '30-34 years',
-          '35-39 years',
-          '40-44 years',
-          '45-49 years',
-          '50 plus years'
+        "<1 year",
+        "1-4 years",
+        "5-9 years",
+        "10-14 years",
+        "15-19 years",
+        "20-24 years",
+        "25-29 years",
+        "30-34 years",
+        "35-39 years",
+        "40-44 years",
+        "45-49 years",
+        "50 plus years",
       ],
       showLoader: false,
-      slots: [
-        "returned",
-      ],
+      slots: ["sixty", "ninety", "oneeighty"],
       rows: [],
       columns: [
         {
@@ -323,7 +350,7 @@ export default {
         {
           label: "Age Group",
           name: "age_group",
-          sort: true,
+          // sort: true,
         },
         {
           label: "Gender",
@@ -332,26 +359,25 @@ export default {
         },
         {
           label: "# of clients on >3 months of ARVs",
-          name: "returned",
-          slot_name: "returned",
+          name: "sixty",
+          slot_name: "sixty",
           // sort: true,
         },
         {
           label: "# of clients on 3 - 5 months of ARVs",
-          name: "returned",
-          slot_name: "returned",
+          name: "ninety",
+          slot_name: "ninety",
           // sort: true,
         },
         {
           label: "# of clients on >= 6 months of ARVs",
-          name: "returned",
-          slot_name: "returned",
+          name: "oneeighty",
+          slot_name: "oneeighty",
           // sort: true,
-        }
+        },
       ],
       config: {
-        card_title:
-          `TX CURR MMD Clients that are alive and on treatment in the reporting period and
+        card_title: `TX CURR MMD Clients that are alive and on treatment in the reporting period and
 the difference in days between their clinical dispensation visit and next appointment / drug-runout date is:
 3 months (1 – 89 days), 
 3-5 months (90-179 days), 
@@ -376,12 +402,12 @@ the difference in days between their clinical dispensation visit and next appoin
     },
   },
   mounted() {
+    this.initRows();
   },
 };
 </script>
 
 <style scoped>
-
 .drillable {
   color: blue;
   text-decoration: underline;
