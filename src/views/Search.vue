@@ -83,6 +83,7 @@
                 type="button"
                 class="btn btn-danger"
                 data-toggle="modal"
+                v-bind:class="{ disabled: !Store.getters.userIs('Superuser')}"
                 @click="showWarningWindow(props.cell_value)"
               >
                 Void
@@ -164,6 +165,7 @@ import PatientService from "../services/patient_service";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import VueBootstrap4Table from "vue-bootstrap4-table";
+import Store from "@/store";
 
 export default {
   name: "home",
@@ -185,6 +187,7 @@ export default {
       rows: [],
       reasonAnswer: "",
       patientId: null,
+      Store: null,
       columns: [
         {
           label: "ARV Number",
@@ -248,6 +251,9 @@ export default {
     return {
       searchText: { required },
     };
+  },
+  mounted(){
+    this.Store = Store
   },
   methods: {
     async searchPatients() {
