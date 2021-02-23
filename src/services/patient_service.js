@@ -50,6 +50,11 @@ export default (() => {
     return {type: 'name', value: nameOrArvNumber};
   }
 
+  const voidPatient = async (params = {}) =>{
+    ApiClient.remove(`patients/${params.patient_id}?reason=${params.reason}`);
+    return { ok: 200 }
+  }
+  
   function objectToRequestParams(object) {
     return Object.entries(object).reduce((accum, [field, value]) => {
       if (!value || value.length === 0) {
@@ -81,5 +86,5 @@ export default (() => {
     return personOBJ;
   }
   
-  return {searchPatients, searchPatientsByARVNumber, searchPatientsByNameAndGender};
+  return {searchPatients, searchPatientsByARVNumber, searchPatientsByNameAndGender, voidPatient};
 })();
