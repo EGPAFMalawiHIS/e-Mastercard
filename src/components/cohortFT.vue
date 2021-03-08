@@ -1180,6 +1180,7 @@
 
 <script>
 
+import moment from "moment";
 export default {
   data: function(){
     return {
@@ -1303,8 +1304,155 @@ export default {
       children_24_months_14_years_at_art_initiation: 0
     }
   },
-  props: ["params", "reportid"],
+  props: ["params", "reportid", "quarter"],
   methods: {
+    onDownload() {
+      // let y = null;
+      // this.columns.forEach((element) => {
+      //   y += `"${element.label}",`;
+      // });
+      // y = y.replace("null", "");
+      // this.rows.forEach((element) => {
+      //   y += "\n";
+      //   Object.keys(element).forEach((innerElement) => {
+      //     let value = element[innerElement];
+      //     if (Array.isArray(element[innerElement])) {
+      //       value = element[innerElement].length;
+      //     }
+      //     y += `"${value}",`;
+      //   });
+      // });
+     let y = `Indicator,	Value,
+      total_registered,${this.total_registered},
+      cum_total_registered,${this.cum_total_registered},
+      initiated_on_art_first_time,${this.initiated_on_art_first_time},
+      cum_initiated_on_art_first_time,${this.cum_initiated_on_art_first_time},
+      males_initiated_on_art_first_time,${this.males_initiated_on_art_first_time},
+      cum_males_initiated_on_art_first_time,${this.cum_males_initiated_on_art_first_time},
+      re_initiated_on_art,${this.re_initiated_on_art},
+      cum_re_initiated_on_art,${this.cum_re_initiated_on_art},
+      transfer_in,${this.transfer_in},
+      cum_transfer_in,${this.cum_transfer_in},
+      cum_all_males,${this.cummulative_all_males},
+      quarterly_all_males,${this.quarterly_all_males},
+      pregnant_females_all_ages,${this.pregnant_females_all_ages},
+      cum_pregnant_females_all_ages,${this.cum_pregnant_females_all_ages},
+      initial_pregnant_females_all_ages,${this.initial_pregnant_females_all_ages},
+      cum_initial_pregnant_females_all_ages,${this.cum_initial_pregnant_females_all_ages},
+      non_pregnant_females,${this.non_pregnant_females},
+      cum_non_pregnant_females,${this.cum_non_pregnant_females},
+      initial_non_pregnant_females_all_ages,${this.initial_non_pregnant_females_all_ages},
+      cum_initial_non_pregnant_females_all_ages,${this.cum_initial_non_pregnant_females_all_ages},
+      children_below_24_months_at_art_initiation,${this.children_below_24_months_at_art_initiation},
+      cum_children_below_24_months_at_art_initiation,${this.cum_children_below_24_months_at_art_initiation},
+      children_24_months_14_years_at_art_initiation,${this.children_24_months_14_years_at_art_initiation},
+      cum_children_24_months_14_years_at_art_initiation,${this.cum_children_24_months_14_years_at_art_initiation},
+      adults_at_art_initiation,${this.adults_at_art_initiation},
+      cum_adults_at_art_initiation,${this.cum_adults_at_art_initiation},
+      unknown_gender,${this.unknown_gender},
+      cum_unknown_gender,${this.cum_unknown_gender},
+      presumed_severe_hiv_disease_in_infants,${this.presumed_severe_hiv_disease_in_infants},
+      cum_presumed_severe_hiv_disease_in_infants,${this.cum_presumed_severe_hiv_disease_in_infants},
+      confirmed_hiv_infection_in_infants_pcr,${this.confirmed_hiv_infection_in_infants_pcr},
+      cum_confirmed_hiv_infection_in_infants_pcr,${this.cum_confirmed_hiv_infection_in_infants_pcr},
+      who_stage_two,${this.who_stage_two},
+      cum_who_stage_two,${this.cum_who_stage_two},
+      breastfeeding_mothers,${this.breastfeeding_mothers},
+      cum_breastfeeding_mothers,${this.cum_breastfeeding_mothers},
+      pregnant_women,${this.pregnant_women},
+      cum_pregnant_women,${this.cum_pregnant_women},
+      who_stage_three,${this.who_stage_three},
+      cum_who_stage_three,${this.cum_who_stage_three},
+      who_stage_four,${this.who_stage_four},
+      cum_who_stage_four,${this.cum_who_stage_four},
+      asymptomatic,${this.asymptomatic},
+      cum_asymptomatic,${this.cum_asymptomatic},
+      unknown_other_reason_outside_guidelines,${this.unknown_other_reason_outside_guidelines},
+      cum_unknown_other_reason_outside_guidelines,${this.cum_unknown_other_reason_outside_guidelines},
+      cum_children_12_59_months,${this.cum_children_12_59_months},
+      quarterly_children_12_59_months,${this.quarterly_children_12_59_months},
+      current_episode_of_tb,${this.current_episode_of_tb},
+      cum_current_episode_of_tb,${this.cum_current_episode_of_tb},
+      tb_within_the_last_two_years,${this.tb_within_the_last_two_years},
+      cum_tb_within_the_last_two_years,${this.cum_tb_within_the_last_two_years},
+      no_tb,${this.no_tb},
+      cum_no_tb,${this.cum_no_tb},
+      kaposis_sarcoma,${this.kaposis_sarcoma},
+      cum_kaposis_sarcoma,${this.cum_kaposis_sarcoma},
+      total_alive_and_on_art,${this.total_alive_and_on_art},
+      died_within_the_1st_month_of_art_initiation,${this.died_within_the_1st_month_of_art_initiation},
+      died_within_the_2nd_month_of_art_initiation,${this.died_within_the_2nd_month_of_art_initiation},
+      died_within_the_3rd_month_of_art_initiation,${this.died_within_the_3rd_month_of_art_initiation},
+      died_after_the_3rd_month_of_art_initiation,${this.died_after_the_3rd_month_of_art_initiation},
+      died_total,${this.died_total},
+      defaulted,${this.defaulted},
+      stopped_art,${this.stopped_art},
+      transfered_out,${this.transfered_out},
+      zero_a,${this.zero_a},
+      zero_p,${this.zero_p},
+      two_a,${this.two_a},
+      two_p,${this.two_p},
+      four_a,${this.four_a},
+      four_p,${this.four_p},
+      five_a,${this.five_a},
+      six_a,${this.six_a},
+      seven_a,${this.seven_a},
+      eight_a,${this.eight_a},
+      nine_a,${this.nine_a},
+      ten_a,${this.ten_a},
+      eleven_a,${this.eleven_a},
+      twelve_a,${this.twelve_a},
+      thirteen_a,${this.thirteen_a},
+      fourteen_p,${this.fourteen_p},
+      fourteen_a,${this.fourteen_a},
+      fifteen_p,${this.fifteen_p},
+      fifteen_a,${this.fifteen_a},
+      sixteen_p,${this.sixteen_p},
+      sixteen_a,${this.sixteen_a},
+      seventeen_p,${this.seventeen_p},
+      seventeen_a,${this.seventeen_a},
+      unknown_regimen,${this.unknown_regimen},
+      total_patients_with_side_effects,${this.total_patients_with_side_effects},
+      total_patients_without_side_effects,${this.total_patients_without_side_effects},
+      unknown_side_effects,${this.unknown_side_effects},
+      tb_suspected,${this.tb_suspected},
+      tb_not_suspected,${this.tb_not_suspected},
+      tb_confirmed_on_tb_treatment,${this.tb_confirmed_on_tb_treatment},
+      tb_confirmed_currently_not_yet_on_tb_treatment,${this.tb_confirmed_currently_not_yet_on_tb_treatment}
+      unknown_tb_status,${this.unknown_tb_status},
+      patients_with_0_6_doses_missed_at_their_last_visit,${this.patients_with_0_6_doses_missed_at_their_last_visit},
+      patients_with_7_plus_doses_missed_at_their_last_visit,${this.patients_with_7_plus_doses_missed_at_their_last_visit},
+      patients_with_unknown_adhrence,${this.patients_with_unknown_adhrence},
+      total_pregnant_women,${this.total_pregnant_women},
+      total_breastfeeding_women,${this.total_breastfeeding_women},
+      total_other_patients,${this.total_other_patients},
+      total_patients_on_arvs_and_cpt,${this.total_patients_on_arvs_and_cpt},
+      total_patients_on_arvs_and_ipt,${this.total_patients_on_arvs_and_ipt},
+      total_patients_on_family_planning,${this.total_patients_on_family_planning},
+      total_patients_with_screened_bp,${this.total_patients_with_screened_bp},`;
+
+      y += "\n";
+      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
+                          e-Mastercard Version : ${sessionStorage.EMCVersion} 
+                          API Version ${sessionStorage.APIVersion}`;
+      for (let index = 0; index < 34; index++) {
+        y += ",";
+      }
+      var csvData = new Blob([y], { type: "text/csv;charset=utf-8;" });
+      //IE11 & Edge
+      const reportTitle = `MoH ${sessionStorage.location_name} Cohort report ${this.quarter}`;
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(csvData, exportFilename);
+      } else {
+        //In FF link must be added to DOM to be clicked
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(csvData);
+        link.setAttribute("download", `${reportTitle}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+  },
    renderResults() {
     for(var i = 0; i < this.params.length; i++){
       //console.log(this.params[i].name);
