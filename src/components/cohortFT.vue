@@ -1434,7 +1434,7 @@ export default {
       y += "\n";
       y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
                           e-Mastercard Version : ${sessionStorage.EMCVersion} 
-                          API Version ${sessionStorage.APIVersion}`;
+                          API Version ${sessionStorage.APIVersion} UUID: ${sessionStorage.siteUUID}`;
       for (let index = 0; index < 34; index++) {
         y += ",";
       }

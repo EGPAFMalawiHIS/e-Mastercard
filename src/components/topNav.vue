@@ -69,6 +69,15 @@ export default {
         const data = await response.json();
         this.fetchLocationName(data.current_health_center_id);
       },
+      fetchLocationUUID: async function() {
+        const response = await ApiClient.get("global_properties?property=site_uuid", {}, {});
+
+        if (!response || response.status !== 200) return; // NOTE: Targeting Firefox 65, can't `response?.status`
+
+        const data = await response.json();
+        sessionStorage.siteUUID = data.site_uuid;
+        // this.fetchLocationName(data.current_health_center_id);
+      },
       async fetchAPIVersion() {
         const response = await ApiClient.get("version", {}, {});
 
@@ -111,7 +120,7 @@ export default {
       EventBus.$on('change-location', payload => {
         this.fetchLocationID();
       });
-
+      this.fetchLocationUUID();
       this.fetchAPIVersion()
           .then(this.fetchLocationID);
     }
