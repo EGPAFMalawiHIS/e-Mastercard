@@ -1102,9 +1102,24 @@
       <td class="numbers">&nbsp;</td>
       <td colspan="9" style="text-align:left; font-weight: bold; padding-left: 10px;">Preventive services / HIV related diseases</td>
     </tr>
-    
     <tr>
       <td class="numbers">95.</td>
+      <td style="text-align:left; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px; font-weight: bold;">TPT</td>
+      <td colspan="4" style="font-weight: normal; border-top-width:1px;
+        border-left-width:0px; border-bottom-width:1px;
+        text-align:left; padding-left:10px;">Number of ART patients newly started on TB preventive therapy this quarter</td>
+      <td style="text-align:right; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px;"><a href="#" @click="drillDown('newly_initiated_on_ipt');">{{newly_initiated_on_ipt}}</a></td>
+      <td style="font-weight:bold; order-top-width:1px; text-align:right;
+        border-left-width:0px; border-bottom-width:1px; padding-right:5px;">6H</td>
+      <td style="text-align:right; padding-left: 10px; border-bottom-width:1px;
+        border-top-width: 1px; border-right-width:0px;"><a href="#" @click="drillDown('newly_initiated_on_3hp');">{{newly_initiated_on_3hp}}</a></td>
+      <td style="font-weight:bold; order-top-width:1px; text-align: right;
+        border-left-width:0px; border-bottom-width:1px; padding-right:5px;">3HP</td>
+    </tr>
+    <tr>
+      <td class="numbers">96.</td>
       <td style="text-align:left; padding-left: 10px; border-bottom-width:1px;
         border-top-width: 1px; border-right-width:0px; font-weight: bold;">CPT / IPT</td>
       <td colspan="4" style="font-weight: normal; border-top-width:1px;
@@ -1126,7 +1141,7 @@
     </tr>
     
     <tr>
-      <td class="numbers">96.</td>
+      <td class="numbers">97.</td>
       <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
         border-top-width: 1px; border-right-width:0px; font-weight: bold;">PIFP</td>
       <td colspan="4" style="font-weight: normal; border-top-width:1px;
@@ -1144,7 +1159,7 @@
     </tr>
     
     <tr>
-      <td class="numbers">97.</td>
+      <td class="numbers">98.</td>
       <td style="text-align: left; padding-left: 10px; border-bottom-width:1px;
         border-top-width: 1px; border-right-width:0px; font-weight: bold;">BP screen</td>
       <td colspan="4" style="font-weight: normal; border-top-width:1px;
@@ -1301,7 +1316,9 @@ export default {
       cum_presumed_severe_hiv_disease_in_infants: 0,
       pregnant_women: 0,
       cum_pregnant_women: 0,
-      children_24_months_14_years_at_art_initiation: 0
+      children_24_months_14_years_at_art_initiation: 0,
+      newly_initiated_on_3hp: 0,
+      newly_initiated_on_ipt: 0,
     }
   },
   props: ["params", "reportid", "quarter"],
@@ -1429,7 +1446,10 @@ export default {
       total_patients_on_arvs_and_cpt,${this.total_patients_on_arvs_and_cpt},
       total_patients_on_arvs_and_ipt,${this.total_patients_on_arvs_and_ipt},
       total_patients_on_family_planning,${this.total_patients_on_family_planning},
-      total_patients_with_screened_bp,${this.total_patients_with_screened_bp},`;
+      total_patients_with_screened_bp,${this.total_patients_with_screened_bp},
+      newly_initiated_on_ipt,${this.newly_initiated_on_ipt},
+      newly_initiated_on_3hp,${this.newly_initiated_on_3hp},
+      `;
 
       y += "\n";
       y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
@@ -1798,7 +1818,10 @@ export default {
 
       if(this.params[i].name == 'cum_initiated_on_art_first_time')
         this.cum_initiated_on_art_first_time = this.params[i].contents;
-   
+      if(this.params[i].name == 'newly_initiated_on_3hp')
+        this.newly_initiated_on_3hp = this.params[i].contents;
+      if(this.params[i].name == 'newly_initiated_on_ipt')
+        this.newly_initiated_on_ipt = this.params[i].contents;  
     }
    },
    drillDown(indicator_name){

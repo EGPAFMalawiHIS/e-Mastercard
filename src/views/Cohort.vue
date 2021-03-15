@@ -119,7 +119,7 @@ export default {
   },
   data () {
     return {
-      msg: 'MoH cohort report version 25',
+      msg: 'MoH cohort report version 26',
       cohortData: [],
       validationData: [],
       reportData: null,
