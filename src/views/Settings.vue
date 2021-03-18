@@ -9,6 +9,8 @@
             <site-name />            
             <br>
             <site-prefix />            
+            <br>
+            <site-uuid />
         </div>
       </div>
     </div>
@@ -23,12 +25,14 @@ import ApiClient from "../services/api_client";
 import "vue-select/dist/vue-select.css";
 import VueSelect from "vue-select";
 import sitePrefix from '../components/settings/sitePrefix.vue';
+import siteUUID from '../components/settings/siteUUID.vue';
 export default {
   components: {
     "top-nav": TopNav,
     "side-bar": Sidebar,
     "site-name": siteName,
-    "site-prefix": sitePrefix
+    "site-prefix": sitePrefix,
+    "site-uuid": siteUUID
   },
     data: function() {
         return {

@@ -18,10 +18,19 @@
               <div id="printReport">
                 <cohortvalidation :dataparams="validationData"/>
                 <cohortheader :reportparams="reportData"/>
-                <cohort-ft :params="cohortData" :reportid="reportID"/>
+                <cohort-ft :params="cohortData" :reportid="reportID" :quarter="quarter" ref="rep"/>
               </div>
+                <div class="row">
+                  <div class="col">
 
-              <cohort-print :onPrint="printReport" />
+               <button class="btn btn-success footer" @click="printReport">Print report</button> 
+                  </div>
+                  <div class="col">
+
+               <button class="btn btn-success footer" @click="exportCSV">Export CSV</button>
+                  </div>
+                </div>
+              <!-- <cohort-print :onPrint="printReport" /> -->
             </div>
           </report-overlay>
         </div>
@@ -71,6 +80,9 @@ export default {
     redirect: function () {
       this.$router.push('/moh');
     },
+    exportCSV: function() {
+      this.$refs.rep.onDownload();
+    },
     fetchData: async function(report_parameters) {
       if(!report_parameters)
         return;
@@ -82,7 +94,7 @@ export default {
 
       this.reportSelected = true;
       this.reportLoading = true;
-
+      this.quarter = qtr;
       const response = await ApiClient.get("programs/1/reports/cohort?name=" + qtr + "&regenerate=" + regenerate, {}, {});
 
       if (response.status === 200) {
@@ -107,13 +119,14 @@ export default {
   },
   data () {
     return {
-      msg: 'MoH cohort report version 25',
+      msg: 'MoH cohort report version 26',
       cohortData: [],
       validationData: [],
       reportData: null,
       reportID: null,
       reportSelected: false,
-      reportLoading: false
+      reportLoading: false,
+      quarter: null
     }
   },
   mounted(){
