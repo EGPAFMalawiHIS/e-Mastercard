@@ -33,7 +33,7 @@
         <!-- </report-overlay> -->
       </div>
     </div>
-    <b-modal id="modal-1" :title="`Drill Down Clients`">
+    <b-modal id="modal-1" :title="`Drill Down Clients`" size="xl">
       <!-- btable  -->
       <b-table
         striped
@@ -92,28 +92,26 @@ export default {
             number: num,
             age_group: el,
             gender: element,
-            new: [],
-            old: [],
-            new_initiated: [],
-            old_initiated: [],
+            threehp: [],
+            sixh: [],
           });
         });
       });
     },
     async fetchDates(dates) {
       // try {
-      this.initRows();  
+      // this.initRows();  
       let group;
       let min_age;
       let max_age;
       this.startDate = dates[0];
       this.endDate = dates[1];
       this.reportTitle =
-        "PEPFAR " + sessionStorage.location_name + " TB PREV report ";
+        "MoH " + sessionStorage.location_name + " TPT new initiation report ";
       this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
       this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
       this.reportLoading = true;
-       let url_path = 'tb_prev?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');
+       let url_path = '/programs/1/reports/tpt_newly_initiated?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');
       url_path += "&end_date=" + this.endDate + "&program_id=1";
       this.loadData(url_path);
       
@@ -152,75 +150,44 @@ export default {
       if (group == "50 plus years") return [50, 10000];
     },
     addRow(data) {
-    var reporting_data = {}
-      var genders = ["M","F"];
-      let rowData = {"F" : {}, "M" : {}};
-      genders.forEach(element => {
-        
-      this.ageGroups.forEach(el => {
-          rowData[element][el] =  {
-              new: [],
-              old: [],
-              new_initiated: [],
-              old_initiated: [],
-            } 
-            
-        });
-      });
-      var client_sex = ["F", "M"];
-      for(var patient_id in data){
-        var info  = data[patient_id];
-        var group = info.age_group;
-        var sex = info.gender;
-        var client_type = info.client;
-        var  outcome = info.outcome;
-        if(reporting_data[group] == undefined)
-          reporting_data[group]  = {};
-
-        if(reporting_data[group][sex] == undefined) {
-          reporting_data[group][sex]  = {
-            new: [], old: [], art: [], defaulter: [], died: [],
-            stopped: [], transfer_out: [], unknown: [], 
-            new_initiated: [], old_initiated: []
-          };
-        }
-
-        if(client_type == 'New on ART' && info.course_completed)
-          rowData[sex][group].new.push(patient_id);
-        if(client_type == 'Previously on ART' &&  info.course_completed)
-          rowData[sex][group].old.push(patient_id);
-        if(client_type == 'New on ART'){
-          rowData[sex][group].new_initiated.push(patient_id);
-        }else{
-          rowData[sex][group].old_initiated.push(patient_id);
-        }
-      }
-
-      var client_sex = ["F", "M"];
+      const client_sex = ["F", "M"];
       this.rows = [];
-      client_sex.forEach((element, index) => {
-        Object.keys(rowData[element]).forEach((el, idx) => {
-          let num = element === "F" ? idx + 1 : idx + 12 + 1;
-          this.rows.push({
-              number: num,
-              age_group: el,
-              gender: element,
-              new: rowData[element][el].new,
-              old: rowData[element][el].old,
-              new_initiated: rowData[element][el].new_initiated,
-              old_initiated: rowData[element][el].old_initiated,
-            });
-        });
-      });
+      
+      client_sex.forEach(gender => {
+        Object.keys(data).forEach((element, index) => {
+          let idx = -1;
+          let num;
+          if(element !== "Unknown") {
+          
+          if(gender === 'F') {
+            num = index + 1 + idx;
+          }else if(gender === 'M') {
+            num = index + 16 + idx ;
+          }
+          console.log(num);
+           this.rows.push(
+             {
+               number: num,
+               age_group: element,
+               gender : gender,
+               threehp : data[element]["3HP"][gender],
+               sixh : data[element]["6H"][gender],
+
+             }
+             )
+        }
+        }); 
+      })
       this.reportLoading = false;
     },
     fetchDrillDown(clients) {
       if (clients.length > 0) {
         this.$bvModal.show("modal-1");
         this.drillClients = [];
-        clients.forEach((element) => {
-          this.getClient(element);
-        });
+        this.drillClients = clients;
+        // clients.forEach((element) => {
+        //   this.getClient(element);
+        // });
       }
     },
     getClient: async function (id) {
@@ -321,21 +288,27 @@ export default {
       currentPage: 1,
       columns: [
         {
-          key: "arv_number",
-          label: "ARV Number",
+          label: "#",
+          name: "number",
+          sort: true,
         },
         {
-          key: "dob",
-          label: "DOB",
+          label: "Age Group",
+          name: "age_group",
+          sort: true,
         },
         {
           key: "gender",
           label: "Gender",
         },
         {
-          key: "current_village",
-          label: "Village",
+          key: "threehp",
+          label: "3HP",
         },
+        {
+          key: "sixh",
+          label: "6H",
+        }
       ],
       startDate: null,
       endDate: null,
@@ -344,8 +317,10 @@ export default {
       EMCVersion: sessionStorage.EMCVersion,
       reportTitle: null,
       ageGroups: [
-        "<1 year",
-        "1-4 years",
+        "0-5 months",
+        "1-6 months",
+        "12-23 months",
+        "2-4 years",
         "5-9 years",
         "10-14 years",
         "15-19 years",
@@ -358,7 +333,7 @@ export default {
         "50 plus years",
       ],
       showLoader: false,
-      slots: ["new", "old", "new_initiated", "old_initiated"],
+      slots: ['sixh', 'threehp'],
       rows: [],
       columns: [
         {
@@ -377,32 +352,20 @@ export default {
           sort: true,
         },
         {
-          label: "Started New in ART",
-          name: "new",
-          slot_name: "new",
+          label: "3HP",
+          name: "threehp",
+          slot_name: "threehp",
           // sort: true,
         },
         {
-          label: "Started Previously on ART",
-          name: "old",
-          slot_name: "old",
+          label: "6H",
+          name: "sixh",
+          slot_name: "sixh",
           // sort: true,
-        },
-        {
-          label: "Completed New on ART",
-          name: "new_initiated",
-          slot_name: "new_initiated",
-          // sort: true,
-        },
-        {
-          label: "Completed Previously on ART",
-          name: "old_initiated",
-          slot_name: "old_initiated",
-          // sort: true,
-        },
+        }
       ],
       config: {
-        card_title: `TB Prev`,
+        card_title: `TPT new initiation`,
         show_refresh_button: false,
         show_reset_button: false,
       },
@@ -422,7 +385,7 @@ export default {
     },
   },
   mounted() {
-    this.initRows();
+    // this.initRows();
   },
 };
 </script>

@@ -78,12 +78,12 @@
               </div>
             </div>
             <div class="col-sm">
-              <!--div class="btn-container" @click="redirect">
+              <div class="btn-container" @click="redirect('/moh_tpt')">
                 <div class="card">
-                  <img src="../assets/report-icons/cohort.png" class="btn-icon"/>
-                  <p>IPT (usage)</p>
+                  <img src="../assets/report-icons/new_initiation.png" class="btn-icon"/>
+                  <p>TPT new initiation</p>
                 </div>
-              </div-->
+              </div>
             </div>
 <div class="col-sm">
               <!--div class="btn-container" @click="redirect">
@@ -132,8 +132,8 @@
   transition: 0.3s;
   text-align: center;
   cursor: pointer;
-  width: 250px;
-  height: 150px;
+  /* width: 250px;
+  height: 150px; */
 }
 
 /* On mouse-over, add a deeper shadow */

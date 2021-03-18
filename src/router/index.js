@@ -227,6 +227,11 @@ const routes = [
     path: "/cleaning_tools/visit_stats",
     name: "Visit stats",
     component: () => import("../views/cleaning_tools/visit_stats.vue")
+  },
+  {
+    path: "/moh_tpt",
+    name: "TPT initiations",
+    component: () => import("@/views/TPTNewInitation.vue")
   }
 ]
 
