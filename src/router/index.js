@@ -232,6 +232,11 @@ const routes = [
     path: "/moh_tpt",
     name: "TPT initiations",
     component: () => import("@/views/TPTNewInitation.vue")
+  },
+  {
+    path: "/client_due_for_vl",
+    name: "Clients Due for VL",
+    component: () => import("@/views/DueForViralLoad.vue")
   }
 ]
 

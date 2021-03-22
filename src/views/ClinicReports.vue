@@ -89,6 +89,15 @@
                 </div>
               </div>
             </div>
+
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/client_due_for_vl')">
+                <div class="card">
+                  <img src="../assets/report-icons/refill.png" class="btn-icon"/>
+                  <p>Clients due for VL</p>
+                </div>
+              </div>
+            </div>
             
             <!-- <div class="col-sm"> -->
               <!--div class="btn-container" @click="redirect">
