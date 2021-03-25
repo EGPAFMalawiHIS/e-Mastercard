@@ -50,9 +50,11 @@ export default (() => {
     return {type: 'name', value: nameOrArvNumber};
   }
 
-  const voidPatient = async (params = {}) =>{
-    ApiClient.remove(`patients/${params.patient_id}?reason=${params.reason}`);
-    return { ok: 200 }
+  const voidPatient = async (params = {}) => {
+    return new Promise((resolve, reject) => {
+      ApiClient.remove(`patients/${params.patient_id}?reason=${params.reason}`);
+      resolve({ status: 200 });
+    })
   }
   
   function objectToRequestParams(object) {
