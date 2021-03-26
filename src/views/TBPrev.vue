@@ -11,25 +11,25 @@
         </div>
 
         <!-- <report-overlay :reportLoading="reportLoading"> -->
-          <vue-bootstrap4-table
-            :rows="rows"
-            :columns="columns"
-            :config="config"
-            :show-loader="reportLoading"
-            :actions="actions"
-            @on-download="onDownload"
-          >
-            <template v-for="slot in slots" :slot="slot" slot-scope="props">
-              <span
-                @click="fetchDrillDown(props.cell_value)"
-                :class="props.cell_value.length > 0 ? 'drillable' : ''"
-                :key="slot"
-                >{{
-                  props.cell_value.length > 0 ? props.cell_value.length : 0
-                }}</span
-              >
-            </template>
-          </vue-bootstrap4-table>
+        <vue-bootstrap4-table
+          :rows="rows"
+          :columns="columns"
+          :config="config"
+          :show-loader="reportLoading"
+          :actions="actions"
+          @on-download="onDownload"
+        >
+          <template v-for="slot in slots" :slot="slot" slot-scope="props">
+            <span
+              @click="fetchDrillDown(props.cell_value)"
+              :class="props.cell_value.length > 0 ? 'drillable' : ''"
+              :key="slot"
+              >{{
+                props.cell_value.length > 0 ? props.cell_value.length : 0
+              }}</span
+            >
+          </template>
+        </vue-bootstrap4-table>
         <!-- </report-overlay> -->
       </div>
     </div>
@@ -102,7 +102,7 @@ export default {
     },
     async fetchDates(dates) {
       // try {
-      this.initRows();  
+      this.initRows();
       let group;
       let min_age;
       let max_age;
@@ -113,18 +113,22 @@ export default {
       this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
       this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
       this.reportLoading = true;
-       let url_path = 'tb_prev?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');
+      let url_path =
+        "tb_prev?start_date=" +
+        this.startDate +
+        "&date=" +
+        moment().format("YYYY-MM-DD");
       url_path += "&end_date=" + this.endDate + "&program_id=1";
+      console.log(url_path);
       this.loadData(url_path);
-      
     },
     async loadData(url) {
       await ApiClient.get(url, {}, {}).then((res) => {
         res.json().then((f) => {
+          console.log(f);
           this.addRow(f);
         });
       });
-   
     },
     setMinMaxAges(group) {
       if (group == "<1 year") return [0, 0];
@@ -151,69 +155,74 @@ export default {
 
       if (group == "50 plus years") return [50, 10000];
     },
-    addRow(data) {
-    var reporting_data = {}
-      var genders = ["M","F"];
-      let rowData = {"F" : {}, "M" : {}};
-      genders.forEach(element => {
-        
-      this.ageGroups.forEach(el => {
-          rowData[element][el] =  {
-              new: [],
-              old: [],
-              new_initiated: [],
-              old_initiated: [],
-            } 
-            
-        });
-      });
-      var client_sex = ["F", "M"];
-      for(var patient_id in data){
-        var info  = data[patient_id];
-        var group = info.age_group;
-        var sex = info.gender;
-        var client_type = info.client;
-        var  outcome = info.outcome;
-        if(reporting_data[group] == undefined)
-          reporting_data[group]  = {};
 
-        if(reporting_data[group][sex] == undefined) {
-          reporting_data[group][sex]  = {
-            new: [], old: [], art: [], defaulter: [], died: [],
-            stopped: [], transfer_out: [], unknown: [], 
-            new_initiated: [], old_initiated: []
+    addAll(data) {
+
+      this.rows = this.GENDERS.map((gender, num) => {
+        return ageGroups.map((group) => {
+          const constantsData = data[group][gender];
+          return {
+            num,
+            group,
+            gender,
+            started_new_on_art: {
+              six_h: this.REGIMENS.reduce((acc, regimen) => {
+                return (acc =
+                  acc + constantsData[regimen].started_new_on_art.length);
+              }, 0),
+
+              three_p_h: this.REGIMENS.reduce((acc, curr) => {
+                return (acc =
+                  acc + constantsData[regimen].started_new_on_art.length);
+              }, 0),
+            },
+
+            started_previously_on_art: {
+              six_h: this.REGIMENS.reduce((acc, regimen) => {
+                return (acc =
+                  acc +
+                  constantsData[regimen].started_previously_on_art.length);
+              }, 0),
+
+              three_p_h: this.REGIMENS.reduce((acc, curr) => {
+                return (acc =
+                  acc +
+                  constantsData[regimen].started_previously_on_art.length);
+              }, 0),
+            },
+
+            completed_new_on_art: {
+              six_h: this.REGIMENS.reduce((acc, regimen) => {
+                return (acc =
+                  acc + constantsData[regimen].completed_new_on_art.length);
+              }, 0),
+
+              three_p_h: this.REGIMENS.reduce((acc, regimen) => {
+                return (acc =
+                  acc + constantsData[regimen].completed_new_on_art.length);
+              }, 0),
+            },
+
+            completed_previously_on_art: {
+              six_h: this.REGIMENS.reduce((acc, regimen) => {
+                return (acc =
+                  acc +
+                  constantsData[regimen].completed_previously_on_art.length);
+              }, 0),
+
+              three_p_h: this.REGIMENS.reduce((acc, regimen) => {
+                return (acc =
+                  acc +
+                  constantsData[regimen].completed_previously_on_art.length);
+              }, 0), 
+            },
           };
-        }
-
-        if(client_type == 'New on ART' && info.course_completed)
-          rowData[sex][group].new.push(patient_id);
-        if(client_type == 'Previously on ART' &&  info.course_completed)
-          rowData[sex][group].old.push(patient_id);
-        if(client_type == 'New on ART'){
-          rowData[sex][group].new_initiated.push(patient_id);
-        }else{
-          rowData[sex][group].old_initiated.push(patient_id);
-        }
-      }
-
-      var client_sex = ["F", "M"];
-      this.rows = [];
-      client_sex.forEach((element, index) => {
-        Object.keys(rowData[element]).forEach((el, idx) => {
-          let num = element === "F" ? idx + 1 : idx + 12 + 1;
-          this.rows.push({
-              number: num,
-              age_group: el,
-              gender: element,
-              new: rowData[element][el].new,
-              old: rowData[element][el].old,
-              new_initiated: rowData[element][el].new_initiated,
-              old_initiated: rowData[element][el].old_initiated,
-            });
         });
       });
+
       this.reportLoading = false;
     },
+
     fetchDrillDown(clients) {
       if (clients.length > 0) {
         this.$bvModal.show("modal-1");
@@ -316,6 +325,9 @@ export default {
   },
   data: function () {
     return {
+
+      GENDERS: ["M", "F"],
+      REGIMENS: ["6H", "3PH"],
       drillClients: [],
       perPage: 10,
       currentPage: 1,
@@ -375,6 +387,36 @@ export default {
           label: "Gender",
           name: "gender",
           sort: true,
+        },
+        {
+          label: "3PH",
+          name: "new_three_p_h",
+          slot_name: "new_three_p_h",
+        },
+        {
+          label: "6HP",
+          name: "new_six_p_h",
+          sort_name: "new_six_p_h",
+        },
+        {
+          label: "3PH",
+          name: "prev_three_p_h",
+          sort_name: "old_three_p_h",
+        },
+        {
+          label: "6HP",
+          name: "prev_six_p_h",
+          sort_name: "old_six_p_h",
+        },
+        {
+          label: "3PH",
+          name: "comp_three_p_h",
+          sort_name: "old_init_three_p_h",
+        },
+        {
+          label: "6HP",
+          name: "comp_six_p_h",
+          sort_name: "old_init_six_p_h",
         },
         {
           label: "Started New in ART",
