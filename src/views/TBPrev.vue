@@ -127,7 +127,7 @@ export default {
     async loadData(url) {
       await ApiClient.get(url, {}, {}).then((res) => {
         res.json().then((f) => {
-          this.buildReport(f);
+          this.buildReportData(f);
         });
       });
     },
@@ -157,7 +157,7 @@ export default {
       if (group == "50 plus years") return [50, 10000];
     },
 
-    buildReport(data) {
+    buildReportData(data) {
       this.rows = this.GENDERS.map((gender, num) => {
         return ageGroups.map((group) => {
           const constantsData = data[group][gender];
@@ -166,56 +166,25 @@ export default {
             group,
             gender,
             started_new_on_art: {
-              six_h: this.REGIMENS.reduce((acc, curr) => {
-                return (acc =
-                  acc + constantsData['3PH'].started_new_on_art.length);
-              }, 0),
-
-              three_p_h: this.REGIMENS.reduce((acc, curr) => {
-                return (acc =
-                  acc + constantsData[regimen].started_new_on_art.length);
-              }, 0),
+              six_h: constantsData['6H'].started_new_on_art,
+              three_p_h: constantsData['3PH'].started_new_on_art,
             },
 
             started_previously_on_art: {
-              six_h: this.REGIMENS.reduce((acc, regimen) => {
-                return (acc =
-                  acc +
-                  constantsData[regimen].started_previously_on_art.length);
-              }, 0),
-
-              three_p_h: this.REGIMENS.reduce((acc, curr) => {
-                return (acc =
-                  acc +
-                  constantsData[regimen].started_previously_on_art.length);
-              }, 0),
+              six_h: constantsData['6H'].started_previously_on_art,
+              three_p_h: constantsData['3PH'].started_previously_on_art,
             },
 
             completed_new_on_art: {
-              six_h: this.REGIMENS.reduce((acc, regimen) => {
-                return (acc =
-                  acc + constantsData[regimen].completed_new_on_art.length);
-              }, 0),
-
-              three_p_h: this.REGIMENS.reduce((acc, regimen) => {
-                return (acc =
-                  acc + constantsData[regimen].completed_new_on_art.length);
-              }, 0),
+              six_h: constantsData['6H'].completed_new_on_art.length,
+              three_p_h: constantsData['3PH'].completed_new_on_art,
             },
 
             completed_previously_on_art: {
-              six_h: this.REGIMENS.reduce((acc, regimen) => {
-                return (acc =
-                  acc +
-                  constantsData[regimen].completed_previously_on_art.length);
-              }, 0),
+              six_h: constantsData['6H'].completed_previously_on_art,
+              three_p_h: constantsData['3PH'].completed_previously_on_art,
+            }
 
-              three_p_h: this.REGIMENS.reduce((acc, regimen) => {
-                return (acc =
-                  acc +
-                  constantsData[regimen].completed_previously_on_art.length);
-              }, 0),
-            },
           };
         });
       });
