@@ -85,19 +85,20 @@ export default {
     initRows: function () {
       this.rows = [];
       var client_sex = ["F", "M"];
+      let num = 0
       client_sex.forEach((element) => {
         this.ageGroups.forEach((el, index) => {
-          let num = element === "Female" ? index + 1 : index + 12 + 1;
+          num = num + 1
           this.rows.push({
             number: num,
             age_group: el,
             gender: element,
-            new_three_p_h: [],
-            new_six_p_h: [],
-            prev_three_p_h: [],
-            prev_six_p_h: [],
-            comp_three_p_h: [],
-            comp_six_p_h: [],
+            new_three_p_h: 0,
+            new_six_p_h: 0,
+            prev_three_p_h: 0,
+            prev_six_p_h: 0,
+            comp_three_p_h: 0,
+            comp_six_p_h: 0,
           });
         });
       });
@@ -131,39 +132,16 @@ export default {
         });
       });
     },
-    setMinMaxAges(group) {
-      if (group == "<1 year") return [0, 0];
-
-      if (group == "1-4 years") return [1, 4];
-
-      if (group == "5-9 years") return [5, 9];
-
-      if (group == "10-14 years") return [10, 14];
-
-      if (group == "15-19 years") return [15, 19];
-
-      if (group == "20-24 years") return [20, 24];
-
-      if (group == "25-29 years") return [25, 29];
-
-      if (group == "30-34 years") return [30, 34];
-
-      if (group == "35-39 years") return [35, 39];
-
-      if (group == "40-44 years") return [40, 44];
-
-      if (group == "45-49 years") return [45, 49];
-
-      if (group == "50 plus years") return [50, 10000];
-    },
 
     buildReportData(data) {
-      this.rows = this.GENDERS.map((gender, num) => {
-        return ageGroups.map((group) => {
+      let number = 1
+      this.rows = this.GENDERS.map( gender => {
+        return ageGroups.map((age_group, index) => {
+          number = number + index
           const constantsData = data[group][gender];
           return {
-            num,
-            group,
+            number,
+            age_group,
             gender,
             started_new_on_art: {
               six_h: constantsData['6H'].started_new_on_art,
@@ -356,12 +334,12 @@ export default {
         {
           label: "Age Group",
           name: "age_group",
-          sort: true,
+          sort: false,
         },
         {
           label: "Gender",
           name: "gender",
-          sort: true,
+          sort: false,
         },
         {
           label: "3PH",
@@ -369,7 +347,7 @@ export default {
           slot_name: "new_three_p_h",
         },
         {
-          label: "6HP",
+          label: "6H",
           name: "new_six_p_h",
           sort_name: "new_six_p_h",
         },
@@ -379,17 +357,17 @@ export default {
           sort_name: "old_three_p_h",
         },
         {
-          label: "6HP",
+          label: "6H",
           name: "prev_six_p_h",
           sort_name: "old_six_p_h",
         },
         {
           label: "3PH",
           name: "comp_three_p_h",
-          sort_name: "old_init_three_p_h",
+          sort_name: "old_init_three_p_h"
         },
         {
-          label: "6HP",
+          label: "6H",
           name: "comp_six_p_h",
           sort_name: "old_init_six_p_h",
         },
