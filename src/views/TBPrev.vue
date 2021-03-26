@@ -92,10 +92,12 @@ export default {
             number: num,
             age_group: el,
             gender: element,
-            new: [],
-            old: [],
-            new_initiated: [],
-            old_initiated: [],
+            new_three_p_h: [],
+            new_six_p_h: [],
+            prev_three_p_h: [],
+            prev_six_p_h: [],
+            comp_three_p_h: [],
+            comp_six_p_h: [],
           });
         });
       });
@@ -125,8 +127,7 @@ export default {
     async loadData(url) {
       await ApiClient.get(url, {}, {}).then((res) => {
         res.json().then((f) => {
-          console.log(f);
-          this.addRow(f);
+          this.buildReport(f);
         });
       });
     },
@@ -156,8 +157,7 @@ export default {
       if (group == "50 plus years") return [50, 10000];
     },
 
-    addAll(data) {
-
+    buildReport(data) {
       this.rows = this.GENDERS.map((gender, num) => {
         return ageGroups.map((group) => {
           const constantsData = data[group][gender];
@@ -166,9 +166,9 @@ export default {
             group,
             gender,
             started_new_on_art: {
-              six_h: this.REGIMENS.reduce((acc, regimen) => {
+              six_h: this.REGIMENS.reduce((acc, curr) => {
                 return (acc =
-                  acc + constantsData[regimen].started_new_on_art.length);
+                  acc + constantsData['3PH'].started_new_on_art.length);
               }, 0),
 
               three_p_h: this.REGIMENS.reduce((acc, curr) => {
@@ -214,7 +214,7 @@ export default {
                 return (acc =
                   acc +
                   constantsData[regimen].completed_previously_on_art.length);
-              }, 0), 
+              }, 0),
             },
           };
         });
@@ -325,9 +325,7 @@ export default {
   },
   data: function () {
     return {
-
-      GENDERS: ["M", "F"],
-      REGIMENS: ["6H", "3PH"],
+      GENDERS: ["F", "M"],
       drillClients: [],
       perPage: 10,
       currentPage: 1,
@@ -368,9 +366,17 @@ export default {
         "40-44 years",
         "45-49 years",
         "50 plus years",
+        "Unknown"
       ],
       showLoader: false,
-      slots: ["new", "old", "new_initiated", "old_initiated"],
+      slots: [
+        "new_three_p_h",
+        "new_six_p_h",
+        "old_three_p_h",
+        "old_six_p_h",
+        "old_init_three_p_h",
+        "old_init_six_p_h",
+      ],
       rows: [],
       columns: [
         {
@@ -417,30 +423,6 @@ export default {
           label: "6HP",
           name: "comp_six_p_h",
           sort_name: "old_init_six_p_h",
-        },
-        {
-          label: "Started New in ART",
-          name: "new",
-          slot_name: "new",
-          // sort: true,
-        },
-        {
-          label: "Started Previously on ART",
-          name: "old",
-          slot_name: "old",
-          // sort: true,
-        },
-        {
-          label: "Completed New on ART",
-          name: "new_initiated",
-          slot_name: "new_initiated",
-          // sort: true,
-        },
-        {
-          label: "Completed Previously on ART",
-          name: "old_initiated",
-          slot_name: "old_initiated",
-          // sort: true,
         },
       ],
       config: {
