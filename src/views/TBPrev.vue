@@ -93,12 +93,14 @@ export default {
             number: num,
             age_group: el,
             gender: element,
+            new_six_h: 0,
             new_three_p_h: 0,
-            new_six_p_h: 0,
+            prev_six_h: 0,
             prev_three_p_h: 0,
-            prev_six_p_h: 0,
-            comp_three_p_h: 0,
-            comp_six_p_h: 0,
+            comp_new_six_h: 0,
+            comp_new_three_h: 0,
+            comp_prev_six_h: 0,
+            comp_prev_three_p_h: 0,
           });
         });
       });
@@ -128,6 +130,8 @@ export default {
     async loadData(url) {
       await ApiClient.get(url, {}, {}).then((res) => {
         res.json().then((f) => {
+          console.log(f)
+          if(Object.keys(f).length === 0) return this.reportLoading = false 
           this.buildReportData(f);
         });
       });
@@ -136,33 +140,21 @@ export default {
     buildReportData(data) {
       let number = 1
       this.rows = this.GENDERS.map( gender => {
-        return ageGroups.map((age_group, index) => {
-          number = number + index
-          const constantsData = data[group][gender];
+        return this.ageGroups.map((age_group, index) => {
+          number=+ index
+          const constantsData = data[age_group][gender];
           return {
             number,
             age_group,
             gender,
-            started_new_on_art: {
-              six_h: constantsData['6H'].started_new_on_art,
-              three_p_h: constantsData['3PH'].started_new_on_art,
-            },
-
-            started_previously_on_art: {
-              six_h: constantsData['6H'].started_previously_on_art,
-              three_p_h: constantsData['3PH'].started_previously_on_art,
-            },
-
-            completed_new_on_art: {
-              six_h: constantsData['6H'].completed_new_on_art.length,
-              three_p_h: constantsData['3PH'].completed_new_on_art,
-            },
-
-            completed_previously_on_art: {
-              six_h: constantsData['6H'].completed_previously_on_art,
-              three_p_h: constantsData['3PH'].completed_previously_on_art,
-            }
-
+            new_six_h: constantsData['6H'].started_new_on_art,
+            new_three_p_h: constantsData['3PH'].started_new_on_art,
+            prev_six_h: constantsData['6H'].started_previously_on_art,
+            prev_three_p_h: constantsData['3PH'].started_previously_on_art,
+            comp_new_six_h: constantsData['6H'].completed_new_on_art,
+            comp_new_three_h: constantsData['3PH'].completed_new_on_art,
+            comp_prev_six_h: constantsData['6H'].completed_previously_on_art,
+            comp_prev_three_p_h: constantsData['3PH'].completed_previously_on_art,
           };
         });
       });
@@ -317,12 +309,14 @@ export default {
       ],
       showLoader: false,
       slots: [
-        "new_three_p_h",
-        "new_six_p_h",
-        "old_three_p_h",
-        "old_six_p_h",
-        "old_init_three_p_h",
-        "old_init_six_p_h",
+        'new_six_h',
+        'new_three_p_h',
+        'prev_six_h',
+        'prev_three_p_h',
+        'comp_new_six_h',
+        'comp_new_three_h',
+        'comp_prev_six_h',
+        'comp_prev_three_p_h'
       ],
       rows: [],
       columns: [
@@ -348,8 +342,8 @@ export default {
         },
         {
           label: "6H",
-          name: "new_six_p_h",
-          sort_name: "new_six_p_h",
+          name: "new_six_h",
+          sort_name: "new_six_h",
         },
         {
           label: "3PH",
@@ -358,18 +352,28 @@ export default {
         },
         {
           label: "6H",
-          name: "prev_six_p_h",
-          sort_name: "old_six_p_h",
+          name: "prev_six_h",
+          sort_name: "prev_six_h",
         },
         {
           label: "3PH",
-          name: "comp_three_p_h",
-          sort_name: "old_init_three_p_h"
+          name: "comp_new_three_h",
+          sort_name: "comp_new_three_h"
         },
         {
           label: "6H",
-          name: "comp_six_p_h",
-          sort_name: "old_init_six_p_h",
+          name: "comp_new_six_h",
+          sort_name: "comp_new_six_h",
+        },
+        {
+          label: "3PH",
+          name: "comp_prev_three_p_h",
+          sort_name: "comp_prev_three_p_h"
+        },
+        {
+          label: "6H",
+          name: "comp_prev_six_h",
+          sort_name: "comp_prev_six_h",
         },
       ],
       config: {
