@@ -17,6 +17,7 @@
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>ARV#</th>
                   <th>First name</th>
                   <th>Last name</th>
                   <th>Gender</th>
@@ -166,9 +167,11 @@ export default {
       }
     },
     loadGroupData(data){
-			console.log(data)
-			data.forEach(data => {
-				this.dTable.fnAddData([ (row_counter++), age_groups[i], gender[j], count ]);
+			let rowCount = 0
+			data.forEach((data) => {
+        rowCount += 1
+        const { arv_number, given_name, family_name, gender, birthdate, appointment_date, months_on_art, mile_stone, patient_id } = data
+				this.dTable.fnAddData([ rowCount, arv_number, given_name, family_name, gender, birthdate, appointment_date, months_on_art, mile_stone, patient_id ]);
 			})
     }
   }, data: function() {
