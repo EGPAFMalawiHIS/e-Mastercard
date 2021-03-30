@@ -1,226 +1,262 @@
 <template>
-
-<div class="d-flex" id="wrapper">
-  <side-bar />
-  <div id="page-content-wrapper">
-    <top-nav />
-    <!-- Page Content -->
-    <div id="main-container" class="col-12 table-col">
-      <div class="row">
-        <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-        <sdPicker :onSubmit="fetchDates"></sdPicker>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <report-overlay :reportLoading="reportLoading">
-            <table class="table table-striped report" id="cohort-clients">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>ARV#</th>
-                  <th>First name</th>
-                  <th>Last name</th>
-                  <th>Gender</th>
-                  <th>birthdate</th>
-                  <th>App date</th>
-                  <th>Months on ART</th>
-                  <th>Milestone</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody ref="tableBody">
-              </tbody>
-             <tfoot>
-              <tr>
-                <td>
-                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
-                  e-Mastercard Version : {{EMCVersion}} 
-                  API Version {{APIVersion}}
-                </td>
-              </tr>
-            </tfoot>
-            </table>
-          </report-overlay>
+  <div class="d-flex" id="wrapper">
+    <side-bar />
+    <div id="page-content-wrapper">
+      <top-nav />
+      <div id="main-container" class="col-12 table-col">
+        <div class="row">
+          <div class="col-md-12">
+            <sdPicker :onSubmit="fetchDates"></sdPicker>
+          </div>
         </div>
+
+        <report-overlay :reportLoading="reportLoading">
+        <vue-bootstrap4-table
+          :rows="rows"
+          :columns="columns"
+          :config="config"
+          :show-loader="showLoader"
+					:actions="actions"
+          @redirect="onRedirect"
+					@on-download="onDownload"
+        >
+          <template slot="patient_id" slot-scope="props">
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="redirect('/patient/mastercard/' + props.cell_value)"
+            >
+              select
+            </button>
+          </template>
+        </vue-bootstrap4-table>
+        </report-overlay>
       </div>
     </div>
-    <!-- Page Content ends -->
   </div>
-</div>
-
-
 </template>
-
-<style scope>
-
-</style>
-
-
-
 
 <script>
 // @ is an alias to /src
-import ApiClient from "../services/api_client"
-import { mapState } from "vuex";
+import ApiClient from "../services/api_client";
 import ReportOverlay from "../components/reports/ReportOverlay";
 import Sidebar from "@/components/SideBar.vue";
+import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
+import DateUtils from "../services/date_utils";
 import TopNav from "@/components/topNav.vue";
 
-import moment from 'moment';
-import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
+import VueBootstrap4Table from "vue-bootstrap4-table";
 
-import jQuery from 'jquery';
-import datatable from 'datatables'
-
-require("@/assets/datatable/css/bootstrap.css");
-require("@/assets/datatable/css/dataTables.bootstrap4.min.css");
-
-//require("@/assets/datatable/jquery-ui.css");
-require("@/assets/datatable/css/buttons.dataTables.min.css");
-require("@/assets/datatable/css/dataTables.jqueryui.min.css")
-
-
-
-require("@/assets/datatable/js/buttons.flash.min.js");
-require("@/assets/datatable/js/jszip.min.js");
-require("@/assets/datatable/js/pdfmake.min.js");
-require("@/assets/datatable/js/vfs_fonts.js");
-require("@/assets/datatable/js/buttons.html5.min.js");
-require("@/assets/datatable/js/buttons.print.min.js")
-
-
-
+import moment from "moment";
+import { mapState } from "vuex";
 export default {
   name: "txML",
   components: {
     ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
-    "sdPicker": StartAndEndDatePicker
+    sdPicker: StartAndEndDatePicker,
+    VueBootstrap4Table,
   },
   methods: {
-    redirect: function(url) {
+    redirect: function (url) {
       this.$router.push(url);
     },
-    initDataTable(){
-      this.dTable = jQuery("#cohort-clients").dataTable({
-        order: [[ 0, "asc" ]],
-        fixedHeader: true,
-        searching: false,
-        paging: false,
-        Processing: true,
-        ServerSide: true,
-        scroller: {
-          loadingIndicator: true
-        },
-        dom: 'Bfrtip',
-        buttons: [
-          {
-            extend: 'copy',
-            title:  this.report_title
-          },
-          {
-            extend: 'csv',
-            title:  this.report_title,
-            footer: true
-          },
-          {
-            extend: 'pdf',
-            title:  this.report_title
-          },
-          {
-            extend: 'print',
-            title:  this.report_title
-          }
-        ],
-        columnDefs: [
-          {"className": "dt-center numbers", "targets": 0},
-          {"className": "dt-center", "targets": 1},
-          {"className": "dt-center", "targets": 2},
-          {"className": "dt-right", "targets": 3}
-        ]
+    onRedirect: function (url) {
+      this.$router.push(url.event_payload.url);
+    },
+    initRows: function () {
+      this.rows = [];
+    },
+    async fetchDates(dates) {
+      this.reportLoading = true;
+      this.initRows();
+      let group;
+      let min_age;
+      let max_age;
+      this.startDate = dates[0];
+      this.endDate = dates[1];
+      this.reportTitle =
+        "PEPFAR " +
+        sessionStorage.location_name +
+        " Clients Due for Viral Load ";
+      this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
+      this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
+      this.reportLoading = true;
+
+      let url_path = "clients_due_vl?date=" + moment().format("YYYY-MM-DD");
+      url_path += "&start_date=" + this.startDate;
+      url_path += "&end_date=" + this.endDate;
+      url_path += "&program_id=1";
+
+      this.loadData(url_path);
+    },
+    async loadData(url) {
+      await ApiClient.get(url, {}, {}).then((res) => {
+        res.json().then((f) => {
+          console.log(f);
+          if (Object.keys(f).length === 0) return (this.reportLoading = false);
+          this.buildReportData(f);
+        });
       });
     },
-    async fetchDates(dates){
-      try {
-        this.reportLoading = true;
-        this.startDate = dates[0];
-        this.endDate = dates[1];
-        this.report_title = 'Clinic ' + sessionStorage.location_name + ' Clients Due For Viral Load report ';
-        this.report_title += moment(dates[0]).format('DDMMMYYYY');
-        this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
-        await this.loadXLdata();
-      } finally {
-        this.reportLoading = false;
-      }
-    },
-    loadXLdata: async function(){
-      let url = "clients_due_vl?date=" + moment().format('YYYY-MM-DD');
-      url += "&start_date=" + this.startDate;
-      url += "&end_date=" + this.endDate;
-      url += '&program_id=1';
-     
-      const response = await ApiClient.get(url, {}, {});
 
-      if (response.status === 200) {
-        this.loadGroupData(await response.json());
+    buildReportData(data) {
+			let rowCount = 0
+			this.rows = data.map(patient => {
+				rowCount += 1
+				const { arv_number, given_name, family_name, gender, birthdate, appointment_date, months_on_art, mile_stone, patient_id } = patient
+				return {
+					rowCount,
+					arv_number,
+					given_name,
+					family_name,
+					gender,
+					birthdate,
+					appointment_date,
+					months_on_art,
+					mile_stone,
+					patient_id
+				}
+			})
+      this.reportLoading = false;
+    },
+    onDownload() {
+      let y = null;
+      this.columns.forEach((element) => {
+        y += `"${element.label}",`;
+      });
+      y = y.replace("null", "");
+      this.rows.forEach((element) => {
+        y += "\n";
+        Object.keys(element).forEach((innerElement) => {
+          let value = element[innerElement];
+          if (Array.isArray(element[innerElement])) {
+            value = element[innerElement].length;
+          }
+          y += `"${value}",`;
+        });
+      });
+
+      y += "\n";
+      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
+                          e-Mastercard Version : ${sessionStorage.EMCVersion} 
+                          API Version ${sessionStorage.APIVersion}`;
+      for (let index = 0; index < 34; index++) {
+        y += ",";
+      }
+      var csvData = new Blob([y], { type: "text/csv;charset=utf-8;" });
+      //IE11 & Edge
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(csvData, exportFilename);
+      } else {
+        //In FF link must be added to DOM to be clicked
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(csvData);
+        link.setAttribute("download", `${this.reportTitle}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
     },
-    loadGroupData(data){
-			let rowCount = 0
-			data.forEach((data) => {
-        rowCount += 1
-        const { arv_number, given_name, family_name, gender, birthdate, appointment_date, months_on_art, mile_stone, patient_id } = data
-				this.dTable.fnAddData([ rowCount, arv_number, given_name, family_name, gender, birthdate, appointment_date, months_on_art, mile_stone, patient_id ]);
-			})
-    }
-  }, data: function() {
-      return {
-        APIVersion: sessionStorage.APIVersion,
-				EMCVersion: sessionStorage.EMCVersion,
-				reportLoading: false,
-				report_title: null,
-      }
-	},
-	
-  mounted(){
-    setTimeout(() => this.initDataTable(), 300);
-  }
+  },
+  data: function () {
+    return {
+      drillClients: [],
+      perPage: 10,
+      currentPage: 1,
+      rows: [],
+      columns: [
+				{
+          label: "#",
+          name: "rowCount",
+          slot_name: "rowCount",
+          sort: true,
+        },
+        {
+          label: "ARV#",
+          name: "arv_number",
+          slot_name: "arv_number",
+          sort: false,
+        },
+        {
+          label: "First Name",
+          name: "given_name",
+
+          sort: false,
+        },
+        {
+          label: "Last Name",
+          name: "family_name",
+          sort: false,
+        },
+        {
+          label: "Gender",
+          name: "gender",
+          sort: false,
+        },
+        {
+          label: "Birthdate",
+          name: "birthdate",
+          sort: false,
+        },
+        {
+          label: "App Date",
+          name: "appointment_date",
+          sort: false,
+        },
+        {
+          label: "Months on ART",
+          name: "months_on_art",
+          sort: false,
+        },
+        {
+          label: "Milestone",
+          name: "mile_stone",
+          sort: false,
+        },
+        {
+          label: "Action",
+          name: "patient_id",
+          slot_name: "patient_id",
+        },
+      ],
+      config: {
+        card_title: `Clients Due for Viral Load`,
+        show_refresh_button: false,
+        show_reset_button: false,
+      },
+			actions: [
+        {
+          btn_text: "CSV",
+          event_name: "on-download",
+          class: "btn btn-primary my-custom-class",
+        },
+      ],
+      startDate: null,
+      endDate: null,
+      reportLoading: false,
+      APIVersion: sessionStorage.APIVersion,
+      EMCVersion: sessionStorage.EMCVersion,
+      reportTitle: null,
+      showLoader: false,
+    };
+  },
+  computed: {
+    ...mapState(["location"]),
+    rowCount() {
+      return this.drillClients.length;
+    },
+  },
+  mounted() {
+    this.initRows();
+  },
 };
 </script>
 
 <style scoped>
-span {
-  text-align: left;
-  float: left;
-  padding-bottom: 30px;
-  width:  100%;
-}
-
-button {
-  float: right;
-  right: 10px;
-  margin-top: 10px;
-}
-
-table {
-    text-align: left;
-    margin-left: 5px;
-    padding-top: 10px;
-}
-</style>
-
-<style>
-.dt-center {
-  text-align: center;
-}
-
-.dt-right {
-  text-align: right;
-  padding-right: 5px;
-}
-
-.numbers {
-  width: 15px;
+.drillable {
+  color: blue;
+  text-decoration: underline;
 }
 </style>
