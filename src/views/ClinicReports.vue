@@ -89,24 +89,16 @@
                 </div>
               </div>
             </div>
-
+          </div>
+          <div class="row">
             <div class="col-sm">
               <div class="btn-container" @click="redirect('/client_due_for_vl')">
                 <div class="card">
-                  <img src="../assets/report-icons/refill.png" class="btn-icon"/>
+                  <img src="../assets/report-icons/viral_load.png" class="btn-icon"/>
                   <p>Clients due for VL</p>
                 </div>
               </div>
             </div>
-            
-            <!-- <div class="col-sm"> -->
-              <!--div class="btn-container" @click="redirect">
-                <div class="card">
-                  <img src="../assets/report-icons/cohort.png" class="btn-icon"/>
-                  <p>IPT (usage)</p>
-                </div>
-              </div-->
-            <!-- </div> -->
           </div>
 
         </div>
