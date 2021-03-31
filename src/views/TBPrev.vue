@@ -19,16 +19,6 @@
           :actions="actions"
           @on-download="onDownload"
         >
-          <template v-for="slot in slots" :slot="slot" slot-scope="props">
-            <span
-              @click="fetchDrillDown(props.cell_value)"
-              :class="props.cell_value.length > 0 ? 'drillable' : ''"
-              :key="slot"
-              >{{
-                props.cell_value.length > 0 ? props.cell_value.length : 0
-              }}</span
-            >
-          </template>
         </vue-bootstrap4-table>
         <!-- </report-overlay> -->
       </div>
@@ -160,68 +150,6 @@ export default {
       });
 
       this.reportLoading = false;
-    },
-
-    fetchDrillDown(clients) {
-      if (clients.length > 0) {
-        this.$bvModal.show("modal-1");
-        this.drillClients = [];
-        clients.forEach((element) => {
-          this.getClient(element);
-        });
-      }
-    },
-    getClient: async function (id) {
-      let url = "patients/" + id;
-
-      const response = await ApiClient.get(url, {}, {});
-
-      if (response.status === 200) {
-        response
-          .json()
-          .then((data) => this.drillClients.push(this.parsePatient(data)));
-      }
-    },
-    parsePatient(results) {
-      var age = results.person.birthdate;
-      var gender = results.person.gender;
-      var identifier = "";
-      var patient_name =
-        results.person.names[0].given_name +
-        " " +
-        results.person.names[0].family_name;
-
-      var arv_number = results.patient_identifiers.filter((el) => {
-        return el.identifier_type === 4 ? el.identifier : "";
-      });
-      try {
-        var addressl1 = results.person.addresses[0].city_village;
-        var addressl2 = results.person.addresses[0].address2;
-        var phone_number = results.person.person_attributes[1].value;
-      } catch (e) {
-        var addressl1 = "";
-        var addressl2 = "";
-        var phone_number = "";
-      }
-      try {
-        for (
-          var index = 0;
-          index < results.patient_identifiers.length;
-          index++
-        ) {
-          if (results.patient_identifiers[index]["identifier_type"] == 4) {
-            identifier = results.patient_identifiers[index]["identifier"];
-          }
-        }
-      } catch (e) {
-        console.log(e);
-      }
-      var toPush = {};
-      toPush.dob = age;
-      toPush.arv_number = identifier;
-      toPush.gender = gender;
-      toPush.current_village = addressl1;
-      return toPush;
     },
     onDownload() {
       let y = null;
