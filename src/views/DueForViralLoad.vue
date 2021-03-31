@@ -30,6 +30,15 @@
             </button>
           </template>
         </vue-bootstrap4-table>
+        <tfoot>
+              <tr>
+                <td>
+                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                  e-Mastercard Version : {{EMCVersion}} 
+                  API Version {{APIVersion}}
+                </td>
+              </tr>
+            </tfoot>
         </report-overlay>
       </div>
     </div>
