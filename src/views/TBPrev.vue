@@ -10,17 +10,26 @@
           </div>
         </div>
 
-        <!-- <report-overlay :reportLoading="reportLoading"> -->
-        <vue-bootstrap4-table
-          :rows="rows"
-          :columns="columns"
-          :config="config"
-          :show-loader="reportLoading"
-          :actions="actions"
-          @on-download="onDownload"
-        >
-        </vue-bootstrap4-table>
-        <!-- </report-overlay> -->
+        <report-overlay :reportLoading="reportLoading">
+          <vue-bootstrap4-table
+            :rows="rows"
+            :columns="columns"
+            :config="config"
+            :show-loader="reportLoading"
+            :actions="actions"
+            @on-download="onDownload"
+          >
+          </vue-bootstrap4-table>
+          <tfoot>
+            <tr>
+              <td>
+                Date Created:
+                {{ moment().format("YYYY-MM-DD:h:m:s") }} e-Mastercard Version :
+                {{ EMCVersion }} API Version {{ APIVersion }}
+              </td>
+            </tr>
+          </tfoot>
+        </report-overlay>
       </div>
     </div>
     <b-modal id="modal-1" :title="`Drill Down Clients`">
@@ -75,10 +84,10 @@ export default {
     initRows: function () {
       this.rows = [];
       var client_sex = ["F", "M"];
-      let num = 0
+      let num = 0;
       client_sex.forEach((element) => {
         this.ageGroups.forEach((el, index) => {
-          num = num + 1
+          num = num + 1;
           this.rows.push({
             number: num,
             age_group: el,
@@ -120,31 +129,32 @@ export default {
     async loadData(url) {
       await ApiClient.get(url, {}, {}).then((res) => {
         res.json().then((f) => {
-          console.log(f)
-          if(Object.keys(f).length === 0) return this.reportLoading = false 
+          console.log(f);
+          if (Object.keys(f).length === 0) return (this.reportLoading = false);
           this.buildReportData(f);
         });
       });
     },
 
     buildReportData(data) {
-      let number = 1
-      this.rows = this.GENDERS.map( gender => {
+      let number = 1;
+      this.rows = this.GENDERS.map((gender) => {
         return this.ageGroups.map((age_group, index) => {
-          number=+ index
+          number = +index;
           const constantsData = data[age_group][gender];
           return {
             number,
             age_group,
             gender,
-            new_six_h: constantsData['6H'].started_new_on_art,
-            new_three_p_h: constantsData['3PH'].started_new_on_art,
-            prev_six_h: constantsData['6H'].started_previously_on_art,
-            prev_three_p_h: constantsData['3PH'].started_previously_on_art,
-            comp_new_six_h: constantsData['6H'].completed_new_on_art,
-            comp_new_three_h: constantsData['3PH'].completed_new_on_art,
-            comp_prev_six_h: constantsData['6H'].completed_previously_on_art,
-            comp_prev_three_p_h: constantsData['3PH'].completed_previously_on_art,
+            new_six_h: constantsData["6H"].started_new_on_art,
+            new_three_p_h: constantsData["3PH"].started_new_on_art,
+            prev_six_h: constantsData["6H"].started_previously_on_art,
+            prev_three_p_h: constantsData["3PH"].started_previously_on_art,
+            comp_new_six_h: constantsData["6H"].completed_new_on_art,
+            comp_new_three_h: constantsData["3PH"].completed_new_on_art,
+            comp_prev_six_h: constantsData["6H"].completed_previously_on_art,
+            comp_prev_three_p_h:
+              constantsData["3PH"].completed_previously_on_art,
           };
         });
       });
@@ -233,18 +243,18 @@ export default {
         "40-44 years",
         "45-49 years",
         "50 plus years",
-        "Unknown"
+        "Unknown",
       ],
       showLoader: false,
       slots: [
-        'new_six_h',
-        'new_three_p_h',
-        'prev_six_h',
-        'prev_three_p_h',
-        'comp_new_six_h',
-        'comp_new_three_h',
-        'comp_prev_six_h',
-        'comp_prev_three_p_h'
+        "new_six_h",
+        "new_three_p_h",
+        "prev_six_h",
+        "prev_three_p_h",
+        "comp_new_six_h",
+        "comp_new_three_h",
+        "comp_prev_six_h",
+        "comp_prev_three_p_h",
       ],
       rows: [],
       columns: [
@@ -264,42 +274,42 @@ export default {
           sort: false,
         },
         {
-          label: "3PH",
+          label: "3PH(Started New on ART)",
           name: "new_three_p_h",
           slot_name: "new_three_p_h",
         },
         {
-          label: "6H",
+          label: "6H(Started New on ART)",
           name: "new_six_h",
           sort_name: "new_six_h",
         },
         {
-          label: "3PH",
+          label: "3PH(Started Previously on ART)",
           name: "prev_three_p_h",
           sort_name: "old_three_p_h",
         },
         {
-          label: "6H",
+          label: "6H(Started Previously on ART)",
           name: "prev_six_h",
           sort_name: "prev_six_h",
         },
         {
-          label: "3PH",
+          label: "3PH(Completed New on ART)",
           name: "comp_new_three_h",
-          sort_name: "comp_new_three_h"
+          sort_name: "comp_new_three_h",
         },
         {
-          label: "6H",
+          label: "6H(Completed New on ART)",
           name: "comp_new_six_h",
           sort_name: "comp_new_six_h",
         },
         {
-          label: "3PH",
+          label: "3PH(Completed Previously on ART)",
           name: "comp_prev_three_p_h",
-          sort_name: "comp_prev_three_p_h"
+          sort_name: "comp_prev_three_p_h",
         },
         {
-          label: "6H",
+          label: "6H(Completed Previously on ART)",
           name: "comp_prev_six_h",
           sort_name: "comp_prev_six_h",
         },
