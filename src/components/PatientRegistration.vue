@@ -482,7 +482,7 @@ export default {
         //optional causing validation problem
         middle_name: {
           charsOnly(middle_name) {
-            return nameRegex.test(middle_name); //only allow characters
+            return middle_name != '' ? nameRegex.test(middle_name) : true; //only allow characters
           }
         },
 
