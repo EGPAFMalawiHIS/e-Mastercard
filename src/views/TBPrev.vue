@@ -19,6 +19,16 @@
             :actions="actions"
             @on-download="onDownload"
           >
+           <template v-for="slot in slots" :slot="slot" slot-scope="props">
+              <span
+                @click="fetchDrillDown(props.cell_value)"
+                :class="props.cell_value.length > 0 ? 'drillable' : ''"
+                :key="slot"
+                >{{
+                  props.cell_value.length > 0 ? props.cell_value.length : 0
+                }}</span
+              >
+            </template>
           </vue-bootstrap4-table>
           <tfoot>
             <tr>
@@ -118,28 +128,31 @@ export default {
       this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
       this.reportLoading = true;
       let url_path =
-        "tb_prev?start_date=" +
+        "programs/1/reports/tb_prev2?start_date=" +
         this.startDate +
         "&date=" +
         moment().format("YYYY-MM-DD");
-      url_path += "&end_date=" + this.endDate + "&program_id=1";
+      url_path += "&end_date=" + this.endDate;
       console.log(url_path);
       this.loadData(url_path);
     },
     async loadData(url) {
       await ApiClient.get(url, {}, {}).then((res) => {
         res.json().then((f) => {
-          console.log(f);
-          if (Object.keys(f).length === 0) return (this.reportLoading = false);
-          this.buildReportData(f);
+          if (Object.keys(f).length > 0) {
+            console.log(f)
+            this.buildReportData(f);
+          }else{
+            this.reportLoading = false
+          }
         });
       });
     },
 
     buildReportData(data) {
       let number = 1;
-      this.rows = this.GENDERS.map((gender) => {
-        return this.ageGroups.map((age_group, index) => {
+      this.GENDERS.forEach((gender) => {
+         this.rows = this.ageGroups.map((age_group, index) => {
           number = +index;
           const constantsData = data[age_group][gender];
           return {
@@ -147,18 +160,17 @@ export default {
             age_group,
             gender,
             new_six_h: constantsData["6H"].started_new_on_art,
-            new_three_p_h: constantsData["3PH"].started_new_on_art,
+            new_three_p_h: constantsData["3HP"].started_new_on_art,
             prev_six_h: constantsData["6H"].started_previously_on_art,
-            prev_three_p_h: constantsData["3PH"].started_previously_on_art,
+            prev_three_p_h: constantsData["3HP"].started_previously_on_art,
             comp_new_six_h: constantsData["6H"].completed_new_on_art,
-            comp_new_three_h: constantsData["3PH"].completed_new_on_art,
+            comp_new_three_h: constantsData["3HP"].completed_new_on_art,
             comp_prev_six_h: constantsData["6H"].completed_previously_on_art,
             comp_prev_three_p_h:
-              constantsData["3PH"].completed_previously_on_art,
+              constantsData["3HP"].completed_previously_on_art,
           };
         });
       });
-
       this.reportLoading = false;
     },
     onDownload() {
@@ -231,11 +243,14 @@ export default {
       EMCVersion: sessionStorage.EMCVersion,
       reportTitle: null,
       ageGroups: [
-        "<1 year",
-        "1-4 years",
+        "0-5 months",
+        "6-11 months",
+        "12-23 months",
+        "2-4 years",
         "5-9 years",
         "10-14 years",
-        "15-19 years",
+        "15-17 years",
+        "18-19 years",
         "20-24 years",
         "25-29 years",
         "30-34 years",
@@ -266,15 +281,15 @@ export default {
         {
           label: "Age Group",
           name: "age_group",
-          sort: false,
+          sort: true,
         },
         {
           label: "Gender",
           name: "gender",
-          sort: false,
+          sort: true,
         },
         {
-          label: "3PH(Started New on ART)",
+          label: "3HP(Started New on ART)",
           name: "new_three_p_h",
           slot_name: "new_three_p_h",
         },
@@ -284,7 +299,7 @@ export default {
           sort_name: "new_six_h",
         },
         {
-          label: "3PH(Started Previously on ART)",
+          label: "3HP(Started Previously on ART)",
           name: "prev_three_p_h",
           sort_name: "old_three_p_h",
         },
@@ -294,7 +309,7 @@ export default {
           sort_name: "prev_six_h",
         },
         {
-          label: "3PH(Completed New on ART)",
+          label: "3HP(Completed New on ART)",
           name: "comp_new_three_h",
           sort_name: "comp_new_three_h",
         },
@@ -304,7 +319,7 @@ export default {
           sort_name: "comp_new_six_h",
         },
         {
-          label: "3PH(Completed Previously on ART)",
+          label: "3HP(Completed Previously on ART)",
           name: "comp_prev_three_p_h",
           sort_name: "comp_prev_three_p_h",
         },
