@@ -112,7 +112,7 @@
   </div>
 </template>
 
-<style scope>
+<style scoped>
 
 #btn-container {
   margin-top: 10px;
