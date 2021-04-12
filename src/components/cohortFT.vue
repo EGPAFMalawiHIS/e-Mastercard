@@ -1416,8 +1416,12 @@ export default {
       seven_a,${this.seven_a},
       eight_a,${this.eight_a},
       nine_a,${this.nine_a},
+      nine_p_granules,${this.nine_p_granules},
+      nine_p_tabs,${this.nine_p_tabs},
       ten_a,${this.ten_a},
       eleven_a,${this.eleven_a},
+      eleven_p_granules,${this.eleven_p_granules},
+      eleven_p_tabs,${this.eleven_p_tabs},
       twelve_a,${this.twelve_a},
       thirteen_a,${this.thirteen_a},
       fourteen_p,${this.fourteen_p},
@@ -1450,8 +1454,6 @@ export default {
       newly_initiated_on_ipt,${this.newly_initiated_on_ipt},
       newly_initiated_on_3hp,${this.newly_initiated_on_3hp},
       `;
-
-      y += "\n";
       y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
                           e-Mastercard Version : ${sessionStorage.EMCVersion} 
                           API Version ${sessionStorage.APIVersion} UUID: ${sessionStorage.siteUUID}`;
