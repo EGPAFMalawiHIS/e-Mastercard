@@ -422,3 +422,8 @@ export default {
   text-decoration: underline;
 }
 </style>
+<style>
+.my-custom-class {
+  right: 500px;
+}
+</style>
