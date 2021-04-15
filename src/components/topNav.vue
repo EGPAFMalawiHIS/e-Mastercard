@@ -86,7 +86,7 @@ export default {
         const data = await response.json();
 
         this.APIVersion = data["System version"];
-        sessionStorage.EMCVersion = data["System version"]; 
+        sessionStorage.APIVersion = data["System version"]; 
       },
       async fetchLocationName(location_id) {
         const response = await ApiClient.get("locations/" + location_id, {}, {});
@@ -104,7 +104,7 @@ export default {
       },
       appVersion() {
         let applicationVersion  = ApiClient.config.version || '2.0-dev';
-        sessionStorage.APIVersion = applicationVersion;
+        sessionStorage.applicationVersion = applicationVersion;
       return applicationVersion;
      },
     },
