@@ -19,7 +19,7 @@
             :actions="actions"
             @on-download="onDownload"
           >
-           <template v-for="slot in slots" :slot="slot" slot-scope="props">
+            <template v-for="slot in slots" :slot="slot" slot-scope="props">
               <span
                 @click="fetchDrillDown(props.cell_value)"
                 :class="props.cell_value.length > 0 ? 'drillable' : ''"
@@ -140,22 +140,23 @@ export default {
       await ApiClient.get(url, {}, {}).then((res) => {
         res.json().then((f) => {
           if (Object.keys(f).length > 0) {
-            console.log(f)
+            console.log(f);
             this.buildReportData(f);
-          }else{
-            this.reportLoading = false
+          } else {
+            this.reportLoading = false;
           }
         });
       });
     },
 
     buildReportData(data) {
-      let number = 1;
+      let number = 0;
+      this.rows = [];
       this.GENDERS.forEach((gender) => {
-         this.rows = this.ageGroups.map((age_group, index) => {
-          number = +index;
+        this.ageGroups.forEach((age_group, index) => {
+          const number = gender === "F" ? index + 1 : index + 12 + 1;
           const constantsData = data[age_group][gender];
-          return {
+          this.rows.push({
             number,
             age_group,
             gender,
@@ -168,13 +169,13 @@ export default {
             comp_prev_six_h: constantsData["6H"].completed_previously_on_art,
             comp_prev_three_p_h:
               constantsData["3HP"].completed_previously_on_art,
-          };
+          });
         });
       });
       this.reportLoading = false;
     },
     fetchDrillDown(clients) {
-      console.log(clients)
+      console.log(clients);
       if (clients.length > 0) {
         this.$bvModal.show("modal-1");
         this.drillClients = [];
@@ -193,7 +194,8 @@ export default {
           .json()
           .then((data) => this.drillClients.push(this.parsePatient(data)));
       }
-    },parsePatient(results) {
+    },
+    parsePatient(results) {
       var age = results.person.birthdate;
       var gender = results.person.gender;
       var identifier = "";
