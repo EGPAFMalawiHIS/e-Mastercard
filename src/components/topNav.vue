@@ -104,7 +104,7 @@ export default {
       },
       appVersion() {
         let applicationVersion  = ApiClient.config.version || '2.0-dev';
-        sessionStorage.applicationVersion = applicationVersion;
+        sessionStorage.EMCVersion = applicationVersion;
       return applicationVersion;
      },
     },
