@@ -160,15 +160,15 @@ export default {
             number,
             age_group,
             gender,
-            new_six_h: constantsData["6H"].started_new_on_art,
             new_three_p_h: constantsData["3HP"].started_new_on_art,
-            prev_six_h: constantsData["6H"].started_previously_on_art,
+            new_six_h: constantsData["6H"].started_new_on_art,
             prev_three_p_h: constantsData["3HP"].started_previously_on_art,
-            comp_new_six_h: constantsData["6H"].completed_new_on_art,
+            prev_six_h: constantsData["6H"].started_previously_on_art,
             comp_new_three_h: constantsData["3HP"].completed_new_on_art,
-            comp_prev_six_h: constantsData["6H"].completed_previously_on_art,
+            comp_new_six_h: constantsData["6H"].completed_new_on_art,
             comp_prev_three_p_h:
               constantsData["3HP"].completed_previously_on_art,
+            comp_prev_six_h: constantsData["6H"].completed_previously_on_art,
           });
         });
       });
