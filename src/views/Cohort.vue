@@ -12,7 +12,7 @@
         
 
         <div class="cohort">
-          <report-date-picker :onSubmit="fetchData"></report-date-picker>
+          <report-date-picker :onSubmit="fetchData" :showCustom="true"></report-date-picker>
           <report-overlay :reportLoading="reportLoading" :reportSelected="reportSelected">
             <div>
               <div id="printReport">
@@ -64,6 +64,7 @@ import cohortFT from '@/components/cohortFT.vue';
 import ApiClient from "../services/api_client";
 import cohortPrint from "@/components/cohortPrint.vue";
 import ReportOverlay from "../components/reports/ReportOverlay.vue";
+import moment from 'moment';
 
 export default {
   name: "reports",
@@ -89,22 +90,29 @@ export default {
 
       let qtr = report_parameters[0];
       let regenerate = report_parameters[1];
-      if(qtr == 'Select cohort quarter')
-        return;
-
+      this.quarter = qtr;
+      this.reportData = qtr;
+      if(report_parameters[2] !== "" && report_parameters[3] !== ""){
+        qtr = "Cohort-" + report_parameters[2] + "-" + report_parameters[3];
+        qtr += "&start_date="  + report_parameters[2];
+        qtr += "&end_date="  + report_parameters[3];
+        this.quarter = "Custom";
+        this.reportData = `Custom ${moment(report_parameters[2]).format("DD/MMM/YYYY")}-${moment(report_parameters[3]).format("DD/MMM/YYYY")}`
+      }else if(qtr == 'Select cohort quarter') {
+        return
+      }
       this.reportSelected = true;
       this.reportLoading = true;
-      this.quarter = qtr;
       const response = await ApiClient.get("programs/1/reports/cohort?name=" + qtr + "&regenerate=" + regenerate, {}, {});
 
       if (response.status === 200) {
         //response.json.then(function(data) { this.checkResult(data.values) });
         this.reportLoading = false;
-        this.reportData = qtr;
         response.json().then((data) => this.checkResult(data) );
       }else{
         console.log("We here ......" + response.status);
-        setTimeout(() => this.fetchData([qtr, false]), 10000);
+        report_parameters[1] =false;
+        setTimeout(() => this.fetchData(report_parameters), 10000);
       }
     },
     checkResult(cohort_data){
