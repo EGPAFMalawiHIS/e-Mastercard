@@ -190,7 +190,7 @@ export default {
       return await observations.json();
     },
     getCurrentPatientInfo: async function(element) {
-      let url = `programs/1/patients/${this.$route.params.id}?date=${element.visitDate}`;
+      let url = `programs/1/patients/${this.$route.params.id}/visit?date=${element.visitDate}`;
       let observations = await ApiClient.get(url);
       return await observations.json();
     },
@@ -256,10 +256,17 @@ export default {
         });
         });
         this.getCurrentPatientInfo(element).then(el=> {
-          element.ARTRegimen = el.current_regimen;
-          element.outcome = el.current_outcome;
-          tempob.ARTRegimen = el.current_regimen;
-          tempob.outcome = el.current_outcome;
+          element.ARTRegimen = el.regimen;
+          element.outcome = el.outcome;
+          tempob.ARTRegimen = el.regimen;
+          tempob.outcome = el.outcome;
+          el.visit_by = el.visit_by.replace(/Unk/ig, '');
+          element.givenTo = el.visit_by;
+          tempob.givenTo = el.visit_by;
+          if(el.pills_dispensed.length > 0) {
+                element.dispensed = el.pills_dispensed[0][1];            
+                tempob.dispensed = el.pills_dispensed[0][1];            
+              }
 
         })
         this.getObs({conceptID: 7755}, element).then(el=> {
@@ -269,15 +276,6 @@ export default {
           sideEffects = sideEffects === 0 ? "No" : "Yes";
           element.sideEffects = sideEffects;
           tempob.sideEffects = sideEffects;
-        })
-        this.getObs({conceptID: 1805, params: "value_coded=1065"}, element).then(el=> {
-          if(el.length > 0) {
-            element.givenTo = "Patient";
-            tempob.givenTo = "Patient";
-          }else {
-            element.givenTo = "Guardian";
-            tempob.givenTo = "Guardian";
-          }
         })
         this.getObs({conceptID: 6131, params: "value_coded=1065"}, element).then(el=> {
           if(el.length > 0) {
@@ -303,12 +301,6 @@ export default {
               j.push(f.encounter_id);
             })
             tempob.encounters = [...j];
-        });
-        this.getLastOrder(element.visitDate).then(el => {
-              if(el.length > 0) {
-                element.dispensed = el[0].quantity;            
-                tempob.dispensed = el[0].quantity;            
-              }
         });
         this.patientVisits.push(tempob);
       });
