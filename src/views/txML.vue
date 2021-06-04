@@ -10,27 +10,27 @@
           </div>
         </div>
 
-          <report-overlay :reportLoading="reportLoading">
-        <vue-bootstrap4-table
-          :rows="rows"
-          :columns="columns"
-          :config="config"
-          :show-loader="reportLoading"
-          :actions="actions"
-          @on-download="onDownload"
-        >
-          <template v-for="slot in slots" :slot="slot" slot-scope="props">
-            <span
-              @click="fetchDrillDown(props.cell_value)"
-              :class="props.cell_value.length > 0 ? 'drillable' : ''"
-              :key="slot"
-              >{{
-                props.cell_value.length > 0 ? props.cell_value.length : 0
-              }}</span
-            >
-          </template>
-        </vue-bootstrap4-table>
-          </report-overlay>
+        <report-overlay :reportLoading="reportLoading">
+          <vue-bootstrap4-table
+            :rows="rows"
+            :columns="columns"
+            :config="config"
+            :show-loader="reportLoading"
+            :actions="actions"
+            @on-download="onDownload"
+          >
+            <template v-for="slot in slots" :slot="slot" slot-scope="props">
+              <span
+                @click="fetchDrillDown(props.cell_value)"
+                :class="props.cell_value.length > 0 ? 'drillable' : ''"
+                :key="slot"
+                >{{
+                  props.cell_value.length > 0 ? props.cell_value.length : 0
+                }}</span
+              >
+            </template>
+          </vue-bootstrap4-table>
+        </report-overlay>
       </div>
     </div>
     <b-modal id="modal-1" :title="`Drill Down Clients`">
@@ -177,6 +177,10 @@ export default {
       toPush.current_village = addressl1;
       return toPush;
     },
+    hasRow(age_group, gender) {
+
+      return this.rows.filter((element) => { element.age_group === age_group && element.gender === gender } ).length > 0;
+    },
     loadGroupData(data) {
       let counter = 1;
       let report_gender = ["F", "M"];
@@ -185,10 +189,12 @@ export default {
       for (let j = 0; j < report_gender.length; j++) {
         let age_group_found = false;
         for (let i = 0; i < set_age_groups.length; i++) {
-          for (let age_group in data) {
+          let age_group = set_age_groups[i];
+          if (data.hasOwnProperty(age_group)) {
             let gender = data[age_group];
-            for (let sex in gender) {
-              if (age_group == set_age_groups[i] && sex == report_gender[j]) {
+            let sex = report_gender[j];
+              if (gender.hasOwnProperty(sex) && !this.hasRow(age_group, sex)) {
+
                 let numbers = gender[sex];
                 this.rows.push({
                   number: counter++,
@@ -201,11 +207,20 @@ export default {
                   transferred_out: numbers[4],
                   unknown: numbers[5],
                 });
-                age_group_found = true;
+              } else {
+                this.rows.push({
+                  number: counter++,
+                  age_group: set_age_groups[i],
+                  gender: report_gender[j],
+                  defaulted_new_registration: 0,
+                  defaulted_old_registration: 0,
+                  died: 0,
+                  stopped: 0,
+                  transferred_out: 0,
+                  unknown: 0,
+                });
               }
-            }
-          }
-          if (!age_group_found) {
+          } else {
             this.rows.push({
               number: counter++,
               age_group: set_age_groups[i],
@@ -217,9 +232,6 @@ export default {
               transferred_out: 0,
               unknown: 0,
             });
-            age_group_found = true;
-          } else {
-            age_group_found = false;
           }
         }
       }
@@ -395,13 +407,11 @@ export default {
       return this.drillClients.length;
     },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 
 <style scoped>
-
 .drillable {
   color: blue;
   text-decoration: underline;
