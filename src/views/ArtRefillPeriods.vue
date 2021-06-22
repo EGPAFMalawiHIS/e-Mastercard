@@ -187,8 +187,8 @@ export default {
         };
         for (let g in data[element]) {
           let prescribed_days = data[element][g].prescribed_days;
-          if (prescribed_days < 60) this.rows[num - 1].sixty.push(g);
-          if (prescribed_days >= 60 && prescribed_days <= 150)
+          if (prescribed_days < 90) this.rows[num - 1].sixty.push(g);
+          if (prescribed_days >= 90 && prescribed_days <= 150)
             this.rows[num - 1].ninety.push(g);
           if (prescribed_days > 150) this.rows[num - 1].oneeighty.push(g);
         }

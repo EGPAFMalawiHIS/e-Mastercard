@@ -276,10 +276,10 @@ export default {
             let info =  data[gender][patinet_id];
             let prescribed_days = info.prescribed_days;
             
-            if(prescribed_days < 60)
+            if(prescribed_days < 90)
               this.column_3[gender][ageGroups[0]]  += 1
 
-            if(prescribed_days >= 60 && prescribed_days <= 150)
+            if(prescribed_days >= 90 && prescribed_days <= 150)
               this.column_4[gender][ageGroups[0]]  += 1
 
             if(prescribed_days > 150)
