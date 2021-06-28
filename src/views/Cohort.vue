@@ -12,7 +12,7 @@
         
 
         <div class="cohort">
-          <report-date-picker :onSubmit="fetchData" :showCustom="true"></report-date-picker>
+          <report-date-picker :onSubmit="fetchData"></report-date-picker>
           <report-overlay :reportLoading="reportLoading" :reportSelected="reportSelected">
             <div>
               <div id="printReport">

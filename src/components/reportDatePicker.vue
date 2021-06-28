@@ -2,7 +2,7 @@
   <div class="control-container">
     <div class="row">
 
-      <div class="col-sm-6 col-md-4 col-lg-3" v-if="showCustom">
+      <div class="col-2" v-if="isCustom">
         <date-pick
           class="date-inputs"
           v-model="startDate"
@@ -13,7 +13,7 @@
         >
         </date-pick>
       </div>
-      <div class="col-sm-6 col-md-4 col-lg-3" v-if="showCustom">
+      <div class="col-2" v-if="isCustom">
         <date-pick
           class="date-inputs"
           v-model="endDate"
@@ -24,9 +24,10 @@
         >
         </date-pick>
       </div>
-      <div class="col-sm-6 col-md-4 col-lg-4">
-        <select id="quarters">
-          <option>Select cohort quarter</option>
+      <div class="col-4">
+        <select id="quarters" v-model="qtr">
+          <option selected>Select cohort quarter</option>
+          <option>Custom</option>
           <option
             v-for="(quarter, index) in quarters"
             v-bind:key="index"
@@ -37,7 +38,7 @@
         </select>
       </div>
       
-      <div class="col-sm-12 col-md-8 col-lg-6">
+      <div class="col-4">
         <div class="row">
           <div class="col-6">
             <button
@@ -46,7 +47,7 @@
               id="submit-btn"
               ref="myid"
             >
-              Archived report (if available)
+              Archived report 
             </button>
           </div>
           <div class="col-6">
@@ -76,10 +77,16 @@ export default {
       startDate: "",
       endDate: "",
       format: "YYYY-MM-DD",
+      qtr: "Select cohort quarter"
     };
   },
+  computed: {
+    isCustom() {
+      return this.qtr === "Custom"
+    }
+  },
   components: { DatePick },
-  props: ["onSubmit", "showCustom"],
+  props: ["onSubmit"],
   methods: {
     parseDate(dateString, format) {
         return fecha.parse(dateString, format);
