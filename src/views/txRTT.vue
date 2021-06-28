@@ -171,6 +171,9 @@ export default {
       toPush.current_village = addressl1;
       return toPush;
     },
+    hasRow(age_group, gender) {
+      return this.rows.filter((element) => { element.age_group === age_group && element.gender === gender } ).length > 0;
+    },
     loadGroupData(data) {
       let counter = 1;
       let report_gender = ["F", "M"];
@@ -179,10 +182,13 @@ export default {
       for (let j = 0; j < report_gender.length; j++) {
         let age_group_found = false;
         for (let i = 0; i < set_age_groups.length; i++) {
-          for (let age_group in data) {
+          let age_group = set_age_groups[i];
+          if (data.hasOwnProperty(age_group)) {
             let gender = data[age_group];
-            for (let sex in gender) {
-              if (age_group == set_age_groups[i] && sex == report_gender[j]) {
+            // for (let sex in gender) {
+            let sex = report_gender[j]
+            if (gender.hasOwnProperty(sex) && !this.hasRow(age_group, sex)) {
+          
                 let numbers = gender[sex];
                 this.rows.push({
                   number: counter++,
@@ -191,20 +197,23 @@ export default {
                   returned: numbers,
                 });
                 age_group_found = true;
-              }
+            }else {
+             this.rows.push({
+              number: counter++,
+              age_group: set_age_groups[i],
+              gender: report_gender[j],
+              returned: 0   
+            }); 
             }
-          }
-          if (!age_group_found) {
+          }else {
             this.rows.push({
               number: counter++,
               age_group: set_age_groups[i],
               gender: report_gender[j],
               returned: 0   
             });
-            age_group_found = true;
-          } else {
-            age_group_found = false;
           }
+          
         }
       }
 
@@ -252,7 +261,7 @@ export default {
   data: function () {
     return {
       drillClients: [],
-      perPage: 10,
+      perPage: 15,
       currentPage: 1,
       columns: [
         {

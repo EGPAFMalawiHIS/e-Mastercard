@@ -280,7 +280,7 @@ export default {
   data: function () {
     return {
       drillClients: [],
-      perPage: 10,
+      perPage: 15,
       currentPage: 1,
       columns: [
         {
