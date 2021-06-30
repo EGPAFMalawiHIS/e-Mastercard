@@ -22,37 +22,17 @@
             </select>
         </div>
         <report-overlay :reportLoading="reportLoading" :reportSelected="reportSelected">
-          <table id="example" class="display" width="100%">
-              <thead>
-                <tr>
-                  <th>Reg cohort</th>
-                  <th>Interval (months)</th>
-                  <th>Sub group</th>
-                  <th class="disaggregated-numbers">Total Reg (database)</th>
-                  <th class="disaggregated-numbers">Total Reg (confirmed)</th>
-                  <th class="disaggregated-numbers count-separator">Alive</th>
-                  <th class="disaggregated-numbers">Died</th>
-                  <th class="disaggregated-numbers">Defaulted</th>
-                  <th class="disaggregated-numbers">Stopped</th>
-                  <th class="disaggregated-numbers">TO</th>
-                  <th class="disaggregated-numbers">Unknown</th>
-                </tr>
-              </thead>
-              <tbody id="table-body">
-              </tbody>
-              <tfoot>
-              <tr>
-                <td>
-                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
-                  e-Mastercard Version : {{EMCVersion}} 
-                  API Version {{APIVersion}}
-                </td>
-              </tr>
-            </tfoot>
-            </table>
+         <vue-bootstrap4-table
+            :rows="rows"
+            :columns="columns"
+            :config="config"
+            :show-loader="reportLoading"
+            :actions="actions"
+            @on-download="onDownload"
+          >
+          </vue-bootstrap4-table>
         </report-overlay>
 
-        <!-- Page Content end -->
       </div>
     </div>
 
@@ -68,30 +48,9 @@ import Sidebar from "@/components/SideBar.vue";
 import TopNav from "@/components/topNav.vue";
 import { mapState } from "vuex";
 
+import VueBootstrap4Table from "vue-bootstrap4-table";
 import moment from 'moment'
 import ApiClient from "../services/api_client";
-
-
-import jQuery from 'jquery';
-import datatable from 'datatables'
-
-require("@/assets/datatable/css/bootstrap.css");
-require("@/assets/datatable/css/dataTables.bootstrap4.min.css");
-
-//require("@/assets/datatable/jquery-ui.css");
-require("@/assets/datatable/css/buttons.dataTables.min.css");
-require("@/assets/datatable/css/dataTables.jqueryui.min.css")
-
-
-
-require("@/assets/datatable/js/buttons.flash.min.js");
-require("@/assets/datatable/js/jszip.min.js");
-require("@/assets/datatable/js/pdfmake.min.js");
-require("@/assets/datatable/js/vfs_fonts.js");
-require("@/assets/datatable/js/buttons.html5.min.js");
-require("@/assets/datatable/js/buttons.print.min.js");
-
-
 
 export default {
   name: "reports",
@@ -99,12 +58,14 @@ export default {
     ReportOverlay,
     "top-nav": TopNav,
     "side-bar": Sidebar,
-    'report-date-picker': reportDatePicker
+    'report-date-picker': reportDatePicker,
+    VueBootstrap4Table,
   }, methods: {
     redirect: function () {
       this.$router.push('/moh');
     },
     async fetchData (report_parameters) {
+      this.rows = [];
       try {
         if(!report_parameters)
           return;
@@ -125,6 +86,44 @@ export default {
       }
 
     },
+    onDownload() {
+      let y = null;
+      this.columns.forEach((element) => {
+        y += `"${element.label}",`;
+      });
+      y = y.replace("null", "");
+      this.rows.forEach((element) => {
+        y += "\n";
+        Object.keys(element).forEach((innerElement) => {
+          let value = element[innerElement];
+          if (Array.isArray(element[innerElement])) {
+            value = element[innerElement].length;
+          }
+          y += `"${value}",`;
+        });
+      });
+
+      y += "\n";
+      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
+                          e-Mastercard Version : ${sessionStorage.EMCVersion} 
+                          API Version ${sessionStorage.APIVersion}`;
+      for (let index = 0; index < 34; index++) {
+        y += ",";
+      }
+      var csvData = new Blob([y], { type: "text/csv;charset=utf-8;" });
+      //IE11 & Edge
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(csvData, exportFilename);
+      } else {
+        //In FF link must be added to DOM to be clicked
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(csvData);
+        link.setAttribute("download", `${this.reportTitle}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    },
     fetchSurvivalAnalysisData: async function(){
       let url = 'cohort_survival_analysis?date=' + moment().format('YYYY-MM-DD');
       url += "&quarter=" + this.reportQtr;
@@ -143,11 +142,9 @@ export default {
       if (response.status === 200) {
         this.loadData(await response.json(), this.$refs.subgroup.value);
       }else{
-        //code
       }
     },loadData(data, age_group) {
-      this.initDataTable();
-      this.dTable.fnClearTable();
+     ;
       for(let qtr in data) {
         let row_id = (qtr.split(' ')[1]);
         let outcome = data[qtr];
@@ -184,11 +181,8 @@ export default {
         }
 
         if(total_reg > 0) {
-          let row = this.dTable.fnAddData([set_quarter, qinterval, age_group, total_reg,
-            '', alive, died, defaulted, stopped, to, unknown]);
-          //.node().id = row_id;
-          //this.dTable.draw();
-          //addClass(row_id);
+          let row = this.rows.push({1: set_quarter, 2:qinterval, 3:age_group, 4:total_reg,
+            '' : '', 5:alive, 6:died, 7:defaulted, 8:stopped, 9:to, 10:unknown});
         }
       }
     },
@@ -197,42 +191,6 @@ export default {
       var cells = tr.getElementsByTagName('td');
       cells[5].setAttribute('class','count-separator');
     },
-    initDataTable(){
-      this.dTable = jQuery("#example").dataTable({
-        order: [[ 0, "asc" ]],
-        fixedHeader: true,
-        searching: false,
-        paging: false,
-        Processing: true,
-        ServerSide: true,
-        scroller: {
-          loadingIndicator: true
-        },
-        dom: 'Bfrtip',
-        buttons: [
-          {
-            extend: 'copy',
-            title:  this.reportTitle
-          },
-          {
-            extend: 'csv',
-            title:  this.reportTitle,
-            footer: true
-          },
-          {
-            extend: 'pdf',
-            title:  this.reportTitle
-          },
-          {
-            extend: 'print',
-            title:  this.reportTitle
-          }
-        ],
-        columnDefs: [
-          {"className": "dt-center", "targets": 4}
-        ]
-      });
-    }
   },
   data () {
     return {
@@ -244,7 +202,72 @@ export default {
       reportSelected: false,
       APIVersion: sessionStorage.APIVersion,
       EMCVersion: sessionStorage.EMCVersion,
-      subgroup: "Select sub group"
+      subgroup: "Select sub group",
+      config: {
+        card_title:
+          "Survival Analysis.",
+        show_refresh_button: false,
+        show_reset_button: false,
+      },
+      actions: [
+        {
+          btn_text: "CSV",
+          event_name: "on-download",
+          class: "btn btn-primary my-custom-class",
+        },
+      ],
+      rows: [],
+      columns: [
+        {
+          label: "Reg Cohort",
+          name: '1',
+          sort: true,
+        },
+        {
+          label: "Interval (Months)",
+          name: '2',
+          sort: true,
+        },
+        {
+          label: "Sub group",
+          name: '3',
+          sort: true,
+        },
+        {
+          label: "Total Reg (database)",
+          name: '4',
+          sort: true,
+        },
+        {
+          label: "Total Reg (confirmed)",
+          name: '5',
+          sort: true,
+        },
+        {
+          label: "Alive",
+          name: '6',
+          sort: true,
+        },
+        {
+          label: "Died",
+          name: '7',
+          sort: true,
+        },
+        {
+          label: "Stopped",
+          name: '8',
+          sort: true,
+        },
+        {
+          label: "Transferred out",
+          name: '9',
+          sort: true,
+        },
+        {
+          label: "Unknown",
+          name: '10',
+        },
+      ],
     }
   },
   computed: {

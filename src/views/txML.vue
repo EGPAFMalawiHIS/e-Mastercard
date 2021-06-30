@@ -40,7 +40,7 @@
         hover
         id="my-table"
         :items="drillClients"
-        :fields="columns"
+        :fields="drillColumns"
         :per-page="perPage"
         :current-page="currentPage"
       ></b-table>
@@ -282,7 +282,7 @@ export default {
       drillClients: [],
       perPage: 15,
       currentPage: 1,
-      columns: [
+      drillColumns: [
         {
           key: "arv_number",
           label: "ARV Number",
