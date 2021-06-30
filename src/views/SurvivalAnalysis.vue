@@ -14,7 +14,7 @@
         </div>
 
         <div style="width:100%; text-align: right; margin-top: 25px;">
-            <select ref="subgroup">
+            <select ref="subgroup" v-model="subgroup">
                 <option>Select sub group</option>
                 <option value="General">General</option>
                 <option value="Children">Children</option>
@@ -146,6 +146,7 @@ export default {
         //code
       }
     },loadData(data, age_group) {
+      this.initDataTable();
       this.dTable.fnClearTable();
       for(let qtr in data) {
         let row_id = (qtr.split(' ')[1]);
@@ -243,16 +244,18 @@ export default {
       reportSelected: false,
       APIVersion: sessionStorage.APIVersion,
       EMCVersion: sessionStorage.EMCVersion,
+      subgroup: "Select sub group"
     }
   },
   computed: {
     ...mapState(['location']),
+    getSubGroup() {
+    },
     reportTitle() {
-      return `MOH ${this.location.name} cohort report (Survival analysis) `;
+      return `MOH ${this.location.name} cohort report (Survival analysis) ${this.subgroup}`;
     }
   },
   mounted(){
-    setTimeout(() => this.initDataTable(), 300);
   }
 }
 
