@@ -358,7 +358,7 @@ export default {
           // sort: true,
         },
         {
-          label: "# of clients on >3 months of ARVs",
+          label: "# of clients on <3 months of ARVs",
           name: "sixty",
           slot_name: "sixty",
           // sort: true,
