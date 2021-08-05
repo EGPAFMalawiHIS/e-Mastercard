@@ -462,6 +462,7 @@ import {
   between
 } from "vuelidate/lib/validators";
 const nameRegex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
+const phoneRegex = /^(\+?265|0)(((88|99|98)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/;
 // TODO: Replace all fetch calls with ApiClient.[get|post|delete]
 const Config = ApiClient.config.source;
 
@@ -545,7 +546,7 @@ export default {
           required, // required by optional
           phoneNumberValidations(phone_number) {
             return (
-              /^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/.test(
+              phoneRegex.test(
                 phone_number
               ) || /Unknown/.test(phone_number)
             );
@@ -570,7 +571,7 @@ export default {
         guardian_phone_number: {
           required,
           phoneNumberValidations(guardian_phone_number) {
-            return /^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/.test(
+            return phoneRegex.test(
               guardian_phone_number
             ) || /Unknown/.test(guardian_phone_number)
           }
