@@ -272,7 +272,7 @@
         <div class="w-100"></div>
       </template>
     </b-modal>
-    <b-modal id="guardian-info-modal" title="guardian detials" size="xl" v-if="guardianFirstName">
+    <b-modal id="guardian-info-modal" title="guardian detials" size="xl">
       <div>
         <b-form>
           <label for="text-name">First Name</label>
@@ -734,6 +734,28 @@ export default {
         // this.$root.$emit("bv::hide::modal", "patient-info-modal", "#btnShow");
       }
     },
+    getBaseGuardian() {
+      return {
+        given_name: "",
+        middle_name: "",
+        family_name: "",
+        gender: "N/A",
+        birthdate: moment(new Date("1970-01-01")).format("YYYY-MM-DD"),
+        birthdate_estimated: "N/A",
+        home_district: "N/A",
+        home_traditional_authority: "N/A",
+        home_village: "N/A",
+        current_district: "N/A",
+        current_traditional_authority: "N/A",
+        current_village: "N/A",
+        landmark: "N/A",
+        cell_phone_number: "",
+        occupation: null,
+        relationship: "N/A",
+        patient_type: "",
+        facility_name: null
+      };
+    },
     updateGuardianDetails: async function() {
       let params = {};
       let errors = [];
@@ -754,11 +776,48 @@ export default {
       }
 
       if (Object.keys(params).length > 0) {
-        const response = await ApiClient.put(
+        let response;
+        if(!this.guardianID) {
+          let guardian = this.getBaseGuardian();
+          guardian.given_name = params.given_name;
+          guardian.family_name = params.family_name;
+          guardian.cell_phone_number = params.cell_phone_number;
+          response = await ApiClient.post('/people', guardian)
+          if (response.status === 201 || response.status === 200) {
+
+               response.json().then(data => {
+               const relationship = {
+              relationship_type_id: 13,
+              relation_id: data.person_id
+            };
+              ApiClient.post(`/people/${this.patientID}/relationships`, relationship).then(data => {
+                this.closeGuardianModal();
+              })
+              
+              
+              });
+            
+          } else {
+            console.log("Failed to update");
+          } 
+        }else {
+
+        response = await ApiClient.put(
           `/people/${this.guardianID}`,
           params
         );
         if (response.status === 201 || response.status === 200) {
+         this.closeGuardianModal(); 
+        } else {
+          console.log("Failed to update");
+        }
+        }
+        
+      } else {
+        this.$root.$emit("bv::hide::modal", "guardian-info-modal", "#btnShow");
+      }
+    },
+    closeGuardianModal() {
           this.showMessage("Successfully saved");
           if (this.guardianFirstName !== this.updatedguardianFirstName) {
             this.guardianFirstName = this.updatedguardianFirstName;
@@ -774,12 +833,6 @@ export default {
             "guardian-info-modal",
             "#btnShow"
           );
-        } else {
-          console.log("Failed to update");
-        }
-      } else {
-        this.$root.$emit("bv::hide::modal", "guardian-info-modal", "#btnShow");
-      }
     },
     redirect: function(url) {
       this.$router.push(url);
