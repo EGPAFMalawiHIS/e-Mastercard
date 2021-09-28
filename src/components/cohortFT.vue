@@ -852,7 +852,23 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">14</td>
-      <td><a href="#" @click="drillDown('fourteen_p');">{{fourteen_p}}</a></td>
+      <td>
+        <!--a href="#" @click="drillDown('fourteen_p');">{{fourteen_p}}</a-->
+        <div class="granules">
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td"><span>Tabs</span></div>
+            <div class="granules-cell"><span>Granules</span></div>
+          </div>
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td">
+              <a href="#" @click="drillDown('fourteen_p');" id="fourteen_p">{{fourteen_p}}</a>
+            </div>
+            <div class="granules-cell">
+              <a href="#" @click="drillDown('fourteen_pp');" id="fourteen_pp">{{fourteen_pp}}</a>
+            </div>
+          </div>
+        </div>
+      </td>
       <td><a href="#" @click="drillDown('fourteen_a');">{{fourteen_a}}</a></td>
     </tr>
     
@@ -867,7 +883,23 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">15</td>
-      <td><a href="#" @click="drillDown('fifteen_p');">{{fifteen_p}}</a></td>
+      <td>
+        <!--a href="#" @click="drillDown('fifteen_p');">{{fifteen_p}}</a-->
+        <div class="granules">
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td"><span>Tabs</span></div>
+            <div class="granules-cell"><span>Granules</span></div>
+          </div>
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td">
+              <a href="#" @click="drillDown('fifteen_p');" id="fifteen_p">{{fifteen_p}}</a>
+            </div>
+            <div class="granules-cell">
+              <a href="#" @click="drillDown('fifteen_pp');" id="fifteen_pp">{{fifteen_pp}}</a>
+            </div>
+          </div>
+        </div>
+      </td>
       <td><a href="#" @click="drillDown('fifteen_a');">{{fifteen_a}}</a></td>
     </tr>
     
@@ -1270,8 +1302,10 @@ export default {
       twelve_a: 0,
       thirteen_a: 0,
       fourteen_p:  0,
+      fourteen_pp:  0,
       fourteen_a:  0,
       fifteen_p: 0,
+      fifteen_pp: 0,
       fifteen_a: 0,
       sixteen_p: 0,
       sixteen_a: 0,
@@ -1425,8 +1459,10 @@ export default {
       twelve_a,${this.twelve_a},
       thirteen_a,${this.thirteen_a},
       fourteen_p,${this.fourteen_p},
+      fourteen_pp,${this.fourteen_pp},
       fourteen_a,${this.fourteen_a},
       fifteen_p,${this.fifteen_p},
+      fifteen_pp,${this.fifteen_pp},
       fifteen_a,${this.fifteen_a},
       sixteen_p,${this.sixteen_p},
       sixteen_a,${this.sixteen_a},
@@ -1710,11 +1746,17 @@ export default {
       if(this.params[i].name == 'fourteen_p')
         this.fourteen_p = this.params[i].contents;
 
+      if(this.params[i].name == 'fourteen_pp')
+        this.fourteen_pp = this.params[i].contents;
+
       if(this.params[i].name == 'fourteen_a')
         this.fourteen_a = this.params[i].contents;
 
       if(this.params[i].name == 'fifteen_p')
         this.fifteen_p = this.params[i].contents;
+
+      if(this.params[i].name == 'fifteen_pp')
+        this.fifteen_pp = this.params[i].contents;
 
       if(this.params[i].name == 'fifteen_a')
         this.fifteen_a = this.params[i].contents;

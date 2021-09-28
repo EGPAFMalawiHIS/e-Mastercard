@@ -81,8 +81,10 @@ export default {
       twelve_a: 0,
       thirteen_a: 0,
       fourteen_p:  0,
+      fourteen_pp:  0,
       fourteen_a:  0,
       fifteen_p: 0,
+      fifteen_pp: 0,
       fifteen_a: 0,
       sixteen_p: 0,
       sixteen_a: 0,
@@ -355,11 +357,17 @@ export default {
         if(this.dataparams[i].name == 'fourteen_p')
             this.fourteen_p = parseInt(this.dataparams[i].contents);
 
+        if(this.dataparams[i].name == 'fourteen_pp')
+            this.fourteen_pp = parseInt(this.dataparams[i].contents);
+
         if(this.dataparams[i].name == 'fourteen_a')
             this.fourteen_a = parseInt(this.dataparams[i].contents);
 
         if(this.dataparams[i].name == 'fifteen_p')
             this.fifteen_p = parseInt(this.dataparams[i].contents);
+
+        if(this.dataparams[i].name == 'fifteen_pp')
+            this.fifteen_pp = parseInt(this.dataparams[i].contents);
 
         if(this.dataparams[i].name == 'fifteen_a')
             this.fifteen_a = parseInt(this.dataparams[i].contents);
@@ -651,7 +659,7 @@ export default {
                           this.nine_a, this.ten_a, this.eleven_p_tabs, this.eleven_p_granules, this.eleven_a, 
                           this.twelve_a, this.unknown_regimen, this.thirteen_a, this.fourteen_a, 
                           this.fifteen_a, this.sixteen_a, this.seventeen_a,
-                          this.fourteen_p, this.fifteen_p, this.sixteen_p, this.seventeen_p];
+                          this.fourteen_p, this.fourteen_pp, this.fifteen_p, this.fifteen_pp, this.sixteen_p, this.seventeen_p];
 
         if (!isEqualToSumOf(this.total_alive_and_on_art, regimens)) {
             this.report_consistency_string.push(
