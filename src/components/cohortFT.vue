@@ -853,18 +853,17 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">14</td>
       <td>
-        <!--a href="#" @click="drillDown('fourteen_p');">{{fourteen_p}}</a-->
         <div class="granules">
           <div class="granules-row">
-            <div class="granules-cell granules-right-td"><span>Tabs</span></div>
-            <div class="granules-cell"><span>Granules</span></div>
+            <div class="granules-cell granules-right-td"><span>PP</span></div>
+            <div class="granules-cell"><span>P</span></div>
           </div>
           <div class="granules-row">
             <div class="granules-cell granules-right-td">
-              <a href="#" @click="drillDown('fourteen_p');" id="fourteen_p">{{fourteen_p}}</a>
+              <a href="#" @click="drillDown('fourteen_pp');" id="fourteen_pp">{{fourteen_pp}}</a>
             </div>
             <div class="granules-cell">
-              <a href="#" @click="drillDown('fourteen_pp');" id="fourteen_pp">{{fourteen_pp}}</a>
+              <a href="#" @click="drillDown('fourteen_p');" id="fourteen_p">{{fourteen_p}}</a>
             </div>
           </div>
         </div>
@@ -887,15 +886,15 @@
         <!--a href="#" @click="drillDown('fifteen_p');">{{fifteen_p}}</a-->
         <div class="granules">
           <div class="granules-row">
-            <div class="granules-cell granules-right-td"><span>Tabs</span></div>
-            <div class="granules-cell"><span>Granules</span></div>
+            <div class="granules-cell granules-right-td"><span>PP</span></div>
+            <div class="granules-cell"><span>P</span></div>
           </div>
           <div class="granules-row">
             <div class="granules-cell granules-right-td">
-              <a href="#" @click="drillDown('fifteen_p');" id="fifteen_p">{{fifteen_p}}</a>
+              <a href="#" @click="drillDown('fifteen_pp');" id="fifteen_pp">{{fifteen_pp}}</a>
             </div>
             <div class="granules-cell">
-              <a href="#" @click="drillDown('fifteen_pp');" id="fifteen_pp">{{fifteen_pp}}</a>
+              <a href="#" @click="drillDown('fifteen_p');" id="fifteen_p">{{fifteen_p}}</a>
             </div>
           </div>
         </div>
