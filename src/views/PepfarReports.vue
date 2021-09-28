@@ -69,6 +69,13 @@
               </div>
             </div>
             <div class="col-sm">
+              <div class="btn-container" @click="redirect('/vl_coverage')">
+                <div class="card">
+                  <img src="../assets/report-icons/viral_load.png" class="btn-icon"/>
+                  <p>VL coverage</p>
+                </div>
+              </div>
+
               <!-- <div class="btn-container" @click="redirect('/tb_prev')">
                 <div class="card">
                   <img src="../assets/report-icons/previous.png" class="btn-icon" />

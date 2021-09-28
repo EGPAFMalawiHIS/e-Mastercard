@@ -237,6 +237,11 @@ const routes = [
     path: "/client_due_for_vl",
     name: "Clients Due for VL",
     component: () => import("@/views/DueForViralLoad.vue")
+  },
+  {
+    path: "/vl_coverage",
+    name: "VL coverage",
+    component: () => import("@/views/VLCoverage.vue")
   }
 ]
 
