@@ -111,9 +111,9 @@ export default {
               gender: sex === 'F' ? 'Female' : 'Male',
               "tx_curr": this.filterClients(data[api_age_group]["tx_curr"], sex),
               "due_for_vl": this.filterClients(data[api_age_group]["due_for_vl"], sex),
-              "tested": this.filterClients(data[api_age_group]["tested"], sex),
-              "high_vl": this.filterClients(data[api_age_group]["high_vl"], sex),
-              "low_vl": this.filterClients(data[api_age_group]["low_vl"], sex),
+              "tested": this.filterClients(data[api_age_group]["drawn"]["routine"], sex),
+              "high_vl": this.filterClients(data[api_age_group]["high_vl"]["routine"], sex),
+              "low_vl": this.filterClients(data[api_age_group]["low_vl"]["routine"], sex),
             });
           }
         }
