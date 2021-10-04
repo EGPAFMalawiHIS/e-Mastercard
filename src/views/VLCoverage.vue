@@ -10,7 +10,6 @@
           </div>
         </div>
 
-        <!-- <report-overlay :reportLoading="reportLoading"> -->
         <vue-bootstrap4-table
           :rows="rows"
           :columns="columns"
@@ -111,9 +110,12 @@ export default {
               gender: sex === 'F' ? 'Female' : 'Male',
               "tx_curr": this.filterClients(data[api_age_group]["tx_curr"], sex),
               "due_for_vl": this.filterClients(data[api_age_group]["due_for_vl"], sex),
-              "tested": this.filterClients(data[api_age_group]["tested"], sex),
-              "high_vl": this.filterClients(data[api_age_group]["high_vl"], sex),
-              "low_vl": this.filterClients(data[api_age_group]["low_vl"], sex),
+              "drawn_routine": this.filterClients(data[api_age_group]["drawn"]["routine"], sex),
+              "drawn_targeted": this.filterClients(data[api_age_group]["drawn"]["targeted"], sex),
+              "high_routine": this.filterClients(data[api_age_group]["high_vl"]["routine"], sex),
+              "high_targeted": this.filterClients(data[api_age_group]["high_vl"]["targeted"], sex),
+              "low_routine": this.filterClients(data[api_age_group]["low_vl"]["routine"], sex),
+              "low_targeted": this.filterClients(data[api_age_group]["low_vl"]["targeted"], sex),
             });
           }
         }
@@ -123,7 +125,9 @@ export default {
     
     },
     filterClients(data, gender) {
+      data.filter(d => console.log(d));
       return data.filter(d => d.gender === gender);
+
     },
     fetchDrillDown(clients) {
       if (clients.length > 0) {
@@ -212,7 +216,7 @@ export default {
         "Unknown",
       ],
       showLoader: false,
-      slots: ["tx_curr", "due_for_vl", "tested", "high_vl", "low_vl"],
+      slots: ["tx_curr", "due_for_vl", "drawn_routine","drawn_targeted", "high_routine", "low_routine", "high_targeted", "low_targeted"],
       rows: [],
       columns: [
         {
@@ -242,22 +246,39 @@ export default {
           slot_name: "due_for_vl",
           // sort: true,
         },
-        {
-          label: "Tested",
-          name: "tested",
-          slot_name: "tested",
+         {
+          label: "Routine",
+          name: "drawn_routine",
+          slot_name: "drawn_routine",
           // sort: true,
-        },
-        {
-          label: "High VL",
-          name: "high_vl",
-          slot_name: "high_vl",
+        },        
+          {
+          label: "Routine",
+          name: "drawn_targeted",
+          slot_name: "drawn_targeted",
           // sort: true,
-        },
+        },              
         {
-          label: "Low VL",
-          name: "low_vl",
-          slot_name: "low_vl",
+          label: "Routine",
+          name: "high_routine",
+          slot_name: "high_routine",
+          // sort: true,
+        },        
+          {
+          label: "Routine",
+          name: "high_targeted",
+          slot_name: "high_targeted",
+          // sort: true,
+        },{
+          label: "Routine",
+          name: "low_routine",
+          slot_name: "low_routine",
+          // sort: true,
+        },        
+          {
+          label: "Routine",
+          name: "low_targeted",
+          slot_name: "low_targeted",
           // sort: true,
         },
       ],
