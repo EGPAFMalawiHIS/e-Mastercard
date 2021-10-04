@@ -46,7 +46,9 @@
                 <th class="disaggregated-numbers">9P</th>
                 <th class="disaggregated-numbers">11P</th>
                 <th class="disaggregated-numbers">14P</th>
+                <th class="disaggregated-numbers">14PP</th>
                 <th class="disaggregated-numbers">15P</th>
+                <th class="disaggregated-numbers">15PP</th>
                 <th class="disaggregated-numbers">16P</th>
                 <th class="disaggregated-numbers">17P</th>
                 <th class="disaggregated-numbers">Unknown</th>
@@ -226,7 +228,9 @@ export default {
             {"9P": 0},
             {"11P": 0},
             {"14P": 0},
+            {"14PP": 0},
             {"15P": 0},
+            {"15PP": 0},
             {"16P": 0},
             {"17P": 0},
             {"N/A": 0},

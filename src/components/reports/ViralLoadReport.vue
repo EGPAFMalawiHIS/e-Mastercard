@@ -71,7 +71,9 @@
                 <th class="disaggregated-numbers">9P</th>
                 <th class="disaggregated-numbers">11P</th>
                 <th class="disaggregated-numbers">14P</th>
+                <th class="disaggregated-numbers">14PP</th>
                 <th class="disaggregated-numbers">15P</th>
+                <th class="disaggregated-numbers">15PP</th>
                 <th class="disaggregated-numbers">16P</th>
                 <th class="disaggregated-numbers">17P</th>
                 <th class="disaggregated-numbers">Unknown</th>
@@ -320,7 +322,9 @@ export default {
         nine_p: this.report(ageGroup, "9P") || 0,
         eleven_p: this.report(ageGroup, "11P") || 0,
         fourteen_p: this.report(ageGroup, "14P") || 0,
+        fourteen_pp: this.report(ageGroup, "14PP") || 0,
         fifteen_p: this.report(ageGroup, "15P") || 0,
+        fifteen_pp: this.report(ageGroup, "15PP") || 0,
         sixteen_p: this.report(ageGroup, "16P") || 0,
         seventeen_p: this.report(ageGroup, "17P") || 0,
         unknown: this.report(ageGroup, "N/A") || 0

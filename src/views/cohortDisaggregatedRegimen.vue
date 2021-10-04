@@ -62,7 +62,9 @@
                     <th class="disaggregated-numbers">9P</th>
                     <th class="disaggregated-numbers">11P</th>
                     <th class="disaggregated-numbers">14P</th>
+                    <th class="disaggregated-numbers">14PP</th>
                     <th class="disaggregated-numbers">15P</th>
+                    <th class="disaggregated-numbers">15PP</th>
                     <th class="disaggregated-numbers">16P</th>
                     <th class="disaggregated-numbers">17P</th>
                     <th class="disaggregated-numbers">Unknown</th>
@@ -169,7 +171,9 @@ const keyList = {
   "9P": [],
   "11P": [],
   "14P": [],
+  "14PP": [],
   "15P": [],
+  "15PP": [],
   "16P": [],
   "17P": [],
   "N/A": [],
