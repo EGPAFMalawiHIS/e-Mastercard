@@ -253,7 +253,7 @@ export default {
           // sort: true,
         },        
           {
-          label: "Routine",
+          label: "Targeted",
           name: "drawn_targeted",
           slot_name: "drawn_targeted",
           // sort: true,
@@ -265,7 +265,7 @@ export default {
           // sort: true,
         },        
           {
-          label: "Routine",
+          label: "Targeted",
           name: "high_targeted",
           slot_name: "high_targeted",
           // sort: true,
@@ -276,7 +276,7 @@ export default {
           // sort: true,
         },        
           {
-          label: "Routine",
+          label: "Targeted",
           name: "low_targeted",
           slot_name: "low_targeted",
           // sort: true,
