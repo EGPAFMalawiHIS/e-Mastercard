@@ -300,6 +300,7 @@
 </template>
 
 <script>
+const numberRegex = /^(\+?265|0)(((88|9[89])\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/;
 import ApiClient from "../services/api_client";
 import EventBus from "../services/event-bus.js";
 import GlobalProperties from "@/services/global_properties";
@@ -958,7 +959,7 @@ export default {
     },numberState() {
       let state = true;
       if(!this.phoneNumberUnknown) {
-        state =  `${this.updatedPhoneNumber}`.match(/^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/) === null ? false : true ;
+        state =  `${this.updatedPhoneNumber}`.match(numberRegex) === null ? false : true ;
       }
       return state;
     }, inputType: function() {
@@ -978,7 +979,7 @@ export default {
     },guardianNumberState() {
       let state = true;
       if(!this.guardianphoneNumberUnknown) {
-        state =  `${this.updatedguardianNumber}`.match(/^(\+?265|0)(((88|99)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/) === null ? false : true ;
+        state =  `${this.updatedguardianNumber}`.match(numberRegex) === null ? false : true ;
       }
       return state;
     }, guardianinputType: function() {
