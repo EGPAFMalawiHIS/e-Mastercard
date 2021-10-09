@@ -110,12 +110,9 @@ export default {
               gender: sex === 'F' ? 'Female' : 'Male',
               "tx_curr": this.filterClients(data[api_age_group]["tx_curr"], sex),
               "due_for_vl": this.filterClients(data[api_age_group]["due_for_vl"], sex),
-              "drawn_routine": this.filterClients(data[api_age_group]["drawn"]["routine"], sex),
-              "drawn_targeted": this.filterClients(data[api_age_group]["drawn"]["targeted"], sex),
-              "high_routine": this.filterClients(data[api_age_group]["high_vl"]["routine"], sex),
-              "high_targeted": this.filterClients(data[api_age_group]["high_vl"]["targeted"], sex),
-              "low_routine": this.filterClients(data[api_age_group]["low_vl"]["routine"], sex),
-              "low_targeted": this.filterClients(data[api_age_group]["low_vl"]["targeted"], sex),
+              "drawn": this.filterClients([...data[api_age_group]["drawn"]["routine"],...data[api_age_group]["drawn"]["targeted"]], sex),
+              "high_vl": this.filterClients([...data[api_age_group]["high_vl"]["routine"],...data[api_age_group]["high_vl"]["targeted"]], sex),
+              "low_vl": this.filterClients([...data[api_age_group]["low_vl"]["routine"],...data[api_age_group]["low_vl"]["targeted"]], sex),
             });
           }
         }
@@ -216,7 +213,7 @@ export default {
         "Unknown",
       ],
       showLoader: false,
-      slots: ["tx_curr", "due_for_vl", "drawn_routine","drawn_targeted", "high_routine", "low_routine", "high_targeted", "low_targeted"],
+      slots: ["tx_curr", "due_for_vl", "drawn","low_vl", "high_vl",],
       rows: [],
       columns: [
         {
@@ -247,40 +244,24 @@ export default {
           // sort: true,
         },
          {
-          label: "Routine",
-          name: "drawn_routine",
-          slot_name: "drawn_routine",
+          label: "Sample drawn",
+          name: "drawn",
+          slot_name: "drawn",
           // sort: true,
         },        
           {
-          label: "Targeted",
-          name: "drawn_targeted",
-          slot_name: "drawn_targeted",
+          label: "High VL (>=1000 copies)",
+          name: "high_vl",
+          slot_name: "high_vl",
           // sort: true,
         },              
         {
-          label: "Routine",
-          name: "high_routine",
-          slot_name: "high_routine",
+          label: "Low VL (<1000 copies)",
+          name: "low_vl",
+          slot_name: "low_vl",
           // sort: true,
         },        
-          {
-          label: "Targeted",
-          name: "high_targeted",
-          slot_name: "high_targeted",
-          // sort: true,
-        },{
-          label: "Routine",
-          name: "low_routine",
-          slot_name: "low_routine",
-          // sort: true,
-        },        
-          {
-          label: "Targeted",
-          name: "low_targeted",
-          slot_name: "low_targeted",
-          // sort: true,
-        },
+         
       ],
       config: {
         card_title: `Viral load coverage report`,
@@ -301,6 +282,7 @@ export default {
     rowCount() {
       return this.drillClients.length;
     },
+    
   },
 };
 </script>
