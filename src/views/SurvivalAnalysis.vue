@@ -92,7 +92,7 @@ export default {
         y += `"${element.label}",`;
       });
       y = y.replace("null", "");
-      this.rows.forEach((element) => {
+      this.rows.reverse().forEach((element) => {
         y += "\n";
         Object.keys(element).forEach((innerElement) => {
           let value = element[innerElement];
@@ -182,7 +182,7 @@ export default {
 
         if(total_reg > 0) {
           let row = this.rows.push({1: set_quarter, 2:qinterval, 3:age_group, 4:total_reg,
-            '' : '', 5:alive, 6:died, 7:defaulted, 8:stopped, 9:to, 10:unknown});
+            5 : '', 6:alive, 7:died, 8:defaulted, 9:stopped, 10:to, 11:unknown});
         }
       }
     },
@@ -254,18 +254,23 @@ export default {
           sort: true,
         },
         {
-          label: "Stopped",
+          label: "Defaulted",
           name: '8',
           sort: true,
         },
         {
-          label: "Transferred out",
+          label: "Stopped",
           name: '9',
           sort: true,
         },
         {
-          label: "Unknown",
+          label: "Transferred out",
           name: '10',
+          sort: true,
+        },
+        {
+          label: "Unknown",
+          name: '11',
         },
       ],
     }
