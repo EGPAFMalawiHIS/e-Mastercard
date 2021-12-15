@@ -177,14 +177,14 @@ export default {
               defaulted = outcome[c][i];
             }else if(c == 'Patient died'){
               died = outcome[c][i];
-            }else if(c == 'Stopped'){
+            }else if(c.match(/Stopped/i)){
               stopped = outcome[c][i];
             }else if(c == 'Patient transferred out'){
               to = outcome[c][i];
             }else{
               unknown = outcome[c][i]
             }
-
+            console.log(outcome[c][i])
             total_reg += outcome[c][i];
           }
         }
