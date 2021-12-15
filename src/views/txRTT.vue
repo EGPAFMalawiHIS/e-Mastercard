@@ -174,11 +174,13 @@ export default {
     hasRow(age_group, gender) {
       return this.rows.filter((element) => { element.age_group === age_group && element.gender === gender } ).length > 0;
     },
+    sortDataByMonth(dataList, comparator) {
+      return dataList.filter(i => comparator(i.months)).map(i => i.patient_id)
+    },
     loadGroupData(data) {
       let counter = 1;
       let report_gender = ["F", "M"];
       let set_age_groups = this.ageGroups;
-
       for (let j = 0; j < report_gender.length; j++) {
         let age_group_found = false;
         for (let i = 0; i < set_age_groups.length; i++) {
@@ -186,15 +188,17 @@ export default {
           if (data.hasOwnProperty(age_group)) {
             let gender = data[age_group];
             // for (let sex in gender) {
-            let sex = report_gender[j]
+              let sex = report_gender[j]
             if (gender.hasOwnProperty(sex) && !this.hasRow(age_group, sex)) {
-          
                 let numbers = gender[sex];
+                const s = (comparator) => this.sortDataByMonth(numbers, comparator)
                 this.rows.push({
                   number: counter++,
                   age_group: age_group,
                   gender: sex,
-                  returned: numbers,
+                  return_less_than_3_mo: s((months) => months < 3),
+                  return_by_3_to_5_mo: s((months) => months >= 3 && months <= 5),
+                  return_6_plus_mo: s((months) => months >= 6)
                 });
                 age_group_found = true;
             }else {
@@ -202,7 +206,9 @@ export default {
               number: counter++,
               age_group: set_age_groups[i],
               gender: report_gender[j],
-              returned: 0   
+              return_less_than_3_mo: 0,
+              return_by_3_to_5_mo: 0,
+              return_6_plus_mo: 0  
             }); 
             }
           }else {
@@ -210,7 +216,9 @@ export default {
               number: counter++,
               age_group: set_age_groups[i],
               gender: report_gender[j],
-              returned: 0   
+              return_less_than_3_mo: 0,
+              return_by_3_to_5_mo: 0,
+              return_6_plus_mo: 0
             });
           }
           
@@ -311,7 +319,9 @@ export default {
       ],
       showLoader: false,
       slots: [
-        "returned",
+        "return_less_than_3_mo",
+        "return_by_3_to_5_mo",
+        "return_6_plus_mo"
       ],
       rows: [],
       columns: [
@@ -331,9 +341,21 @@ export default {
           sort: true,
         },
         {
-          label: "Returned after 30+ days",
-          name: "returned",
-          slot_name: "returned",
+          label: "Returned <3 mo",
+          name: "return_less_than_3_mo",
+          slot_name: "return_less_than_3_mo",
+          sort: true,
+        },
+        {
+          label: "Returned 3-5 mo",
+          name: "return_by_3_to_5_mo",
+          slot_name: "return_by_3_to_5_mo",
+          sort: true,
+        },
+        {
+          label: "Returned 6+ mo",
+          name: "return_6_plus_mo",
+          slot_name: "return_6_plus_mo",
           sort: true,
         }
       ],
