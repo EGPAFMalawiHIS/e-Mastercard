@@ -663,21 +663,26 @@ export default {
       initialize: false,
       genders: ["female", "male"],
       ageGroups: [
-        "0-5 months",
-        "6-11 months",
-        "12-23 months",
-        "2-4 years",
-        "5-9 years",
-        "10-14 years",
-        "15-17 years",
-        "18-19 years",
-        "20-24 years",
-        "25-29 years",
-        "30-34 years",
-        "35-39 years",
-        "40-44 years",
-        "45-49 years",
-        "50 plus years",
+        '<1 year',
+        '1-4 years', 
+        '5-9 years', 
+        '10-14 years', 
+        '15-19 years', 
+        '20-24 years', 
+        '25-29 years', 
+        '30-34 years', 
+        '35-39 years', 
+        '40-44 years', 
+        '45-49 years', 
+        '50-54 years',
+        '55-59 years',
+        '60-64 years',
+        '65-69 years',
+        '70-74 years',
+        '75-79 years',
+        '80-84 years',
+        '85-89 years',
+        '90 plus years'
       ].reverse(),
       drillClients: [],
       perPage: 10,
@@ -689,68 +694,28 @@ export default {
         Fbf: { ...keyList },
       },
       patientData: {
-        "0-5 months": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "6-11 months": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "12-23 months": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "2-4 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "5-9 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "10-14 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "15-17 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "18-19 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "20-24 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "25-29 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "30-34 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "35-39 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "40-44 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "45-49 years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-        "50 plus years": {
-          male: { ...keyList },
-          female: { ...keyList },
-        },
-      },
-    };
+        '<1 year': { male: {...keyList }, female: {...keyList } },
+        '1-4 years': { male: {...keyList }, female: {...keyList } },
+        '5-9 years': { male: {...keyList }, female: {...keyList } },
+        '10-14 years': { male: {...keyList }, female: {...keyList } },
+        '15-19 years': { male: {...keyList }, female: {...keyList } },
+        '20-24 years': { male: {...keyList }, female: {...keyList } },
+        '25-29 years': { male: {...keyList }, female: {...keyList } },
+        '30-34 years': { male: {...keyList }, female: {...keyList } },
+        '35-39 years': { male: {...keyList }, female: {...keyList } },
+        '40-44 years': { male: {...keyList }, female: {...keyList } },
+        '45-49 years': { male: {...keyList }, female: {...keyList } },
+        '50-54 years': { male: {...keyList }, female: {...keyList } },
+        '55-59 years': { male: {...keyList }, female: {...keyList } },
+        '60-64 years': { male: {...keyList }, female: {...keyList } },
+        '65-69 years': { male: {...keyList }, female: {...keyList } },
+        '70-74 years': { male: {...keyList }, female: {...keyList } },
+        '75-79 years': { male: {...keyList }, female: {...keyList } },
+        '80-84 years': { male: {...keyList }, female: {...keyList } },
+        '85-89 years': { male: {...keyList }, female: {...keyList } },
+        '90 plus years': { male: {...keyList }, female: {...keyList } }
+      }
+    }
   },
 };
 </script>
