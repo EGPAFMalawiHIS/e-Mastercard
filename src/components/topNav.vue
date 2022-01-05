@@ -101,7 +101,7 @@ export default {
         this.setLocation(data);
         sessionStorage.location = data.name;
         sessionStorage.location_name = data.name;
-        sessionStorage.vboxID = data.vbox_id
+        sessionStorage.siteUUID = data.uuid
       },
       appVersion() {
         let applicationVersion  = ApiClient.config.version || '2.0-dev';
