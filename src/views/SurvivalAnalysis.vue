@@ -64,6 +64,15 @@ export default {
     redirect: function () {
       this.$router.push('/moh');
     },
+    orderObj(unordered) {
+      return Object.keys(unordered).sort().reduce(
+        (obj, key) => { 
+          obj[key] = unordered[key]; 
+          return obj;
+        },
+        {}
+      )
+    },
     async fetchData (report_parameters) {
       this.rows = [];
       try {
@@ -144,10 +153,10 @@ export default {
       }else{
       }
     },loadData(data, age_group) {
-     ;
-      for(let qtr in data) {
+      const ordered = this.orderObj(data)
+      for(let qtr in ordered) {
         let row_id = (qtr.split(' ')[1]);
-        let outcome = data[qtr];
+        let outcome = ordered[qtr];
         let set_quarter = qtr;
         let qinterval = '';
         let alive = 0;
@@ -168,14 +177,14 @@ export default {
               defaulted = outcome[c][i];
             }else if(c == 'Patient died'){
               died = outcome[c][i];
-            }else if(c == 'Stopped'){
+            }else if(c.match(/Stopped/i)){
               stopped = outcome[c][i];
             }else if(c == 'Patient transferred out'){
               to = outcome[c][i];
             }else{
               unknown = outcome[c][i]
             }
-
+            console.log(outcome[c][i])
             total_reg += outcome[c][i];
           }
         }

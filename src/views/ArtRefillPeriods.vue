@@ -144,29 +144,19 @@ export default {
       // }
     },
     setMinMaxAges(group) {
-      if (group == "<1 year") return [0, 0];
+      const valueTokens = group.split(' ')
 
-      if (group == "1-4 years") return [1, 4];
+      const [valueRange] = valueTokens
 
-      if (group == "5-9 years") return [5, 9];
+      if (valueRange === '<1') return [0, 0]
 
-      if (group == "10-14 years") return [10, 14];
+      if (valueTokens.includes('plus')) {
+        return [parseInt(valueRange), 100000]
+      }
 
-      if (group == "15-19 years") return [15, 19];
+      const [min, max] = valueRange.split('-').map(i => parseInt(i))
 
-      if (group == "20-24 years") return [20, 24];
-
-      if (group == "25-29 years") return [25, 29];
-
-      if (group == "30-34 years") return [30, 34];
-
-      if (group == "35-39 years") return [35, 39];
-
-      if (group == "40-44 years") return [40, 44];
-
-      if (group == "45-49 years") return [45, 49];
-
-      if (group == "50 plus years") return [50, 10000];
+      return min && max ? [min, max] : undefined
     },
     addRow(data, ind, agp) {
       /* ................................................................ */
@@ -325,18 +315,26 @@ export default {
       EMCVersion: sessionStorage.EMCVersion,
       reportTitle: null,
       ageGroups: [
-        "<1 year",
-        "1-4 years",
-        "5-9 years",
-        "10-14 years",
-        "15-19 years",
-        "20-24 years",
-        "25-29 years",
-        "30-34 years",
-        "35-39 years",
-        "40-44 years",
-        "45-49 years",
-        "50 plus years",
+        '<1 year',
+        '1-4 years', 
+        '5-9 years', 
+        '10-14 years', 
+        '15-19 years', 
+        '20-24 years', 
+        '25-29 years', 
+        '30-34 years', 
+        '35-39 years', 
+        '40-44 years', 
+        '45-49 years', 
+        '50-54 years',
+        '55-59 years',
+        '60-64 years',
+        '65-69 years',
+        '70-74 years',
+        '75-79 years',
+        '80-84 years',
+        '85-89 years',
+        '90 plus years'
       ],
       showLoader: false,
       slots: ["sixty", "ninety", "oneeighty"],

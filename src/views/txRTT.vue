@@ -174,11 +174,13 @@ export default {
     hasRow(age_group, gender) {
       return this.rows.filter((element) => { element.age_group === age_group && element.gender === gender } ).length > 0;
     },
+    sortDataByMonth(dataList, comparator) {
+      return dataList.filter(i => comparator(i.months)).map(i => i.patient_id)
+    },
     loadGroupData(data) {
       let counter = 1;
       let report_gender = ["F", "M"];
       let set_age_groups = this.ageGroups;
-
       for (let j = 0; j < report_gender.length; j++) {
         let age_group_found = false;
         for (let i = 0; i < set_age_groups.length; i++) {
@@ -186,15 +188,17 @@ export default {
           if (data.hasOwnProperty(age_group)) {
             let gender = data[age_group];
             // for (let sex in gender) {
-            let sex = report_gender[j]
+              let sex = report_gender[j]
             if (gender.hasOwnProperty(sex) && !this.hasRow(age_group, sex)) {
-          
                 let numbers = gender[sex];
+                const s = (comparator) => this.sortDataByMonth(numbers, comparator)
                 this.rows.push({
                   number: counter++,
                   age_group: age_group,
                   gender: sex,
-                  returned: numbers,
+                  return_less_than_3_mo: s((months) => months < 3),
+                  return_by_3_to_5_mo: s((months) => months >= 3 && months <= 5),
+                  return_6_plus_mo: s((months) => months >= 6)
                 });
                 age_group_found = true;
             }else {
@@ -202,7 +206,9 @@ export default {
               number: counter++,
               age_group: set_age_groups[i],
               gender: report_gender[j],
-              returned: 0   
+              return_less_than_3_mo: 0,
+              return_by_3_to_5_mo: 0,
+              return_6_plus_mo: 0  
             }); 
             }
           }else {
@@ -210,7 +216,9 @@ export default {
               number: counter++,
               age_group: set_age_groups[i],
               gender: report_gender[j],
-              returned: 0   
+              return_less_than_3_mo: 0,
+              return_by_3_to_5_mo: 0,
+              return_6_plus_mo: 0
             });
           }
           
@@ -288,25 +296,32 @@ export default {
       EMCVersion: sessionStorage.EMCVersion,
       reportTitle: null,
       ageGroups: [
-        "0-5 months",
-        "6-11 months",
-        "12-23 months",
-        "2-4 years",
-        "5-9 years",
-        "10-14 years",
-        "15-17 years",
-        "18-19 years",
-        "20-24 years",
-        "25-29 years",
-        "30-34 years",
-        "35-39 years",
-        "40-44 years",
-        "45-49 years",
-        "50 plus years",
+        '<1 year',
+        '1-4 years', 
+        '5-9 years', 
+        '10-14 years', 
+        '15-19 years', 
+        '20-24 years', 
+        '25-29 years', 
+        '30-34 years', 
+        '35-39 years', 
+        '40-44 years', 
+        '45-49 years', 
+        '50-54 years',
+        '55-59 years',
+        '60-64 years',
+        '65-69 years',
+        '70-74 years',
+        '75-79 years',
+        '80-84 years',
+        '85-89 years',
+        '90 plus years'
       ],
       showLoader: false,
       slots: [
-        "returned",
+        "return_less_than_3_mo",
+        "return_by_3_to_5_mo",
+        "return_6_plus_mo"
       ],
       rows: [],
       columns: [
@@ -326,9 +341,21 @@ export default {
           sort: true,
         },
         {
-          label: "Returned after 30+ days",
-          name: "returned",
-          slot_name: "returned",
+          label: "Returned <3 mo",
+          name: "return_less_than_3_mo",
+          slot_name: "return_less_than_3_mo",
+          sort: true,
+        },
+        {
+          label: "Returned 3-5 mo",
+          name: "return_by_3_to_5_mo",
+          slot_name: "return_by_3_to_5_mo",
+          sort: true,
+        },
+        {
+          label: "Returned 6+ mo",
+          name: "return_6_plus_mo",
+          slot_name: "return_6_plus_mo",
           sort: true,
         }
       ],
