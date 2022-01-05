@@ -255,7 +255,8 @@ export default {
 
       y += "\n";
       y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
-                          e-Mastercard Version : ${sessionStorage.EMCVersion} 
+                          e-Mastercard Version : ${sessionStorage.EMCVersion}
+                          Vbox ID: ${sessionStorage.vboxID} 
                           API Version ${sessionStorage.APIVersion}`;
       for (let index = 0; index < 34; index++) {
         y += ",";
