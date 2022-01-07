@@ -216,7 +216,7 @@ export default {
       jj.forEach(element => {
           y += "\n"; 
           element.getElementsByTagName('td').forEach(innerElement => {
-              y += `"${innerElement.innerHTML}",`;
+              y += `"${innerElement.innerHTML.replace('&lt;', '<')}",`;
           });
       });
 
