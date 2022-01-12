@@ -87,7 +87,7 @@ export default {
       var client_sex = ["Female", "Male"];
       client_sex.forEach((element) => {
         this.ageGroups.forEach((el, index) => {
-          let num = element === "Female" ? index + 1 : index + 12 + 1;
+          let num = element === "Female" ? index + 1 : index + this.ageGroups.length + 1;
           this.rows.push({
             number: num,
             age_group: el,
@@ -166,7 +166,7 @@ export default {
         let sixty = [];
         let ninety = [];
         let oneeighty = [];
-        let num = element === "Female" ? ind + 1 : ind + 12 + 1;
+        let num = element === "Female" ? ind + 1 : ind + this.ageGroups.length + 1;
         let finObj = {
           number: num,
           age_group: agp,
