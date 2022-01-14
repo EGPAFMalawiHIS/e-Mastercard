@@ -53,7 +53,7 @@
             :options="locations"
             @search="getlocations"
             @input="getVal"
-            placeholder="Transfer Location"
+            placeholder="Next facility"
           ></v-select>
         </div>
       </div>
@@ -259,7 +259,7 @@ export default {
   },
   mounted() {
     this.getOutcomes();
-    this.getlocations(sessionStorage.location_name);
+    this.getlocations("");
     this.getPatientOutcomes();
   },
   computed: {
