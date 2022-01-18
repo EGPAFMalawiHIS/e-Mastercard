@@ -101,7 +101,7 @@ export default {
         y += `"${element.label}",`;
       });
       y = y.replace("null", "");
-      this.rows.reverse().forEach((element) => {
+      this.rows.forEach((element) => {
         y += "\n";
         Object.keys(element).forEach((innerElement) => {
           let value = element[innerElement];
