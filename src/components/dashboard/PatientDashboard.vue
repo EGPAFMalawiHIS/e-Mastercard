@@ -78,19 +78,19 @@ const REPORT_POLL_INTERVAL = 5000; // In millis
 
 export default {
   name: "PatientDashboard",
-  created() {
+  async created() {
     const [startDate, endDate] = DateUtils.dateQuarter(new Date());
 
     // const [startDate, endDate] = ['2019-10-01', '2019-12-31'];
 
-    this.loadAppointmentsDue(startDate, endDate);
-    this.loadCompleteAndIncompleteVisits(startDate, endDate);
-    this.loadDefaulters(startDate, endDate);
-    this.loadMissedAppointments(startDate, endDate);
-    this.loadPatientsDueForViralLoad(startDate, endDate);
-    this.loadPatientsOnDtg(startDate, endDate);
-    this.loadTxCurrent30(startDate, endDate);
-    this.loadTxCurrent60(startDate, endDate);
+    await this.loadAppointmentsDue(startDate, endDate);
+    await this.loadCompleteAndIncompleteVisits(startDate, endDate);
+    await this.loadDefaulters(startDate, endDate);
+    await this.loadMissedAppointments(startDate, endDate);
+    await this.loadPatientsDueForViralLoad(startDate, endDate);
+    await this.loadPatientsOnDtg(startDate, endDate);
+    await this.loadTxCurrent30(startDate, endDate);
+    await this.loadTxCurrent60(startDate, endDate);
   },
   computed: mapState({
     completeAndIncompleteVisits: state => state.dashboard.completeAndIncompleteVisits,
