@@ -674,7 +674,7 @@ export default {
       );
       if (response.status === 201 || response.status === 200) {
         this.showMessage("ARV number voided");
-        this.arvNumber = null;
+        this.arvNumber = "N/A";
         this.$root.$emit("bv::hide::modal", "arv-number-modal", "#btnShow");
       } else if (response.status === 400) {
         this.showMessage("ARV number already in use");
