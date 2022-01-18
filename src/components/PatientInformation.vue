@@ -221,7 +221,7 @@
     <b-modal id="arv-number-modal" title="Edit ARV number" size="xl">
       <div class="row">
         <div class="col">
-          <label for="exampleFormControlSelect1">{{arvNumber}} -></label>
+          <label for="exampleFormControlSelect1">{{arvNumber}} -></label> <button class="btn btn-danger" @click="voidARVNumber">X</button>
         </div>
         <div class="col">
           <b-input-group :prepend="sitePrefix + '-ARV-'" class="mb-2 mr-sm-2 mb-sm-0">
@@ -663,6 +663,18 @@ export default {
       if (response.status === 201 || response.status === 200) {
         this.showMessage("ARV number updated");
         this.arvNumber = finalNum;
+        this.$root.$emit("bv::hide::modal", "arv-number-modal", "#btnShow");
+      } else if (response.status === 400) {
+        this.showMessage("ARV number already in use");
+      }
+    },
+    voidARVNumber: async function() {
+      const response = await ApiClient.post(
+        `/programs/1/void_arv_number/${this.arvNumber}`,
+      );
+      if (response.status === 201 || response.status === 200) {
+        this.showMessage("ARV number voided");
+        this.arvNumber = null;
         this.$root.$emit("bv::hide::modal", "arv-number-modal", "#btnShow");
       } else if (response.status === 400) {
         this.showMessage("ARV number already in use");
