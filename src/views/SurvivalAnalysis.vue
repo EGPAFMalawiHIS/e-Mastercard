@@ -146,7 +146,6 @@ export default {
         url += '&regenerate=false';
       }
 
-      console.log(url)
       const response = await ApiClient.get(url);
 
       if (response.status === 200) {
@@ -155,44 +154,70 @@ export default {
       }
     },loadData(data, age_group) {
       const ordered = this.orderObj(data)
+      let report_orders = {};
       for(let qtr in ordered) {
-        let row_id = (qtr.split(' ')[1]);
         let outcome = ordered[qtr];
-        let set_quarter = qtr;
-        let qinterval = '';
-        let alive = 0;
-        let died = 0;
-        let defaulted = 0;
-        let stopped = 0;
-        let to = 0;
-        let unknown = 0;
-        let total_reg = 0;
-
         for(let c in outcome) {
-          let interval = outcome[c]
+          let interval = outcome[c];
           for(let i in interval) {
-            qinterval = i
-            if(c == 'On antiretrovirals') {
-              alive = outcome[c][i];
-            }else if(c == 'Defaulted'){
-              defaulted = outcome[c][i];
-            }else if(c == 'Patient died'){
-              died = outcome[c][i];
-            }else if(c.match(/Stopped/i)){
-              stopped = outcome[c][i];
-            }else if(c == 'Patient transferred out'){
-              to = outcome[c][i];
-            }else{
-              unknown = outcome[c][i]
-            }
-            console.log(outcome[c][i])
-            total_reg += outcome[c][i];
+            report_orders[i] = qtr;
           }
         }
+      }
+      
+      let keys = Object.keys(report_orders);
+      keys.sort(function(a, b) {
+          return report_orders[a] - report_orders[b]
+      });
+      keys = keys.reverse();
 
-        if(total_reg > 0) {
-          let row = this.rows.push({1: set_quarter, 2:qinterval, 3:age_group, 4:total_reg,
-            5 : '', 6:alive, 7:died, 8:defaulted, 9:stopped, 10:to, 11:unknown});
+      for(const key of keys){
+        for(const month in report_orders) {
+          if(key != month)
+            continue;
+
+          for(let qtr in ordered) {
+            if(report_orders[key] != qtr)
+              continue;
+
+            let row_id = (qtr.split(' ')[1]);
+            let outcome = ordered[qtr];
+            let set_quarter = qtr;
+            let qinterval = '';
+            let alive = 0;
+            let died = 0;
+            let defaulted = 0;
+            let stopped = 0;
+            let to = 0;
+            let unknown = 0;
+            let total_reg = 0;
+
+            for(let c in outcome) {
+              let interval = outcome[c]
+              for(let i in interval) {
+                qinterval = i
+                if(c == 'On antiretrovirals') {
+                  alive = outcome[c][i];
+                }else if(c == 'Defaulted'){
+                  defaulted = outcome[c][i];
+                }else if(c == 'Patient died'){
+                  died = outcome[c][i];
+                }else if(c.match(/Stopped/i)){
+                  stopped = outcome[c][i];
+                }else if(c == 'Patient transferred out'){
+                  to = outcome[c][i];
+                }else{
+                  unknown = outcome[c][i]
+                }
+                total_reg += outcome[c][i];
+              }
+            }
+
+            if(total_reg > 0) {
+              let row = this.rows.push({1: set_quarter, 2:qinterval, 3:age_group, 4:total_reg,
+                5 : '', 6:alive, 7:died, 8:defaulted, 9:stopped, 10:to, 11:unknown});
+            }
+          }
         }
       }
     },
