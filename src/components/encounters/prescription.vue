@@ -75,7 +75,7 @@ export default {
   methods: {
     getRegimens: async function(val) {
       let patientID = this.$route.params.id;
-      await ApiClient.get(`/programs/1/regimens?weight=${this.weight}&tb_dosage=true`).then(
+      await ApiClient.get(`/programs/1/regimens?weight=${this.weight}&tb_dosage=${this.onTb}`).then(
         res => {
           res.json().then(ret => {
             this.regimens = ret;
@@ -291,11 +291,7 @@ export default {
     });
  
     EventBus.$on('set-tb', payload => {
-        if (payload === "1065") {
-          this.onTb = true;
-        }else {
-          this.onTb = false;
-        }  
+          this.onTb = payload;
     });
   },
   watch: {

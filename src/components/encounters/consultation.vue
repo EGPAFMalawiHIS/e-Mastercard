@@ -238,10 +238,14 @@ export default {
     }
   },
   watch: {
-    onTb: {
+    currentStatus: {
       handler(val) {
-        EventBus.$emit("set-tb", this.onTb.value_coded);
-        //  this.setPresent();
+        if([7455, 7456, 7458].includes(val)) {
+          EventBus.$emit("set-tb", true);
+        }else {
+
+          EventBus.$emit("set-tb", false);
+        }
       },
       deep: true
     }
