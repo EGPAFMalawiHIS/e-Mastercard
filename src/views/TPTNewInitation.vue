@@ -92,8 +92,10 @@ export default {
             number: num,
             age_group: el,
             gender: element,
-            threehp: [],
-            sixh: [],
+            threehpnew: [],
+            threehpprev: [],
+            sixhnew: [],
+            sixhprev: [],
           });
         });
       });
@@ -147,7 +149,8 @@ export default {
         Object.keys(data).forEach((element, index) => {
           let idx = -1;
           let num;
-          if(element !== "Unknown") {
+          const location = data.Location;
+          if(element !== "Unknown" && element !== "Location") {
           
           if(gender === 'F') {
             num = index + 1 + idx;
@@ -158,10 +161,13 @@ export default {
            this.rows.push(
              {
                number: num,
+               location: location,
                age_group: element,
                gender : gender,
-               threehp : data[element]["3HP"][gender],
-               sixh : data[element]["6H"][gender],
+               threehpnew : data[element]["3HP_new"][gender],
+               threehpprev : data[element]["3HP_prev"][gender],
+               sixhnew : data[element]["6H_new"][gender],
+               sixhprev : data[element]["6H_prev"][gender],
 
              }
              )
@@ -277,30 +283,6 @@ export default {
       drillClients: [],
       perPage: 10,
       currentPage: 1,
-      columns: [
-        {
-          label: "#",
-          name: "number",
-          sort: true,
-        },
-        {
-          label: "Age Group",
-          name: "age_group",
-          sort: true,
-        },
-        {
-          key: "gender",
-          label: "Gender",
-        },
-        {
-          key: "threehp",
-          label: "3HP",
-        },
-        {
-          key: "sixh",
-          label: "6H",
-        }
-      ],
       startDate: null,
       endDate: null,
       reportLoading: false,
@@ -330,13 +312,18 @@ export default {
         '90 plus years'
       ],
       showLoader: false,
-      slots: ['sixh', 'threehp'],
+      slots: ['sixhnew','sixhprev', 'threehpnew', 'threehpprev'],
       rows: [],
       columns: [
         {
           label: "#",
           name: "number",
           sort: true,
+        },
+        {
+          label: "District",
+          name: "location",
+          sort: false,
         },
         {
           label: "Age Group",
@@ -349,15 +336,27 @@ export default {
           sort: true,
         },
         {
-          label: "3HP",
-          name: "threehp",
-          slot_name: "threehp",
+          label: "3HP (Started New on ART)",
+          name: "threehpnew",
+          slot_name: "threehpnew",
           // sort: true,
         },
         {
-          label: "6H",
-          name: "sixh",
-          slot_name: "sixh",
+          label: "3HP (Started Previous on ART)",
+          name: "threehpprev",
+          slot_name: "threehpprev",
+          // sort: true,
+        },
+        {
+          label: "6H (Started New on ART)",
+          name: "sixhnew",
+          slot_name: "sixhnew",
+          // sort: true,
+        },
+        {
+          label: "6H (Started Previous on ART)",
+          name: "sixhprev",
+          slot_name: "sixhprev",
           // sort: true,
         }
       ],

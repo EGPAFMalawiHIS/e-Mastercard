@@ -13,6 +13,8 @@
                 <th scope="col">ARV#</th>
                 <th class="center-text" scope="col">Gender</th>
                 <th class="center-text" scope="col">DoB (Age in Years)</th>
+                <th class="center-text" scope="col">ART start date</th>
+                <th class="center-text" scope="col">Weight</th>
                 <th class="center-text" scope="col">Prev.Regimen</th>
                 <th class="center-text" scope="col">Curr.Regimen</th>
                 <th class="center-text" scope="col">ARVs</th>
@@ -136,7 +138,8 @@ export default {
         let data = info[patient_id];
         const birthdate = data.birthdate ? `${data.birthdate} (${moment(new Date()).diff(data.birthdate, 'years')})`
                                          : 'N/A';
-        
+        const startDate = data.art_start_date ? moment(data.art_start_date).format('DD/MMM/YYYY') : '';
+    
         let current_reg = data.current_regimen;
         let medications = [];
         let meds = data.medication;
@@ -149,7 +152,7 @@ export default {
         }  
 
         this.formatedData.push( [data.arv_number,
-          data.gender, birthdate, previous_reg, current_reg,
+          data.gender, birthdate, startDate, data.current_weight, previous_reg, current_reg,
           medications.join('<br />'), prescription_date ] );
       }
       this.dTable.api().destroy();
