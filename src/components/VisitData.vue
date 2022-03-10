@@ -129,7 +129,7 @@ export default {
   methods: {
     getVisits: async function() {
       // let temp = [];
-      await ApiClient.get(`/patients/${this.$route.params.id}/visits`).then(
+      await ApiClient.get(`/patients/${this.$route.params.id}/visits?program_id=1&include_defaulter_dates=true`).then(
         res => {
           res.json().then(ret => {
             this.setVisits(ret);

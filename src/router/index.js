@@ -242,6 +242,11 @@ const routes = [
     path: "/vl_coverage",
     name: "VL coverage",
     component: () => import("@/views/VLCoverage.vue")
+  },
+  {
+    path: "/sc_arv",
+    name: "SC ARV report",
+    component: () => import("@/views/SCARVReport.vue")
   }
 ]
 

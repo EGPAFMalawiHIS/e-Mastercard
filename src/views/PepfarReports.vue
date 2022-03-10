@@ -76,12 +76,12 @@
                 </div>
               </div>
 
-              <!-- <div class="btn-container" @click="redirect('/tb_prev')">
+              <div class="btn-container" @click="redirect('/sc_arv')">
                 <div class="card">
                   <img src="../assets/report-icons/previous.png" class="btn-icon" />
-                  <p>TB Prev</p>
+                  <p>SC ARVDISP</p>
                 </div>
-              </div> -->
+              </div>
             </div>            
             <div class="col-sm">
               <!-- <div class="btn-container" @click="redirect('/tb_prev')">

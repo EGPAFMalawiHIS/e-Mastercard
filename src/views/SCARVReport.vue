@@ -40,7 +40,7 @@
         hover
         id="my-table"
         :items="drillClients"
-        :fields="columns"
+        :fields="drillColumns"
         :per-page="perPage"
         :current-page="currentPage"
       ></b-table>
@@ -62,7 +62,6 @@ import ApiClient from "../services/api_client";
 import ReportOverlay from "../components/reports/ReportOverlay";
 import Sidebar from "@/components/SideBar.vue";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
-import DateUtils from "../services/date_utils";
 import TopNav from "@/components/topNav.vue";
 
 import VueBootstrap4Table from "vue-bootstrap4-table";
@@ -113,8 +112,8 @@ export default {
       this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
       this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
       this.reportLoading = true;
-       let url_path = '/programs/1/reports/tpt_newly_initiated?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');
-      url_path += "&end_date=" + this.endDate + "&program_id=1";
+       let url_path = 'sc_arvdisp?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');
+      url_path += "&end_date=" + this.endDate + "&program_id=1&pepfar=true";
       this.loadData(url_path);
       
     },
@@ -126,54 +125,19 @@ export default {
       });
    
     },
-    setMinMaxAges(group) {
-      const valueTokens = group.split(' ')
-
-      const [valueRange] = valueTokens
-
-      if (valueRange === '<1') return [0, 0]
-
-      if (valueTokens.includes('plus')) {
-        return [parseInt(valueRange), 100000]
-      }
-
-      const [min, max] = valueRange.split('-').map(i => parseInt(i))
-
-      return min && max ? [min, max] : undefined
-    },
     addRow(data) {
-      const client_sex = ["F", "M"];
       this.rows = [];
-      
-      client_sex.forEach(gender => {
-        Object.keys(data).forEach((element, index) => {
-          let idx = -1;
-          let num;
-          const location = data.Location;
-          if(element !== "Unknown" && element !== "Location") {
-          
-          if(gender === 'F') {
-            num = index + 1 + idx;
-          }else if(gender === 'M') {
-            num = index + 16 + idx ;
-          }
-          console.log(num);
-           this.rows.push(
+      data.forEach((element, index) => {
+        this.rows.push(
              {
-               number: num,
-               location: location,
-               age_group: element,
-               gender : gender,
-               threehpnew : data[element]["3HP_new"][gender],
-               threehpprev : data[element]["3HP_prev"][gender],
-               sixhnew : data[element]["6H_new"][gender],
-               sixhprev : data[element]["6H_prev"][gender],
+               number: index + 1,
+               drug: element.name,
+               bottles: element.dispensations,
 
              }
              )
-        }
-        }); 
-      })
+      });
+           
       this.reportLoading = false;
     },
     fetchDrillDown(clients) {
@@ -181,22 +145,9 @@ export default {
         this.$bvModal.show("modal-1");
         this.drillClients = [];
         this.drillClients = clients;
-        // clients.forEach((element) => {
-        //   this.getClient(element);
-        // });
       }
     },
-    getClient: async function (id) {
-      let url = "patients/" + id;
-
-      const response = await ApiClient.get(url, {}, {});
-
-      if (response.status === 200) {
-        response
-          .json()
-          .then((data) => this.drillClients.push(this.parsePatient(data)));
-      }
-    },
+    
     parsePatient(results) {
       var age = results.person.birthdate;
       var gender = results.person.gender;
@@ -289,31 +240,12 @@ export default {
       APIVersion: sessionStorage.APIVersion,
       EMCVersion: sessionStorage.EMCVersion,
       reportTitle: null,
-      ageGroups: [
-        '<1 year',
-        '1-4 years', 
-        '5-9 years', 
-        '10-14 years', 
-        '15-19 years', 
-        '20-24 years', 
-        '25-29 years', 
-        '30-34 years', 
-        '35-39 years', 
-        '40-44 years', 
-        '45-49 years', 
-        '50-54 years',
-        '55-59 years',
-        '60-64 years',
-        '65-69 years',
-        '70-74 years',
-        '75-79 years',
-        '80-84 years',
-        '85-89 years',
-        '90 plus years'
-      ],
       showLoader: false,
-      slots: ['sixhnew','sixhprev', 'threehpnew', 'threehpprev'],
+      slots: ['bottles'],
       rows: [],
+      drillColumns: [
+        
+      ],
       columns: [
         {
           label: "#",
@@ -321,47 +253,18 @@ export default {
           sort: true,
         },
         {
-          label: "District",
-          name: "location",
+          label: "ARV drug category",
+          name: "drug",
           sort: false,
         },
         {
-          label: "Age Group",
-          name: "age_group",
-          sort: true,
-        },
-        {
-          label: "Gender",
-          name: "gender",
-          sort: true,
-        },
-        {
-          label: "3HP (Started New on ART)",
-          name: "threehpnew",
-          slot_name: "threehpnew",
-          // sort: true,
-        },
-        {
-          label: "6H (Started New on ART)",
-          name: "sixhnew",
-          slot_name: "sixhnew",
-          // sort: true,
-        },
-        {
-          label: "3HP (Started Previous on ART)",
-          name: "threehpprev",
-          slot_name: "threehpprev",
-          // sort: true,
-        },
-        {
-          label: "6H (Started Previous on ART)",
-          name: "sixhprev",
-          slot_name: "sixhprev",
-          // sort: true,
+          label: "# of botles (units dispensed)",
+          name: "bottles",
+          slot_name: "bottles",
         }
       ],
       config: {
-        card_title: `TPT new initiation`,
+        card_title: `SC ARV dispensation report`,
         show_refresh_button: false,
         show_reset_button: false,
       },
@@ -379,9 +282,6 @@ export default {
     rowCount() {
       return this.drillClients.length;
     },
-  },
-  mounted() {
-    // this.initRows();
   },
 };
 </script>
