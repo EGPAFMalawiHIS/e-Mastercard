@@ -672,7 +672,23 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">4</td>
-      <td><a href="#" @click="drillDown('four_p');">{{four_p}}</a></td>
+      <td>
+        <!--a href="#" @click="drillDown('fifteen_p');">{{fifteen_p}}</a-->
+        <div class="granules">
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td"><span>PP</span></div>
+            <div class="granules-cell"><span>PA</span></div>
+          </div>
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td">
+              <a href="#" @click="drillDown('four_pp');" id="four_pp">{{four_pp}}</a>
+            </div>
+            <div class="granules-cell">
+              <a href="#" @click="drillDown('four_pa');" id="four_pa">{{four_pa}}</a>
+            </div>
+          </div>
+        </div>
+      </td>
       <td><a href="#" @click="drillDown('four_a');">{{four_a}}</a></td>
     </tr>
     
@@ -748,17 +764,18 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">9</td>
       <td>
+        <!--a href="#" @click="drillDown('fifteen_p');">{{fifteen_p}}</a-->
         <div class="granules">
           <div class="granules-row">
-            <div class="granules-cell granules-right-td"><span>Tabs</span></div>
-            <div class="granules-cell"><span>Granules</span></div>
+            <div class="granules-cell granules-right-td"><span>PP</span></div>
+            <div class="granules-cell"><span>PA</span></div>
           </div>
           <div class="granules-row">
             <div class="granules-cell granules-right-td">
-              <a href="#" @click="drillDown('nine_p_tabs');" id="nine_p_tabs">{{nine_p_tabs}}</a>
+              <a href="#" @click="drillDown('nine_pp');" id="nine_pp">{{nine_pp}}</a>
             </div>
             <div class="granules-cell">
-              <a href="#" @click="drillDown('nine_p_granules');" id="nine_p_granules">{{nine_p_granules}}</a>
+              <a href="#" @click="drillDown('nine_pa');" id="nine_pa">{{nine_pa}}</a>
             </div>
           </div>
         </div>
@@ -793,17 +810,18 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">11</td>
       <td>
+        <!--a href="#" @click="drillDown('fifteen_p');">{{fifteen_p}}</a-->
         <div class="granules">
           <div class="granules-row">
-            <div class="granules-cell granules-right-td"><span>Tabs</span></div>
-            <div class="granules-cell"><span>Granules</span></div>
+            <div class="granules-cell granules-right-td"><span>PP</span></div>
+            <div class="granules-cell"><span>PA</span></div>
           </div>
           <div class="granules-row">
             <div class="granules-cell granules-right-td">
-              <a href="#" @click="drillDown('eleven_p_tabs');" id="eleven_p_tabs">{{eleven_p_tabs}}</a>
+              <a href="#" @click="drillDown('eleven_pp');" id="eleven_pp">{{eleven_pp}}</a>
             </div>
             <div class="granules-cell">
-              <a href="#" @click="drillDown('eleven_p_granules');" id="eleven_p_granules">{{eleven_p_granules}}</a>
+              <a href="#" @click="drillDown('eleven_pa');" id="eleven_pa">{{eleven_pa}}</a>
             </div>
           </div>
         </div>
@@ -822,7 +840,23 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">12</td>
-      <td style="background-color:#D9D9D9;">&nbsp;</td>
+      <td>
+        <!--a href="#" @click="drillDown('fifteen_p');">{{fifteen_p}}</a-->
+        <div class="granules">
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td"><span>PP</span></div>
+            <div class="granules-cell"><span>PA</span></div>
+          </div>
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td">
+              <a href="#" @click="drillDown('twelve_pp');" id="twelve_pp">{{twelve_pp}}</a>
+            </div>
+            <div class="granules-cell">
+              <a href="#" @click="drillDown('twelve_pa');" id="twelve_pa">{{twelve_pa}}</a>
+            </div>
+          </div>
+        </div>
+      </td>
       <td><a href="#" @click="drillDown('twelve_a');">{{twelve_a}}</a></td>
     </tr>
     
@@ -853,17 +887,18 @@
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">14</td>
       <td>
+        <!--a href="#" @click="drillDown('fifteen_p');">{{fifteen_p}}</a-->
         <div class="granules">
           <div class="granules-row">
             <div class="granules-cell granules-right-td"><span>PP</span></div>
-            <div class="granules-cell"><span>P</span></div>
+            <div class="granules-cell"><span>PA</span></div>
           </div>
           <div class="granules-row">
             <div class="granules-cell granules-right-td">
               <a href="#" @click="drillDown('fourteen_pp');" id="fourteen_pp">{{fourteen_pp}}</a>
             </div>
             <div class="granules-cell">
-              <a href="#" @click="drillDown('fourteen_p');" id="fourteen_p">{{fourteen_p}}</a>
+              <a href="#" @click="drillDown('fourteen_pa');" id="fourteen_pa">{{fourteen_pa}}</a>
             </div>
           </div>
         </div>
@@ -887,14 +922,14 @@
         <div class="granules">
           <div class="granules-row">
             <div class="granules-cell granules-right-td"><span>PP</span></div>
-            <div class="granules-cell"><span>P</span></div>
+            <div class="granules-cell"><span>PA</span></div>
           </div>
           <div class="granules-row">
             <div class="granules-cell granules-right-td">
               <a href="#" @click="drillDown('fifteen_pp');" id="fifteen_pp">{{fifteen_pp}}</a>
             </div>
             <div class="granules-cell">
-              <a href="#" @click="drillDown('fifteen_p');" id="fifteen_p">{{fifteen_p}}</a>
+              <a href="#" @click="drillDown('fifteen_pa');" id="fifteen_pa">{{fifteen_pa}}</a>
             </div>
           </div>
         </div>
@@ -928,7 +963,23 @@
       <td style="border-right-width:0px; border-bottom-width: 0px;
         border-left-width:0px; border-top-width:0px; text-align:right; padding-right: 5px;
         font-weight:bold;">17</td>
-      <td><a href="#" @click="drillDown('seventeen_p');">{{seventeen_p}}</a></td>
+      <td>
+        <!--a href="#" @click="drillDown('fifteen_p');">{{fifteen_p}}</a-->
+        <div class="granules">
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td"><span>PP</span></div>
+            <div class="granules-cell"><span>PA</span></div>
+          </div>
+          <div class="granules-row">
+            <div class="granules-cell granules-right-td">
+              <a href="#" @click="drillDown('seventeen_pp');" id="seventeen_pp">{{seventeen_pp}}</a>
+            </div>
+            <div class="granules-cell">
+              <a href="#" @click="drillDown('seventeen_pa');" id="seventeen_pa">{{seventeen_p}}</a>
+            </div>
+          </div>
+        </div>
+      </td>
       <td><a href="#" @click="drillDown('seventeen_a');">{{seventeen_a}}</a></td>
     </tr>
     
@@ -1283,33 +1334,52 @@ export default {
       zero_a: 0,
       two_p: 0,
       two_a: 0,
-      four_p: 0,
+      four_pa: 0,
+      four_pp: 0,
       four_a: 0,
       five_a: 0,
       six_a: 0,
       seven_a: 0,
       eight_a: 0,
+      nine_pa: 0,
+      nine_pp: 0,
       nine_p: 0,
       nine_p_tabs: 0,
       nine_p_granules: 0,
+      nine_pp_granules: 0,
+      nine_pp_tabs: 0,
+      nine_pa_granules: 0,
+      nine_pa_tabs: 0,
       nine_a: 0,
       ten_a: 0,
       eleven_p: 0,
       eleven_p_tabs: 0,
       eleven_p_granules: 0,
       eleven_a: 0,
+      eleven_pa: 0,
+      eleven_pp: 0,
+      eleven_pp_granules: 0,
+      eleven_pp_tabs: 0,
+      eleven_pa_granules: 0,
+      eleven_pa_tabs: 0,
       twelve_a: 0,
+      twelve_pp: 0,
+      twelve_pa: 0,
       thirteen_a: 0,
       fourteen_p:  0,
-      fourteen_pp:  0,
       fourteen_a:  0,
-      fifteen_p: 0,
+      fourteen_pa: 0,
+      fourteen_pp: 0,
       fifteen_pp: 0,
+      fifteen_pa: 0,
+      fifteen_p: 0,
       fifteen_a: 0,
       sixteen_p: 0,
       sixteen_a: 0,
       seventeen_p: 0,
       seventeen_a: 0,
+      seventeen_pa: 0,
+      seventeen_pp: 0, 
       unknown_regimen: 0,
       total_pregnant_women: 0,
       total_breastfeeding_women: 0,
@@ -1443,7 +1513,9 @@ export default {
       two_a,${this.two_a},
       two_p,${this.two_p},
       four_a,${this.four_a},
-      four_p,${this.four_p},
+      four_p,${this.four_p}, 
+      four_pa, ${this.four_pa},
+      four_pp, ${this.four_pp},
       five_a,${this.five_a},
       six_a,${this.six_a},
       seven_a,${this.seven_a},
@@ -1451,22 +1523,40 @@ export default {
       nine_a,${this.nine_a},
       nine_p_granules,${this.nine_p_granules},
       nine_p_tabs,${this.nine_p_tabs},
+      nine_pa, ${this.nine_pa},
+      nine_pp, ${this.nine_pp},
+      nine_pp_granules, ${this.nine_pp_granules} 'Regimen 9PP Granules & Pellets',
+      nine_pp_tabs, ${this.nine_pp_tabs},
+      nine_pa_granules, ${this.nine_pa_granules},
+      nine_pa_tabs, ${this.nine_pa_tabs},
       ten_a,${this.ten_a},
       eleven_a,${this.eleven_a},
       eleven_p_granules,${this.eleven_p_granules},
       eleven_p_tabs,${this.eleven_p_tabs},
+      eleven_pa, ${this.eleven_pa},
+      eleven_pp, ${this.eleven_pp},
+      eleven_pp_granules, ${this.eleven_pp_granules},
+      eleven_pp_tabs, ${this.eleven_pp_tabs},
+      eleven_pa_granules, ${this.eleven_pa_granules},
+      eleven_pa_tabs, ${this.eleven_pa_tabs},
       twelve_a,${this.twelve_a},
+      twelve_pp, ${this.twelve_pp},
+      twelve_pa, ${this.twelve_pa},
       thirteen_a,${this.thirteen_a},
       fourteen_p,${this.fourteen_p},
-      fourteen_pp,${this.fourteen_pp},
+      fourteen_p,${this.fourteen_pp},
       fourteen_a,${this.fourteen_a},
       fifteen_p,${this.fifteen_p},
-      fifteen_pp,${this.fifteen_pp},
+      fifteen_p,${this.fifteen_pp},
       fifteen_a,${this.fifteen_a},
+      fifteen_pa, ${this.fifteen_pa},
+      fourteen_pa, ${this.fourteen_pa}',
       sixteen_p,${this.sixteen_p},
       sixteen_a,${this.sixteen_a},
       seventeen_p,${this.seventeen_p},
       seventeen_a,${this.seventeen_a},
+      seventeen_pa, ${this.seventeen_pa},
+      seventeen_pp, ${this.seventeen_pp},
       unknown_regimen,${this.unknown_regimen},
       total_patients_with_side_effects,${this.total_patients_with_side_effects},
       total_patients_without_side_effects,${this.total_patients_without_side_effects},
@@ -1692,86 +1782,134 @@ export default {
       if(this.params[i].name == 'two_a')
         this.two_a = this.params[i].contents;
 
-      if(this.params[i].name == 'four_p')
-        this.four_p = this.params[i].contents;
-
-      if(this.params[i].name == 'four_a')
-        this.four_a = this.params[i].contents;
+      if(this.params[i].name == 'four_pa')
+        this.four_pa = this.params[i].contents;
+      
+      if(this.params[i].name == 'four_pp')
+        this.four_pp = this.params[i].contents;
 
       if(this.params[i].name == 'five_a')
         this.five_a = this.params[i].contents;
-
       if(this.params[i].name == 'six_a')
         this.six_a = this.params[i].contents;
-
       if(this.params[i].name == 'seven_a')
         this.seven_a = this.params[i].contents;
-
       if(this.params[i].name == 'eight_a')
         this.eight_a = this.params[i].contents;
-
       if(this.params[i].name == 'nine_p')
         this.nine_p = this.params[i].contents;
-
       if(this.params[i].name == 'nine_p_tabs')
         this.nine_p_tabs = this.params[i].contents;
-
       if(this.params[i].name == 'nine_p_granules')
         this.nine_p_granules = this.params[i].contents;
-
       if(this.params[i].name == 'nine_a')
         this.nine_a = this.params[i].contents;
+      
+      if(this.params[i].name == 'nine_pa')
+        this.nine_pa += parseInt(this.params[i].contents);
+
+      if(this.params[i].name == 'nine_pp')
+        this.nine_pp += parseInt(this.params[i].contents);
+      
+      if(this.params[i].name == 'nine_pa_tabs'){
+        this.nine_pa += parseInt(this.params[i].contents) 
+        this.nine_pa_tabs = this.params[i].contents;
+      }
+      if(this.params[i].name == 'nine_pp_granules'){
+        this.nine_pp += parseInt(this.params[i].contents)
+        this.nine_pp_granules = this.params[i].contents;
+      }
+      if(this.params[i].name == 'nine_pp_tabs'){
+        this.nine_pp += parseInt(this.params[i].contents)
+        this.nine_pp_tabs = this.params[i].contents;
+      }
+      if(this.params[i].name == 'nine_pa_granules'){
+        this.nine_pa += parseInt(this.params[i].contents)
+        this.nine_pa_granules = this.params[i].contents;
+      }
 
       if(this.params[i].name == 'ten_a')
         this.ten_a = this.params[i].contents;
 
       if(this.params[i].name == 'eleven_p')
         this.eleven_p = this.params[i].contents;
+      
+      if(this.params[i].name == 'eleven_pa')
+        this.eleven_pa = parseInt(this.params[i].contents);
 
+      // Needs review
+      if(this.params[i].name == 'eleven_pp')
+        this.eleven_pp += parseInt(this.params[i].contents);
+      
+      if(this.params[i].name == 'eleven_pp_granules'){
+        this.eleven_pp += parseInt(this.params[i].contents)
+        this.eleven_pp_granules = this.params[i].contents;
+      }
+      if(this.params[i].name == 'eleven_pp_tabs'){
+        this.eleven_pp += parseInt(this.params[i].contents)
+        this.eleven_pp_tabs = this.params[i].contents
+      }
+      if(this.params[i].name == 'eleven_pa_granules'){
+        this.eleven_pa += parseInt(this.params[i].contents)
+        this.eleven_pa_granules = this.params[i].contents
+      }
+      if(this.params[i].name == 'eleven_pa_tabs'){
+        this.eleven_pa += parseInt(this.params[i].contents)
+        this.eleven_pa_tabs = this.params[i].contents;
+      }
       if(this.params[i].name == 'eleven_p_tabs')
         this.eleven_p_tabs = this.params[i].contents;
-
+      
       if(this.params[i].name == 'eleven_p_granules')
         this.eleven_p_granules = this.params[i].contents;
-
       if(this.params[i].name == 'eleven_a')
         this.eleven_a = this.params[i].contents;
-
       if (this.params[i].name === 'twelve_a')
         this.twelve_a = this.params[i].contents;
 
+      if (this.params[i].name === 'twelve_pp')
+        this.twelve_pp = this.params[i].contents;
+
+      if (this.params[i].name === 'twelve_pa')
+        this.twelve_pa = this.params[i].contents;
+
       if(this.params[i].name == 'thirteen_a')
         this.thirteen_a = this.params[i].contents;
-
       if(this.params[i].name == 'fourteen_p')
         this.fourteen_p = this.params[i].contents;
-
       if(this.params[i].name == 'fourteen_pp')
         this.fourteen_pp = this.params[i].contents;
 
+      if(this.params[i].name == 'fourteen_pa')
+        this.fourteen_pa = this.params[i].contents;
+  
       if(this.params[i].name == 'fourteen_a')
         this.fourteen_a = this.params[i].contents;
-
       if(this.params[i].name == 'fifteen_p')
         this.fifteen_p = this.params[i].contents;
-
       if(this.params[i].name == 'fifteen_pp')
         this.fifteen_pp = this.params[i].contents;
-
       if(this.params[i].name == 'fifteen_a')
         this.fifteen_a = this.params[i].contents;
 
+      if(this.params[i].name == 'fifteen_pa')
+        this.fifteen_pa = this.params[i].contents;
+  
       if(this.params[i].name == 'sixteen_a')
         this.sixteen_a = this.params[i].contents;
-
       if(this.params[i].name == 'sixteen_p')
         this.sixteen_p = this.params[i].contents;
-
       if(this.params[i].name == 'seventeen_a')
         this.seventeen_a = this.params[i].contents;
-
       if(this.params[i].name == 'seventeen_p')
         this.seventeen_p = this.params[i].contents;
+
+      if(this.params[i].name == 'seventeen_pa')
+          this.seventeen_pa = this.params[i].contents;
+
+      if(this.params[i].name == 'seventeen_pp')
+          this.seventeen_pp = this.params[i].contents;
+
 
       if(this.params[i].name == 'unknown_regimen')
         this.unknown_regimen = this.params[i].contents;
