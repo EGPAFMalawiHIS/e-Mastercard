@@ -40,7 +40,8 @@ the difference in days between their clinical dispensation visit and next appoin
                     <tr>
                       <td>
                         Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
-                        Quarter: {{startDate}}-{{endDate}}
+                        Quarter: {{startDate}} to {{endDate}}
+                        Site UUID: {{siteUUID}}
                         e-Mastercard Version : {{EMCVersion}} 
                         API Version {{APIVersion}}
                       </td>
@@ -387,6 +388,7 @@ export default {
     });
   }, data: function() {
       return {
+        siteUUID: sessionStorage.siteUUID,
         report_title: 'TX CURR MMD ',
         reportData: null,
         dTable: null,

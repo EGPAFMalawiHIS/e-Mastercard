@@ -25,7 +25,8 @@
               <tr>
                 <td>
                   Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
-                  Quarter: {{startDate}}-{{endDate}}
+                  Quarter: {{startDate}} to {{endDate}}
+                  Site UUID: {{siteUUID}}
                   e-Mastercard Version : {{EMCVersion}} 
                   API Version {{APIVersion}}
                 </td>
@@ -175,6 +176,7 @@ export default {
     setTimeout(() => this.initDataTable(), 300);
   }, data: function() {
       return {
+        siteUUID: sessionStorage.siteUUID,
         report_title: 'Regimen switch report',
         reportData: null,
         dTable: null,

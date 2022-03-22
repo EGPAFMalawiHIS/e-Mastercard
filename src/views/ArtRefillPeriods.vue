@@ -266,6 +266,7 @@ export default {
       y += "\n";
       y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
                           Quarter: ${this.startDate} to ${this.endDate}
+                          Site UUID: ${sessionStorage.siteUUID}
                           e-Mastercard Version : ${sessionStorage.EMCVersion} 
                           API Version ${sessionStorage.APIVersion}`;
       for (let index = 0; index < 34; index++) {

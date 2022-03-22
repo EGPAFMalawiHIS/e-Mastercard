@@ -77,8 +77,9 @@
               <tr>
                 <td>
                   Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
-                  Quarter: {{startDate}}-{{endDate}}
+                  Quarter: {{startDate}} to {{endDate}}
                   e-Mastercard Version : {{EMCVersion}} 
+                  Site UUID: {{siteUUID}}
                   API Version {{APIVersion}}
                 </td>
               </tr>
@@ -253,6 +254,7 @@ export default {
   }, data: function() {
    
     return {
+        siteUUID: sessionStorage.siteUUID,
         reportData: null,
         dTable: null,
         formatedData: [],
