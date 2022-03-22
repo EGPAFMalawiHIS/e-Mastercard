@@ -35,7 +35,8 @@
                     <tfoot>
                       <tr>
                         <td>
-                          Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                          Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}}
+                          Quarter: {{startDate}}-{{endDate}}
                           e-Mastercard Version : {{EMCVersion}} 
                           API Version {{APIVersion}}
                         </td>

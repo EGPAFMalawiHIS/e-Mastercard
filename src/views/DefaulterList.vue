@@ -128,6 +128,8 @@ export default {
   methods: {
     fetchDates: async function (dates) {
       this.rows = [];
+      this.startDate = dates[0]
+      this.endDate = dates[1]
       this.report_title = this.report.name;
       const even = (element) => element === "Invalid date";
       if (dates.some(even)) {
@@ -175,6 +177,7 @@ export default {
 
       y += "\n";
       y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
+                          Quarter: ${this.startDate}-${this.endDate}
                           e-Mastercard Version : ${sessionStorage.EMCVersion}
                           Site UUID: ${sessionStorage.siteUUID} 
                           API Version ${sessionStorage.APIVersion}`;
