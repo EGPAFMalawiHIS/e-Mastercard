@@ -13,6 +13,7 @@
                 <th scope="col">ARV number</th>
                 <th class="center-text" scope="col">Gender</th>
                 <th class="center-text" scope="col">DOB</th>
+                <th class="center-text" scope="col">Start Date</th>
                 <th class="center-text" scope="col">Weight (KG)</th>
                 <th class="center-text" scope="col">Regimen</th>
                 <th class="center-text" scope="col">ARVs</th>
@@ -140,6 +141,7 @@ export default {
         }catch(e) {
           birthdate = 'N/A';
         }
+        let start_date = moment(data.art_start_date).format('DD/MMM/YYYY');
         
         let current_reg = data.current_regimen;
         let current_weight = data.current_weight;
@@ -153,7 +155,7 @@ export default {
         }  
 
         this.formatedData.push( [data.arv_number,
-          data.gender, birthdate, current_weight, current_reg,
+          data.gender, birthdate, start_date, current_weight, current_reg,
           medications.join('<br />'), prescription_date ] );
       }
       this.dTable.api().destroy();
