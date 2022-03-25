@@ -150,7 +150,8 @@ export default {
       });
 
       y += "\n";
-      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
+      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")}
+                          Quarter: ${this.startDate} to ${this.endDate}
                           e-Mastercard Version : ${sessionStorage.EMCVersion} 
                           Site UUID: ${sessionStorage.siteUUID} 
                           API Version ${sessionStorage.APIVersion}`;

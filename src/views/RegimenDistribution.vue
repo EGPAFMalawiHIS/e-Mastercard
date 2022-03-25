@@ -24,6 +24,8 @@
               <tr>
                 <td>
                   Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
+                  Quarter: {{startDate}} to {{endDate}}
+                  Site UUID: {{siteUUID}}
                   e-Mastercard Version : {{EMCVersion}} 
                   API Version {{APIVersion}}
                 </td>
@@ -75,6 +77,8 @@ export default {
     "sdPicker": StartAndEndDatePicker
   },methods: {
     fetchDates: async function(dates) {
+      this.startDate = dates[0]
+      this.endDate = dates[1]
       this.report_title = 'Clinic '+ sessionStorage.location_name + " regimen dispensation report ";
       this.report_title += moment(dates[0]).format('DDMMMYYYY');
       this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
@@ -175,6 +179,9 @@ export default {
     // setTimeout(() => this.initDataTable(), 300);
   }, data: function() {
       return {
+        siteUUID: sessionStorage.siteUUID,
+        startDate: '',
+        endDate: '',
         report_title: 'Regimen distribution ',
         reportData: null,
         dTable: null,

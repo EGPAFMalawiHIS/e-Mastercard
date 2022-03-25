@@ -55,6 +55,8 @@ export default {
   name: "App",
   data: function () {
     return {
+      startDate: '',
+      endDate: '',
       reportData: null,
       dTable: null,
       formatedData: [],
@@ -128,6 +130,8 @@ export default {
   methods: {
     fetchDates: async function (dates) {
       this.rows = [];
+      this.startDate = dates[0]
+      this.endDate = dates[1]
       this.report_title = this.report.name;
       const even = (element) => element === "Invalid date";
       if (dates.some(even)) {
@@ -173,7 +177,8 @@ export default {
       });
 
       y += "\n";
-      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
+      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")}
+                          Quarter: ${this.startDate} to ${this.endDate}
                           e-Mastercard Version : ${sessionStorage.EMCVersion}
                           Site UUID: ${sessionStorage.siteUUID} 
                           API Version ${sessionStorage.APIVersion}`;

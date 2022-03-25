@@ -1579,7 +1579,8 @@ export default {
       newly_initiated_on_ipt,${this.newly_initiated_on_ipt},
       newly_initiated_on_3hp,${this.newly_initiated_on_3hp},
       `;
-      y += `Date Created: ${moment().format("YYYY-MM-DD:h:m:s")} 
+      y += `Date Created: ${moment().format("YYYY-MM-DD:h:m:s")}
+                          QuarterName: ${this.quarter}
                           e-Mastercard Version : ${sessionStorage.EMCVersion} 
                           Site UUID: ${sessionStorage.siteUUID}
                           API Version ${sessionStorage.APIVersion} UUID: ${sessionStorage.siteUUID}`;
