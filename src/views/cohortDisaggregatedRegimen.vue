@@ -58,15 +58,21 @@
                     <th class="disaggregated-numbers">17A</th>
                     <th class="disaggregated-numbers">0P</th>
                     <th class="disaggregated-numbers">2P</th>
-                    <th class="disaggregated-numbers">4P</th>
-                    <th class="disaggregated-numbers">9P</th>
-                    <th class="disaggregated-numbers">11P</th>
-                    <th class="disaggregated-numbers">14P</th>
+                    <th class="disaggregated-numbers">4PP</th>
+                    <th class="disaggregated-numbers">4PA</th>
+                    <th class="disaggregated-numbers">9PP</th>
+                    <th class="disaggregated-numbers">9PA</th>
+                    <th class="disaggregated-numbers">11PP</th>
+                    <th class="disaggregated-numbers">11PA</th>
+                    <th class="disaggregated-numbers">12PP</th>
+                    <th class="disaggregated-numbers">12PA</th>
                     <th class="disaggregated-numbers">14PP</th>
-                    <th class="disaggregated-numbers">15P</th>
+                    <th class="disaggregated-numbers">14PA</th>
                     <th class="disaggregated-numbers">15PP</th>
+                    <th class="disaggregated-numbers">15PA</th>
                     <th class="disaggregated-numbers">16P</th>
-                    <th class="disaggregated-numbers">17P</th>
+                    <th class="disaggregated-numbers">17PP</th>
+                    <th class="disaggregated-numbers">17PA</th>
                     <th class="disaggregated-numbers">Unknown</th>
                     <th class="disaggregated-numbers">Total (regimen)</th>
                   </tr>
@@ -167,15 +173,21 @@ const keyList = {
   "17A": [],
   "0P": [],
   "2P": [],
-  "4P": [],
-  "9P": [],
-  "11P": [],
-  "14P": [],
+  "4PP": [],
+  "4PA": [],
+  "9PP": [],
+  "9PA": [],
+  "11PP": [],
+  "11PA": [],
+  "12PA": [],
+  "12PP": [],
   "14PP": [],
-  "15P": [],
+  "14PA": [],
   "15PP": [],
+  "15PA": [],
   "16P": [],
-  "17P": [],
+  "17PP": [],
+  "17PA": [],
   "N/A": [],
 };
 
