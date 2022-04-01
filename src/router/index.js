@@ -247,6 +247,11 @@ const routes = [
     path: "/sc_arv",
     name: "SC ARV report",
     component: () => import("@/views/SCARVReport.vue")
+  },
+  {
+    path: "/cleaning_tools/verification",
+    name: "Data cleaning verification",
+    component: () => import("@/views/cleaning_tools/verification.vue")
   }
 ]
 
