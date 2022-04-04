@@ -102,6 +102,11 @@ export default {
           path: "/cleaning_tools/visit_stats",
           name: "Patient visit stats",
           icon_path: require("../assets/report-icons/line-chart.png")
+        },
+        {
+          path: "/cleaning_tools/verification",
+          name: "Data cleaning verification",
+          icon_path: require("../assets/report-icons/check-solid.svg")
         }
       ]
     };
