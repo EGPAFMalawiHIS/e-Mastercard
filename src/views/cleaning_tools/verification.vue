@@ -21,7 +21,7 @@
 		<input type="text" class="form-control" id="exampleInputPassword1" v-model="doneBy">
 		</div>
 		
-		<button type="submit" class="btn btn-primary" :disabled="!(doneBy !== '' && dateDone !== null)">Submit</button>
+		<button  class="btn btn-primary" :disabled="!(doneBy !== '' && dateDone !== null)" @click="saveVerification">Submit</button>
 		</div>
         </div>
       </div>
@@ -32,8 +32,7 @@
 <script>
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
-import siteName from "@/components/settings/siteName.vue";
-import "vue-select/dist/vue-select.css";
+import ApiClient from '../../services/api_client';
 export default {
   components: {
     "top-nav": TopNav,
@@ -46,7 +45,27 @@ export default {
 		dateDone: null
         }
     }, methods: {
-        
+       async saveVerification() {
+         const payload = {
+           "data_cleaning_datetime": this.dateDone,
+           "supervisors" : [this.doneBy]
+         }
+         const response = await ApiClient.post('/data_cleaning_confirmation', payload);
+          if (response.status === 201 || response.status === 200) {
+            let toast = this.$toasted.show("Successfully saved", { 
+                theme: "toasted-primary", 
+                position: "top-right", 
+                duration : 5000
+            });
+            console.log("Succesfully done");
+            // this.$router.go(0);
+            this.doneBy = "";
+            this.dateDone = null;
+            this.cleaningDone = false;
+          } else {
+            console.log("Failed to update");
+          }
+       } 
     }
 };
 </script>

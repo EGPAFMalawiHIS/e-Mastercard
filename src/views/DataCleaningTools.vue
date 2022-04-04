@@ -106,7 +106,7 @@ export default {
         {
           path: "/cleaning_tools/verification",
           name: "Data cleaning verification",
-          icon_path: require("../assets/report-icons/line-chart.png")
+          icon_path: require("../assets/report-icons/check-solid.svg")
         }
       ]
     };
