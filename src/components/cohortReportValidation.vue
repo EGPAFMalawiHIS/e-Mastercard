@@ -406,9 +406,10 @@ export default {
         if (this.dataparams[i].name == "two_a")
           this.two_a = parseInt(this.dataparams[i].contents);
 
-        if (this.dataparams[i].name == "four_p")
-          this.four_p = parseInt(this.dataparams[i].contents);
-
+        if (this.dataparams[i].name == "four_pp")
+          this.four_pp = parseInt(this.dataparams[i].contents);
+        if (this.dataparams[i].name == "four_pa")
+          this.four_pa = parseInt(this.dataparams[i].contents);
         if (this.dataparams[i].name == "four_a")
           this.four_a = parseInt(this.dataparams[i].contents);
 
@@ -424,11 +425,11 @@ export default {
         if (this.dataparams[i].name == "eight_a")
           this.eight_a = parseInt(this.dataparams[i].contents);
 
-        if (this.dataparams[i].name == "nine_p_tabs")
-          this.nine_p_tabs = parseInt(this.dataparams[i].contents);
+        if (this.dataparams[i].name == "nine_pp")
+          this.nine_pp = parseInt(this.dataparams[i].contents);
 
-        if (this.dataparams[i].name == "nine_p_granules")
-          this.nine_p_granules = parseInt(this.dataparams[i].contents);
+        if (this.dataparams[i].name == "nine_pa")
+          this.nine_pa = parseInt(this.dataparams[i].contents);
 
         if (this.dataparams[i].name == "nine_a")
           this.nine_a = parseInt(this.dataparams[i].contents);
@@ -436,11 +437,11 @@ export default {
         if (this.dataparams[i].name == "ten_a")
           this.ten_a = parseInt(this.dataparams[i].contents);
 
-        if (this.dataparams[i].name == "eleven_p_tabs")
-          this.eleven_p_tabs = parseInt(this.dataparams[i].contents);
+        if (this.dataparams[i].name == "eleven_pp")
+          this.eleven_pp = parseInt(this.dataparams[i].contents);
 
-        if (this.dataparams[i].name == "eleven_p_granules")
-          this.eleven_p_granules = parseInt(this.dataparams[i].contents);
+        if (this.dataparams[i].name == "eleven_pa")
+          this.eleven_pa = parseInt(this.dataparams[i].contents);
 
         if (this.dataparams[i].name == "eleven_a")
           this.eleven_a = parseInt(this.dataparams[i].contents);
@@ -452,8 +453,8 @@ export default {
         if (this.dataparams[i].name == "thirteen_a")
           this.thirteen_a = parseInt(this.dataparams[i].contents);
 
-        if (this.dataparams[i].name == "fourteen_p")
-          this.fourteen_p = parseInt(this.dataparams[i].contents);
+        if (this.dataparams[i].name == "fourteen_pa")
+          this.fourteen_pa = parseInt(this.dataparams[i].contents);
 
         if (this.dataparams[i].name == "fourteen_pp")
           this.fourteen_pp = parseInt(this.dataparams[i].contents);
@@ -461,8 +462,8 @@ export default {
         if (this.dataparams[i].name == "fourteen_a")
           this.fourteen_a = parseInt(this.dataparams[i].contents);
 
-        if (this.dataparams[i].name == "fifteen_p")
-          this.fifteen_p = parseInt(this.dataparams[i].contents);
+        if (this.dataparams[i].name == "fifteen_pa")
+          this.fifteen_pa = parseInt(this.dataparams[i].contents);
 
         if (this.dataparams[i].name == "fifteen_pp")
           this.fifteen_pp = parseInt(this.dataparams[i].contents);
@@ -470,15 +471,19 @@ export default {
         if (this.dataparams[i].name == "fifteen_a")
           this.fifteen_a = parseInt(this.dataparams[i].contents);
 
-        if (this.dataparams[i].name == "sixteen_p")
-          this.sixteen_p = parseInt(this.dataparams[i].contents);
+        if (this.dataparams[i].name == "sixteen_pp")
+          this.sixteen_pp = parseInt(this.dataparams[i].contents);
 
+        if (this.dataparams[i].name == "sixteen_pa")
+          this.sixteen_pa = parseInt(this.dataparams[i].contents);
         if (this.dataparams[i].name == "sixteen_a")
           this.sixteen_a = parseInt(this.dataparams[i].contents);
 
-        if (this.dataparams[i].name == "seventeen_p")
-          this.seventeen_p = parseInt(this.dataparams[i].contents);
+        if (this.dataparams[i].name == "seventeen_pp")
+          this.seventeen_pp = parseInt(this.dataparams[i].contents);
 
+        if (this.dataparams[i].name == "seventeen_pa")
+          this.seventeen_pa = parseInt(this.dataparams[i].contents);
         if (this.dataparams[i].name == "seventeen_a")
           this.seventeen_a = parseInt(this.dataparams[i].contents);
 
@@ -859,7 +864,6 @@ export default {
         this.seventeen_pa,
         this.unknown_regimen,
       ];
-
       if (!isEqualToSumOf(this.total_alive_and_on_art, regimens)) {
         this.report_consistency_string.push(
           "Section 64 - 80: Total alive and on ART is not equal to Regimens sections"

@@ -1875,8 +1875,8 @@ export default {
 
       if(this.params[i].name == 'thirteen_a')
         this.thirteen_a = this.params[i].contents;
-      if(this.params[i].name == 'fourteen_p')
-        this.fourteen_p = this.params[i].contents;
+      if(this.params[i].name == 'fourteen_pa')
+        this.fourteen_pa = this.params[i].contents;
       if(this.params[i].name == 'fourteen_pp')
         this.fourteen_pp = this.params[i].contents;
 
@@ -1885,8 +1885,8 @@ export default {
   
       if(this.params[i].name == 'fourteen_a')
         this.fourteen_a = this.params[i].contents;
-      if(this.params[i].name == 'fifteen_p')
-        this.fifteen_p = this.params[i].contents;
+      if(this.params[i].name == 'fifteen_pa')
+        this.fifteen_pa = this.params[i].contents;
       if(this.params[i].name == 'fifteen_pp')
         this.fifteen_pp = this.params[i].contents;
       if(this.params[i].name == 'fifteen_a')
