@@ -33,6 +33,15 @@
         <label for="3HP-quantity">3HP Quantity</label>
         <input type="number" class="form-control" id="IPT-quantity" v-model="threeHPquantity" />
     </b-col>
+    <b-col>
+
+    <label for="3HP-quantity">3HP (INH 300 +/ RFP 300)</label>
+      <input
+        type="number"
+        class="form-control"
+        v-model="threeHPtwo"
+      />
+    </b-col>
   </b-row>
 </template>
 
@@ -53,6 +62,7 @@ export default {
       CPTquantity: null,
       IPTquantity: null,
       threeHPquantity: null,
+      threeHPtwo: null,
       prescribeARVs: false,
       prescribeCPT: false,
       prescribeIPT: false,
@@ -139,7 +149,8 @@ export default {
           units: element.units,
           am: element.am,
           pm: element.pm,
-          quantity: this.ARVquantity
+          quantity: this.ARVquantity,
+            frequency: element.frequency
         });
       });
           consultationObs.prescribeARV= {
@@ -156,7 +167,8 @@ export default {
             units: element.units,
             am: element.am,
             pm: element.pm,
-            quantity: this.CPTquantity
+            quantity: this.CPTquantity,
+            frequency: element.frequency
           });
         });
         consultationObs.prescribeCPT= {
@@ -173,7 +185,8 @@ export default {
             units: element.units,
             am: element.am,
             pm: element.pm,
-            quantity: this.IPTquantity
+            quantity: this.IPTquantity,
+            frequency: element.frequency
           });
         });
         consultationObs.prescribeIPT= {
@@ -189,7 +202,8 @@ export default {
             units: element.units,
             am: element.am,
             pm: element.pm,
-            quantity: this.threeHPquantity
+            quantity: this.threeHPquantity,
+            frequency: element.frequency
           });
         });
         consultationObs.prescribeThreeHP= {
@@ -197,10 +211,27 @@ export default {
           value_coded : 9974
         }
       }
+      if(this.threeHPtwo) {
+        this.rifapepentineRegimens.forEach(element => {
+          this.selectedDrugs.push({
+            drug_name: element.drug_name,
+            drug_id: element.drug_id,
+            units: element.units,
+            am: element.am,
+            pm: element.pm,
+            quantity: this.threeHPtwo,
+            frequency: element.frequency
+          });
+        });
+        consultationObs.prescribeThreeHP= {
+          concept_id :1282,
+          value_coded : 10565
+        }
+      }
       for (let i = 0; i < this.selectedDrugs.length; i++) {
         let morning_tabs = parseFloat(this.selectedDrugs[i]["am"]);
         let evening_tabs = parseFloat(this.selectedDrugs[i]["pm"]);
-        let frequency = "ONCE A DAY (OD)";
+        let frequency = this.selectedDrugs[i]["frequency"];
         let equivalent_daily_dose = morning_tabs + evening_tabs;
         let instructions =
           this.selectedDrugs[i].drug_name +
@@ -220,7 +251,6 @@ export default {
         }
 
         if (morning_tabs > 0 && evening_tabs > 0) {
-          frequency = "TWICE A DAY (BD)";
           dose = (morning_tabs + evening_tabs) / 2;
         }
 
@@ -235,6 +265,7 @@ export default {
           units: this.selectedDrugs[i].units,
           qty: this.selectedDrugs[i].quantity
         };
+        console.log(drug_order);
         if(this.selectedDrugs[i].drug_name === "Cotrimoxazole (480mg tablet)") {
 
         }else {
