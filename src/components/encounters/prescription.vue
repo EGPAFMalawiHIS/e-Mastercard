@@ -72,6 +72,7 @@ export default {
       CPTRegimens: [], 
       IPTRegimens: [],
       rifapepentineRegimens: [],
+      rfpinhregimens:  [],
       onTb: false, 
       "Unknown Regimen": [{
         "drug_id": 1046,
@@ -118,6 +119,16 @@ export default {
         res => {
           res.json().then(ret => {
             this.rifapepentineRegimens = ret;
+          });
+        }
+      );
+    },
+    getThreeHPtwo: async function() {
+      let patientID = this.$route.params.id;
+      await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=INH / RFP`).then(
+        res => {
+          res.json().then(ret => {
+            this.rfpinhregimens = ret;
           });
         }
       );
@@ -212,7 +223,7 @@ export default {
         }
       }
       if(this.threeHPtwo) {
-        this.rifapepentineRegimens.forEach(element => {
+        this.rfpinhregimens.forEach(element => {
           this.selectedDrugs.push({
             drug_name: element.drug_name,
             drug_id: element.drug_id,
@@ -299,6 +310,7 @@ export default {
     this.getCPT();
     this.getIPT();
     this.getThreeHP();
+    this.getThreeHPtwo();
     EventBus.$on('set-weight', payload => {
       this.selectedRegimen = null;
       this.ARVquantity = null;
@@ -311,6 +323,7 @@ export default {
       this.getCPT();
       this.getIPT();
       this.getThreeHP();
+      this.getThreeHPtwo();
     });
     EventBus.$on('set-initial-weight', payload => {
       this.latestWeight = payload;
@@ -319,6 +332,7 @@ export default {
       this.getCPT();
       this.getIPT();
       this.getThreeHP();
+      this.getThreeHPtwo();
     });
  
     EventBus.$on('set-tb', payload => {
