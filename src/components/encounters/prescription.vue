@@ -1,48 +1,66 @@
 <template>
-  <b-row>
-    <b-col cols="6">
+  <div>
+    <b-row>
+      <b-col cols="6">
 
-    <div class="form-row" >
-      <div class="form-group col-md-6">
-        <label for="inputState">Regimen</label>
-        <select
-          id="inputState"
-          class="form-control"
-          v-model="selectedRegimen"
-        >
-          <option v-for="(regimen, index) in regimens" :key="index">{{index}}</option>
+      <div class="form-row" >
+        <div class="form-group col-md-6">
+          <label for="inputState">Regimen</label>
+          <select
+            id="inputState"
+            class="form-control"
+            v-model="selectedRegimen"
+          >
+            <option v-for="(regimen, index) in regimens" :key="index">{{index}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="ARV-quantity">Quantity</label>
+          <input type="number" class="form-control" id="ARV-quantity" v-model="ARVquantity" />
+        </div>
+      </div>
+      </b-col>
+      <b-col>
+          <label for="CPT-quantity">CPT Quantity</label>
+          <input type="number" class="form-control" id="CPT-quantity" v-model="CPTquantity" />
+      </b-col>
+      <b-col v-if="selected3HPOption != '3HP (RFP + INH)'">
+          <label for="IPT-quantity">IPT Quantity</label>
+          <input type="number" class="form-control" id="IPT-quantity" v-model="IPTquantity" />
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col class="col-md-6"> 
+        <label>3HP</label>
+        <select id="inputState" class="form-control" v-model="selected3HPOption"> 
+          <option></option>
+          <option>3HP (RFP + INH)</option>
+          <option>3HP (INH 300 / RFP 300)</option>
         </select>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="ARV-quantity">Quantity</label>
-        <input type="number" class="form-control" id="ARV-quantity" v-model="ARVquantity" />
-      </div>
-    </div>
-
-    </b-col>
-    
-    <b-col>
-        <label for="CPT-quantity">CPT Quantity</label>
-        <input type="number" class="form-control" id="CPT-quantity" v-model="CPTquantity" />
-    </b-col>
-    <b-col> 
-        <label for="IPT-quantity">IPT Quantity</label>
-        <input type="number" class="form-control" id="IPT-quantity" v-model="IPTquantity" />
-    </b-col>
-    <b-col> 
+      </b-col>
+      <b-col v-if="selected3HPOption === '3HP (RFP + INH)'">
+        <b-row> 
+          <b-col> 
+            <label for="3HP-quantity">INH Quantity</label>
+              <input
+                type="number"
+                class="form-control"
+                v-model="IPTquantity"
+              />
+          </b-col>
+          <b-col> 
+            <label>RFP Quantity</label>
+            <input type="number" class="form-control" id="IPT-quantity" v-model="RFPquantity" />
+          </b-col>
+        </b-row>
+      </b-col>
+      <b-col v-if="selected3HPOption === '3HP (INH 300 / RFP 300)'">
         <label for="3HP-quantity">3HP Quantity</label>
         <input type="number" class="form-control" id="IPT-quantity" v-model="threeHPquantity" />
-    </b-col>
-    <b-col>
-
-    <label for="3HP-quantity">3HP (INH 300 +/ RFP 300)</label>
-      <input
-        type="number"
-        class="form-control"
-        v-model="threeHPtwo"
-      />
-    </b-col>
-  </b-row>
+      </b-col>
+    </b-row>
+    <p/>
+  </div>
 </template>
 
 <script>
@@ -54,23 +72,26 @@ export default {
   data: function() {
     return {
       regimens: [],
+      selected3HPOption: '',
       selectedRegimen: null,
       selectedDrugs: [],
       drugOrder: [],
       nextAppointment: null,
+      RFPquantity: null,
       ARVquantity: null,
       CPTquantity: null,
       IPTquantity: null,
       threeHPquantity: null,
-      threeHPtwo: null,
       prescribeARVs: false,
       prescribeCPT: false,
       prescribeIPT: false,
       prescribeThreeHP: false,
       weight: null,
       latestWeight: null,
+      RFPRegimens: [],
       CPTRegimens: [], 
       IPTRegimens: [],
+      RFPplusINHRegimens: [],
       rifapepentineRegimens: [],
       rfpinhregimens:  [],
       onTb: false, 
@@ -85,7 +106,6 @@ export default {
   },
   methods: {
     getRegimens: async function(val) {
-      let patientID = this.$route.params.id;
       await ApiClient.get(`/programs/1/regimens?weight=${this.weight}&tb_dosage=${this.onTb}`).then(
         res => {
           res.json().then(ret => {
@@ -96,7 +116,6 @@ export default {
       );
     },
     getCPT: async function() {
-      let patientID = this.$route.params.id;
       await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=Cotrimoxazole`).then(
         res => {
           res.json().then(ret => {
@@ -104,8 +123,17 @@ export default {
           });
         }
       );
-    },getIPT: async function() {
-      let patientID = this.$route.params.id;
+    },
+    getRFP: async function() {
+      await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=Rifapentine`).then(
+        res => {
+          res.json().then(ret => {
+            this.RFPRegimens = ret;
+          })
+        }
+      )
+    },
+    getIPT: async function() {
       await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=INH`).then(
         res => {
           res.json().then(ret => {
@@ -113,25 +141,16 @@ export default {
           });
         }
       );
-    },getThreeHP: async function() {
-      let patientID = this.$route.params.id;
-      await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=Rifapentine`).then(
-        res => {
-          res.json().then(ret => {
-            this.rifapepentineRegimens = ret;
-          });
-        }
-      );
     },
-    getThreeHPtwo: async function() {
-      let patientID = this.$route.params.id;
+    getThreeHp: async function() {
       await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=INH / RFP`).then(
         res => {
           res.json().then(ret => {
-            this.rfpinhregimens = ret;
-          });
+            console.log(ret)
+            this.RFPplusINHRegimens = ret;
+          })
         }
-      );
+      )
     },
     getAutoExpireDate: function() {
       if(this.ARVquantity && this.selectedRegimen) {
@@ -198,15 +217,34 @@ export default {
             pm: element.pm,
             quantity: this.IPTquantity,
             frequency: element.frequency
-          });
-        });
+          })
+        })
         consultationObs.prescribeIPT= {
           concept_id :1282,
           value_coded : 656
         }
       }
-      if(this.threeHPquantity) {
-        this.rifapepentineRegimens.forEach(element => {
+
+      if (this.RFPquantity && this.selected3HPOption === "3HP (RFP + INH)") {
+        this.RFPRegimens.forEach(element => {
+          this.selectedDrugs.push({
+            drug_name: element.drug_name,
+            drug_id: element.drug_id,
+            units: element.units,
+            am: element.am,
+            pm: element.pm,
+            quantity: this.RFPquantity,
+            frequency: element.frequency
+          });
+        });
+        consultationObs.prescribeRFP= {
+          concept_id :1282,
+          value_coded : 9974 //Rifapentine
+        }
+      }
+
+      if(this.threeHPquantity && this.selected3HPOption === "3HP (INH 300 / RFP 300)") {
+        this.RFPplusINHRegimens.forEach(element => {
           this.selectedDrugs.push({
             drug_name: element.drug_name,
             drug_id: element.drug_id,
@@ -219,26 +257,10 @@ export default {
         });
         consultationObs.prescribeThreeHP= {
           concept_id :1282,
-          value_coded : 9974
+          value_coded : 10565 //Isoniazid/Rifapentine
         }
       }
-      if(this.threeHPtwo) {
-        this.rfpinhregimens.forEach(element => {
-          this.selectedDrugs.push({
-            drug_name: element.drug_name,
-            drug_id: element.drug_id,
-            units: element.units,
-            am: element.am,
-            pm: element.pm,
-            quantity: this.threeHPtwo,
-            frequency: element.frequency
-          });
-        });
-        consultationObs.prescribeThreeHP= {
-          concept_id :1282,
-          value_coded : 10565
-        }
-      }
+
       for (let i = 0; i < this.selectedDrugs.length; i++) {
         let morning_tabs = parseFloat(this.selectedDrugs[i]["am"]);
         let evening_tabs = parseFloat(this.selectedDrugs[i]["pm"]);
@@ -276,7 +298,6 @@ export default {
           units: this.selectedDrugs[i].units,
           qty: this.selectedDrugs[i].quantity
         };
-        console.log(drug_order);
         if(this.selectedDrugs[i].drug_name === "Cotrimoxazole (480mg tablet)") {
 
         }else {
@@ -303,14 +324,13 @@ export default {
     
   },
   mounted() {
-    let currentWeight = null;
     this.latestWeight = this.$store.state.currentWeight;
     this.weight = this.latestWeight;
     this.getRegimens();
     this.getCPT();
     this.getIPT();
-    this.getThreeHP();
-    this.getThreeHPtwo();
+    this.getRFP();
+    this.getThreeHp()
     EventBus.$on('set-weight', payload => {
       this.selectedRegimen = null;
       this.ARVquantity = null;
@@ -322,8 +342,8 @@ export default {
       this.getRegimens();
       this.getCPT();
       this.getIPT();
-      this.getThreeHP();
-      this.getThreeHPtwo();
+      this.getRFP();
+      this.getThreeHp();
     });
     EventBus.$on('set-initial-weight', payload => {
       this.latestWeight = payload;
@@ -331,23 +351,23 @@ export default {
       this.getRegimens();
       this.getCPT();
       this.getIPT();
-      this.getThreeHP();
-      this.getThreeHPtwo();
+      this.getRFP();
+      this.getThreeHp();
     });
  
     EventBus.$on('set-tb', payload => {
-          this.onTb = payload;
+      this.onTb = payload;
     });
   },
   watch: {
      ARVquantity: {
-     handler(val){
+     handler(){
         this.getAutoExpireDate();
      },
      deep: true
   },   
   selectedRegimen: {
-     handler(val){
+     handler(){
         this.getAutoExpireDate();
      },
      deep: true
