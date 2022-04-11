@@ -21,38 +21,26 @@
       </div>
       </b-col>
       <b-col>
-          <label for="CPT-quantity">CPT Quantity</label>
-          <input type="number" class="form-control" id="CPT-quantity" v-model="CPTquantity" />
+        <label for="CPT-quantity">CPT Quantity</label>
+        <input type="number" class="form-control" id="CPT-quantity" v-model="CPTquantity" />
       </b-col>
-      <b-col v-if="selected3HPOption != '3HP (RFP + INH)'">
-          <label for="IPT-quantity">IPT Quantity</label>
-          <input type="number" class="form-control" id="IPT-quantity" v-model="IPTquantity" />
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col class="col-md-6"> 
-        <label>3HP</label>
+      <b-col> 
+        <label>TB Meds</label>
         <select id="inputState" class="form-control" v-model="selected3HPOption"> 
-          <option></option>
+          <option>6H</option>
           <option>3HP (RFP + INH)</option>
           <option>3HP (INH 300 / RFP 300)</option>
         </select>
       </b-col>
-      <b-col v-if="selected3HPOption === '3HP (RFP + INH)'">
-        <b-row> 
-          <b-col> 
-            <label for="3HP-quantity">INH Quantity</label>
-              <input
-                type="number"
-                class="form-control"
-                v-model="IPTquantity"
-              />
-          </b-col>
-          <b-col> 
-            <label>RFP Quantity</label>
-            <input type="number" class="form-control" id="IPT-quantity" v-model="RFPquantity" />
-          </b-col>
-        </b-row>
+    </b-row>
+    <b-row> 
+      <b-col v-if="['6H', '3HP (RFP + INH)'].includes(selected3HPOption)">
+        <label for="IPT-quantity">IPT Quantity</label>
+        <input type="number" class="form-control" id="IPT-quantity" v-model="IPTquantity" />
+      </b-col>
+      <b-col v-if="selected3HPOption === '3HP (RFP + INH)'"> 
+        <label>RFP Quantity</label>
+        <input type="number" class="form-control" id="IPT-quantity" v-model="RFPquantity" />
       </b-col>
       <b-col v-if="selected3HPOption === '3HP (INH 300 / RFP 300)'">
         <label for="3HP-quantity">3HP Quantity</label>
