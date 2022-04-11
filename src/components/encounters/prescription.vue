@@ -178,25 +178,30 @@ export default {
       }
 
       if(this.CPTquantity) {
-        this.CPTRegimens.forEach(element => {
-          this.selectedDrugs.push({
-            drug_name: element.drug_name,
-            drug_id: element.drug_id,
-            units: element.units,
-            am: element.am,
-            pm: element.pm,
-            quantity: this.CPTquantity,
-            frequency: element.frequency
+        this.CPTRegimens.filter(c => c.frequency === 'Daily (QOD)')
+          .forEach(element => {
+            this.selectedDrugs.push({
+              drug_name: element.drug_name,
+              drug_id: element.drug_id,
+              units: element.units,
+              am: element.am,
+              pm: element.pm,
+              quantity: this.CPTquantity,
+              frequency: element.frequency
+            });
           });
-        });
-        consultationObs.prescribeCPT= {
-          concept_id : 1282,
-          value_coded : 916
+          consultationObs.prescribeCPT= {
+            concept_id : 1282,
+            value_coded : 916
+          }
         }
-      }
 
       if(this.IPTquantity) {
-        this.IPTRegimens.forEach(element => {
+        this.IPTRegimens.filter(i =>  (i.frequency === 'Daily (QOD)' 
+          && this.selected3HPOption === '6H') 
+          || (this.selected3HPOption === '3HP (RFP + INH)' 
+          && i.frequency === 'Weekly (QW)'))
+        .forEach(element => {
           this.selectedDrugs.push({
             drug_name: element.drug_name,
             drug_id: element.drug_id,
@@ -214,7 +219,8 @@ export default {
       }
 
       if (this.RFPquantity && this.selected3HPOption === "3HP (RFP + INH)") {
-        this.RFPRegimens.forEach(element => {
+        this.RFPRegimens.filter(r => r.frequency === 'Weekly (QW)')
+        .forEach(element => {
           this.selectedDrugs.push({
             drug_name: element.drug_name,
             drug_id: element.drug_id,
@@ -232,7 +238,8 @@ export default {
       }
 
       if(this.threeHPquantity && this.selected3HPOption === "3HP (INH 300 / RFP 300)") {
-        this.RFPplusINHRegimens.forEach(element => {
+        this.RFPplusINHRegimens.filter(t => t.frequency === 'Weekly (QW)')
+        .forEach(element => {
           this.selectedDrugs.push({
             drug_name: element.drug_name,
             drug_id: element.drug_id,
