@@ -51,20 +51,18 @@
         </tr>
       </tbody>
     </table>
-    <b-modal id="visit-drugs" :title="`Drugs prescribed on ${moment(selectedVisit.visitDate).format('DD-MMM-YYYY')}`" size="xl">
+    <b-modal id="visit-drugs" :title="`Drugs dispensed on ${moment(selectedVisit.visitDate).format('DD/MMM/YYYY')}`" size="xl">
       <center v-if="isLoadingDrugs"> Please wait...</center>
       <table class="table" v-if="!isLoadingDrugs"> 
         <tr> 
           <th>Drug</th>
           <th>Quantity</th>
           <th>Units</th>
-          <th>Frequency</th>
         </tr>
         <tr v-for="(order, dIndex) in visitDrugs" :key="dIndex"> 
           <td> {{order.drug.name}} </td>
           <td> {{order.quantity}}</td>
           <td> {{order.units}}</td>
-          <td> {{order.frequency}}</td>
         </tr>
       </table>
     </b-modal>
