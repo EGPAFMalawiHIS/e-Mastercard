@@ -1,54 +1,74 @@
 <template>
-  <table class="table table-dark">
-    <thead>
-      <tr>
-        <th>Visit Date</th>
-        <th>Given To</th>
-        <th>Weight</th>
-        <th>Height</th>
-        <th>Preg</th>
-        <th>B/F</th>
-        <th>TB status</th>
-        <th>Side Effects</th>
-        <th>ART Regimen</th>
-        <th>Next Appointment</th>
-        <th>Outcome</th>
-        <th>Viral Load</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(visit, index) in patientVisits" :key="index">
-        <td>{{moment(visit.visitDate).format("DD-MMM-YYYY")}} ({{Math.round(moment(visit.visitDate).diff(moment(startDate), 'months', true))}}M)</td>
-        <td>{{visit.givenTo}}</td>
-        <td>{{visit.weight}}</td>
-        <td>{{visit.height}}</td>
-        <td>{{visit.pregnant}}</td>
-        <td>{{visit.breastfeeding}}</td>
-        <td>{{visit.tbStatus}}</td>
-        <td>{{visit.sideEffects}}</td>
-        <td>{{visit.ARTRegimen}} ({{visit.dispensed}})</td>
-        <td>{{visit.nextAppointment}}</td>
-        <td>{{visit.outcome}}</td>
-        <td>{{visit.viralLoad}}</td>
-        <td>
-          <click-confirm :disabled="visit.encounters.length === 0">
-          <button class="btn btn-danger" @click="deleteVisit(index, visit.encounters)" :disabled="visit.encounters.length === 0">
-            <template v-if="visit.state === 'deleting'">
-              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              <span class="sr-only">Loading...</span>
-            </template>
-
-            
-            <template v-else>
-              <span>X</span>
-            </template>
-          </button>
-          </click-confirm>
-        </td>
-      </tr>
-     
-    </tbody>
-  </table>
+  <div style="width:100%">
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th>Visit Date</th>
+          <th>Given To</th>
+          <th>Weight</th>
+          <th>Height</th>
+          <th>Preg</th>
+          <th>B/F</th>
+          <th>TB status</th>
+          <th>Side Effects</th>
+          <th>ART Regimen</th>
+          <th>Next Appointment</th>
+          <th>Outcome</th>
+          <th>Viral Load</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(visit, index) in patientVisits" :key="index">
+          <td>{{moment(visit.visitDate).format("DD-MMM-YYYY")}} ({{Math.round(moment(visit.visitDate).diff(moment(startDate), 'months', true))}}M)</td>
+          <td>{{visit.givenTo}}</td>
+          <td>{{visit.weight}}</td>
+          <td>{{visit.height}}</td>
+          <td>{{visit.pregnant}}</td>
+          <td>{{visit.breastfeeding}}</td>
+          <td>{{visit.tbStatus}}</td>
+          <td>{{visit.sideEffects}}</td>
+          <td>
+            <button style="width:100%" class="btn btn-primary" @click="loadVisitDrugs(visit)"> 
+              {{visit.ARTRegimen}} ({{visit.dispensed}})
+            </button>
+          </td>
+          <td>{{visit.nextAppointment}}</td>
+          <td>{{visit.outcome}}</td>
+          <td>{{visit.viralLoad}}</td>
+          <td>
+            <click-confirm :disabled="visit.encounters.length === 0">
+            <button class="btn btn-danger" @click="deleteVisit(index, visit.encounters)" :disabled="visit.encounters.length === 0">
+              <template v-if="visit.state === 'deleting'">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span class="sr-only">Loading...</span>
+              </template>
+              <template v-else>
+                <span>X</span>
+              </template>
+            </button>
+            </click-confirm>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <b-modal id="visit-drugs" :title="`Drugs prescribed on ${moment(selectedVisit.visitDate).format('DD-MMM-YYYY')}`" size="xl">
+      <center v-if="isLoadingDrugs"> Please wait...</center>
+      <table class="table" v-if="!isLoadingDrugs"> 
+        <tr> 
+          <th>Drug</th>
+          <th>Quantity</th>
+          <th>Units</th>
+          <th>Frequency</th>
+        </tr>
+        <tr v-for="(order, dIndex) in visitDrugs" :key="dIndex"> 
+          <td> {{order.drug.name}} </td>
+          <td> {{order.quantity}}</td>
+          <td> {{order.units}}</td>
+          <td> {{order.frequency}}</td>
+        </tr>
+      </table>
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -58,8 +78,11 @@ import moment from "moment";
 export default {
   data: function() {
     return {
+      isLoadingDrugs: false,
+      selectedVisit: '',
       patientVisits: [],
       startDate: null,
+      visitDrugs: [],
       mockOBJ: {
         visitDate: null,
         givenTo: null,
@@ -136,6 +159,19 @@ export default {
           });
         }
       );
+    },
+    loadVisitDrugs(visit) {
+      this.isLoadingDrugs = true
+      this.selectedVisit = visit
+      this.$bvModal.show('visit-drugs')
+      ApiClient.get(`/drug_orders?patient_id=${this.$route.params.id}&program_id=1&start_date=${this.selectedVisit.visitDate}`)
+        .then(res => res.json().then(ret => {
+          this.isLoadingDrugs = false
+          this.visitDrugs = ret
+        })).catch((e) => {
+          alert(e)
+          this.isLoadingDrugs = false
+        })
     },
     deleteVisit: function(index, encounters) {
       let itemsProcessed = encounters.length;
