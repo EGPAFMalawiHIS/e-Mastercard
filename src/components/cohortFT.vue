@@ -975,7 +975,7 @@
               <a href="#" @click="drillDown('seventeen_pp');" id="seventeen_pp">{{seventeen_pp}}</a>
             </div>
             <div class="granules-cell">
-              <a href="#" @click="drillDown('seventeen_pa');" id="seventeen_pa">{{seventeen_p}}</a>
+              <a href="#" @click="drillDown('seventeen_pa');" id="seventeen_pa">{{seventeen_pa}}</a>
             </div>
           </div>
         </div>
