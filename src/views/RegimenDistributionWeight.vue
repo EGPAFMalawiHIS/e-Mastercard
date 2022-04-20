@@ -49,7 +49,7 @@
                 <th class="disaggregated-numbers">11PP</th>
                 <th class="disaggregated-numbers">11PA</th>
                 <th class="disaggregated-numbers">12PA</th>
-                <th class="disaggregated-numbers">12PA</th>
+                <th class="disaggregated-numbers">12PP</th>
                 <th class="disaggregated-numbers">14PA</th>
                 <th class="disaggregated-numbers">14PP</th>
                 <th class="disaggregated-numbers">15PA</th>
