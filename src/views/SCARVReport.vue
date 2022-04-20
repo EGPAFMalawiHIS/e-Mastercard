@@ -258,7 +258,7 @@ export default {
           sort: false,
         },
         {
-          label: "# of botles (units dispensed)",
+          label: "# of bottles (units dispensed)",
           name: "bottles",
           slot_name: "bottles",
         }
