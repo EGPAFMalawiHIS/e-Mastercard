@@ -108,7 +108,7 @@ export default {
       this.startDate = dates[0];
       this.endDate = dates[1];
       this.reportTitle =
-        "MoH " + sessionStorage.location_name + " TPT new initiation report ";
+        "PEPFAR " + sessionStorage.location_name + " SC ARV dispensation report ";
       this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
       this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
       this.reportLoading = true;
