@@ -1781,7 +1781,8 @@ export default {
 
       if(this.params[i].name == 'two_a')
         this.two_a = this.params[i].contents;
-
+      if(this.params[i].name == 'four_a')
+        this.four_a = this.params[i].contents;
       if(this.params[i].name == 'four_pa')
         this.four_pa = this.params[i].contents;
       
