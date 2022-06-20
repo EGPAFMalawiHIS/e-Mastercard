@@ -325,7 +325,6 @@ export default {
 
       let url = "screened_for_tb";
       url += "?date=" + moment().format("YYYY-MM-DD");
-      url += "&outcome_table=temp_pepfar_patient_outcomes";
       url += "&age_group=" + age_group;
       url += "&gender=" + gender;
       url += "&start_date=" + this.startDate;
@@ -359,7 +358,6 @@ export default {
       let el = this.givenIPT[0][0];
       let url = "clients_given_ipt";
       url += "?date=" + moment().format("YYYY-MM-DD");
-      url += "&outcome_table=temp_pepfar_patient_outcomes";
       url += "&age_group=" + age_group;
       url += "&gender=" + gender;
       url += "&start_date=" + this.startDate;
@@ -412,7 +410,6 @@ export default {
     getAllFemale: async function (age_group) {
       let url = "cohort_disaggregated";
       url += "?date=" + moment().format("YYYY-MM-DD");
-      url += "&outcome_table=temp_pepfar_patient_outcomes";
       url += "&age_group=" + age_group;
       url += "&start_date=" + this.startDate;
       url += "&end_date=" + this.endDate;
@@ -512,7 +509,6 @@ export default {
       url += "&end_date=" + this.endDate;
       url += "&gender=" + age_group;
       url += "&age_group=" + age_group;
-      url += "&outcome_table=temp_pepfar_patient_outcomes";
       url += "&program_id=1";
 
       const response = await ApiClient.get(url, {}, {});
