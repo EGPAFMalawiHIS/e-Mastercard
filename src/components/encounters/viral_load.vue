@@ -1,52 +1,86 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-md-4">
-        <div class="form-group">
-          <v-select :options="options" v-model="modifier" placeholder="modifier" :disabled="ldl"></v-select>
-        </div>
-      </div>
-      <div class="col-md-8">
-        <div class="form-inline">
-          <div class="form-group">
-            <label for>Viral Load</label>
-            <input
-              type="number"
-              step="any"
-              name
-              id
-              class="form-control"
-              placeholder
-              aria-describedby="helpId"
-              v-model="viralLoad"
-              :disabled="ldl"
-            />
-
-            <label for>Date</label>
-            <input
-              type="date"
-              name
-              id="date"
-              class="form-control"
-              placeholder
-              aria-describedby="helpId"
-              v-model="date"
-            />
-            <label >LDL</label>
-            <input
-              type="checkbox"
-              name
-              id="ldl"
-              class="form-control"
-              placeholder
-              aria-describedby="helpId"
-              v-model="ldl"
-            />
+      <div class="col-md-12">
+        <div class="form" id="form">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for>Date Ordered: </label>
+                <input
+                  type="date"
+                  name
+                  id="date"
+                  class="form-control"
+                  placeholder
+                  aria-describedby="helpId"
+                  v-model="orderDate"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for>Reason: </label>
+                <v-select :options="Object.keys(reasons)" v-model="reason" placeholder="reason"></v-select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for>Specimen: </label>
+                <v-select :options="Object.keys(specimens)" v-model="specimen" placeholder="specimen"></v-select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for>Result Date: </label>
+                <input
+                  type="date"
+                  name
+                  id="date"
+                  class="form-control"
+                  placeholder
+                  aria-describedby="helpId"
+                  v-model="resultDate"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5">
+              <div class="form-group">
+                <label for>Result Modifier: </label>
+                <v-select :options="modifiers" v-model="modifier" placeholder="modifier" :disabled="ldl"></v-select>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <label for>Value: </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder
+                  aria-describedby="helpId"
+                  v-model="viralLoad"
+                  :disabled="ldl"
+                />
+              </div>
+            </div>
+            <div class="col-md-2 mt-5">
+              <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="ldl" />
+                <label class="form-check-label" for="exampleCheck1">LDL</label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <br />
-      <button type="submit" class="btn btn-primary" @click="saveEncounter">Save</button>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <button type="submit" form="form" class="btn btn-primary btn-lg" @click="saveEncounter">Save</button>
+      </div>
     </div>
   </div>
 </template>
@@ -63,18 +97,25 @@ export default {
   },
   data: function() {
     return {
-      patient: {
-        value_coded: null,
-        concept_id: 1805
+      modifiers: ["=", ">", "<", "=>", "=<"],
+      reasons: {
+        'Routine': 432, 
+        'Targeted': 3280, 
+        'Confirmatory': 1345, 
+        'Stat': 6368, 
+        'Repeat / Missing': 9144
       },
-      guardian: {
-        value_coded: null,
-        concept_id: 2122
+      specimens: {
+        'Blood': 8612, 
+        'DBS (Free drop to DBS card)': 10095, 
+        'DBS (Using capillary tube)': 10096
       },
-      options: ["=", ">", "<", "=>", "=<"],
       modifier: null,
       viralLoad: null,
-      date: null,
+      resultDate: null,
+      orderDate: null,
+      specimen: null,
+      reason: null,
       ldl: false,
     };
   },
@@ -84,10 +125,10 @@ export default {
       let encounterObject = {
         order_type_id: 4,
         concept_id: 856,
-        start_date: this.date,
+        start_date: this.resultDate,
         observation: {
           concept_id: 856,
-          obs_datetime: this.date,
+          obs_datetime: this.resultDate,
           value_numeric: (this.ldl === true? 1 : this.viralLoad),
           value_text: (this.ldl === true? "=" : this.modifier)
         }
@@ -95,13 +136,18 @@ export default {
       let order= {
         order_type_id: 4,
         concept_id: 856,
-        start_date: this.date,
+        start_date: this.orderDate,
         patient_id: personId, 
+        reason_for_test_id: this.reasons[this.reason],
+        date: this.orderDate,
+        specimen: {
+          concept_id: this.specimens[this.specimen]
+        }
       }
       const encounter = await EncounterService.createEncounter(
         personId,
        13,
-       this.date 
+       this.resultDate 
       );
       if (encounter.status === 201 || encounter.status === 200) {
         let encounterID = encounter.encounter_id;
@@ -121,17 +167,17 @@ export default {
             } else {
               this.success = false;
               this.fail = true;
-              this.postResponse = "Appointment could not be set.";
+              this.postResponse = "Viral load  could not be set.";
             }
         } else {
           this.success = false;
           this.fail = true;
-          this.postResponse = "Appointment could not be set.";
+          this.postResponse = "Viral load  could not be set.";
         }
       } else {
         this.success = false;
         this.fail = true;
-        this.postResponse = "Appointment could not be set.";
+        this.postResponse = "Viral load  could not be set.";
       }
       console.log(encounterObject);
       // this.$emit("addEncounter", encounterObject);
@@ -139,6 +185,3 @@ export default {
   }
 };
 </script>
-
-<style>
-</style>
