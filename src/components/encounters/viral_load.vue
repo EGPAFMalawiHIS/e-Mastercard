@@ -48,13 +48,13 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-6">
               <div class="form-group">
                 <label for>Result Modifier: </label>
                 <v-select :options="modifiers" v-model="modifier" placeholder="modifier" :disabled="ldl"></v-select>
               </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-6">
               <div class="form-group">
                 <label for>Value: </label>
                 <input
@@ -67,7 +67,9 @@
                 />
               </div>
             </div>
-            <div class="col-md-2 mt-5">
+          </div>
+          <div class="row">
+            <div class="col-md-12 my-2">
               <div class="form-group form-check">
                 <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="ldl" />
                 <label class="form-check-label" for="exampleCheck1">LDL</label>
@@ -97,6 +99,8 @@ export default {
   },
   data: function() {
     return {
+      location: sessionStorage.location || "",
+      user: sessionStorage.username || "",
       modifiers: ["=", ">", "<", "=>", "=<"],
       reasons: {
         'Routine': 432, 
@@ -120,68 +124,69 @@ export default {
     };
   },
   methods: {
+    createLabOrder: async function(personId) {
+      const encounter = await EncounterService.createEncounter(personId, 13, this.orderDate);
+      if (encounter.status === 200 || encounter.status === 201) {
+        const response = await ApiClient.post("/lab/orders", {
+          encounter_id: encounter.encounter_id,
+          orders: [{
+            encounter_id: encounter.encounter_id,
+            tests: [{ concept_id: 856 }],
+            reason_for_test_id: this.reasons[this.reason],
+            target_lab: this.location,
+            requesting_clinician: this.user,
+            date: this.orderDate,
+            specimen: {
+              concept_id: this.specimens[this.specimen]
+            }
+          }]
+        });
+        if (response.status === 200 || response.status === 201) {
+          const order = await response.json();
+          return order[0].tests[0].id;
+        }
+      }
+      return -1;
+    },
+    createLabResult: async function(personId, testID) {
+      const encounter = await EncounterService.createEncounter(personId, 57, this.resultDate);
+      if (encounter.status === 200 || encounter.status === 201) {
+        const response = await ApiClient.post(`lab/tests/${testID}/results`, {
+          encounter_id: encounter.encounter_id,
+          date: this.resultDate,
+          measures: [{
+            indicator: {
+              concept_id: 856,
+            },
+            value: this.ldl ? "LDL" : this.viralLoad,
+            value_modifier: this.ldl ? "=" : this.modifier,
+            value_type: this.ldl? "text" : "numeric"
+          }]
+        });
+        return response.status === 200 || response.status === 201;
+      }
+      return false;
+    },
     saveEncounter: async function() {
       const personId = this.$route.params.id;
-      let encounterObject = {
-        order_type_id: 4,
-        concept_id: 856,
-        start_date: this.resultDate,
-        observation: {
-          concept_id: 856,
-          obs_datetime: this.resultDate,
-          value_numeric: (this.ldl === true? 1 : this.viralLoad),
-          value_text: (this.ldl === true? "=" : this.modifier)
-        }
-      };
-      let order= {
-        order_type_id: 4,
-        concept_id: 856,
-        start_date: this.orderDate,
-        patient_id: personId, 
-        reason_for_test_id: this.reasons[this.reason],
-        date: this.orderDate,
-        specimen: {
-          concept_id: this.specimens[this.specimen]
+      const testID = await this.createLabOrder(personId);
+      if (testID > 0) {
+        if (await this.createLabResult(personId, testID)) {
+          this.posting = false;
+          EventBus.$emit("reload-visits", "");
+          this.$toasted.show("Viral Load Saved", { 
+            theme: "toasted-primary", 
+            position: "top-right", 
+            duration : 2000
+          });
+          this.$root.$emit('bv::hide::modal', 'viral-load-modal', '#btnShow')
+          return
         }
       }
-      const encounter = await EncounterService.createEncounter(
-        personId,
-       13,
-       this.resultDate 
-      );
-      if (encounter.status === 201 || encounter.status === 200) {
-        let encounterID = encounter.encounter_id;
-        order.encounter_id = encounterID;
-        const response = await ApiClient.post("orders", order);
-        if (response.status === 201 || response.status === 200) {
-            const obs = await ApiClient.post("observations", {encounter_id: encounterID, observations: [encounterObject.observation]});
-            if (obs.status === 201 || obs.status === 200) {
-              this.posting = false;
-                    EventBus.$emit("reload-visits", "");
-                    let toast = this.$toasted.show("Viral Load Saved", { 
-                    theme: "toasted-primary", 
-                    position: "top-right", 
-                    duration : 2000
-                });
-                this.$root.$emit('bv::hide::modal', 'viral-load-modal', '#btnShow')
-            } else {
-              this.success = false;
-              this.fail = true;
-              this.postResponse = "Viral load  could not be set.";
-            }
-        } else {
-          this.success = false;
-          this.fail = true;
-          this.postResponse = "Viral load  could not be set.";
-        }
-      } else {
-        this.success = false;
-        this.fail = true;
-        this.postResponse = "Viral load  could not be set.";
-      }
-      console.log(encounterObject);
-      // this.$emit("addEncounter", encounterObject);
-    } 
+      this.success = false;
+      this.fail = true;
+      this.postResponse = "Viral load  could not be set.";
+    },
   }
 };
 </script>
