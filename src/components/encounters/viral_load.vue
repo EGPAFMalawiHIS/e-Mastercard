@@ -1,5 +1,12 @@
 <template>
   <div>
+    <div class="row" v-if="errorMessage">
+      <div class="col-md-12">
+        <div class="alert alert-warning">
+          {{ errorMessage }}
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-md-12">
         <div class="form" id="form">
@@ -14,14 +21,20 @@
                   class="form-control"
                   placeholder
                   aria-describedby="helpId"
-                  v-model="orderDate"
+                  v-model="$v.form.orderDate.$model"
+                  :style="(!$v.form.orderDate.required || !$v.form.orderDate.isValidDate) && $v.form.orderDate.$dirty ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label for>Reason: </label>
-                <v-select :options="Object.keys(reasons)" v-model="reason" placeholder="reason"></v-select>
+                <v-select 
+                  :options="Object.keys(reasons)" 
+                  v-model="$v.form.reason.$model" 
+                  :style="!$v.form.reason.required && $v.form.reason.$dirty ? 'border: 1.5px solid red;' : ''"
+                  placeholder="select reason" 
+                />
               </div>
             </div>
           </div>
@@ -29,7 +42,12 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for>Specimen: </label>
-                <v-select :options="Object.keys(specimens)" v-model="specimen" placeholder="specimen"></v-select>
+                <v-select 
+                  :options="Object.keys(specimens)" 
+                  v-model="$v.form.specimen.$model"
+                  :style="!$v.form.specimen.required && $v.form.specimen.$dirty ? 'border: 1.5px solid red;' : ''"
+                  placeholder="specimen"
+                />
               </div>
             </div>
             <div class="col-md-6">
@@ -40,9 +58,9 @@
                   name
                   id="date"
                   class="form-control"
-                  placeholder
                   aria-describedby="helpId"
-                  v-model="resultDate"
+                  v-model="$v.form.resultDate.$model"
+                  :style="(!$v.form.resultDate.required || !$v.form.resultDate.isValidDate) && $v.form.resultDate.$dirty ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
             </div>
@@ -51,18 +69,25 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label for>Result Modifier: </label>
-                <v-select :options="modifiers" v-model="modifier" placeholder="modifier" :disabled="ldl"></v-select>
+                <v-select 
+                  :options="modifiers" 
+                  v-model="$v.form.modifier.$model"
+                  :style="!$v.form.modifier.required && $v.form.modifier.$dirty ? 'border: 1.5px solid red;' : ''" 
+                  placeholder="modifier" 
+                  :disabled="ldl"
+                ></v-select>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for>Value: </label>
+                <label for>Result Value: </label>
                 <input
                   type="number"
                   class="form-control"
                   placeholder
                   aria-describedby="helpId"
-                  v-model="viralLoad"
+                  v-model="$v.form.viralLoad.$model"
+                  :style="!$v.form.viralLoad.required && $v.form.viralLoad.$dirty ? 'border: 1.5px solid red;' : ''"
                   :disabled="ldl"
                 />
               </div>
@@ -93,9 +118,53 @@ import ApiClient from "../../services/api_client";
 import EncounterService from "../../services/encounter_service";
 import VueSelect from "vue-select";
 import EventBus from "../../services/event-bus.js";
+import {
+  required,
+  requiredIf,
+  between
+} from "vuelidate/lib/validators";
+import { validationMixin } from "vuelidate";
+import moment from "moment";
+
 export default {
   components: {
     "v-select": VueSelect
+  },
+  mixins: [validationMixin],
+  validations() {
+    return {
+      form: {
+        orderDate: {
+          required,
+          isValidDate(orderDate) {
+            const date = moment(orderDate);
+            return date.isValid() &&
+              date.isSameOrBefore(moment());
+          }
+        },
+        reason: {
+          required,
+        },
+        specimen: {
+          required,
+        },
+        resultDate: {
+          required,
+          isValidDate(resultDate) {
+            const date = moment(resultDate);
+            return date.isValid() &&
+              date.isSameOrAfter(moment(this.form.orderDate)) && 
+              date.isSameOrBefore(moment());
+          },
+        },
+        modifier: {
+          required: requiredIf(() => !this.ldl),
+        },
+        viralLoad: {
+          required: requiredIf(() => !this.ldl),
+        } 
+      }
+    };
   },
   data: function() {
     return {
@@ -114,30 +183,37 @@ export default {
         'DBS (Free drop to DBS card)': 10095, 
         'DBS (Using capillary tube)': 10096
       },
-      modifier: null,
-      viralLoad: null,
-      resultDate: null,
-      orderDate: null,
-      specimen: null,
-      reason: null,
+      form:{
+        modifier: null,
+        viralLoad: null,
+        resultDate: null,
+        orderDate: null,
+        specimen: null,
+        reason: null,
+      },
       ldl: false,
+      errorMessage: null,
     };
   },
   methods: {
+    validateForm: function() {
+      this.$v.$touch();
+      return !this.$v.$invalid;
+    },
     createLabOrder: async function(personId) {
-      const encounter = await EncounterService.createEncounter(personId, 13, this.orderDate);
+      const encounter = await EncounterService.createEncounter(personId, 13, this.form.orderDate);
       if (encounter.status === 200 || encounter.status === 201) {
         const response = await ApiClient.post("/lab/orders", {
           encounter_id: encounter.encounter_id,
           orders: [{
             encounter_id: encounter.encounter_id,
             tests: [{ concept_id: 856 }],
-            reason_for_test_id: this.reasons[this.reason],
+            reason_for_test_id: this.reasons[this.form.reason],
             target_lab: this.location,
             requesting_clinician: this.user,
-            date: this.orderDate,
+            date: this.form.orderDate,
             specimen: {
-              concept_id: this.specimens[this.specimen]
+              concept_id: this.specimens[this.form.specimen]
             }
           }]
         });
@@ -149,17 +225,17 @@ export default {
       return -1;
     },
     createLabResult: async function(personId, testID) {
-      const encounter = await EncounterService.createEncounter(personId, 57, this.resultDate);
+      const encounter = await EncounterService.createEncounter(personId, 57, this.form.resultDate);
       if (encounter.status === 200 || encounter.status === 201) {
         const response = await ApiClient.post(`lab/tests/${testID}/results`, {
           encounter_id: encounter.encounter_id,
-          date: this.resultDate,
+          date: this.form.resultDate,
           measures: [{
             indicator: {
               concept_id: 856,
             },
-            value: this.ldl ? "LDL" : this.viralLoad,
-            value_modifier: this.ldl ? "=" : this.modifier,
+            value: this.ldl ? "LDL" : parseInt(this.form.viralLoad),
+            value_modifier: this.ldl ? "=" : this.form.modifier,
             value_type: this.ldl? "text" : "numeric"
           }]
         });
@@ -168,6 +244,9 @@ export default {
       return false;
     },
     saveEncounter: async function() {
+      if(!this.validateForm()){
+        return this.errorMessage = "Complete all required fields";
+      }
       const personId = this.$route.params.id;
       const testID = await this.createLabOrder(personId);
       if (testID > 0) {
