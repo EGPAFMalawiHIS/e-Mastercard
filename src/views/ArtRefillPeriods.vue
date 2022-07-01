@@ -107,25 +107,23 @@ export default {
       let max_age;
       this.startDate = dates[0];
       this.endDate = dates[1];
-      this.reportTitle =
-        "PEPFAR " + sessionStorage.location_name + " TX CURR MMD report ";
+      this.reportTitle = "PEPFAR " + sessionStorage.location_name + " TX CURR MMD report ";
       this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
       this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
       this.reportLoading = true;
-      this.ageGroups.forEach((el, index) => {
+      for (let i = 0; i < this.ageGroups.length; i++) {
+        const el = this.ageGroups[i];
         let ages = this.setMinMaxAges(el);
+        const initializeTables = i == 0;
         min_age = ages[0];
         max_age = ages[1];
-        let url_path =
-          "arv_refill_periods?start_date=" +
-          dates[0] +
-          "&date=" +
-          moment().format("YYYY-MM-DD");
+        let url_path = "arv_refill_periods?start_date=" + dates[0] + "&date=" + moment().format("YYYY-MM-DD");
         url_path += "&end_date=" + dates[1] + "&program_id=1&org=pepfar";
         url_path += "&min_age=" + min_age;
         url_path += "&max_age=" + max_age;
-        this.loadData(url_path, index, el);
-      });
+        url_path += "&initialize_tables=" + initializeTables;
+        await this.loadData(url_path, i, el);
+      }
     },
     async loadData(url, ind, agp) {
       await ApiClient.get(url, {}, {}).then((res) => {
@@ -136,12 +134,6 @@ export default {
           }
         });
       });
-      // const response = await ApiClient.get(url, {}, {});
-      // if (response.status === 200) {
-      // console.log(ind);
-      //   response.json().then((data) => this.addRow(data, ind, agp));
-      // } else {
-      // }
     },
     setMinMaxAges(group) {
       const valueTokens = group.split(' ')
