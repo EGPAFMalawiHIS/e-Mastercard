@@ -75,7 +75,8 @@ export default {
     "top-nav": TopNav,
     "side-bar": Sidebar,
     "sdPicker": StartAndEndDatePicker
-  },methods: {
+  },
+  methods: {
     fetchDates: async function(dates) {
       this.startDate = dates[0]
       this.endDate = dates[1]
@@ -182,7 +183,7 @@ export default {
         siteUUID: sessionStorage.siteUUID,
         startDate: '',
         endDate: '',
-        report_title: 'Regimen distribution ',
+        report_title: 'Regimen Dispensation ',
         reportData: null,
         dTable: null,
         formatedData: [],
