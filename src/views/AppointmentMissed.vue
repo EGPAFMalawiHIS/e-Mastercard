@@ -17,7 +17,7 @@
                 <th class="center-text" scope="col">DOB</th>
                 <th class="center-text" scope="col">Date missed</th>
                 <th class="center-text" scope="col">Outcome</th>
-                <th class="center-text" scope="col">Contact <br />Deatils</th>
+                <th class="center-text" scope="col">Contact Details</th>
                 <th class="center-text" scope="col">&nbsp;</th>
               </tr>
             </thead>
