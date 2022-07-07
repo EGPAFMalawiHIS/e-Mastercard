@@ -116,14 +116,9 @@ export default {
       ],
     }
   },
-  computed: {
-    filename () {
-      return `${sessionStorage.location_name} ${this.config.card_title}`
-    }
-  },
   methods: {
     fetchDate: async function(date) {
-      this.config.card_title = "Clinic Appointments report " + moment(date).format('DD/MMM/YYYY');
+      this.config.card_title += moment(date).format('DD/MMM/YYYY');
       let url_path = '/programs/1/scheduled_appointments?date=' + date;
       url_path += '&paginate=false';
       const response = await ApiClient.get(url_path, {}, {});
@@ -141,7 +136,7 @@ export default {
       exportToCSV(
         this.columns,
         this.rows,
-        this.filename
+        this.config.card_title
       )
     }
   },

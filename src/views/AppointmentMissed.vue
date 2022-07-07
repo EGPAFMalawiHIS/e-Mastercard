@@ -54,6 +54,7 @@ import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import VueBootstrap4Table from "vue-bootstrap4-table";
+import { exportToCSV } from "../utils/exports";
 
 export default {
   name: "reports",
@@ -65,6 +66,8 @@ export default {
   },
   data: function() {
     return {
+      startDate: '',
+      endDate: '',
       showLoader: false,
       rows: [],
       columns: [
@@ -78,13 +81,13 @@ export default {
         {
           label: "First Name",
           name: "given_name",
-          exportabe: false,
+          exportable: false,
           sort: true,
         },
         {
           label: "Last Name",
           name: "family_name",
-          exportabe: false,
+          exportable: false,
           sort: true,
         },
         {
@@ -118,6 +121,7 @@ export default {
           label: "Actions",
           name: "person_id",
           slot_name: "patient_id",
+          exportable: false,
         },
       ],
       config: {
@@ -140,6 +144,8 @@ export default {
   methods: {
     fetchDates: async function(dates) {
       this.showLoader = true;
+      this.startDate = dates[0]
+      this.endDate = dates[1]
       this.config.card_title += " " + moment(dates[0]).format('DD/MMM/YYYY');
       this.config.card_title += " - " + moment(dates[1]).format('DD/MMM/YYYY');
       let url_path = "/missed_appointments?start_date=" + dates[0] + "&end_date=" + dates[1]
@@ -162,52 +168,11 @@ export default {
     redirect(id) {
       this.$router.push(`/patient/mastercard/${id}`);
     },
-    sanitizeStr(str){
-      // replace html tags with spaces
-      return str.replace(/<(?:.|\n)*?>/gm, ' ');
-    },
     onDownload() {
-      let y = null;
-      let cols = [...this.columns];
-      cols.pop();
-      // let cols = this.columns.pop();
-      cols.forEach((column) => {
-        if (column.exportabe !== false){
-          y += `"${column.label}",`;
-        }          
+      exportToCSV(this.columns, this.rows, this.config.card_title, {
+        startDate: this.startDate,
+        endDate: this.endDate,
       });
-      y = y.replace("null", "");
-      this.rows.forEach((row) => {
-        y += "\n";
-        cols.forEach((column) => {
-          if(column.exportabe !== false){
-            y += `"${this.sanitizeStr(row[column["name"]])}",`;
-          }
-        });
-      });
-
-      y += "\n";
-      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
-                          Quarter: ${this.startDate} to ${this.endDate}
-                          e-Mastercard Version : ${sessionStorage.EMCVersion}
-                          Site UUID: ${sessionStorage.siteUUID} 
-                          API Version ${sessionStorage.APIVersion}`;
-      for (let index = 0; index < 34; index++) {
-        y += ",";
-      }
-      var csvData = new Blob([y], { type: "text/csv;charset=utf-8;" });
-      //IE11 & Edge
-      if (navigator.msSaveBlob) {
-        navigator.msSaveBlob(csvData, exportFilename);
-      } else {
-        //In FF link must be added to DOM to be clicked
-        var link = document.createElement("a");
-        link.href = window.URL.createObjectURL(csvData);
-        link.setAttribute("download", `${sessionStorage.location_name} ${this.config.card_title}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
     },
   },
 }
