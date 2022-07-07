@@ -30,6 +30,9 @@
             :actions="actions"
             @on-download="onDownload"
           >
+            <template slot="sort-asc-icon">&#8593;</template>
+            <template slot="sort-desc-icon">&#8595;</template>
+            <template slot="no-sort-icon">&#8593;&#8595;</template>
           </vue-bootstrap4-table>
         </report-overlay>
 
