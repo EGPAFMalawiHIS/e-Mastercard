@@ -71,12 +71,13 @@ export default {
         {
           label: "First Name",
           name: "given_name",
-
+          exportabe: false,
           sort: true,
         },
         {
           label: "Last Name",
           name: "family_name",
+          exportabe: false,
           sort: true,
         },
         {
@@ -164,14 +165,18 @@ export default {
       let cols = [...this.columns];
       cols.pop();
       // let cols = this.columns.pop();
-      cols.forEach((element) => {
-        y += `"${element.label}",`;
+      cols.forEach((column) => {
+        if (column.exportabe !== false){
+          y += `"${column.label}",`;
+        }          
       });
       y = y.replace("null", "");
-      this.rows.forEach((element) => {
+      this.rows.forEach((row) => {
         y += "\n";
-        cols.forEach((el) => {
-          y += `"${element[el["name"]]}",`;
+        cols.forEach((column) => {
+          if(column.exportabe !== false){
+            y += `"${row[column["name"]]}",`;
+          }
         });
       });
 
