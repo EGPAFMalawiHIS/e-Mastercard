@@ -10,7 +10,7 @@ export function toCsvString(columns, rows, footer = {}) {
   str += "\n";
   str += rows.map((r) => columns
     .filter((c) => c.exportable !== false)
-    .map((c) => sanitize(r[c.name])) // remove html tags
+    .map((c) => sanitize(r[c.name]))
     .join(",")
   ).join("\n");
 
