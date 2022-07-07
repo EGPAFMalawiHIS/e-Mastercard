@@ -10,6 +10,8 @@ export function sanitize(str) {
       .replace(/\n/g, " ")
       .replace(/\t/g, " ")
       .replace(/\s{2,}/g, " ")
+      .replace(/=/g, " ")
+      .replace(/,/g, " ")
       .trim();
   } catch (error) {
     return str;
