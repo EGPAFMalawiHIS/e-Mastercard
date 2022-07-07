@@ -53,17 +53,15 @@ import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from "moment";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
+import { exportToCSV } from "../utils/exports";
 
 export default {
   name: "App",
   data: function () {
     return {
-      reportData: null,
-      dTable: null,
-      formatedData: [],
+      startDate: "",
+      endDate: "",
       showLoader: false,
-      report_title: null,
-      report: {},
       rows: [],
       columns: [
         {
@@ -74,13 +72,13 @@ export default {
         {
           label: "First Name",
           name: "given_name",
-          exportabe: false,
+          exportable: false,
           sort: true,
         },
         {
           label: "Last Name",
           name: "family_name",
-          exportabe: false,
+          exportable: false,
           sort: true,
         },
         {
@@ -110,10 +108,11 @@ export default {
           label: "Action",
           name: "person_id",
           slot_name: "patient_id",
+          exportable: false,
         },
       ],
       config: {
-        card_title: "MoH defaulter list",
+        card_title: "MoH Defaulter List Report",
         show_refresh_button: false,
         show_reset_button: false,
       },
@@ -134,18 +133,13 @@ export default {
       this.rows = [];
       this.startDate = dates[0]
       this.endDate = dates[1]
-      this.report_title = this.report.name;
       const even = (element) => element === "Invalid date";
       if (dates.some(even)) {
         console.log("Check your dates");
       } else {
-        this.report_title =
-          "MOH " + sessionStorage.location_name + " Defaulter list report";
-        this.report_title += moment(dates[0]).format("DDMMMYYYY");
-        this.report_title += " - " + moment(dates[1]).format("DDMMMYYYY");
         this.showLoader = true;
-        let url =
-          "/defaulter_list?start_date=" + dates[0] + "&date=" + dates[1];
+        this.config.card_title += " " + moment(dates[0]).format("DD/MMM/YYYY") + " - " + moment(dates[1]).format("DD/MMM/YYYY");
+        let url = "/defaulter_list?start_date=" + dates[0] + "&date=" + dates[1];
         url += "&end_date=" + dates[1] + "&program_id=1&pepfar=false";
         const response = await ApiClient.get(url, {}, {});
         if (response.status === 200) {
@@ -154,57 +148,18 @@ export default {
               this.rows = data;
             }
           });
-          this.showLoader = false;
-        } else {
-          this.showLoader = false;
-        }
+        } 
+        this.showLoader = false;
       }
     },
     redirect(id) {
       this.$router.push(`/patient/mastercard/${id}`);
     },
     onDownload() {
-      let y = null;
-      let cols = [...this.columns];
-      cols.pop();
-      // let cols = this.columns.pop();
-      cols.forEach((column) => {
-        if (column.exportabe !== false){
-          y += `"${column.label}",`;
-        }          
+      exportToCSV(this.columns, this.rows, this.config.card_title, {
+        startDate: this.startDate,
+        endDate: this.endDate,
       });
-      y = y.replace("null", "");
-      this.rows.forEach((row) => {
-        y += "\n";
-        cols.forEach((column) => {
-          if(column.exportabe !== false){
-            y += `"${row[column["name"]]}",`;
-          }
-        });
-      });
-
-      y += "\n";
-      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")} 
-                          Quarter: ${this.startDate} to ${this.endDate}
-                          e-Mastercard Version : ${sessionStorage.EMCVersion}
-                          Site UUID: ${sessionStorage.siteUUID} 
-                          API Version ${sessionStorage.APIVersion}`;
-      for (let index = 0; index < 34; index++) {
-        y += ",";
-      }
-      var csvData = new Blob([y], { type: "text/csv;charset=utf-8;" });
-      //IE11 & Edge
-      if (navigator.msSaveBlob) {
-        navigator.msSaveBlob(csvData, exportFilename);
-      } else {
-        //In FF link must be added to DOM to be clicked
-        var link = document.createElement("a");
-        link.href = window.URL.createObjectURL(csvData);
-        link.setAttribute("download", `${this.report_title}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
     },
   },
   components: {
