@@ -33,6 +33,9 @@
             <template slot="vl_result_date" slot-scope="props">
               {{ props.cell_value ? moment(props.cell_value).format("DD/MMM/YYYY") : ''}}
             </template>
+            <template slot="medication" slot-scope="props">
+              <i v-html="props.cell_value"></i>
+            </template>
           </vue-bootstrap4-table>
         </div>
         <!-- Page Content end -->
@@ -145,7 +148,7 @@ export default {
         response.json().then((data) => 
           this.rows = Object.values(data).map(d => ({
             ...d,
-            medication: d.medication.map(m => `${m.medication} (${m.quantity})`).join(", "),
+            medication: d.medication.map(m => `${m.medication} (${m.quantity})`).join("<br>"),
             dispensed_date: d.medication.length > 0 ? d.medication[0].start_date : '',
           }))
         );
