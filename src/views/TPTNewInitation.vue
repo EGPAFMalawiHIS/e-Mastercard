@@ -72,6 +72,7 @@ import VueBootstrap4Table from "vue-bootstrap4-table";
 
 import moment from "moment";
 import { mapState } from "vuex";
+import { exportToCSV } from "../utils/exports";
 export default {
   name: "txML",
   components: {
@@ -104,22 +105,15 @@ export default {
       });
     },
     async fetchDates(dates) {
-      // try {
-      // this.initRows();  
-      let group;
-      let min_age;
-      let max_age;
+      this.showLoader = true;
       this.startDate = dates[0];
       this.endDate = dates[1];
-      this.reportTitle =
-        "MoH " + sessionStorage.location_name + " TPT new initiation report ";
-      this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
-      this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
-      this.reportLoading = true;
+      this.config.card_title += " " + moment(dates[0]).format("DDMMMYYYY");
+      this.config.card_title += " - " + moment(dates[1]).format("DDMMMYYYY");
        let url_path = '/programs/1/reports/tpt_newly_initiated?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');
       url_path += "&end_date=" + this.endDate + "&program_id=1";
-      this.loadData(url_path);
-      
+      await this.loadData(url_path);
+      this.showLoader = false;
     },
     async loadData(url) {
       await ApiClient.get(url, {}, {}).then((res) => {
@@ -160,7 +154,6 @@ export default {
           }else if(gender === 'M') {
             num = index + 16 + idx ;
           }
-          console.log(num);
            this.rows.push(
              {
                number: num,
@@ -171,13 +164,11 @@ export default {
                threehpprev : data[element]["3HP_prev"][gender],
                sixhnew : data[element]["6H_new"][gender],
                sixhprev : data[element]["6H_prev"][gender],
-
              }
-             )
+            )
         }
         }); 
       })
-      this.reportLoading = false;
     },
     fetchDrillDown(clients) {
       if (clients.length > 0) {
@@ -241,57 +232,36 @@ export default {
       toPush.current_village = addressl1;
       return toPush;
     },
+    toExportableFormat(rows){
+      return rows.map(row => {
+        const obj = {}
+        for (const key in row) {
+          obj[key] = Array.isArray(row[key]) ? row[key].length : row[key]
+        }
+        return obj
+      })
+    },
     onDownload() {
-      let y = null;
-      this.columns.forEach((element) => {
-        y += `"${element.label}",`;
-      });
-      y = y.replace("null", "");
-      this.rows.forEach((element) => {
-        y += "\n";
-        Object.keys(element).forEach((innerElement) => {
-          let value = element[innerElement];
-          if (Array.isArray(element[innerElement])) {
-            value = element[innerElement].length;
-          }
-          y += `"${value}",`;
-        });
-      });
-
-      y += "\n";
-      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")}
-                          Quarter: ${this.startDate} to ${this.endDate}
-                          e-Mastercard Version : ${sessionStorage.EMCVersion} 
-                          Site UUID: ${sessionStorage.siteUUID} 
-                          API Version ${sessionStorage.APIVersion}`;
-      for (let index = 0; index < 34; index++) {
-        y += ",";
-      }
-      var csvData = new Blob([y], { type: "text/csv;charset=utf-8;" });
-      //IE11 & Edge
-      if (navigator.msSaveBlob) {
-        navigator.msSaveBlob(csvData, exportFilename);
-      } else {
-        //In FF link must be added to DOM to be clicked
-        var link = document.createElement("a");
-        link.href = window.URL.createObjectURL(csvData);
-        link.setAttribute("download", `${this.reportTitle}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+      exportToCSV(
+        this.columns,
+        this.toExportableFormat(this.rows),
+        this.config.card_title,
+        {
+          startDate: this.startDate,
+          endDate: this.endDate,
+        }
+      )
     },
   },
   data: function () {
     return {
+      showLoader: false,
       drillClients: [],
       perPage: 10,
       currentPage: 1,
       startDate: null,
       endDate: null,
       reportLoading: false,
-      APIVersion: sessionStorage.APIVersion,
-      EMCVersion: sessionStorage.EMCVersion,
       reportTitle: null,
       ageGroups: [
         '<1 year',
@@ -383,9 +353,6 @@ export default {
     rowCount() {
       return this.drillClients.length;
     },
-  },
-  mounted() {
-    // this.initRows();
   },
 };
 </script>
