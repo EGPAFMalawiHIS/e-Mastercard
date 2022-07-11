@@ -4,30 +4,36 @@
       <div id="page-content-wrapper">
          <top-nav />
         <!-- Page Content -->
-        <div id="main-container" class="col-12 table-col">
-          <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-           <datePicker :onSubmit="fetchDate"></datePicker>
-          <table class="table table-striped report" id="cohort-clients">
-            <thead>
-              <tr>
-                <th scope="col">ARV number</th>
-                <th scope="col">First name</th>
-                <th scope="col">Last name</th>
-                <th class="center-text" scope="col">Gender</th>
-                <th class="center-text" scope="col">DOB</th>
-                <th class="center-text" scope="col">&nbsp;</th>
-              </tr>
-            </thead>
-            <tfoot>
-              <tr>
-                <td>
-                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
-                  e-Mastercard Version : {{EMCVersion}} 
-                  API Version {{APIVersion}}
-                </td>
-              </tr>
-            </tfoot>
-          </table>
+        <div id="main-container" class="col-12 table-col"> 
+          <div class="row">
+            <div class="col-md-12">
+              <datePicker :onSubmit="fetchDate"></datePicker>
+            </div>
+          </div>
+          <vue-bootstrap4-table
+            :rows="rows"
+            :columns="columns"
+            :config="config"
+            :show-loader="showLoader"
+            :actions="actions"
+            @on-download="onDownload"
+          >
+            <template slot="sort-asc-icon">&#8593;</template>
+            <template slot="sort-desc-icon">&#8595;</template>
+            <template slot="no-sort-icon">&#8593;&#8595;</template>
+            <template slot="birthdate" slot-scope="props">
+              {{ moment(props.cell_value).format("DD/MMM/YYYY") }}
+            </template>
+            <template slot="patient_id" slot-scope="props">
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="redirect(props.cell_value)"
+              >
+                show
+              </button>
+            </template>
+          </vue-bootstrap4-table>
         </div>
         <!-- Page Content end -->
     </div>
@@ -35,135 +41,105 @@
 </template>
 
 <script>
-
-require("@/assets/datatable/css/bootstrap.css");
-require("@/assets/datatable/css/dataTables.bootstrap4.min.css");
-
-//require("@/assets/datatable/jquery-ui.css");
-require("@/assets/datatable/css/buttons.dataTables.min.css");
-require("@/assets/datatable/css/dataTables.jqueryui.min.css");
-
 import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
 import DatePicker from "@/components/DatePicker.vue";
-
-import jQuery from 'jquery';
-import datatable from 'datatables';
-
-
-
-require("@/assets/datatable/js/buttons.flash.min.js");
-require("@/assets/datatable/js/jszip.min.js");
-require("@/assets/datatable/js/pdfmake.min.js");
-require("@/assets/datatable/js/vfs_fonts.js");
-require("@/assets/datatable/js/buttons.html5.min.js");
-require("@/assets/datatable/js/buttons.print.min.js");
-
-
-
-
+import VueBootstrap4Table from "vue-bootstrap4-table";
+import { exportToCSV } from "../utils/exports";
 
 export default {
-  name: "reports",
+  name: "ClinicAppointments",
   components: {
     "top-nav": TopNav,
     "side-bar": Sidebar,
-    "datePicker": DatePicker
-  },methods: {
+    "datePicker": DatePicker,
+    VueBootstrap4Table,
+  },
+  data: function() {
+    return {
+      showLoader: false,
+      rows: [],
+      columns: [
+        {
+          label: "ARV Number",
+          name: "arv_number",
+          sort: true,
+          initial_sort: true,
+          initial_sort_order: "asc",
+        },
+        {
+          label: "First Name",
+          name: "given_name",
+          exportable: false,
+          sort: true,
+        },
+        {
+          label: "Last Name",
+          name: "family_name",
+          exportable: false,
+          sort: true,
+        },
+        {
+          label: "Gender",
+          name: "gender",
+          sort: true
+        },
+        {
+          label: "DOB",
+          name: "birthdate",
+          slot_name: "birthdate",
+          sort: true
+        },
+        {
+          label: "Actions",
+          name: "person_id",
+          slot_name: "patient_id",
+          exportable: false,
+        },
+      ],
+      config: {
+        card_title: "Clinic Appointments report",
+        show_refresh_button: false,
+        show_reset_button: false,
+      },
+      actions: [
+        {
+          btn_text: "CSV",
+          event_name: "on-download",
+          class: "btn btn-primary my-custom-class",
+          event_payload: {
+            msg: "my custom msg",
+          },
+        },
+      ],
+    }
+  },
+  methods: {
     fetchDate: async function(date) {
-      this.report_title = sessionStorage.location_name + "  Clients booked on " + moment(date).format('dddd, Do of MMM YYYY');
+      this.config.card_title += moment(date).format('DD/MMM/YYYY');
       let url_path = '/programs/1/scheduled_appointments?date=' + date;
       url_path += '&paginate=false';
       const response = await ApiClient.get(url_path, {}, {});
 
       if (response.status === 200) {
-        response.json().then((data) => this.checkResult(data) );
+        response.json().then((data) => this.rows = data);
       }else{
-        setTimeout(() => this.fetchData(), 5000);
+        setTimeout(() => this.fetchDate(date), 3000);
       }
     },
-    initDataTable(){
-      this.dTable = jQuery("#cohort-clients").dataTable({
-        order: [[ 0, "asc" ]],
-        fixedHeader: true,
-        data: this.formatedData,
-        dom: 'Bfrtip',
-        buttons: [
-          {
-            extend: 'copy',
-            title:  this.report_title
-          },
-          {
-            extend: 'csv',
-            title:  this.report_title,
-            footer: true
-
-          },
-          {
-            extend: 'pdf',
-            title:  this.report_title
-          },
-          {
-            extend: 'print',
-            title:  this.report_title
-          }
-        ],
-        columnDefs: [
-          {"className": "center-text", "targets": 3},
-          {"className": "center-text", "targets": 4}
-        ]
-      });
+    redirect(id) {
+      this.$router.push(`/patient/mastercard/${id}`);
     },
-    checkResult(data){
-      const url_string = window.location;
-      const parsedURL = new URL(url_string);
-      const resource_id = parsedURL.searchParams.get("resource_id");
-      this.reportData = data;
-      setTimeout(() => this.datatableEnable(data), 10);
-    },
-    datatableEnable(data){
-      this.formatedData = []; 
-      for(let i = 0; i < data.length; i++){
-        /*this.dTable.fnAddData( [data[i].arv_number,
-          data[i].given_name, data[i].family_name,
-          data[i].gender, data[i].birthdate] );*/
-        let birthdate;
-        try {
-          birthdate = moment(data[i].birthdate).format('DD/MMM/YYYY');
-        }catch(e) {
-          birthdate = 'N/A';
-        }
-        this.formatedData.push( [data[i].arv_number,
-          data[i].given_name, data[i].family_name,
-          data[i].gender, birthdate, this.createdShowBTN(data[i].person_id)] );
-      }
-      this.dTable.api().destroy();
-      this.initDataTable();
-    },
-    createdShowBTN(person_id){
-      var span = document.createElement('span');
-      var button  = document.createElement('button');
-      button.setAttribute("onclick", 'javascript:location="/patient/mastercard/' + person_id + '"');
-      button.innerHTML = "Show";
-      button.setAttribute('class','btn-warning show-btn');
-      span.appendChild(button);
-      return span.innerHTML;
+    onDownload(){
+      exportToCSV(
+        this.columns,
+        this.rows,
+        this.config.card_title
+      )
     }
   },
-  mounted() {
-    setTimeout(() => this.initDataTable(), 300);
-  }, data: function() {
-      return {
-        report_title: 'Clinic  appointments ',
-        reportData: null,
-        dTable: null,
-        formatedData: [],
-        APIVersion: sessionStorage.APIVersion,
-        EMCVersion: sessionStorage.EMCVersion,
-      }
-    }
 }
 
 </script>

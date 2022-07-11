@@ -45,7 +45,7 @@
               <div class="btn-container" @click="redirect('/regimen_distribution')">
                 <div class="card">
                   <img src="../assets/report-icons/regimen-give.png" class="btn-icon"/>
-                  <p>Regimen distribution</p>
+                  <p>Regimen dispensation</p>
                 </div>
               </div>
             </div>

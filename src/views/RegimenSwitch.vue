@@ -5,34 +5,36 @@
          <top-nav />
         <!-- Page Content -->
         <div id="main-container" class="col-12 table-col">
-          <span>{{report_title}}<button @click="$router.go(-1)" class="btn btn-primary">Back</button></span>  
-           <sdPicker :onSubmit="fetchDates"></sdPicker>
-          <table class="table table-striped report" id="cohort-clients">
-            <thead>
-              <tr>
-                <th scope="col">ARV#</th>
-                <th class="center-text" scope="col">Gender</th>
-                <th class="center-text" scope="col">DoB (Age in Years)</th>
-                <th class="center-text" scope="col">ART start date</th>
-                <th class="center-text" scope="col">Weight</th>
-                <th class="center-text" scope="col">Prev.Regimen</th>
-                <th class="center-text" scope="col">Curr.Regimen</th>
-                <th class="center-text" scope="col">ARVs</th>
-                <th class="center-text" scope="col">Dispensed date</th>
-              </tr>
-            </thead>
-            <tfoot>
-              <tr>
-                <td>
-                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
-                  Quarter: {{startDate}} to {{endDate}}
-                  Site UUID: {{siteUUID}}
-                  e-Mastercard Version : {{EMCVersion}} 
-                  API Version {{APIVersion}}
-                </td>
-              </tr>
-            </tfoot>
-          </table>
+          <div class="row">
+            <div class="col-md-12">
+              <sdPicker :onSubmit="fetchDates"></sdPicker>
+            </div>
+          </div>
+          <vue-bootstrap4-table
+            :rows="rows"
+            :columns="columns"
+            :config="config"
+            :show-loader="showLoader"
+            :actions="actions"
+            @on-download="onDownload"
+          >
+            <template slot="sort-asc-icon">&#8593;</template>
+            <template slot="sort-desc-icon">&#8595;</template>
+            <template slot="no-sort-icon">&#8593;&#8595;</template>
+            <template slot="birthdate" slot-scope="props">
+              {{ moment(props.cell_value).format("DD/MMM/YYYY") }} 
+              ({{moment().diff(props.cell_value, "years", false)}})
+            </template>
+            <template slot="art_start_date" slot-scope="props">
+              {{ moment(props.cell_value).format("DD/MMM/YYYY") }}
+            </template>
+            <template slot="dispensed_date" slot-scope="props">
+              {{ moment(props.cell_value).format("DD/MMM/YYYY") }}
+            </template>
+            <template slot="medication" slot-scope="props">
+              <i v-html="props.cell_value"></i>
+            </template>
+          </vue-bootstrap4-table>
         </div>
         <!-- Page Content end -->
     </div>
@@ -40,154 +42,124 @@
 </template>
 
 <script>
-
-require("@/assets/datatable/css/bootstrap.css");
-require("@/assets/datatable/css/dataTables.bootstrap4.min.css");
-
-//require("@/assets/datatable/jquery-ui.css");
-require("@/assets/datatable/css/buttons.dataTables.min.css");
-require("@/assets/datatable/css/dataTables.jqueryui.min.css");
-
 import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
 import moment from 'moment';
-import { mapState } from 'vuex';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
-
-import jQuery from 'jquery';
-import datatable from 'datatables';
-
-
-
-require("@/assets/datatable/js/buttons.flash.min.js");
-require("@/assets/datatable/js/jszip.min.js");
-require("@/assets/datatable/js/pdfmake.min.js");
-require("@/assets/datatable/js/vfs_fonts.js");
-require("@/assets/datatable/js/buttons.html5.min.js");
-require("@/assets/datatable/js/buttons.print.min.js");
-
-
-
-
+import VueBootstrap4Table from "vue-bootstrap4-table";
+import { exportToCSV } from "../utils/exports";
 
 export default {
   name: "reports",
   components: {
     "top-nav": TopNav,
     "side-bar": Sidebar,
-    "sdPicker": StartAndEndDatePicker
-  },methods: {
-    fetchDates: async function(dates) {
+    "sdPicker": StartAndEndDatePicker,
+    VueBootstrap4Table,
+  },
+  data: function() {
+    return {
+      startDate: '',
+      endDate: '',
+      showLoader: false,
+      rows: [],
+      columns: [
+        {
+          label: "ARV Number",
+          name: "arv_number",
+          sort: true,
+          initial_sort: true,
+          initial_sort_order: "asc",
+        },
+        {
+          label: "Gender",
+          name: "gender",
+        },
+        {
+          label: "DOB (Age in Years)",
+          name: "birthdate",
+          slot_name: "birthdate",
+          sort: true
+        },
+        {
+          label: "ART Start Date",
+          name: "art_start_date",
+          slot_name: "art_start_date",
+          sort: true
+        },
+        {
+          label: "Weight",
+          name: "current_weight",
+        },
+        {
+          label: "Prev Regimen",
+          name: "previous_regimen",
+        },
+        {
+          label: "Curr Regimen",
+          name: "current_regimen",
+        },
+        {
+          label: "ARVS",
+          name: "medication",
+          slot_name: "medication",
+        },
+        {
+          label: "Dispensed Date",
+          name: "dispensed_date",
+          sort: true,
+          slot_name: "dispensed_date",
+        }
+      ],
+      config: {
+        card_title: "Regimen Switch Clinic Report",
+        show_refresh_button: false,
+        show_reset_button: false,
+      },
+      actions: [
+        {
+          btn_text: "CSV",
+          event_name: "on-download",
+          class: "btn btn-primary my-custom-class",
+          event_payload: {
+            msg: "my custom msg",
+          },
+        },
+      ],
+    }
+  },
+  methods: {
+    async fetchDates (dates) {
+      this.showLoader = true;
       this.startDate = dates[0]
       this.endDate = dates[1]
-      this.report_title ="Clinc" + this.location.name + " Regimen switch report ";
-      this.report_title += moment(dates[0]).format('DDMMMYYYY');
-      this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
+      this.config.card_title += " " + moment(dates[0]).format('DD/MMM/YYYY');
+      this.config.card_title += " - " + moment(dates[1]).format('DD/MMM/YYYY');
       let url_path = '/regimen_switch?start_date=' + dates[0] + "&date=" + dates[1];
       url_path += "&end_date=" + dates[1] + "&program_id=1&pepfar=false"; 
       const response = await ApiClient.get(url_path, {}, {});
 
       if (response.status === 200) {
-        response.json().then((data) => this.checkResult(data) );
+        response.json().then((data) => 
+          this.rows = Object.values(data).map(d => ({
+            ...d,
+            medication: d.medication.map(m => `${m.medication} (${m.quantity})`).join("<br>"),
+            dispensed_date: d.medication.length > 0 ? d.medication[0].start_date : '',
+          }))
+        );
       }else{
-        setTimeout(() => this.fetchData(), 5000);
+        setTimeout(() => this.fetchDates(dates), 5000);
       }
+      this.showLoader = false;
     },
-    initDataTable(){
-      this.dTable = jQuery("#cohort-clients").dataTable({
-        order: [[ 0, "asc" ]],
-        fixedHeader: true,
-        data: this.formatedData,
-        dom: 'Bfrtip',
-        buttons: [
-          {
-            extend: 'copy',
-            title:  this.report_title
-          },
-          {
-            extend: 'csv',
-            title:  this.report_title,
-            footer: true
-          },
-          {
-            extend: 'pdf',
-            title:  this.report_title
-          },
-          {
-            extend: 'print',
-            title:  this.report_title
-          }
-        ],
-        columnDefs: [
-          {"className": "center-text", "targets": 1},
-          {"className": "center-text", "targets": 3},
-          {"className": "center-text", "targets": 4},
-          {"className": "center-text", "targets": 6}
-        ]
-      });
-    },
-    checkResult(data){
-      const url_string = window.location;
-      const parsedURL = new URL(url_string);
-      const resource_id = parsedURL.searchParams.get("resource_id");
-      this.reportData = data;
-      setTimeout(() => this.datatableEnable(data), 10);
-    },
-    datatableEnable(info){
-      this.formatedData = []; 
-      console.log(info);
-
-      for(let patient_id in info){
-        let data = info[patient_id];
-        const birthdate = data.birthdate ? `${data.birthdate} (${moment(new Date()).diff(data.birthdate, 'years')})`
-                                         : 'N/A';
-        const startDate = data.art_start_date ? moment(data.art_start_date).format('DD/MMM/YYYY') : '';
-    
-        let current_reg = data.current_regimen;
-        let medications = [];
-        let meds = data.medication;
-        let prescription_date;
-        let previous_reg = data.previous_regimen;
-        
-        for(let i = 0; i < meds.length; i++){
-            medications.push(meds[i].medication + " (" + meds[i].quantity + ")");
-            prescription_date = moment(meds[i].start_date).format('DD/MMM/YYYY');
-        }  
-
-        this.formatedData.push( [data.arv_number,
-          data.gender, birthdate, startDate, data.current_weight, previous_reg, current_reg,
-          medications.join('<br />'), prescription_date ] );
-      }
-      this.dTable.api().destroy();
-      this.initDataTable();
-    },
-    createdShowBTN(person_id){
-      var span = document.createElement('span');
-      var button  = document.createElement('button');
-      button.setAttribute("onclick", 'javascript:location="/patient/mastercard/' + person_id + '"');
-      button.innerHTML = "Show";
-      button.setAttribute('class','btn-warning show-btn');
-      span.appendChild(button);
-      return span.innerHTML;
+    onDownload() {
+      exportToCSV(this.columns, this.rows, this.config.card_title, {
+        startDate: this.startDate,
+        endDate: this.endDate
+      })
     }
   },
-  mounted() {
-    setTimeout(() => this.initDataTable(), 300);
-  }, data: function() {
-      return {
-        siteUUID: sessionStorage.siteUUID,
-        report_title: 'Regimen switch report',
-        reportData: null,
-        dTable: null,
-        formatedData: [],
-        APIVersion: sessionStorage.APIVersion,
-        EMCVersion: sessionStorage.EMCVersion,
-      }
-    },
-    computed: {
-      ...mapState(['location'])
-    }
 }
 
 </script>
