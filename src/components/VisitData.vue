@@ -297,6 +297,7 @@ export default {
           el.visit_by = el.visit_by.replace(/Unk/ig, '');
           element.givenTo = el.visit_by;
           tempob.givenTo = el.visit_by;
+          tempob.viralLoad = el.viral_load;
           if(el.pills_dispensed.length > 0) {
                 element.dispensed = el.pills_dispensed[0][1];            
                 tempob.dispensed = el.pills_dispensed[0][1];            
