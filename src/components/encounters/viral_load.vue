@@ -225,7 +225,7 @@ export default {
       return -1;
     },
     createLabResult: async function(personId, testID) {
-      const encounter = await EncounterService.createEncounter(personId, 57, this.form.orderDate);
+      const encounter = await EncounterService.createEncounter(personId, 57, this.form.resultDate);
       if (encounter.status === 200 || encounter.status === 201) {
         const response = await ApiClient.post(`lab/tests/${testID}/results`, {
           encounter_id: encounter.encounter_id,
