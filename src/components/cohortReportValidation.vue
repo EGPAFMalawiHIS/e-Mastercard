@@ -450,6 +450,12 @@ export default {
         if (this.dataparams[i].name == "twelve_a")
           this.twelve_a = parseInt(this.dataparams[i].contents);
 
+        if (this.dataparams[i].name == "twelve_pa")
+          this.twelve_pa = parseInt(this.dataparams[i].contents);
+
+        if (this.dataparams[i].name == "twelve_pp")
+          this.twelve_pp = parseInt(this.dataparams[i].contents);
+
         if (this.dataparams[i].name == "thirteen_a")
           this.thirteen_a = parseInt(this.dataparams[i].contents);
 
@@ -824,7 +830,6 @@ export default {
           (previous, current) => previous + current,
           0
         );
-
         return base === sum;
       }
 
