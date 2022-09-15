@@ -341,9 +341,9 @@
               >
                 <option disabled selected>Select Option</option>
                 <option
-                  v-for="(status, index) in Object.keys(TB_STATUS)"
+                  v-for="(status, index) in Object.keys(INITIAL_TB_STATUS)"
                   :key="index"
-                  :value="TB_STATUS[status]"
+                  :value="INITIAL_TB_STATUS[status]"
                 >{{status}}</option>
               </select>
             </div>
@@ -700,11 +700,11 @@ export default {
       sitePrefix: null,
       formIsValid: false,
       arvNumberAvailable: true,
-      TB_STATUS: {
-        "TB NOT suspected": 7454,
-        "TB suspected": 7455,
-        "Confirmed TB NOT on treatment": 7456,
-        "Confirmed TB on treatment": 7458
+      INITIAL_TB_STATUS: {
+        "Current": 10584,
+        "Last 2 years": 10585,
+        "More than 2 years": 10586,
+        "Never": 10587
       },
       options: [
         {
@@ -790,7 +790,7 @@ export default {
             value_datetime: null
           },
           initialTbStatus: {
-            concept_id: 7459,
+            concept_id: 10583,
             value_coded: null
           }
         }
