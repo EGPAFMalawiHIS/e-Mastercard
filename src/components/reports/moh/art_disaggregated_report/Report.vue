@@ -44,7 +44,7 @@
               <tr v-for="(item, index) in reportObjects" :key="index">
                 <th scope="row">{{index + 1}}</th>
                 <td v-if="item != undefined">{{item.age_group}}</td>
-                <td v-if="item != undefined">{{item.sex}}</td>
+                <td v-if="item != undefined">{{ formatGender(item.sex) }}</td>
                 <td v-if="item != undefined">{{item.tx_new}}</td>
                 <td v-if="item != undefined">{{item.tx_curr}}</td>
                 <td v-if="item != undefined">{{item.tx_screened_for_tb}}</td>
@@ -63,6 +63,7 @@ import ApiClient from "../../../../services/api_client";
 import moment from "moment";
 import DateItem from "../../DateItem.vue";
 import LoadingItem from "../../LoadingItem";
+import { formatGender } from "../../../../utils/str";
 
 // TODO: Replace all fetch calls with ApiClient.[get|post|delete]
 const Config = ApiClient.config.source;

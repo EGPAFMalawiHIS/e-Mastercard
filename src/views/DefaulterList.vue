@@ -27,6 +27,9 @@
               }})</b
             >
           </template>
+          <template slot="gender" slot-scope="{ cell_value }">
+            {{ formatGender(cell_value) }}
+          </template>
           <template slot="patient_id" slot-scope="props">
             <button
               type="button"
@@ -54,6 +57,7 @@ import Sidebar from "@/components/SideBar.vue";
 import moment from "moment";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import { exportToCSV } from "../utils/exports";
+import { formatGender } from "../utils/str";
 
 export default {
   name: "App",
@@ -84,6 +88,7 @@ export default {
         {
           label: "Gender",
           name: "gender",
+          slot_name: "gender",
           // sort: true
         },
         {

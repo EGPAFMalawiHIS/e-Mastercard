@@ -78,6 +78,7 @@ import VueBootstrap4Table from "vue-bootstrap4-table";
 
 import moment from "moment";
 import { mapState } from "vuex";
+import { formatGender } from "../utils/str";
 export default {
   name: "txML",
   components: {
@@ -176,7 +177,7 @@ export default {
       var toPush = {};
       toPush.dob = age;
       toPush.arv_number = identifier;
-      toPush.gender = gender;
+      toPush.gender = formatGender(gender);
       toPush.current_village = addressl1;
       return toPush;
     },
@@ -190,7 +191,6 @@ export default {
       let set_age_groups = this.ageGroups;
 
       for (let j = 0; j < report_gender.length; j++) {
-        let age_group_found = false;
         for (let i = 0; i < set_age_groups.length; i++) {
           let age_group = set_age_groups[i];
           if (data.hasOwnProperty(age_group)) {
@@ -202,7 +202,7 @@ export default {
                 this.rows.push({
                   number: counter++,
                   age_group: age_group,
-                  gender: sex,
+                  gender: formatGender(sex),
                   died: numbers[0],
                   iit_less_than_3_mo: numbers[1],
                   iit_3_to_5_mo: numbers[2],
@@ -214,7 +214,7 @@ export default {
                 this.rows.push({
                   number: counter++,
                   age_group: set_age_groups[i],
-                  gender: report_gender[j],
+                  gender: formatGender(report_gender[j]),
                   died: 0,
                   iit_less_than_3_mo: 0,
                   iit_3_to_5_mo: 0,
@@ -227,7 +227,7 @@ export default {
             this.rows.push({
               number: counter++,
               age_group: set_age_groups[i],
-              gender: report_gender[j],
+              gender: formatGender(report_gender[j]),
               died: 0,
               iit_less_than_3_mo: 0,
               iit_3_to_5_mo: 0,

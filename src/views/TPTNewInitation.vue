@@ -73,6 +73,7 @@ import VueBootstrap4Table from "vue-bootstrap4-table";
 import moment from "moment";
 import { mapState } from "vuex";
 import { exportToCSV } from "../utils/exports";
+import { formatGender } from "../utils/str";
 export default {
   name: "txML",
   components: {
@@ -91,11 +92,11 @@ export default {
       var client_sex = ["F", "M"];
       client_sex.forEach((element) => {
         this.ageGroups.forEach((el, index) => {
-          let num = element === "Female" ? index + 1 : index + 12 + 1;
+          let num = element === "F" ? index + 1 : index + 12 + 1;
           this.rows.push({
             number: num,
             age_group: el,
-            gender: element,
+            gender: formatGender(element),
             threehpnew: [],
             threehpprev: [],
             sixhnew: [],
@@ -159,7 +160,7 @@ export default {
                number: num,
                location: location,
                age_group: element,
-               gender : gender,
+               gender : formatGender(gender),
                threehpnew : data[element]["3HP_new"][gender],
                threehpprev : data[element]["3HP_prev"][gender],
                sixhnew : data[element]["6H_new"][gender],
@@ -228,7 +229,7 @@ export default {
       var toPush = {};
       toPush.dob = age;
       toPush.arv_number = identifier;
-      toPush.gender = gender;
+      toPush.gender = formatGender(gender);
       toPush.current_village = addressl1;
       return toPush;
     },

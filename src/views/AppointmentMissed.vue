@@ -55,6 +55,7 @@ import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import VueBootstrap4Table from "vue-bootstrap4-table";
 import { exportToCSV } from "../utils/exports";
+import { formatGender } from "../utils/str";
 
 export default {
   name: "reports",
@@ -156,6 +157,7 @@ export default {
         response.json().then((data) => {
           this.rows = data.map(p => ({
             ...p,
+            gender: formatGender(p.gender),
             contact_details: `Cell: ${p.cell_number}<br>
                               District: ${p.district}<br>
                               TA: ${p.ta}<br>

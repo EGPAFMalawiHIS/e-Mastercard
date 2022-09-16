@@ -26,7 +26,6 @@
             <span
               @click="fetchDrillDown(props.cell_value)"
               :class="props.cell_value.length > 0 ? 'drillable' : ''"
-              :key="slot"
               >{{
                 props.cell_value.length > 0 ? props.cell_value.length : 0
               }}</span
@@ -72,6 +71,7 @@ import VueBootstrap4Table from "vue-bootstrap4-table";
 
 import moment from "moment";
 import { mapState } from "vuex";
+import { formatGender } from "../utils/str";
 export default {
   name: "txML",
   components: {
@@ -137,22 +137,10 @@ export default {
       var age = results.person.birthdate;
       var gender = results.person.gender;
       var identifier = "";
-      var patient_name =
-        results.person.names[0].given_name +
-        " " +
-        results.person.names[0].family_name;
-
-      var arv_number = results.patient_identifiers.filter((el) => {
-        return el.identifier_type === 4 ? el.identifier : "";
-      });
       try {
         var addressl1 = results.person.addresses[0].city_village;
-        var addressl2 = results.person.addresses[0].address2;
-        var phone_number = results.person.person_attributes[1].value;
       } catch (e) {
         var addressl1 = "";
-        var addressl2 = "";
-        var phone_number = "";
       }
       try {
         for (
@@ -170,7 +158,7 @@ export default {
       var toPush = {};
       toPush.dob = age;
       toPush.arv_number = identifier;
-      toPush.gender = gender;
+      toPush.gender = formatGender(gender);
       toPush.current_village = addressl1;
       return toPush;
     },
@@ -198,7 +186,7 @@ export default {
                 this.rows.push({
                   number: counter++,
                   age_group: age_group,
-                  gender: sex,
+                  gender: formatGender(sex),
                   return_less_than_3_mo: s((months) => months < 3),
                   return_by_3_to_5_mo: s((months) => months >= 3 && months <= 5),
                   return_6_plus_mo: s((months) => months >= 6)
@@ -208,7 +196,7 @@ export default {
              this.rows.push({
               number: counter++,
               age_group: set_age_groups[i],
-              gender: report_gender[j],
+              gender: formatGender(report_gender[j]),
               return_less_than_3_mo: 0,
               return_by_3_to_5_mo: 0,
               return_6_plus_mo: 0  
@@ -218,7 +206,7 @@ export default {
             this.rows.push({
               number: counter++,
               age_group: set_age_groups[i],
-              gender: report_gender[j],
+              gender: formatGender(report_gender[j]),
               return_less_than_3_mo: 0,
               return_by_3_to_5_mo: 0,
               return_6_plus_mo: 0

@@ -72,6 +72,7 @@ import VueBootstrap4Table from "vue-bootstrap4-table";
 
 import moment from "moment";
 import { mapState } from "vuex";
+import { formatGender } from "../utils/str";
 export default {
   name: "txML",
   components: {
@@ -237,7 +238,7 @@ export default {
       var toPush = {};
       toPush.dob = age;
       toPush.arv_number = identifier;
-      toPush.gender = gender;
+      toPush.gender = formatGender(gender);
       toPush.current_village = addressl1;
       return toPush;
     },

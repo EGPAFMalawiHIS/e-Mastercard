@@ -44,7 +44,7 @@
               <tr v-for="(item, index) in refillReport" :key="index">
                 <th scope="row">{{index + 1}}</th>
                 <td>{{item.age_group}}</td>
-                <td>{{item.gender}}</td>
+                <td>{{ formatGender(item.gender) }}</td>
                 <td>{{item.three_less}}</td>
                 <td>{{item.three_five}}</td>
                 <td>{{item.six}}</td>
@@ -63,6 +63,7 @@ import ApiClient from "../../services/api_client";
 import moment from "moment";
 import DateItem from "./DateItem.vue";
 import LoadingItem from "./LoadingItem";
+import { formatGender } from "../../utils/str";
 
 // TODO: Replace all fetch calls with ApiClient.[get|post|delete]
 const Config = ApiClient.config.source;

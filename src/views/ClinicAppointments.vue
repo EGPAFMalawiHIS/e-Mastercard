@@ -24,6 +24,9 @@
             <template slot="birthdate" slot-scope="props">
               {{ moment(props.cell_value).format("DD/MMM/YYYY") }}
             </template>
+            <template slot="gender" slot-scope="{ cell_value }">
+              {{ formatGender(cell_value) }}
+            </template>
             <template slot="patient_id" slot-scope="props">
               <button
                 type="button"
@@ -48,6 +51,7 @@ import moment from 'moment';
 import DatePicker from "@/components/DatePicker.vue";
 import VueBootstrap4Table from "vue-bootstrap4-table";
 import { exportToCSV } from "../utils/exports";
+import { formatGender } from "../utils/str";
 
 export default {
   name: "ClinicAppointments",
@@ -84,6 +88,7 @@ export default {
         {
           label: "Gender",
           name: "gender",
+          slot_name: "gender",
           sort: true
         },
         {

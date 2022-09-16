@@ -69,6 +69,7 @@ import VueBootstrap4Table from "vue-bootstrap4-table";
 import TopNav from "@/components/topNav.vue";
 import moment from "moment";
 import { mapState } from "vuex";
+import { formatGender } from "../utils/str";
 export default {
   name: "VLCoverage",
   components: {
@@ -110,7 +111,7 @@ export default {
             data_arry.push({
               number: row_count++, 
               age_group: age_group,
-              gender: sex === 'F' ? 'Female' : 'Male',
+              gender: formatGender(sex),
               "tx_curr": this.filterClients(data[api_age_group]["tx_curr"], sex),
               "due_for_vl": this.filterClients(data[api_age_group]["due_for_vl"], sex),
               "drawn": this.filterClients([...data[api_age_group]["drawn"]["routine"],...data[api_age_group]["drawn"]["targeted"]], sex),

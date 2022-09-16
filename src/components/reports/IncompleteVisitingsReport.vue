@@ -35,7 +35,7 @@
                 <td>{{item.national_id}}</td>
                 <td>{{item.given_name}}</td>
                 <td>{{item.family_name}}</td>
-                <td>{{item.gender}}</td>
+                <td>{{ formatGender(item.gender) }}</td>
                 <td>{{item.birthdate}}</td>
                 <td>{{item.dates.join(", ")}}</td>
               </tr>
@@ -74,6 +74,7 @@ import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import jQuery from "jquery";
 import datatable from "datatables";
 import ReportOverlay from "./ReportOverlay";
+import { formatGender } from "../../utils/str";
 
 require("@/assets/datatable/js/buttons.flash.min.js");
 require("@/assets/datatable/js/jszip.min.js");

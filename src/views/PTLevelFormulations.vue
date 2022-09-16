@@ -48,8 +48,8 @@
             <tbody>
                 <tr v-for="(patient, index) in reportData" :key="index">
                     <td >{{patient.arv_number}}</td>
-                    <td class="center-text">{{patient.gender}}</td>
-                    <td class="center-text">{{patient.birthdate}}</td>
+                    <td class="center-text">{{ formatGender(patient.gender) }}</td>
+                    <td class="center-text">{{ moment(patient.birthdate).format("DD/MMM/YYYY") }}</td>
                     <td><b-button variant="primary" @click="$router.push(`/patient/mastercard/${patient.patient_id}`)">show</b-button></td>
                 </tr>
             </tbody>
@@ -86,6 +86,7 @@ import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
 import jQuery from 'jquery';
 import datatable from 'datatables';
+import { formatGender } from "../utils/str";
 
 
 

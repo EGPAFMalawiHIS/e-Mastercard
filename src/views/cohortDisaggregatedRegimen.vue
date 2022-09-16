@@ -85,7 +85,7 @@
                     >
                       <td>{{ ind + 1 === 2 ? 15 + index + 1 : index + 1 }}</td>
                       <td>{{ i }}</td>
-                      <td>{{ s }}</td>
+                      <td>{{ formatGender(s) }}</td>
                       <td v-for="(j, k) in Object.keys(patientData[i][s])" 
                         :key="k" @click="fetchDrillDown(s, i, j)"
                         :class="patientData[i][s][j].length > 0 ? 'drillable': ''">
@@ -149,6 +149,7 @@ import moment from "moment";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
 import ReportOverlay from "../components/reports/ReportOverlay";
+import { formatGender } from "../utils/str";
 
 const keyList = {
   tx_new: [],

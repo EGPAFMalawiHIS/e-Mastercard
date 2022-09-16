@@ -41,6 +41,7 @@ import moment from 'moment';
 
 import jQuery from 'jquery';
 import datatable from 'datatables';
+import { formatGender } from "../utils/str";
 
 
 
@@ -127,7 +128,7 @@ export default {
         
         this.formatedData.push( [data[i].arv_number,
           data[i].given_name, data[i].family_name,
-          data[i].gender, birthdate, data[i].outcome || 'N/A',
+          formatGender(data[i].gender), birthdate, data[i].outcome || 'N/A',
           this.createdShowBTN(data[i].person_id)] );
       }
       this.dTable.api().destroy();
