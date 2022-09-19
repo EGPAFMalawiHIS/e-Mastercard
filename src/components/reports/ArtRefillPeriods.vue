@@ -1,7 +1,6 @@
-
 <template>
   <div class="content">
-    <h4 style="font-weight:bold; float:left;">Patient ART refill periods report</h4>
+    <h4 style="font-weight: bold; float: left">Patient ART refill periods report</h4>
 
     <!-- DateItem Component -->
     <DateItem v-on:date-item="dateItem" />
@@ -10,8 +9,10 @@
     <div
       v-if="!BuildReport"
       class="no-content"
-      style="margin: auto; margin-top: 50px; font-size: 30px;"
-    >Select reporting period</div>
+      style="margin: auto; margin-top: 50px; font-size: 30px"
+    >
+      Select reporting period
+    </div>
     <div class="clearfix"></div>
 
     <!-- Loading Item Component -->
@@ -19,14 +20,17 @@
 
     <div
       v-if="reportBuildComplete == false && BuildReport"
-      style="margin-top:10px; font-size: 20px;"
-    >Generating report {{LoadingPercentage + "%"}} ...</div>
+      style="margin-top: 10px; font-size: 20px"
+    >
+      Generating report {{ LoadingPercentage + "%" }} ...
+    </div>
 
     <div v-if="reportBuildComplete" class="row">
       <div class="col-md-12">
-        <h5
-          style="margin: auto"
-        >Report period between: {{moment(this.endDate ).format("LL")}} - {{moment(this.endDate).format("LL")}}</h5>
+        <h5 style="margin: auto">
+          Report period between: {{ moment(this.endDate).format("LL") }} -
+          {{ moment(this.endDate).format("LL") }}
+        </h5>
         <div class="col-12 table-col">
           <table class="table table-striped report">
             <thead>
@@ -42,13 +46,13 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) in refillReport" :key="index">
-                <th scope="row">{{index + 1}}</th>
-                <td>{{item.age_group}}</td>
+                <th scope="row">{{ index + 1 }}</th>
+                <td>{{ item.age_group }}</td>
                 <td>{{ formatGender(item.gender) }}</td>
-                <td>{{item.three_less}}</td>
-                <td>{{item.three_five}}</td>
-                <td>{{item.six}}</td>
-                <td>{{item.six_greater}}</td>
+                <td>{{ item.three_less }}</td>
+                <td>{{ item.three_five }}</td>
+                <td>{{ item.six }}</td>
+                <td>{{ item.six_greater }}</td>
               </tr>
             </tbody>
           </table>
@@ -72,7 +76,7 @@ export default {
   name: "PepfarReport",
   components: {
     DateItem,
-    LoadingItem
+    LoadingItem,
   },
   data() {
     return {
@@ -90,84 +94,87 @@ export default {
       Date: new Date(),
       config: {
         api_base_url: `${Config.apiProtocol}://${Config.apiURL}:${Config.apiPort}/api/${ApiClient.config.apiVersion}`,
-        token: sessionStorage.apiKey
+        token: sessionStorage.apiKey,
       },
 
       AGE_GROUPS: [
         {
           group: "<1 year",
           min: 0,
-          max: 0
+          max: 0,
         },
         {
           group: "1-4 years",
           min: 1,
-          max: 4
+          max: 4,
         },
         {
           group: "5-9 years",
           min: 5,
-          max: 9
+          max: 9,
         },
         {
           group: "10-14 years",
           min: 10,
-          max: 14
+          max: 14,
         },
         {
           group: "15-19 years",
           min: 15,
-          max: 19
+          max: 19,
         },
         {
           group: "20-24 years",
           min: 20,
-          max: 24
+          max: 24,
         },
         {
           group: "25-29 years",
           min: 25,
-          max: 29
+          max: 29,
         },
         {
           group: "30-34 years",
           min: 30,
-          max: 34
+          max: 34,
         },
         {
           group: "35-39 years",
           min: 35,
-          max: 39
+          max: 39,
         },
         {
           group: "40-44 years",
           min: 40,
-          max: 44
+          max: 44,
         },
         {
           group: "45-49 years",
           min: 45,
-          max: 49
+          max: 49,
         },
         {
           group: "50 plus years",
           min: 50,
-          max: 1000
+          max: 1000,
         },
         {
           group: "Unknown",
           min: "Unknown",
-          max: "Unknown"
-        }
+          max: "Unknown",
+        },
       ],
       Index: 0,
       LoadingPercentage: 0,
       BuildReport: false,
       RebuildReport: false,
-      refillReport: []
+      refillReport: [],
     };
   },
   methods: {
+    formatGender(g) {
+      return formatGender(g);
+    },
     dateItem(item) {
       this.startDate = item.start_date;
       this.endDate = item.end_date;
@@ -185,24 +192,26 @@ export default {
     },
 
     getThreeMonthsLess(filters = {}) {
-      return this.reportObjects.filter(data => {
+      return this.reportObjects.filter((data) => {
         let dob = new Date(data.birthdate);
         return (
           data.gender == filters.initial &&
           ((this.calucateAge(dob) >= filters.age_group.min &&
-          this.calucateAge(dob) <= filters.age_group.max) || data.birthdate == filters.age_group.min) &&
+            this.calucateAge(dob) <= filters.age_group.max) ||
+            data.birthdate == filters.age_group.min) &&
           data.prescribed_months < 3
         );
       }).length;
     },
 
     getThreeFiveMonths(filters = {}) {
-      return this.reportObjects.filter(data => {
+      return this.reportObjects.filter((data) => {
         let dob = new Date(data.birthdate);
         return (
           data.gender == filters.initial &&
           ((this.calucateAge(dob) >= filters.age_group.min &&
-          this.calucateAge(dob) <= filters.age_group.max) || data.birthdate == filters.age_group.min) &&
+            this.calucateAge(dob) <= filters.age_group.max) ||
+            data.birthdate == filters.age_group.min) &&
           data.prescribed_months >= 3 &&
           data.prescribed_months <= 5
         );
@@ -210,24 +219,26 @@ export default {
     },
 
     getSixMonths(filters = {}) {
-      return this.reportObjects.filter(data => {
+      return this.reportObjects.filter((data) => {
         let dob = new Date(data.birthdate);
         return (
           data.gender == filters.initial &&
           ((this.calucateAge(dob) >= filters.age_group.min &&
-          this.calucateAge(dob) <= filters.age_group.max) || data.birthdate == filters.age_group.min) &&
+            this.calucateAge(dob) <= filters.age_group.max) ||
+            data.birthdate == filters.age_group.min) &&
           data.prescribed_months == 6
         );
       }).length;
     },
 
     getSixMonthsAbove(filters = {}) {
-      return this.reportObjects.filter(data => {
+      return this.reportObjects.filter((data) => {
         let dob = new Date(data.birthdate);
         return (
           data.gender == filters.initial &&
           ((this.calucateAge(dob) >= filters.age_group.min &&
-          this.calucateAge(dob) <= filters.age_group.max) || data.birthdate == filters.age_group.min) &&
+            this.calucateAge(dob) <= filters.age_group.max) ||
+            data.birthdate == filters.age_group.min) &&
           data.prescribed_months > 6
         );
       }).length;
@@ -240,18 +251,16 @@ export default {
         three_five: this.getThreeFiveMonths(filters),
         six: this.getSixMonths(filters),
         six_greater: this.getSixMonthsAbove(filters),
-        gender: filters.gender
+        gender: filters.gender,
       };
     },
 
     buildReportData(data) {
-      this.LoadingPercentage = Math.floor(
-        (this.Index / this.AGE_GROUPS.length) * 100
-      );
+      this.LoadingPercentage = Math.floor((this.Index / this.AGE_GROUPS.length) * 100);
 
       console.log(data);
 
-      Object.values(data).map(data => {
+      Object.values(data).map((data) => {
         this.reportObjects.push(data);
       });
 
@@ -259,31 +268,29 @@ export default {
       if (this.Index < this.AGE_GROUPS.length) {
         this.fetchReportData(this.AGE_GROUPS[this.Index]);
       } else {
-
-        const females = this.AGE_GROUPS.map(data => {
+        const females = this.AGE_GROUPS.map((data) => {
           let filter = {
             age_group: data,
             gender: "Female",
-            initial: "F"
+            initial: "F",
           };
 
           return this.getTreatmentPeriods(filter);
         });
 
-        const males = this.AGE_GROUPS.map(data => {
+        const males = this.AGE_GROUPS.map((data) => {
           let filter = {
             age_group: data,
             gender: "Male",
-            initial: "M"
+            initial: "M",
           };
 
           return this.getTreatmentPeriods(filter);
         });
 
-        this.refillReport = [ ...females, ...males ]
+        this.refillReport = [...females, ...males];
 
-        this.reportBuildComplete = true
-
+        this.reportBuildComplete = true;
       }
     },
 
@@ -298,17 +305,17 @@ export default {
         method: "GET",
         headers: {
           Authorization: this.config.token,
-          "Content-type": "application/json"
-        }
+          "Content-type": "application/json",
+        },
       })
-        .then(response => {
+        .then((response) => {
           if (response.status === 200) {
-            return response.json().then(data => {
+            return response.json().then((data) => {
               this.buildReportData(data);
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log("Something went wrong!", err);
         });
     },
@@ -319,9 +326,7 @@ export default {
       if (this.startDate != null && this.endDate != null) {
         this.startDate = moment(this.startDate).format("YYYY-MM-DD");
         this.endDate = moment(this.endDate).format("YYYY-MM-DD");
-        this.startDate > this.endDate
-          ? (this.validateDate = false)
-          : this.dateError;
+        this.startDate > this.endDate ? (this.validateDate = false) : this.dateError;
 
         if (this.validateDate) {
           this.RebuildReport = true;
@@ -332,13 +337,13 @@ export default {
           this.fetchReportData(this.AGE_GROUPS[0]);
         }
       }
-    }
+    },
   },
   updated() {
     if (this.LoadingPercentage == 100) {
       this.reportBuildComplete = true;
     }
-  }
+  },
 };
 </script>
 
