@@ -1,7 +1,6 @@
-
 <template>
   <div class="content">
-    <h4 style="font-weight:bold; float:left;">PEPFAR Disagreggated Report</h4>
+    <h4 style="font-weight: bold; float: left">PEPFAR Disagreggated Report</h4>
 
     <!-- DateItem Component -->
     <DateItem v-on:date-item="dateItem" />
@@ -10,8 +9,10 @@
     <div
       v-if="!BuildReport"
       class="no-content"
-      style="margin: auto; margin-top: 50px; font-size: 30px;"
-    >Select reporting period</div>
+      style="margin: auto; margin-top: 50px; font-size: 30px"
+    >
+      Select reporting period
+    </div>
     <div class="clearfix"></div>
 
     <!-- Loading Item Component -->
@@ -19,14 +20,17 @@
 
     <div
       v-if="reportBuildComplete == false && BuildReport"
-      style="margin-top:10px; font-size: 20px;"
-    >Generating report {{LoadingPercentage + "%"}} ...</div>
+      style="margin-top: 10px; font-size: 20px"
+    >
+      Generating report {{ LoadingPercentage + "%" }} ...
+    </div>
 
     <div v-if="reportBuildComplete" class="row">
       <div class="col-md-12">
-        <h5
-          style="margin: auto"
-        >Report period between: {{moment(this.startDate).format("LL")}} - {{moment(this.endDate).format("LL")}}</h5>
+        <h5 style="margin: auto">
+          Report period between: {{ moment(this.startDate).format("LL") }} -
+          {{ moment(this.endDate).format("LL") }}
+        </h5>
         <div class="col-12 table-col">
           <table class="table table-striped report">
             <thead>
@@ -42,13 +46,13 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) in reportObjects" :key="index">
-                <th scope="row">{{index + 1}}</th>
-                <td v-if="item != undefined">{{item.age_group}}</td>
+                <th scope="row">{{ index + 1 }}</th>
+                <td v-if="item != undefined">{{ item.age_group }}</td>
                 <td v-if="item != undefined">{{ formatGender(item.sex) }}</td>
-                <td v-if="item != undefined">{{item.tx_new}}</td>
-                <td v-if="item != undefined">{{item.tx_curr}}</td>
-                <td v-if="item != undefined">{{item.tx_screened_for_tb}}</td>
-                <td v-if="item != undefined">{{item.tx_given_ipt}}</td>
+                <td v-if="item != undefined">{{ item.tx_new }}</td>
+                <td v-if="item != undefined">{{ item.tx_curr }}</td>
+                <td v-if="item != undefined">{{ item.tx_screened_for_tb }}</td>
+                <td v-if="item != undefined">{{ item.tx_given_ipt }}</td>
               </tr>
             </tbody>
           </table>
@@ -72,7 +76,7 @@ export default {
   name: "PepfarReport",
   components: {
     DateItem,
-    LoadingItem
+    LoadingItem,
   },
   data() {
     return {
@@ -87,38 +91,38 @@ export default {
       reportObject: {},
       reportObjects: [],
       iptReportObject: {},
-			iptReportObjects: [],
-			tbReportObject: {},
-			tbReportObjects: [],
+      iptReportObjects: [],
+      tbReportObject: {},
+      tbReportObjects: [],
       reportBuildComplete: false,
       Date: new Date(),
       config: {
         api_base_url: `${Config.apiProtocol}://${Config.apiURL}:${Config.apiPort}/api/${ApiClient.config.apiVersion}`,
-        token: sessionStorage.apiKey
+        token: sessionStorage.apiKey,
       },
       AGE_GROUPS: [
-        '<1 year',
-        '1-4 years', 
-        '5-9 years', 
-        '10-14 years', 
-        '15-19 years', 
-        '20-24 years', 
-        '25-29 years', 
-        '30-34 years', 
-        '35-39 years', 
-        '40-44 years', 
-        '45-49 years', 
-        '50-54 years',
-        '55-59 years',
-        '60-64 years',
-        '65-69 years',
-        '70-74 years',
-        '75-79 years',
-        '80-84 years',
-        '85-89 years',
-        '90 plus years',
+        "<1 year",
+        "1-4 years",
+        "5-9 years",
+        "10-14 years",
+        "15-19 years",
+        "20-24 years",
+        "25-29 years",
+        "30-34 years",
+        "35-39 years",
+        "40-44 years",
+        "45-49 years",
+        "50-54 years",
+        "55-59 years",
+        "60-64 years",
+        "65-69 years",
+        "70-74 years",
+        "75-79 years",
+        "80-84 years",
+        "85-89 years",
+        "90 plus years",
         "Breastfeeding",
-        "Pregnant"
+        "Pregnant",
       ],
       Index: 0,
       GENDERS: ["male", "female"],
@@ -127,12 +131,15 @@ export default {
       LoadingPercentage: 0,
       InitializeReport: true,
       BuildReport: false,
-			RebuildReport: false,
-			TB_URL: 'screened_for_tb',
-			IPT_URL:'clients_given_ipt'
+      RebuildReport: false,
+      TB_URL: "screened_for_tb",
+      IPT_URL: "clients_given_ipt",
     };
   },
   methods: {
+    formatGender(g) {
+      return formatGender(g);
+    },
     dateItem(item) {
       this.startDate = item.start_date;
       this.endDate = item.end_date;
@@ -144,15 +151,13 @@ export default {
     },
 
     getPatients(report = []) {
-      return report.filter(data => {
-        return (
-          data.age_group != "Pregnant" && data.age_group != "Breastfeeding"
-        );
+      return report.filter((data) => {
+        return data.age_group != "Pregnant" && data.age_group != "Breastfeeding";
       });
     },
 
     getReport(report = {}) {
-			const tbIptReport = [ ...this.tbReportObjects, ...this.iptReportObjects ]
+      const tbIptReport = [...this.tbReportObjects, ...this.iptReportObjects];
       return report.reportObjects.map((value, index) => {
         const objectKeys = Object.keys(value)[0];
         const initial = report.initial;
@@ -163,7 +168,7 @@ export default {
             tx_new: 0,
             tx_curr: 0,
             tx_screened_for_tb: 0,
-            tx_given_ipt: 0
+            tx_given_ipt: 0,
           });
         } else {
           return (this.reportObject = {
@@ -177,14 +182,14 @@ export default {
               value[objectKeys][initial] != undefined
                 ? value[objectKeys][initial].tx_curr
                 : 0,
-						tx_screened_for_tb: 
-							this.tbReportObjects[index].sex == report.gender.toLowerCase() 
-								? this.tbReportObjects[index].tx_screened_for_tb 
-								: 0,
+            tx_screened_for_tb:
+              this.tbReportObjects[index].sex == report.gender.toLowerCase()
+                ? this.tbReportObjects[index].tx_screened_for_tb
+                : 0,
             tx_given_ipt:
-              this.iptReportObjects[index].sex == report.gender.toLowerCase() 
-								? this.iptReportObjects[index].tx_given_ipt 
-								: 0
+              this.iptReportObjects[index].sex == report.gender.toLowerCase()
+                ? this.iptReportObjects[index].tx_given_ipt
+                : 0,
           });
         }
       });
@@ -214,13 +219,13 @@ export default {
           tx_new: txNew,
           tx_curr: txCurrent,
           tx_screened_for_tb: txScreenTb,
-          tx_given_ipt: rxGivenIpt
-        }
+          tx_given_ipt: rxGivenIpt,
+        },
       ];
     },
 
     getPregrantPatients(patients = []) {
-      let pregnant = patients.filter(data => {
+      let pregnant = patients.filter((data) => {
         return data.age_group == "Pregnant";
       });
 
@@ -231,7 +236,7 @@ export default {
     },
 
     getBreastFeedingPatients(patients = []) {
-      let breastFeeding = patients.filter(data => {
+      let breastFeeding = patients.filter((data) => {
         return data.age_group == "Breastfeeding";
       });
 
@@ -258,18 +263,15 @@ export default {
               filter.breastFeeding[0].tx_screened_for_tb),
           tx_given_ipt:
             filter.totalNumberOfFemales[0].tx_given_ipt -
-            (filter.pregnant[0].tx_given_ipt +
-              filter.breastFeeding[0].tx_given_ipt)
-        }
+            (filter.pregnant[0].tx_given_ipt + filter.breastFeeding[0].tx_given_ipt),
+        },
       ];
     },
 
     buildReportData(data) {
       !this.InitializeReport ? this.reportObjects.push(data) : null;
 
-      this.LoadingPercentage = Math.floor(
-        (this.Index / this.AGE_GROUPS.length) * 100
-      );
+      this.LoadingPercentage = Math.floor((this.Index / this.AGE_GROUPS.length) * 100);
 
       if (this.Index < this.AGE_GROUPS.length) {
         this.InitializeReport = false;
@@ -280,30 +282,25 @@ export default {
         const malesFilters = {
           gender: "Male",
           initial: "M",
-          reportObjects: this.reportObjects
+          reportObjects: this.reportObjects,
         };
 
         const femaleFilters = {
           gender: "Female",
           initial: "F",
-          reportObjects: this.reportObjects
+          reportObjects: this.reportObjects,
         };
 
         const males = this.getPatients(this.getReport(malesFilters));
         const females = this.getPatients(this.getReport(femaleFilters));
 
-        const totalNumberOfMales = this.getNumberOfPatients(
-          males,
-          malesFilters.gender
-        );
+        const totalNumberOfMales = this.getNumberOfPatients(males, malesFilters.gender);
         const totalNumberOfFemales = this.getNumberOfPatients(
           females,
           femaleFilters.gender
         );
 
-        const pregnant = this.getPregrantPatients(
-          this.getReport(femaleFilters)
-        );
+        const pregnant = this.getPregrantPatients(this.getReport(femaleFilters));
 
         const breastFeeding = this.getBreastFeedingPatients(
           this.getReport(femaleFilters)
@@ -312,7 +309,7 @@ export default {
         const fnpFilters = {
           totalNumberOfFemales,
           pregnant,
-          breastFeeding
+          breastFeeding,
         };
 
         const femaleNonePregnant = this.getFemaleNonePregnant(fnpFilters);
@@ -324,7 +321,7 @@ export default {
           ...totalNumberOfMales,
           ...pregnant,
           ...femaleNonePregnant,
-          ...breastFeeding
+          ...breastFeeding,
         ];
       }
       this.Index = this.Index + 1;
@@ -336,7 +333,7 @@ export default {
         let report = (this.tbReportObject = {
           age_group: this.AGE_GROUPS[this.Index],
           sex: this.GENDERS[this.GenderIndex],
-          tx_screened_for_tb: data.length
+          tx_screened_for_tb: data.length,
         });
 
         this.tbReportObjects.push(report);
@@ -345,26 +342,26 @@ export default {
         this.fetchTbScreened(this.AGE_GROUPS[this.Index], this.TB_URL);
       } else {
         this.Index = 0;
-				this.InitializeReport = false;
-				this.GenderIndex = 0
+        this.InitializeReport = false;
+        this.GenderIndex = 0;
         console.log(this.tbReportObjects);
-				this.fetchIptReport(this.AGE_GROUPS[0]);
-				return
+        this.fetchIptReport(this.AGE_GROUPS[0]);
+        return;
       }
       this.Index = this.Index + 1;
       if (this.Index == this.AGE_GROUPS.length) {
         this.Index = 0;
         this.GenderIndex = this.GenderIndex + 1;
       }
-		},
-		
-		buildIptReport(data, url) {
+    },
+
+    buildIptReport(data, url) {
       if (this.GenderIndex < this.GENDERS.length) {
         //
         let report = (this.iptReportObject = {
           age_group: this.AGE_GROUPS[this.Index],
           sex: this.GENDERS[this.GenderIndex],
-          tx_given_ipt: data.length
+          tx_given_ipt: data.length,
         });
 
         this.iptReportObjects.push(report);
@@ -375,7 +372,7 @@ export default {
         this.Index = 0;
         this.InitializeReport = false;
         console.log(this.iptReportObjects);
-        this.fetchReport(this.AGE_GROUPS[0])
+        this.fetchReport(this.AGE_GROUPS[0]);
       }
       this.Index = this.Index + 1;
       if (this.Index == this.AGE_GROUPS.length) {
@@ -397,20 +394,20 @@ export default {
         method: "GET",
         headers: {
           Authorization: this.config.token,
-          "Content-type": "application/json"
-        }
+          "Content-type": "application/json",
+        },
       })
-        .then(response => {
+        .then((response) => {
           if (response.status === 200) {
-            return response.json().then(data => {
-							//this.fetchReport(this.AGE_GROUPS[0])
-							
-							this.fetchTbScreened(this.AGE_GROUPS[0], this.TB_URL);
-							//this.fetchIptReport(this.AGE_GROUPS[0], this.IPT_URL);
+            return response.json().then((data) => {
+              //this.fetchReport(this.AGE_GROUPS[0])
+
+              this.fetchTbScreened(this.AGE_GROUPS[0], this.TB_URL);
+              //this.fetchIptReport(this.AGE_GROUPS[0], this.IPT_URL);
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log("Something went wrong!", err);
         });
     },
@@ -426,17 +423,17 @@ export default {
         method: "GET",
         headers: {
           Authorization: this.config.token,
-          "Content-type": "application/json"
-        }
+          "Content-type": "application/json",
+        },
       })
-        .then(response => {
+        .then((response) => {
           if (response.status === 200) {
-            return response.json().then(data => {
+            return response.json().then((data) => {
               this.buildReportData(data);
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log("Something went wrong!", err);
         });
     },
@@ -447,49 +444,53 @@ export default {
       const END_DATE = moment(this.endDate).format("YYYY-MM-DD");
       const DATE = moment(this.Date).format("YYYY-MM-DD");
 
-      const PARAMS = `?gender=${this.GENDERS[this.GenderIndex]}&start_date=${START_DATE}&end_date=${END_DATE}&age_group=${ageGroup}&date=${DATE}&program_id=1&outcome_table=temp_pepfar_patient_outcomes`;
+      const PARAMS = `?gender=${
+        this.GENDERS[this.GenderIndex]
+      }&start_date=${START_DATE}&end_date=${END_DATE}&age_group=${ageGroup}&date=${DATE}&program_id=1&outcome_table=temp_pepfar_patient_outcomes`;
       this.RebuildReport = false;
       fetch(`${this.config.api_base_url}/${this.TB_URL}${PARAMS}`, {
         method: "GET",
         headers: {
           Authorization: this.config.token,
-          "Content-type": "application/json"
-        }
+          "Content-type": "application/json",
+        },
       })
-        .then(response => {
+        .then((response) => {
           if (response.status === 200) {
-            return response.json().then(data => {
-							this.buildTbScreenedReport(data, this.TB_URL)	
+            return response.json().then((data) => {
+              this.buildTbScreenedReport(data, this.TB_URL);
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log("Something went wrong!", err);
         });
-		},
-		
-		fetchIptReport(ageGroup, url) {
+    },
+
+    fetchIptReport(ageGroup, url) {
       const START_DATE = moment(this.startDate).format("YYYY-MM-DD");
       const END_DATE = moment(this.endDate).format("YYYY-MM-DD");
       const DATE = moment(this.Date).format("YYYY-MM-DD");
 
-      const PARAMS = `?gender=${this.GENDERS[this.GenderIndex]}&start_date=${START_DATE}&end_date=${END_DATE}&age_group=${ageGroup}&date=${DATE}&program_id=1&outcome_table=temp_pepfar_patient_outcomes`;
+      const PARAMS = `?gender=${
+        this.GENDERS[this.GenderIndex]
+      }&start_date=${START_DATE}&end_date=${END_DATE}&age_group=${ageGroup}&date=${DATE}&program_id=1&outcome_table=temp_pepfar_patient_outcomes`;
       this.RebuildReport = false;
       fetch(`${this.config.api_base_url}/${this.IPT_URL}${PARAMS}`, {
         method: "GET",
         headers: {
           Authorization: this.config.token,
-          "Content-type": "application/json"
-        }
+          "Content-type": "application/json",
+        },
       })
-        .then(response => {
+        .then((response) => {
           if (response.status === 200) {
-            return response.json().then(data => {
-							this.buildIptReport(data,this.IPT_URL)		
+            return response.json().then((data) => {
+              this.buildIptReport(data, this.IPT_URL);
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log("Something went wrong!", err);
         });
     },
@@ -500,9 +501,7 @@ export default {
       if (this.startDate != null && this.endDate != null) {
         this.startDate = moment(this.startDate).format("YYYY-MM-DD");
         this.endDate = moment(this.endDate).format("YYYY-MM-DD");
-        this.startDate > this.endDate
-          ? (this.validateDate = false)
-          : this.dateError;
+        this.startDate > this.endDate ? (this.validateDate = false) : this.dateError;
 
         if (this.validateDate) {
           this.initializeReportData();
@@ -514,15 +513,14 @@ export default {
         }
       }
     },
-    beginDateSelected() {
-    }
+    beginDateSelected() {},
   },
   created() {},
   updated() {
     if (this.LoadingPercentage == 100) {
       this.reportBuildComplete = true;
     }
-  }
+  },
 };
 </script>
 

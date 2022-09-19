@@ -2,7 +2,7 @@
   <!-- Page Content -->
   <div id="main-container" class="col-12 table-col">
     <span>
-      {{report_title}}
+      {{ report_title }}
       <button @click="$router.go(-1)" class="btn btn-primary">Back</button>
     </span>
     <div class="row">
@@ -30,22 +30,21 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) in missingAppointmentReport" :key="index">
-                <th scope="row">{{index + 1}}</th>
-                <td>{{item.arv_number}}</td>
-                <td>{{item.national_id}}</td>
-                <td>{{item.given_name}}</td>
-                <td>{{item.family_name}}</td>
+                <th scope="row">{{ index + 1 }}</th>
+                <td>{{ item.arv_number }}</td>
+                <td>{{ item.national_id }}</td>
+                <td>{{ item.given_name }}</td>
+                <td>{{ item.family_name }}</td>
                 <td>{{ formatGender(item.gender) }}</td>
-                <td>{{item.birthdate}}</td>
-                <td>{{item.dates.join(", ")}}</td>
+                <td>{{ item.birthdate }}</td>
+                <td>{{ item.dates.join(", ") }}</td>
               </tr>
             </tbody>
-              <tfoot>
+            <tfoot>
               <tr>
                 <td>
-                  Date Created:  {{moment().format('YYYY-MM-DD:h:m:s')}} 
-                  e-Mastercard Version : {{EMCVersion}} 
-                  API Version {{APIVersion}}
+                  Date Created: {{ moment().format("YYYY-MM-DD:h:m:s") }} e-Mastercard
+                  Version : {{ EMCVersion }} API Version {{ APIVersion }}
                 </td>
               </tr>
             </tfoot>
@@ -90,9 +89,9 @@ export default {
     "top-nav": TopNav,
     "side-bar": Sidebar,
     sdPicker: StartAndEndDatePicker,
-    ReportOverlay
+    ReportOverlay,
   },
-  data: function() {
+  data: function () {
     return {
       report_title: "Viral Load Report ",
       reportData: null,
@@ -113,11 +112,14 @@ export default {
     };
   },
   methods: {
+    formatGender(g) {
+      return formatGender(g);
+    },
     async fetchDates(dates) {
       try {
         [this.startDate, this.endDate] = dates;
 
-        const isValidDate = date => date && date !== "Invalid date";
+        const isValidDate = (date) => date && date !== "Invalid date";
 
         if (!(isValidDate(this.startDate) && isValidDate(this.endDate))) return;
 
@@ -150,34 +152,34 @@ export default {
         ServerSide: false,
         fixedColumns: {
           leftColumns: 2,
-          rightColumns: 1
+          rightColumns: 1,
         },
         scroller: {
-          loadingIndicator: true
+          loadingIndicator: true,
         },
         dom: "Bfrtip",
         buttons: [
           {
             extend: "copy",
-            title: this.report_title
+            title: this.report_title,
           },
           {
             extend: "csv",
             title: this.report_title,
-            footer: true
+            footer: true,
           },
           {
             extend: "pdf",
-            title: this.report_title
+            title: this.report_title,
           },
           {
             extend: "print",
-            title: this.report_title
-          }
-        ]
+            title: this.report_title,
+          },
+        ],
       });
     },
-    fetchReport: async function(dates = {}) {
+    fetchReport: async function (dates = {}) {
       const startDate = moment(dates[0]).format("YYYY-MM-DD");
       const endDate = moment(dates[1]).format("YYYY-MM-DD");
 
@@ -191,7 +193,7 @@ export default {
 
       const response = await ApiClient.get(URL, {}, {});
       if (response.status === 200) {
-        response.json().then(data => {
+        response.json().then((data) => {
           this.missingAppointmentReport = data;
           console.log(this.missingAppointmentReport);
           this.dTable.api().destroy();
@@ -200,12 +202,12 @@ export default {
           });
         });
       }
-    }
+    },
   },
 
   mounted() {
     setTimeout(() => this.initDataTable(), 300);
-  }
+  },
 };
 </script>
 
@@ -232,7 +234,6 @@ table {
   padding-top: 10px;
 }
 </style>
-
 
 <style>
 .center-text {

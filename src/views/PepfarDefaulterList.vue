@@ -63,8 +63,8 @@ export default {
   name: "App",
   data: function () {
     return {
-      startDate: '',
-      endDate: '',
+      startDate: "",
+      endDate: "",
       formatedData: [],
       showLoader: false,
       rows: [],
@@ -135,15 +135,22 @@ export default {
     };
   },
   methods: {
+    formatGender(g) {
+      return formatGender(g);
+    },
     fetchDates: async function (dates) {
       this.rows = [];
-      this.startDate = dates[0]
-      this.endDate = dates[1]
+      this.startDate = dates[0];
+      this.endDate = dates[1];
       const even = (element) => element === "Invalid date";
       if (dates.some(even)) {
         console.log("Check your dates");
       } else {
-        this.config.card_title += " " +moment(dates[0]).format("DD/MMM/YYYY") + " - " + moment(dates[1]).format("DD/MMM/YYYY");
+        this.config.card_title +=
+          " " +
+          moment(dates[0]).format("DD/MMM/YYYY") +
+          " - " +
+          moment(dates[1]).format("DD/MMM/YYYY");
         this.showLoader = true;
         let url = "/defaulter_list?start_date=" + dates[0] + "&date=" + dates[1];
         url += "&end_date=" + dates[1] + "&program_id=1&pepfar=true";
@@ -161,18 +168,18 @@ export default {
     redirect(id) {
       this.$router.push(`/patient/mastercard/${id}`);
     },
-    onDownload(){
+    onDownload() {
       exportToCSV(this.columns, this.rows, this.config.card_title, {
         startDate: this.startDate,
-        endDate: this.endDate
+        endDate: this.endDate,
       });
-    }
+    },
   },
   components: {
     VueBootstrap4Table,
     "top-nav": TopNav,
     "side-bar": Sidebar,
-    "sdPicker": StartAndEndDatePicker
+    sdPicker: StartAndEndDatePicker,
   },
 };
 </script>

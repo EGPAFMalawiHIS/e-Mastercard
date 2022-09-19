@@ -26,9 +26,7 @@
               @click="fetchDrillDown(props.cell_value)"
               :class="props.cell_value.length > 0 ? 'drillable' : ''"
               :key="slot"
-              >{{
-                props.cell_value.length > 0 ? props.cell_value.length : 0
-              }}</span
+              >{{ props.cell_value.length > 0 ? props.cell_value.length : 0 }}</span
             >
           </template>
         </vue-bootstrap4-table>
@@ -88,47 +86,59 @@ export default {
       this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
       this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
       this.reportLoading = true;
-      let url_path =
-        "programs/1/reports/viral_load_coverage?start_date=" + dates[0];
+      let url_path = "programs/1/reports/viral_load_coverage?start_date=" + dates[0];
       url_path +=
-        "&end_date=" +
-        dates[1] +
-        "&rebuild_outcomes=true&application=emastercard";
+        "&end_date=" + dates[1] + "&rebuild_outcomes=true&application=emastercard";
       const data = await ApiClient.get(url_path, {}, {});
       const j = await data.json();
       this.loadData(j);
     },
     async loadData(data) {
-     let row_count = 1;
+      let row_count = 1;
       const gender = ["F", "M"];
       const data_arry = [];
-      for(const sex of gender){
-        for(const age_group of this.ageGroups){
-          for(const api_age_group in data){
-            if(age_group != api_age_group)
-              continue;
+      for (const sex of gender) {
+        for (const age_group of this.ageGroups) {
+          for (const api_age_group in data) {
+            if (age_group != api_age_group) continue;
 
             data_arry.push({
-              number: row_count++, 
+              number: row_count++,
               age_group: age_group,
               gender: formatGender(sex),
-              "tx_curr": this.filterClients(data[api_age_group]["tx_curr"], sex),
-              "due_for_vl": this.filterClients(data[api_age_group]["due_for_vl"], sex),
-              "drawn": this.filterClients([...data[api_age_group]["drawn"]["routine"],...data[api_age_group]["drawn"]["targeted"]], sex),
-              "high_vl": this.filterClients([...data[api_age_group]["high_vl"]["routine"],...data[api_age_group]["high_vl"]["targeted"]], sex),
-              "low_vl": this.filterClients([...data[api_age_group]["low_vl"]["routine"],...data[api_age_group]["low_vl"]["targeted"]], sex),
+              tx_curr: this.filterClients(data[api_age_group]["tx_curr"], sex),
+              due_for_vl: this.filterClients(data[api_age_group]["due_for_vl"], sex),
+              drawn: this.filterClients(
+                [
+                  ...data[api_age_group]["drawn"]["routine"],
+                  ...data[api_age_group]["drawn"]["targeted"],
+                ],
+                sex
+              ),
+              high_vl: this.filterClients(
+                [
+                  ...data[api_age_group]["high_vl"]["routine"],
+                  ...data[api_age_group]["high_vl"]["targeted"],
+                ],
+                sex
+              ),
+              low_vl: this.filterClients(
+                [
+                  ...data[api_age_group]["low_vl"]["routine"],
+                  ...data[api_age_group]["low_vl"]["targeted"],
+                ],
+                sex
+              ),
             });
           }
         }
-      } 
+      }
       this.rows = data_arry;
       this.reportLoading = false;
-    
     },
     filterClients(data, gender) {
-      data.filter(d => console.log(d));
-      return data.filter(d => d.gender === gender);
-
+      data.filter((d) => console.log(d));
+      return data.filter((d) => d.gender === gender);
     },
     fetchDrillDown(clients) {
       if (clients.length > 0) {
@@ -192,7 +202,7 @@ export default {
         {
           key: "gender",
           label: "Gender",
-        }
+        },
       ],
       startDate: null,
       endDate: null,
@@ -201,29 +211,29 @@ export default {
       EMCVersion: sessionStorage.EMCVersion,
       reportTitle: null,
       ageGroups: [
-        '<1 year',
-        '1-4 years', 
-        '5-9 years', 
-        '10-14 years', 
-        '15-19 years', 
-        '20-24 years', 
-        '25-29 years', 
-        '30-34 years', 
-        '35-39 years', 
-        '40-44 years', 
-        '45-49 years', 
-        '50-54 years',
-        '55-59 years',
-        '60-64 years',
-        '65-69 years',
-        '70-74 years',
-        '75-79 years',
-        '80-84 years',
-        '85-89 years',
-        '90 plus years'
+        "<1 year",
+        "1-4 years",
+        "5-9 years",
+        "10-14 years",
+        "15-19 years",
+        "20-24 years",
+        "25-29 years",
+        "30-34 years",
+        "35-39 years",
+        "40-44 years",
+        "45-49 years",
+        "50-54 years",
+        "55-59 years",
+        "60-64 years",
+        "65-69 years",
+        "70-74 years",
+        "75-79 years",
+        "80-84 years",
+        "85-89 years",
+        "90 plus years",
       ],
       showLoader: false,
-      slots: ["tx_curr", "due_for_vl", "drawn","low_vl", "high_vl",],
+      slots: ["tx_curr", "due_for_vl", "drawn", "low_vl", "high_vl"],
       rows: [],
       columns: [
         {
@@ -244,7 +254,7 @@ export default {
         {
           label: "Tx Curr",
           name: "tx_curr",
-          slot: "tx_curr"
+          slot: "tx_curr",
           // sort: true,
         },
         {
@@ -253,25 +263,24 @@ export default {
           slot_name: "due_for_vl",
           // sort: true,
         },
-         {
+        {
           label: "Sample drawn",
           name: "drawn",
           slot_name: "drawn",
           // sort: true,
-        },        
-          {
+        },
+        {
           label: "High VL (>=1000 copies)",
           name: "high_vl",
           slot_name: "high_vl",
           // sort: true,
-        },              
+        },
         {
           label: "Low VL (<1000 copies)",
           name: "low_vl",
           slot_name: "low_vl",
           // sort: true,
-        },        
-         
+        },
       ],
       config: {
         card_title: `Viral load coverage report`,
@@ -292,7 +301,6 @@ export default {
     rowCount() {
       return this.drillClients.length;
     },
-    
   },
 };
 </script>
