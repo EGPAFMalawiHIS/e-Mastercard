@@ -106,8 +106,6 @@ export default {
               number: row_count++,
               age_group: age_group,
               gender: formatGender(sex),
-              tx_curr: this.filterClients(data[api_age_group]["tx_curr"], sex),
-              due_for_vl: this.filterClients(data[api_age_group]["due_for_vl"], sex),
               drawn: this.filterClients(
                 [
                   ...data[api_age_group]["drawn"]["routine"],
@@ -232,7 +230,7 @@ export default {
         "90 plus years",
       ],
       showLoader: false,
-      slots: ["tx_curr", "due_for_vl", "drawn", "low_vl", "high_vl"],
+      slots: ["due_for_vl", "drawn", "low_vl", "high_vl"],
       rows: [],
       columns: [
         {
@@ -248,12 +246,6 @@ export default {
         {
           label: "Gender",
           name: "gender",
-          // sort: true,
-        },
-        {
-          label: "Tx Curr",
-          name: "tx_curr",
-          slot: "tx_curr",
           // sort: true,
         },
         {
