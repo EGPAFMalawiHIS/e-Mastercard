@@ -18,7 +18,15 @@
           </div>
         </div>
         <div class="row">
-          <button class="btn btn-secondary" id="csv" @click="printCSV" :disabled="!reportSelected" style="margin: 0 0 10px 50px;"> CSV</button>
+          <button
+            class="btn btn-secondary"
+            id="csv"
+            @click="printCSV"
+            :disabled="!reportSelected"
+            style="margin: 0 0 10px 50px"
+          >
+            CSV
+          </button>
           <div class="col-sm12">
             <ReportOverlay
               :reportLoading="reportLoading"
@@ -31,15 +39,9 @@
                     <th>Age group</th>
                     <th>Gender</th>
                     <th class="disaggregated-numbers">Tx new (new on ART)</th>
-                    <th class="disaggregated-numbers">
-                      TX curr (receiving ART)
-                    </th>
-                    <th class="disaggregated-numbers">
-                      TX curr (received IPT)
-                    </th>
-                    <th class="disaggregated-numbers">
-                      TX curr (screened for TB)
-                    </th>
+                    <th class="disaggregated-numbers">TX curr (receiving ART)</th>
+                    <th class="disaggregated-numbers">TX curr (received IPT)</th>
+                    <th class="disaggregated-numbers">TX curr (screened for TB)</th>
                     <th class="disaggregated-numbers">0A</th>
                     <th class="disaggregated-numbers">2A</th>
                     <th class="disaggregated-numbers">4A</th>
@@ -79,33 +81,32 @@
                 </thead>
                 <tbody ref="tableBody">
                   <template v-for="(s, ind) in genders">
-                    <tr
-                      v-for="(i, index) in Object.keys(patientData)"
-                      :key="s + index"
-                    >
+                    <tr v-for="(i, index) in Object.keys(patientData)" :key="s + index">
                       <td>{{ ind + 1 === 2 ? 15 + index + 1 : index + 1 }}</td>
                       <td>{{ i }}</td>
-                      <td>{{ s }}</td>
-                      <td v-for="(j, k) in Object.keys(patientData[i][s])" 
-                        :key="k" @click="fetchDrillDown(s, i, j)"
-                        :class="patientData[i][s][j].length > 0 ? 'drillable': ''">
-                        {{patientData[i][s][j].length}}
+                      <td>{{ formatGender(s) }}</td>
+                      <td
+                        v-for="(j, k) in Object.keys(patientData[i][s])"
+                        :key="k"
+                        @click="fetchDrillDown(s, i, j)"
+                        :class="patientData[i][s][j].length > 0 ? 'drillable' : ''"
+                      >
+                        {{ patientData[i][s][j].length }}
                       </td>
                       <td>
                         {{ getTotal(i, s) }}
                       </td>
                     </tr>
                   </template>
-                  <tr
-                    v-for="(i, index) in Object.keys(allClients)"
-                    :key="'all' + index"
-                  >
+                  <tr v-for="(i, index) in Object.keys(allClients)" :key="'all' + index">
                     <td>{{ index + 1 + 30 }}</td>
                     <td>All</td>
                     <td>{{ i }}</td>
-                    <td v-for="(j, k) in Object.keys(allClients[i])" :key="k"> {{ allClients[i][j].length }}</td>
+                    <td v-for="(j, k) in Object.keys(allClients[i])" :key="k">
+                      {{ allClients[i][j].length }}
+                    </td>
                     <td>
-                        {{ getTotalClientsByKey(i) }}
+                      {{ getTotalClientsByKey(i) }}
                     </td>
                   </tr>
                 </tbody>
@@ -141,7 +142,6 @@
 </template>
 
 <script>
-
 import ApiClient from "../services/api_client";
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
@@ -149,6 +149,7 @@ import moment from "moment";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 
 import ReportOverlay from "../components/reports/ReportOverlay";
+import { formatGender } from "../utils/str";
 
 const keyList = {
   tx_new: [],
@@ -191,7 +192,6 @@ const keyList = {
   "N/A": [],
 };
 
-
 export default {
   name: "reports",
   components: {
@@ -201,6 +201,9 @@ export default {
     sdPicker: StartAndEndDatePicker,
   },
   methods: {
+    formatGender(g) {
+      return formatGender(g);
+    },
     fetchDates: function (dates) {
       this.startDate = dates[0];
       this.endDate = dates[1];
@@ -213,53 +216,49 @@ export default {
     },
     printCSV() {
       let y = null;
-      let f = document.getElementsByTagName('thead')[0].getElementsByTagName('th');
-    f.forEach(element => {
-        if(y == null) {
-            y = `"${element.innerText}",`; 
-        }else {
-
-        
-        y += `"${element.innerText}",`;
+      let f = document.getElementsByTagName("thead")[0].getElementsByTagName("th");
+      f.forEach((element) => {
+        if (y == null) {
+          y = `"${element.innerText}",`;
+        } else {
+          y += `"${element.innerText}",`;
         }
       });
       let jj = f[0].getElementsByTagName("tr");
-      jj = document.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-      jj.forEach(element => {
-          y += "\n"; 
-          element.getElementsByTagName('td').forEach(innerElement => {
-              y += `"${innerElement.innerHTML.replace('&lt;', '<')}",`;
-          });
+      jj = document.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+      jj.forEach((element) => {
+        y += "\n";
+        element.getElementsByTagName("td").forEach((innerElement) => {
+          y += `"${innerElement.innerHTML.replace("&lt;", "<")}",`;
+        });
       });
 
-      y += "\n"; 
-      y += `Date Created:  ${moment().format('YYYY-MM-DD:h:m:s')}
+      y += "\n";
+      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")}
                           Quarter: ${this.startDate} to ${this.endDate}
                           e-Mastercard Version : ${sessionStorage.EMCVersion}
                           Site UUID: ${sessionStorage.siteUUID} 
                           API Version ${sessionStorage.APIVersion}`;
       for (let index = 0; index < 34; index++) {
-        
-      y += ","; 
+        y += ",";
       }
       this.report_title =
         "MoH " + sessionStorage.location_name + " cohort disaggregated report ";
       this.report_title += moment(this.startDate).format("DDMMMYYYY");
       this.report_title += " - " + moment(this.endDate).format("DDMMMYYYY");
-    var csvData = new Blob([y], {type: 'text/csv;charset=utf-8;'});
-    //IE11 & Edge
-    if (navigator.msSaveBlob) {
+      var csvData = new Blob([y], { type: "text/csv;charset=utf-8;" });
+      //IE11 & Edge
+      if (navigator.msSaveBlob) {
         navigator.msSaveBlob(csvData, exportFilename);
-    } else {
+      } else {
         //In FF link must be added to DOM to be clicked
-        var link = document.createElement('a');
+        var link = document.createElement("a");
         link.href = window.URL.createObjectURL(csvData);
-        link.setAttribute('download', `${this.report_title}.csv`);
-        document.body.appendChild(link);    
+        link.setAttribute("download", `${this.report_title}.csv`);
+        document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);    
-    }
-
+        document.body.removeChild(link);
+      }
     },
     initDataTable() {
       let start_date = moment(this.startDate).format("DD/MMM/YYYY");
@@ -316,14 +315,13 @@ export default {
     },
     fetchDrillDown(gender, age_group, key) {
       let clients = this.patientData[age_group][gender][key];
-      if(clients.length > 0) {
+      if (clients.length > 0) {
         this.$bvModal.show("modal-1");
         this.drillClients = [];
         clients.forEach((element) => {
           this.getClient(element);
         });
       }
-      
     },
     initializeReport: async function () {
       this.report_title =
@@ -340,7 +338,6 @@ export default {
       url += "&end_date=" + this.endDate;
       url += "&program_id=1";
 
-
       let btns = document.getElementsByClassName("dt-button");
       for (let i = 0; i < btns.length; i++) {
         btns[i].setAttribute("disabled", true);
@@ -352,9 +349,7 @@ export default {
 
       if (response.status === 200) {
         this.rebuildOutcome = false;
-        response
-          .json()
-          .then((data) => setTimeout(() => this.addData(data), 5000));
+        response.json().then((data) => setTimeout(() => this.addData(data), 5000));
       } else {
         setTimeout(() => this.fetchData(), 5000);
       }
@@ -406,7 +401,6 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
-
         this.screenedTB.shift();
         response.json().then((data) => {
           let g = gender === "F" ? "female" : "male";
@@ -510,9 +504,7 @@ export default {
       const response = await ApiClient.get(url, {}, {});
 
       if (response.status === 200) {
-        response
-          .json()
-          .then((data) => this.drillClients.push(this.parsePatient(data)));
+        response.json().then((data) => this.drillClients.push(this.parsePatient(data)));
       }
     },
     parsePatient(results) {
@@ -520,9 +512,7 @@ export default {
       var gender = results.person.gender;
       var identifier = "";
       var patient_name =
-        results.person.names[0].given_name +
-        " " +
-        results.person.names[0].family_name;
+        results.person.names[0].given_name + " " + results.person.names[0].family_name;
 
       var arv_number = results.patient_identifiers.filter((el) => {
         return el.identifier_type === 4 ? el.identifier : "";
@@ -537,11 +527,7 @@ export default {
         var phone_number = "";
       }
       try {
-        for (
-          var index = 0;
-          index < results.patient_identifiers.length;
-          index++
-        ) {
+        for (var index = 0; index < results.patient_identifiers.length; index++) {
           if (results.patient_identifiers[index]["identifier_type"] == 4) {
             identifier = results.patient_identifiers[index]["identifier"];
           }
@@ -566,19 +552,18 @@ export default {
           let tx_given_ipt = data[age][sex].tx_given_ipt;
 
           if (age_group == "Pregnant") {
-           
-            this.allClients['FP']['tx_new'] = tx_new;
-            this.allClients['FP']['tx_curr'] = tx_curr;
-            this.allClients['FP']['tx_curr_ipt'] = tx_given_ipt;
-            this.allClients['FP']['tx_curr_screened_tb'] = tx_screened_for_tb;
+            this.allClients["FP"]["tx_new"] = tx_new;
+            this.allClients["FP"]["tx_curr"] = tx_curr;
+            this.allClients["FP"]["tx_curr_ipt"] = tx_given_ipt;
+            this.allClients["FP"]["tx_curr_screened_tb"] = tx_screened_for_tb;
             this.getAllFemale("Breastfeeding");
-            this.getRegimenInfo('FP', 'All', true);
+            this.getRegimenInfo("FP", "All", true);
           } else {
-            this.allClients['Fbf']['tx_new'] = tx_new;
-            this.allClients['Fbf']['tx_curr'] = tx_curr;
-            this.allClients['Fbf']['tx_curr_ipt'] = tx_given_ipt;
-            this.allClients['Fbf']['tx_curr_screened_tb'] = tx_screened_for_tb;
-            this.getRegimenInfo('Fbf', 'All', true);
+            this.allClients["Fbf"]["tx_new"] = tx_new;
+            this.allClients["Fbf"]["tx_curr"] = tx_curr;
+            this.allClients["Fbf"]["tx_curr_ipt"] = tx_given_ipt;
+            this.allClients["Fbf"]["tx_curr_screened_tb"] = tx_screened_for_tb;
+            this.getRegimenInfo("Fbf", "All", true);
             this.loadFPdata("pregnant", "screened_for_tb");
           }
         }
@@ -603,7 +588,7 @@ export default {
       ) {
         response
           .json()
-          .then((data) => this.allClients['FP']['tx_curr_screened_tb'] = data);
+          .then((data) => (this.allClients["FP"]["tx_curr_screened_tb"] = data));
         this.loadFPdata("breastfeeding", urlPath);
       } else if (
         response.status === 200 &&
@@ -612,22 +597,17 @@ export default {
       ) {
         response
           .json()
-          .then((data) => this.allClients['Fbf']['tx_curr_screened_tb'] = data);
+          .then((data) => (this.allClients["Fbf"]["tx_curr_screened_tb"] = data));
         this.loadFPdata("pregnant", "clients_given_ipt");
       } else if (response.status === 200 && age_group == "pregnant") {
-        response
-          .json()
-          .then((data) => this.allClients['FP']['tx_curr_ipt'] = data);
+        response.json().then((data) => (this.allClients["FP"]["tx_curr_ipt"] = data));
         this.loadFPdata("breastfeeding", urlPath);
       } else if (response.status === 200 && age_group == "breastfeeding") {
-        response
-          .json()
-          .then((data) => this.allClients['Fbf']['tx_curr_ipt'] = data);
+        response.json().then((data) => (this.allClients["Fbf"]["tx_curr_ipt"] = data));
 
         setTimeout(() => {
-
-          this.addAllFemaleRow()
-          }, 2000);
+          this.addAllFemaleRow();
+        }, 2000);
       }
     },
     assignValueTD(el, count, rowNum) {
@@ -638,29 +618,27 @@ export default {
       }
     },
     addAllFemaleRow() {
-      ['Fbf', 'FP'].forEach(el => {
+      ["Fbf", "FP"].forEach((el) => {
         this.getRegimenInfo(el, null, true);
-      })
+      });
       Object.keys(this.allClients["male"]).forEach((element) => {
         const j = this.getTotalByKey("male", element);
         this.allClients["male"][element] = j;
       });
-      Object.keys(keyList).forEach(ele => {
-        let allPregnantFemales = this.allClients['FP'][ele];
-        let allBfFemales = this.allClients['Fbf'][ele];
-        let allFemales = this.getTotalByKey('female', ele);
-          let jj =allFemales.filter( function( el ) {
-          return !allPregnantFemales.includes( el );
-        } );
-          jj =jj.filter( function( el ) {
-          return !allBfFemales.includes( el );
-        } );
-        this.allClients['FNP'][ele] = jj;
-      })
-      
+      Object.keys(keyList).forEach((ele) => {
+        let allPregnantFemales = this.allClients["FP"][ele];
+        let allBfFemales = this.allClients["Fbf"][ele];
+        let allFemales = this.getTotalByKey("female", ele);
+        let jj = allFemales.filter(function (el) {
+          return !allPregnantFemales.includes(el);
+        });
+        jj = jj.filter(function (el) {
+          return !allBfFemales.includes(el);
+        });
+        this.allClients["FNP"][ele] = jj;
+      });
     },
     getRegimenInfo: async function (gender, age_group, allPats) {
-
       let url = "disaggregated_regimen_distribution";
       url += "?date=" + moment().format("YYYY-MM-DD");
       url += "&start_date=" + this.startDate;
@@ -672,9 +650,7 @@ export default {
 
       const response = await ApiClient.get(url, {}, {});
       if (response.status === 200) {
-        response
-          .json()
-          .then((data) => this.addRegimen(data, gender, age_group, allPats));
+        response.json().then((data) => this.addRegimen(data, gender, age_group, allPats));
       }
     },
     getTotal(age_group, gender) {
@@ -698,8 +674,9 @@ export default {
         total.push(...this.patientData[element][gender][key]);
       });
       return total;
-    },getTotalClientsByKey(gender) {
-       let total = 0;
+    },
+    getTotalClientsByKey(gender) {
+      let total = 0;
       Object.keys(this.allClients[gender]).forEach((element) => {
         if (
           element === "tx_curr" ||
@@ -715,11 +692,10 @@ export default {
     },
     addRegimen(data, gender, age_group, allPats) {
       for (let regimen in data) {
-        
-        if(allPats) {
-            this.allClients[gender][regimen] = data[regimen];
-        }else{
-            this.patientData[age_group][gender][regimen] = data[regimen];
+        if (allPats) {
+          this.allClients[gender][regimen] = data[regimen];
+        } else {
+          this.patientData[age_group][gender][regimen] = data[regimen];
         }
       }
     },
@@ -729,11 +705,10 @@ export default {
       return this.drillClients.length;
     },
   },
-  mounted() {
-  },
+  mounted() {},
   data: function () {
     return {
-      allKeys: {...keyList},
+      allKeys: { ...keyList },
       reportData: null,
       report_title: "MoH Disaggregated ",
       reportData: null,
@@ -773,26 +748,26 @@ export default {
       initialize: false,
       genders: ["female", "male"],
       ageGroups: [
-        '<1 year',
-        '1-4 years', 
-        '5-9 years', 
-        '10-14 years', 
-        '15-19 years', 
-        '20-24 years', 
-        '25-29 years', 
-        '30-34 years', 
-        '35-39 years', 
-        '40-44 years', 
-        '45-49 years', 
-        '50-54 years',
-        '55-59 years',
-        '60-64 years',
-        '65-69 years',
-        '70-74 years',
-        '75-79 years',
-        '80-84 years',
-        '85-89 years',
-        '90 plus years'
+        "<1 year",
+        "1-4 years",
+        "5-9 years",
+        "10-14 years",
+        "15-19 years",
+        "20-24 years",
+        "25-29 years",
+        "30-34 years",
+        "35-39 years",
+        "40-44 years",
+        "45-49 years",
+        "50-54 years",
+        "55-59 years",
+        "60-64 years",
+        "65-69 years",
+        "70-74 years",
+        "75-79 years",
+        "80-84 years",
+        "85-89 years",
+        "90 plus years",
       ].reverse(),
       drillClients: [],
       perPage: 10,
@@ -804,26 +779,26 @@ export default {
         Fbf: { ...keyList },
       },
       patientData: {
-        '<1 year': { male: {...keyList }, female: {...keyList } },
-        '1-4 years': { male: {...keyList }, female: {...keyList } },
-        '5-9 years': { male: {...keyList }, female: {...keyList } },
-        '10-14 years': { male: {...keyList }, female: {...keyList } },
-        '15-19 years': { male: {...keyList }, female: {...keyList } },
-        '20-24 years': { male: {...keyList }, female: {...keyList } },
-        '25-29 years': { male: {...keyList }, female: {...keyList } },
-        '30-34 years': { male: {...keyList }, female: {...keyList } },
-        '35-39 years': { male: {...keyList }, female: {...keyList } },
-        '40-44 years': { male: {...keyList }, female: {...keyList } },
-        '45-49 years': { male: {...keyList }, female: {...keyList } },
-        '50-54 years': { male: {...keyList }, female: {...keyList } },
-        '55-59 years': { male: {...keyList }, female: {...keyList } },
-        '60-64 years': { male: {...keyList }, female: {...keyList } },
-        '65-69 years': { male: {...keyList }, female: {...keyList } },
-        '70-74 years': { male: {...keyList }, female: {...keyList } },
-        '75-79 years': { male: {...keyList }, female: {...keyList } },
-        '80-84 years': { male: {...keyList }, female: {...keyList } },
-        '85-89 years': { male: {...keyList }, female: {...keyList } },
-        '90 plus years': { male: {...keyList }, female: {...keyList } }
+        "<1 year": { male: { ...keyList }, female: { ...keyList } },
+        "1-4 years": { male: { ...keyList }, female: { ...keyList } },
+        "5-9 years": { male: { ...keyList }, female: { ...keyList } },
+        "10-14 years": { male: { ...keyList }, female: { ...keyList } },
+        "15-19 years": { male: { ...keyList }, female: { ...keyList } },
+        "20-24 years": { male: { ...keyList }, female: { ...keyList } },
+        "25-29 years": { male: { ...keyList }, female: { ...keyList } },
+        "30-34 years": { male: { ...keyList }, female: { ...keyList } },
+        "35-39 years": { male: { ...keyList }, female: { ...keyList } },
+        "40-44 years": { male: { ...keyList }, female: { ...keyList } },
+        "45-49 years": { male: { ...keyList }, female: { ...keyList } },
+        "50-54 years": { male: { ...keyList }, female: { ...keyList } },
+        "55-59 years": { male: { ...keyList }, female: { ...keyList } },
+        "60-64 years": { male: { ...keyList }, female: { ...keyList } },
+        "65-69 years": { male: { ...keyList }, female: { ...keyList } },
+        "70-74 years": { male: { ...keyList }, female: { ...keyList } },
+        "75-79 years": { male: { ...keyList }, female: { ...keyList } },
+        "80-84 years": { male: { ...keyList }, female: { ...keyList } },
+        "85-89 years": { male: { ...keyList }, female: { ...keyList } },
+        "90 plus years": { male: { ...keyList }, female: { ...keyList } },
       },
     };
   },
@@ -831,7 +806,7 @@ export default {
 </script>
 
 <style scoped>
-.drillable{
+.drillable {
   color: blue;
   text-decoration: underline;
 }
@@ -857,7 +832,6 @@ table {
   padding-top: 10px;
 }
 </style>
-
 
 <style>
 .center-text {

@@ -27,6 +27,9 @@
               }})</b
             >
           </template>
+          <template slot="gender" slot-scope="{ cell_value }">
+            {{ formatGender(cell_value) }}
+          </template>
           <template slot="patient_id" slot-scope="props">
             <button
               type="button"
@@ -54,6 +57,7 @@ import Sidebar from "@/components/SideBar.vue";
 import moment from "moment";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import { exportToCSV } from "../utils/exports";
+import { formatGender } from "../utils/str";
 
 export default {
   name: "App",
@@ -84,6 +88,7 @@ export default {
         {
           label: "Gender",
           name: "gender",
+          slot_name: "gender",
           // sort: true
         },
         {
@@ -129,16 +134,23 @@ export default {
     };
   },
   methods: {
+    formatGender(g) {
+      return formatGender(g);
+    },
     fetchDates: async function (dates) {
       this.rows = [];
-      this.startDate = dates[0]
-      this.endDate = dates[1]
+      this.startDate = dates[0];
+      this.endDate = dates[1];
       const even = (element) => element === "Invalid date";
       if (dates.some(even)) {
         console.log("Check your dates");
       } else {
         this.showLoader = true;
-        this.config.card_title += " " + moment(dates[0]).format("DD/MMM/YYYY") + " - " + moment(dates[1]).format("DD/MMM/YYYY");
+        this.config.card_title +=
+          " " +
+          moment(dates[0]).format("DD/MMM/YYYY") +
+          " - " +
+          moment(dates[1]).format("DD/MMM/YYYY");
         let url = "/defaulter_list?start_date=" + dates[0] + "&date=" + dates[1];
         url += "&end_date=" + dates[1] + "&program_id=1&pepfar=false";
         const response = await ApiClient.get(url, {}, {});
@@ -148,7 +160,7 @@ export default {
               this.rows = data;
             }
           });
-        } 
+        }
         this.showLoader = false;
       }
     },

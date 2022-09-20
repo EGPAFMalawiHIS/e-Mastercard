@@ -189,7 +189,7 @@
               <p>TB Status at initiation</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{tbLastTwoYears}}</p>
+              <p>{{tbStatusAtInitiation}}</p>
             </div>
           </div>
         </div>
@@ -339,7 +339,7 @@ export default {
       EPTB: null,
       PTB: null,
       kaposisSarcoma: null,
-      tbLastTwoYears: null,
+      tbStatusAtInitiation: null,
       patientID: null,
       sitePrefix: null,
       showARVNumber: false,
@@ -451,15 +451,15 @@ export default {
           }
         },
         {
-          conceptID: 7459,
-          variableName: "tbLastTwoYears",
+          conceptID: 10583,
+          variableName: "tbStatusAtInitiation",
           valueType: "value_coded",
           secondType: "value_text",
           conceptNames: {
-            7454: "TB NOT suspected",
-            7455: "TB suspected",
-            7456: "Confirmed TB NOT on treatment",
-            7458: "Confirmed TB on treatment"
+            10584: "Current",
+            10585: "Last 2 years",
+            10586: "More than 2 years",
+            10587: "Never"
           }
         },
         {

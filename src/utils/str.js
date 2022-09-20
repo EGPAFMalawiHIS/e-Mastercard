@@ -17,3 +17,8 @@ export function sanitize(str) {
     return str;
   }
 }
+
+export function formatGender (gender) {
+  gender = gender.toLowerCase();
+  return gender === "m" || gender === "male" ? "Male" : "Female"
+}

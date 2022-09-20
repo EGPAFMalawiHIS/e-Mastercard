@@ -61,6 +61,7 @@ import VueBootstrap4Table from "vue-bootstrap4-table";
 
 import moment from "moment";
 import { mapState } from "vuex";
+import { formatGender } from "../utils/str";
 export default {
   name: "txML",
   components: {
@@ -117,18 +118,10 @@ export default {
 			let rowCount = 0
 			this.rows = data.map(patient => {
 				rowCount += 1
-				const { arv_number, given_name, family_name, gender, birthdate, appointment_date, months_on_art, mile_stone, patient_id } = patient
 				return {
 					rowCount,
-					arv_number,
-					given_name,
-					family_name,
-					gender,
-					birthdate,
-					appointment_date,
-					months_on_art,
-					mile_stone,
-					patient_id
+          ...patient,
+					gender: formatGender(patient.gender),
 				}
 			})
       this.reportLoading = false;
