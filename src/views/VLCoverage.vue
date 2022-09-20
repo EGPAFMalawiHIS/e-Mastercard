@@ -137,8 +137,7 @@ export default {
       this.reportLoading = false;
     },
     filterClients(data, gender) {
-      data.filter((d) => console.log(d));
-      return data.filter((d) => d.gender === gender);
+      return data ? data.filter((d) => d.gender === gender) : [];
     },
     fetchDrillDown(clients) {
       if (clients.length > 0) {
