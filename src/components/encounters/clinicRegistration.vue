@@ -350,6 +350,106 @@
           </div>
         </div>
       </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <label style="float: left; font-weight: bold">TPT History</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <select
+                class="form-control"
+                name
+                id
+                v-model="$v.form.initial_tb_status.$model"
+                @change="setRegistration"
+                v-bind:style="(!$v.form.initial_tb_status.required || !$v.form.initial_tb_status.filterOption) && $v.form.initial_tb_status.$dirty  ? 'border: 1.5px solid red;' : ''"
+              >
+                <option disabled selected>Select Option</option>
+                <option
+                  v-for="(status, index) in TPT_STATUS"
+                  :key="index"
+                  :value="status"
+                >{{status}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <label style="float: left; font-weight: bold">Date started TPT (*)</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <input
+                  v-model="$v.form.art_start_date_day.$model"
+                  type="number"
+                  class="form-control"
+                  placeholder="DD"
+                  maxlength="2"
+                  minlength="2"
+                  v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.art_start_date_day.required || !$v.form.art_start_date_day.minLength || !$v.form.art_start_date_day.maxLength || !$v.form.art_start_date_day.dayRange || !$v.form.art_start_date_day.checkDayMonth ) && $v.form.art_start_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
+                />
+              </div>
+              <div class="col-md-4">
+                <input
+                  v-model="$v.form.art_start_date_month.$model"
+                  type="number"
+                  class="form-control"
+                  placeholder="MM"
+                  maxlength="2"
+                  minlength="2"
+                  v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.art_start_date_month.required || !$v.form.art_start_date_month.minLength || !$v.form.art_start_date_month.maxLength || !$v.form.art_start_date_month.monthRange || !$v.form.art_start_date_month.checkMonthYear ) && $v.form.art_start_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
+                />
+              </div>
+              <div class="col-md-4">
+                <input
+                  v-model="$v.form.art_start_date_year.$model"
+                  type="number"
+                  class="form-control"
+                  placeholder="YYYY"
+                  maxlength="4"
+                  minlength="4"
+                  v-on:input="setRegistration"
+                  v-bind:style="(!$v.form.art_start_date_year.required || !$v.form.art_start_date_year.minLength || !$v.form.art_start_date_year.maxLength || !$v.form.art_start_date_year.between ) && $v.form.art_start_date_year.$dirty  ? 'border: 1.5px solid red;' : ''"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+      <div class="col-md-6">
+<div class="row">
+              <div class="col-md-6">
+                <label style="float: left; font-weight: bold">Date started TPT (*)</label>
+              </div>
+            </div>
+<div class="form-group">
+            <input
+              type="number"
+              class="form-control"
+              name
+              v-model="$v.form.initial_height.$model"
+              placeholder="Enter quantity"
+              v-on:input="setRegistration"
+              :disabled="initialVitalsUnknown"
+              v-bind:style="(!$v.form.initial_height.required) && $v.form.initial_height.$dirty  ? 'border: 1.5px solid red;' : ''"
+            />
+          </div>
+        </div>
     </div>
 
     <div class="row">
@@ -706,6 +806,17 @@ export default {
         "More than 2 years": 10586,
         "Never": 10587
       },
+      TPT_STATUS: [
+          "Currently on IPT" ,
+          "Currently on 3HP (RFP + INH)" ,
+          "Currently on INH 300 / RFP 300 (3HP)" ,
+          "Complete course of 3HP in the past (3 months RFP+INH)" ,
+          "Complete course of IPT in the past (min. 6 months of INH)" ,
+          "Aborted course of 3HP (RFP + INH) in the past" ,
+          "Aborted course of INH 300 / RFP 300 (3HP) in the past" ,
+          "Aborted course of IPT in the past" ,
+          "Never taken IPT or 3HP" 
+      ],
       options: [
         {
           label: "Rapid Antibody Test",
