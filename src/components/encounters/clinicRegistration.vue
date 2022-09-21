@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: auto; width: 95%">
+  <div style="margin: auto; overflow: auto; width: 95%; height:99%;">
     <div class="row">
       <div class="col-md-6">
         <div class="row">
@@ -365,9 +365,9 @@
                 class="form-control"
                 name
                 id
-                v-model="$v.form.initial_tb_status.$model"
+                v-model="$v.form.tpt_prev_history.$model"
                 @change="setRegistration"
-                v-bind:style="(!$v.form.initial_tb_status.required || !$v.form.initial_tb_status.filterOption) && $v.form.initial_tb_status.$dirty  ? 'border: 1.5px solid red;' : ''"
+                v-bind:style="!$v.form.tpt_prev_history.required && $v.form.initial_tb_status.$dirty  ? 'border: 1.5px solid red;' : ''"
               >
                 <option disabled selected>Select Option</option>
                 <option
@@ -760,7 +760,7 @@ export default {
           between: between(1850, moment(this.DATE).format("YYYY"))
         },
         tpt_prev_history: {
-          required
+          required: requiredIf(() => /yes/i.test(this.ever_registered_at_clinic_value))
         },
         tpt_drugs_received: {
           required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i) 
@@ -768,7 +768,7 @@ export default {
           )
         },
         tpt_start_date_day: {
-          required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i)),
+          required: requiredIf(() => /currently/i.test(this.form.tpt_prev_history)),
           maxLength: maxLength(2),
           minLength: minLength(2),
           dayRange(tpt_start_date_day) {
@@ -783,7 +783,7 @@ export default {
           },
         },
         tpt_start_date_month: {
-          required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i)),
+          required: requiredIf(() => /currently/i.test(this.form.tpt_prev_history)),
           maxLength: maxLength(2),
           minLength: minLength(2),
           monthRange(tpt_start_date_month) {
@@ -797,14 +797,14 @@ export default {
           }
         },
         tpt_start_date_year: {
-          required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i)),
+          required: requiredIf(() => /currently/i.test(this.form.tpt_prev_history)),
           maxLength: maxLength(4),
           minLength: minLength(4),
           between: between(1850, moment(this.DATE).format("YYYY"))
         },
-        tpt_transfered_from_location: {
-          required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i)),
-        }
+        // tpt_transfered_from_location: {
+        //   required: requiredIf(() => /currently/i.test(this.form.tpt_prev_history)),
+        // }
       }
     };
   },
@@ -991,11 +991,11 @@ export default {
             concept_id: 1588,
             value_text: null,
           },
-          tptTransferedFromLocation: {
-            // Location TPT Last Received
-            concept_id: 10604,
-            value_text: null,
-          }
+          // tptTransferedFromLocation: {
+          //   // Location TPT Last Received
+          //   concept_id: 10604,
+          //   value_text: null,
+          // }
         }
       },
 
@@ -1054,6 +1054,7 @@ export default {
   methods: {
     validateForm() {
       this.$v.$touch();
+      console.log('Validations', this.$v)
       return !this.$v.$invalid; //send this as a global state to the Registration component
     },
 
@@ -1380,7 +1381,7 @@ export default {
       }
 
       // TPT Stuff
-      this.clinicRegistration.obs.value_text = this.form.tpt_prev_history
+      this.clinicRegistration.obs.prevTBHistory.value_text = this.form.tpt_prev_history
 
       if (this.form.tpt_transfered_from_location) {
         this.clinicRegistration.obs.tptTransferedFromLocation.value_text = this.form.tpt_transfered_from_location
