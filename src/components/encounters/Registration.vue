@@ -580,6 +580,7 @@ export default {
   text-align: center;
   position: relative;
   margin-top: 20px;
+  overflow: scroll;
 }
 
 #msform .content-tab {
