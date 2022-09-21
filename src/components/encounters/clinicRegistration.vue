@@ -428,9 +428,8 @@
             </div>
           </div>
         </div>
-        
       </div>
-
+  
       <div class="col-md-6" v-if="form.tpt_drugs_received.length">
         <div class="row">
           <div class="col-md-6" v-for="(drug, index) in form.tpt_drugs_received" :key="index">
@@ -448,6 +447,29 @@
                     ? 'border: 1.5px solid red;'
                     : ''
                 "/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6" v-if="/currently/i.test(form.tpt_prev_history)">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6" style="padding-right: 0">
+                <label style="float: left; font-weight: bold">Facility last received TPT (*)</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <v-select
+                :options="locations"
+                @search="getlocations"
+                @input="getVal"
+                v-model="$v.form.tpt_transfered_from_location.$model"
+                v-bind:style="!$v.form.tpt_transfered_from_location.required && $v.form.tpt_transfered_from_location.$dirty  ? 'border: 1.5px solid red;' : ''"
+              ></v-select>
             </div>
           </div>
         </div>
@@ -802,11 +824,11 @@ export default {
           minLength: minLength(4),
           between: between(1850, moment(this.DATE).format("YYYY"))
         },
-        // tpt_transfered_from_location: {
-        //   required: requiredIf(() => /currently/i.test(this.form.tpt_prev_history)),
-        // }
+        tpt_transfered_from_location: {
+          required: requiredIf(() => /currently/i.test(this.form.tpt_prev_history)),
+        }
       }
-    };
+    }
   },
   data: function() {
     return {
@@ -991,11 +1013,11 @@ export default {
             concept_id: 1588,
             value_text: null,
           },
-          // tptTransferedFromLocation: {
-          //   // Location TPT Last Received
-          //   concept_id: 10604,
-          //   value_text: null,
-          // }
+          tptTransferedFromLocation: {
+            // Location TPT Last Received
+            concept_id: 10604,
+            value_text: null,
+          }
         }
       },
 
@@ -1384,7 +1406,7 @@ export default {
       this.clinicRegistration.obs.prevTBHistory.value_text = this.form.tpt_prev_history
 
       if (this.form.tpt_transfered_from_location) {
-        this.clinicRegistration.obs.tptTransferedFromLocation.value_text = this.form.tpt_transfered_from_location
+        this.clinicRegistration.obs.tptTransferedFromLocation.value_text = this.form.tpt_transfered_from_location.label
       } else {
         delete this.clinicRegistration.obs.tptTransferedFromLocation
       }
