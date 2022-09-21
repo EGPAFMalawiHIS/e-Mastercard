@@ -380,7 +380,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" v-if="`${form.tpt_prev_history}`.match(/currently/i)">
         <div class="row">
           <div class="col-md-12">
             <div class="row">
@@ -391,38 +391,38 @@
             <div class="row">
               <div class="col-md-4">
                 <input
-                  v-model="$v.form.art_start_date_day.$model"
+                  v-model="$v.form.tpt_start_date_day.$model"
                   type="number"
                   class="form-control"
                   placeholder="DD"
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.art_start_date_day.required || !$v.form.art_start_date_day.minLength || !$v.form.art_start_date_day.maxLength || !$v.form.art_start_date_day.dayRange || !$v.form.art_start_date_day.checkDayMonth ) && $v.form.art_start_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.tpt_start_date_day.required || !$v.form.tpt_start_date_day.minLength || !$v.form.tpt_start_date_day.maxLength || !$v.form.tpt_start_date_day.dayRange || !$v.form.tpt_start_date_day.checkDayMonth ) && $v.form.tpt_start_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
                 <input
-                  v-model="$v.form.art_start_date_month.$model"
+                  v-model="$v.form.tpt_start_date_month.$model"
                   type="number"
                   class="form-control"
                   placeholder="MM"
                   maxlength="2"
                   minlength="2"
                   v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.art_start_date_month.required || !$v.form.art_start_date_month.minLength || !$v.form.art_start_date_month.maxLength || !$v.form.art_start_date_month.monthRange || !$v.form.art_start_date_month.checkMonthYear ) && $v.form.art_start_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.tpt_start_date_month.required || !$v.form.tpt_start_date_month.minLength || !$v.form.tpt_start_date_month.maxLength || !$v.form.tpt_start_date_month.monthRange || !$v.form.tpt_start_date_month.checkMonthYear ) && $v.form.tpt_start_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
               <div class="col-md-4">
                 <input
-                  v-model="$v.form.art_start_date_year.$model"
+                  v-model="$v.form.tpt_start_date_year.$model"
                   type="number"
                   class="form-control"
                   placeholder="YYYY"
                   maxlength="4"
                   minlength="4"
                   v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.art_start_date_year.required || !$v.form.art_start_date_year.minLength || !$v.form.art_start_date_year.maxLength || !$v.form.art_start_date_year.between ) && $v.form.art_start_date_year.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  v-bind:style="(!$v.form.tpt_start_date_year.required || !$v.form.tpt_start_date_year.minLength || !$v.form.tpt_start_date_year.maxLength || !$v.form.tpt_start_date_year.between ) && $v.form.tpt_start_date_year.$dirty  ? 'border: 1.5px solid red;' : ''"
                 />
               </div>
             </div>
@@ -431,25 +431,27 @@
         
       </div>
 
-      <div class="col-md-6">
-<div class="row">
-              <div class="col-md-6">
-                <label style="float: left; font-weight: bold">Date started TPT (*)</label>
-              </div>
+      <div class="col-md-6" v-if="form.tpt_drugs_received.length">
+        <div class="row">
+          <div class="col-md-6" v-for="(drug, index) in form.tpt_drugs_received" :key="index">
+            <div class="form-group">
+              <label style="float: left; font-weight: bold">{{drug.name}} Amount (*)</label>
+              <input
+                type="number"
+                class="form-control"
+                v-model="$v.form.tpt_drugs_received.$model[index].amount_received"
+                placeholder="Enter quantity"
+                v-on:input="setRegistration"
+                v-bind:style="
+                  !$v.form.tpt_drugs_received.$model[index].amount_received
+                    && $v.form.tpt_start_date_year.$dirty
+                    ? 'border: 1.5px solid red;'
+                    : ''
+                "/>
             </div>
-<div class="form-group">
-            <input
-              type="number"
-              class="form-control"
-              name
-              v-model="$v.form.initial_height.$model"
-              placeholder="Enter quantity"
-              v-on:input="setRegistration"
-              :disabled="initialVitalsUnknown"
-              v-bind:style="(!$v.form.initial_height.required) && $v.form.initial_height.$dirty  ? 'border: 1.5px solid red;' : ''"
-            />
           </div>
         </div>
+      </div>
     </div>
 
     <div class="row">
@@ -756,6 +758,52 @@ export default {
           maxLength: maxLength(4),
           minLength: minLength(4),
           between: between(1850, moment(this.DATE).format("YYYY"))
+        },
+        tpt_prev_history: {
+          required
+        },
+        tpt_drugs_received: {
+          required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i) 
+            && this.form.tpt_drugs_received.some(d => d.amount_received <= 0)
+          )
+        },
+        tpt_start_date_day: {
+          required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i)),
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          dayRange(tpt_start_date_day) {
+            return /^(3[01]|[0-12][1-9]|10|20||[0-9])$/.test(tpt_start_date_day);
+          },
+          checkDayMonth(tpt_start_date_day) {
+            return !(
+              this.form.tpt_start_date_year == moment(new Date()).format("YYYY") &&
+              this.form.tpt_start_date_month == moment(new Date()).format("MM") &&
+              tpt_start_date_day > moment(new Date()).format("DD")
+            );
+          },
+        },
+        tpt_start_date_month: {
+          required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i)),
+          maxLength: maxLength(2),
+          minLength: minLength(2),
+          monthRange(tpt_start_date_month) {
+            return /^(1[1-2]|0[1-9]|10||[0-9])$/.test(tpt_start_date_month);
+          },
+          checkMonthYear(tpt_start_date_month) {
+            return !(
+              this.form.tpt_start_date_year == moment(new Date()).format("YYYY") &&
+              tpt_start_date_month > moment(new Date()).format("MM")
+            )
+          }
+        },
+        tpt_start_date_year: {
+          required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i)),
+          maxLength: maxLength(4),
+          minLength: minLength(4),
+          between: between(1850, moment(this.DATE).format("YYYY"))
+        },
+        tpt_transfered_from_location: {
+          required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i)),
         }
       }
     };
@@ -785,8 +833,14 @@ export default {
         location_of_confirmatory: "Select Option",
         hiv_test_date_day: "",
         hiv_test_date_month: "",
-        hiv_test_date_year: ""
-
+        hiv_test_date_year: "",
+        // TPT Stuff
+        tpt_prev_history: "",
+        tpt_drugs_received: [],
+        tpt_start_date_day: "",
+        tpt_start_date_month: "",
+        tpt_start_date_year: "",
+        tpt_transfered_from_location: "",
       },
       recievedTreatment: false,
       agreesToFollowUp: false,
@@ -817,6 +871,34 @@ export default {
           "Aborted course of IPT in the past" ,
           "Never taken IPT or 3HP" 
       ],
+      TPT_DRUG_STATUS_MAP: {
+        "Currently on IPT": [
+          {
+            name: 'INH',
+            drug_id: 931,
+            amount_received: 0
+          }
+        ],
+        "Currently on 3HP (RFP + INH)": [
+          { 
+            name: 'INH',
+            drug_id: 931,
+            amount_received: 0
+          }, 
+          {
+            name: 'Rifapentine',
+            drug_id: 1056,
+            amount_received: 0
+          }
+        ],
+        "Currently on INH 300 / RFP 300 (3HP)": [
+          { 
+            name: 'INH 300 / RFP 300 (3HP)',
+            drug_id: 1216,
+            amount_received: 0
+          }
+        ]
+      },
       options: [
         {
           label: "Rapid Antibody Test",
@@ -903,6 +985,16 @@ export default {
           initialTbStatus: {
             concept_id: 10583,
             value_coded: null
+          },
+          prevTBHistory: {
+            // Previous TB treatment history
+            concept_id: 1588,
+            value_text: null,
+          },
+          tptTransferedFromLocation: {
+            // Location TPT Last Received
+            concept_id: 10604,
+            value_text: null,
           }
         }
       },
@@ -950,8 +1042,16 @@ export default {
       return this.makeISODateString(this.form.visit_date_year, this.form.visit_date_month, this.form.visit_date_day);
     }
   },
+  watch: {
+    'form.tpt_prev_history'(status) {
+      if (`${status}`.match(/currently/i)) {
+        this.form.tpt_drugs_received = [...this.TPT_DRUG_STATUS_MAP[status]]
+      } else {
+        this.form.tpt_drugs_received = []
+      }
+    }
+  },
   methods: {
-
     validateForm() {
       this.$v.$touch();
       return !this.$v.$invalid; //send this as a global state to the Registration component
@@ -1279,12 +1379,36 @@ export default {
         delete this.clinicRegistration.obs.testLocation;
       }
 
+      // TPT Stuff
+      this.clinicRegistration.obs.value_text = this.form.tpt_prev_history
+
+      if (this.form.tpt_transfered_from_location) {
+        this.clinicRegistration.obs.tptTransferedFromLocation.value_text = this.form.tpt_transfered_from_location
+      } else {
+        delete this.clinicRegistration.obs.tptTransferedFromLocation
+      }
+
+      if (this.form.tpt_drugs_received.length) {
+        this.form.tpt_drugs_received.forEach(d => {
+          this.clinicRegistration.obs[`tpt_drug_${d.name}`] = {
+            concept_id: 10603, // TPT Drugs Received
+            value_drug: d.drug_id,
+            value_numeric: d.amount_received,
+            value_datetime: `${this.form.tpt_start_date_year}-${this.form.tpt_start_date_month}-${this.form.tpt_start_date_day}`
+          }
+        })
+      } else {
+        Object.keys(this.clinicRegistration.obs).forEach(k => {
+          if (k.match(/tpt_drug_/i)) {
+            delete this.clinicRegistration.obs[k]
+          }
+        })
+      }
+
       if(this.isNotEditVoid()){
         this.saveARVNumber()
       }
-
     },
-
     buildVitalsObservations() {
       if (this.form.initial_height != null && this.form.initial_weight != null) {
         this.vitalsEncounter.obs.height.value_numeric = this.form.initial_height;
