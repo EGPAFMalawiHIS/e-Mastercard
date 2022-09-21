@@ -106,6 +106,7 @@ export default {
               number: row_count++,
               age_group: age_group,
               gender: formatGender(sex),
+              due_for_vl: this.filterClients(data[api_age_group]["due_for_vl"], sex),
               drawn: this.filterClients(
                 [
                   ...data[api_age_group]["drawn"]["routine"],
