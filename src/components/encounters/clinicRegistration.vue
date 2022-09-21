@@ -367,9 +367,8 @@
                 id
                 v-model="$v.form.tpt_prev_history.$model"
                 @change="setRegistration"
-                v-bind:style="!$v.form.tpt_prev_history.required && $v.form.initial_tb_status.$dirty  ? 'border: 1.5px solid red;' : ''"
+                v-bind:style="(!$v.form.tpt_prev_history.required || !$v.form.tpt_prev_history.filterOption) && $v.form.tpt_prev_history.$dirty  ? 'border: 1.5px solid red;' : ''"
               >
-                <option disabled selected>Select Option</option>
                 <option
                   v-for="(status, index) in TPT_STATUS"
                   :key="index"
@@ -380,7 +379,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6" v-if="`${form.tpt_prev_history}`.match(/currently/i)">
+      <div class="col-md-6" v-if="/currently/i.test(form.tpt_prev_history)">
         <div class="row">
           <div class="col-md-12">
             <div class="row">
@@ -468,7 +467,10 @@
                 @search="getlocations"
                 @input="getVal"
                 v-model="$v.form.tpt_transfered_from_location.$model"
-                v-bind:style="!$v.form.tpt_transfered_from_location.required && $v.form.tpt_transfered_from_location.$dirty  ? 'border: 1.5px solid red;' : ''"
+                v-bind:style="(!$v.form.tpt_transfered_from_location.required || !$v.form.tpt_transfered_from_location.filterOption) 
+                  && $v.form.tpt_transfered_from_location.$dirty
+                  ? 'border: 1.5px solid red;' 
+                  : ''"
               ></v-select>
             </div>
           </div>
@@ -782,7 +784,10 @@ export default {
           between: between(1850, moment(this.DATE).format("YYYY"))
         },
         tpt_prev_history: {
-          required: requiredIf(() => /yes/i.test(this.ever_registered_at_clinic_value))
+          required: requiredIf(() => /yes/i.test(this.form.ever_registered_at_clinic_value)),
+          filterOption(tpt_prev_history) {
+            return !/Select Option/i.test(tpt_prev_history);
+          }
         },
         tpt_drugs_received: {
           required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i) 
@@ -826,6 +831,9 @@ export default {
         },
         tpt_transfered_from_location: {
           required: requiredIf(() => /currently/i.test(this.form.tpt_prev_history)),
+          filterOption(should_follow_up) {
+            return !/Select Option/i.test(should_follow_up);
+          }
         }
       }
     }
@@ -857,12 +865,12 @@ export default {
         hiv_test_date_month: "",
         hiv_test_date_year: "",
         // TPT Stuff
-        tpt_prev_history: "",
+        tpt_prev_history: "Select Option",
         tpt_drugs_received: [],
         tpt_start_date_day: "",
         tpt_start_date_month: "",
         tpt_start_date_year: "",
-        tpt_transfered_from_location: "",
+        tpt_transfered_from_location: "Select Option",
       },
       recievedTreatment: false,
       agreesToFollowUp: false,
