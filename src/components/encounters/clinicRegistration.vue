@@ -362,13 +362,14 @@
           <div class="col-md-12">
             <div class="form-group">
               <select
-                class="form-control"
-                name
                 id
-                v-model="$v.form.tpt_prev_history.$model"
+                name
+                class="form-control"
                 @change="setRegistration"
-                v-bind:style="(!$v.form.tpt_prev_history.required || !$v.form.tpt_prev_history.filterOption) && $v.form.tpt_prev_history.$dirty  ? 'border: 1.5px solid red;' : ''"
+                v-model="$v.form.tpt_prev_history.$model"
+                v-bind:style="!$v.form.tpt_prev_history.required && $v.form.tpt_prev_history.$dirty ? 'border: 1.5px solid red;' : ''"
               >
+                <option value="" disabled>Select Option</option>
                 <option
                   v-for="(status, index) in TPT_STATUS"
                   :key="index"
@@ -467,10 +468,7 @@
                 @search="getlocations"
                 @input="getVal"
                 v-model="$v.form.tpt_transfered_from_location.$model"
-                v-bind:style="(!$v.form.tpt_transfered_from_location.required || !$v.form.tpt_transfered_from_location.filterOption) 
-                  && $v.form.tpt_transfered_from_location.$dirty
-                  ? 'border: 1.5px solid red;' 
-                  : ''"
+                v-bind:style="!$v.form.tpt_transfered_from_location.required && $v.form.tpt_transfered_from_location.$dirty ? 'border: 1.5px solid red;' : ''"
               ></v-select>
             </div>
           </div>
@@ -784,13 +782,10 @@ export default {
           between: between(1850, moment(this.DATE).format("YYYY"))
         },
         tpt_prev_history: {
-          required: requiredIf(() => /yes/i.test(this.form.ever_registered_at_clinic_value)),
-          filterOption(tpt_prev_history) {
-            return !/Select Option/i.test(tpt_prev_history);
-          }
+          required: requiredIf(() => /yes/i.test(this.form.ever_registered_at_clinic_value))
         },
         tpt_drugs_received: {
-          required: requiredIf(() => `${this.form.tpt_prev_history}`.match(/currently/i) 
+          required: requiredIf(() => /currently/i.test(this.form.tpt_prev_history) 
             && this.form.tpt_drugs_received.some(d => d.amount_received <= 0)
           )
         },
@@ -830,10 +825,7 @@ export default {
           between: between(1850, moment(this.DATE).format("YYYY"))
         },
         tpt_transfered_from_location: {
-          required: requiredIf(() => /currently/i.test(this.form.tpt_prev_history)),
-          filterOption(should_follow_up) {
-            return !/Select Option/i.test(should_follow_up);
-          }
+          required: requiredIf(() => /currently/i.test(this.form.tpt_prev_history))
         }
       }
     }
@@ -865,12 +857,12 @@ export default {
         hiv_test_date_month: "",
         hiv_test_date_year: "",
         // TPT Stuff
-        tpt_prev_history: "Select Option",
+        tpt_prev_history: "",
         tpt_drugs_received: [],
         tpt_start_date_day: "",
         tpt_start_date_month: "",
         tpt_start_date_year: "",
-        tpt_transfered_from_location: "Select Option",
+        tpt_transfered_from_location: "",
       },
       recievedTreatment: false,
       agreesToFollowUp: false,
@@ -1411,29 +1403,31 @@ export default {
       }
 
       // TPT Stuff
-      this.clinicRegistration.obs.prevTBHistory.value_text = this.form.tpt_prev_history
-
-      if (this.form.tpt_transfered_from_location) {
-        this.clinicRegistration.obs.tptTransferedFromLocation.value_text = this.form.tpt_transfered_from_location.label
+      if (this.form.tpt_prev_history) {
+        this.clinicRegistration.obs.prevTBHistory.value_text = this.form.tpt_prev_history
+        if (this.form.tpt_transfered_from_location) {
+          this.clinicRegistration.obs.tptTransferedFromLocation.value_text = this.form.tpt_transfered_from_location.label
+        } else {
+          delete this.clinicRegistration.obs.tptTransferedFromLocation
+        }
+        if (this.form.tpt_drugs_received.length) {
+          this.form.tpt_drugs_received.forEach(d => {
+            this.clinicRegistration.obs[`tpt_drug_${d.name}`] = {
+              concept_id: 10603, // TPT Drugs Received
+              value_drug: d.drug_id,
+              value_numeric: d.amount_received,
+              value_datetime: `${this.form.tpt_start_date_year}-${this.form.tpt_start_date_month}-${this.form.tpt_start_date_day}`
+            }
+          })
+        } else {
+          Object.keys(this.clinicRegistration.obs).forEach(k => {
+            if (k.match(/tpt_drug_/i)) {
+              delete this.clinicRegistration.obs[k]
+            }
+          })
+        }
       } else {
-        delete this.clinicRegistration.obs.tptTransferedFromLocation
-      }
-
-      if (this.form.tpt_drugs_received.length) {
-        this.form.tpt_drugs_received.forEach(d => {
-          this.clinicRegistration.obs[`tpt_drug_${d.name}`] = {
-            concept_id: 10603, // TPT Drugs Received
-            value_drug: d.drug_id,
-            value_numeric: d.amount_received,
-            value_datetime: `${this.form.tpt_start_date_year}-${this.form.tpt_start_date_month}-${this.form.tpt_start_date_day}`
-          }
-        })
-      } else {
-        Object.keys(this.clinicRegistration.obs).forEach(k => {
-          if (k.match(/tpt_drug_/i)) {
-            delete this.clinicRegistration.obs[k]
-          }
-        })
+        delete this.clinicRegistration.obs.prevTBHistory
       }
 
       if(this.isNotEditVoid()){
