@@ -271,7 +271,7 @@
         </div>
       </div>
     </div>
-    <div v-if="recievedTreatment && registered" class="row">
+    <div class="row pb-5 mb-5" v-if="recievedTreatment && registered" >
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
@@ -319,7 +319,6 @@
           </div>
         </div>
       </div>
-      
       <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
@@ -430,27 +429,25 @@
         </div>
       </div>
   
-      <div class="col-md-6" v-if="form.tpt_drugs_received.length">
-        <div class="row">
-          <div class="col-md-6" v-for="(drug, index) in form.tpt_drugs_received" :key="index">
-            <div class="form-group">
-              <label style="float: left; font-weight: bold">{{drug.name}} Amount (*)</label>
-              <input
-                type="number"
-                class="form-control"
-                v-model="$v.form.tpt_drugs_received.$model[index].amount_received"
-                placeholder="Enter quantity"
-                v-on:input="setRegistration"
-                v-bind:style="
-                  !$v.form.tpt_drugs_received.$model[index].amount_received
-                    && $v.form.tpt_start_date_year.$dirty
-                    ? 'border: 1.5px solid red;'
-                    : ''
-                "/>
-            </div>
+      <template v-if="form.tpt_drugs_received.length">
+        <div class="col-md-6" v-for="(drug, index) in form.tpt_drugs_received" :key="index">
+          <div class="form-group">
+            <label style="float: left; font-weight: bold">{{drug.name}} Amount (*)</label>
+            <input
+              type="number"
+              class="form-control"
+              v-model="$v.form.tpt_drugs_received.$model[index].amount_received"
+              placeholder="Enter quantity"
+              v-on:input="setRegistration"
+              v-bind:style="
+                !$v.form.tpt_drugs_received.$model[index].amount_received
+                  && $v.form.tpt_start_date_year.$dirty
+                  ? 'border: 1.5px solid red;'
+                  : ''
+              "/>
           </div>
         </div>
-      </div>
+      </template>
 
       <div class="col-md-6" v-if="/currently/i.test(form.tpt_prev_history)">
         <div class="row">
@@ -474,10 +471,8 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <div class="row">
           <div class="col-md-12">
             <label style="float: left; font-weight: bold">Confirmatory Test (*)</label>
@@ -493,92 +488,92 @@
           ></v-select>
         </div>
       </div>
-    </div>
-    <div v-if="form.confirmatory == 1040 || form.confirmatory == 844" class="row">
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-6" style="padding-right: 0">
-                <label style="float: left; font-weight: bold">Location of confirmatory (*)</label>
-              </div>
-              <div class="col-md-6">
-                <span
-                  style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
-                >Location unknown?</span>
-                <input
-                  type="checkbox"
-                  @click="locationOfConfirmatoryCheck()"
-                  style="margin-left: 10px"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="form-group">
-              <v-select
-                :options="locations"
-                @search="getlocations"
-                @input="getVal"
-                v-model="$v.form.location_of_confirmatory.$model"
-                :disabled="locationOfConfirmatoryUnknown"
-                v-bind:style="(!$v.form.location_of_confirmatory.required || !$v.form.location_of_confirmatory.filterOption) && $v.form.location_of_confirmatory.$dirty  ? 'border: 1.5px solid red;' : ''"
-              ></v-select>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div v-if="form.confirmatory == 1040 || form.confirmatory == 844" class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-12">
-                <label style="float: left; font-weight: bold">Confirmatory HIV test date (*)</label>
+      <template v-if="form.confirmatory == 1040 || form.confirmatory == 844" >
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-6" style="padding-right: 0">
+                  <label style="float: left; font-weight: bold">Location of confirmatory (*)</label>
+                </div>
+                <div class="col-md-6">
+                  <span
+                    style="font-weight: bold; color: rgba(67, 149, 204, 1); font-style: italic"
+                  >Location unknown?</span>
+                  <input
+                    type="checkbox"
+                    @click="locationOfConfirmatoryCheck()"
+                    style="margin-left: 10px"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-4">
-                <input
-                  v-model="$v.form.hiv_test_date_day.$model"
-                  type="number"
-                  class="form-control"
-                  placeholder="DD"
-                  maxlength="2"
-                  minlength="2"
-                  v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.hiv_test_date_day.required || !$v.form.hiv_test_date_day.minLength || !$v.form.hiv_test_date_day.maxLength || !$v.form.hiv_test_date_day.dayRange || !$v.form.hiv_test_date_day.checkDayMonth) && $v.form.hiv_test_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
-                />
-              </div>
-              <div class="col-md-4">
-                <input
-                  v-model="$v.form.hiv_test_date_month.$model"
-                  type="number"
-                  class="form-control"
-                  placeholder="MM"
-                  maxlength="2"
-                  minlength="2"
-                  v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.hiv_test_date_month.required || !$v.form.hiv_test_date_month.minLength || !$v.form.hiv_test_date_month.maxLength || !$v.form.hiv_test_date_month.monthRange || !$v.form.hiv_test_date_month.checkMonthYear) && $v.form.hiv_test_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
-                />
-              </div>
-              <div class="col-md-4">
-                <input
-                  v-model="$v.form.hiv_test_date_year.$model"
-                  type="number"
-                  class="form-control"
-                  placeholder="YYYY"
-                  maxlength="4"
-                  minlength="4"
-                  v-on:input="setRegistration"
-                  v-bind:style="(!$v.form.hiv_test_date_year.required || !$v.form.hiv_test_date_year.minLength || !$v.form.hiv_test_date_year.maxLength || !$v.form.hiv_test_date_year.between) && $v.form.hiv_test_date_year.$dirty  ? 'border: 1.5px solid red;' : ''"
-                />
+            <div class="col-md-12">
+              <div class="form-group">
+                <v-select
+                  :options="locations"
+                  @search="getlocations"
+                  @input="getVal"
+                  v-model="$v.form.location_of_confirmatory.$model"
+                  :disabled="locationOfConfirmatoryUnknown"
+                  v-bind:style="(!$v.form.location_of_confirmatory.required || !$v.form.location_of_confirmatory.filterOption) && $v.form.location_of_confirmatory.$dirty  ? 'border: 1.5px solid red;' : ''"
+                ></v-select>
               </div>
             </div>
           </div>
         </div>
-      </div>
+        <div v-if="form.confirmatory == 1040 || form.confirmatory == 844" class="col-md-6">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-12">
+                  <label style="float: left; font-weight: bold">Confirmatory HIV test date (*)</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-4">
+                  <input
+                    v-model="$v.form.hiv_test_date_day.$model"
+                    type="number"
+                    class="form-control"
+                    placeholder="DD"
+                    maxlength="2"
+                    minlength="2"
+                    v-on:input="setRegistration"
+                    v-bind:style="(!$v.form.hiv_test_date_day.required || !$v.form.hiv_test_date_day.minLength || !$v.form.hiv_test_date_day.maxLength || !$v.form.hiv_test_date_day.dayRange || !$v.form.hiv_test_date_day.checkDayMonth) && $v.form.hiv_test_date_day.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <input
+                    v-model="$v.form.hiv_test_date_month.$model"
+                    type="number"
+                    class="form-control"
+                    placeholder="MM"
+                    maxlength="2"
+                    minlength="2"
+                    v-on:input="setRegistration"
+                    v-bind:style="(!$v.form.hiv_test_date_month.required || !$v.form.hiv_test_date_month.minLength || !$v.form.hiv_test_date_month.maxLength || !$v.form.hiv_test_date_month.monthRange || !$v.form.hiv_test_date_month.checkMonthYear) && $v.form.hiv_test_date_month.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <input
+                    v-model="$v.form.hiv_test_date_year.$model"
+                    type="number"
+                    class="form-control"
+                    placeholder="YYYY"
+                    maxlength="4"
+                    minlength="4"
+                    v-on:input="setRegistration"
+                    v-bind:style="(!$v.form.hiv_test_date_year.required || !$v.form.hiv_test_date_year.minLength || !$v.form.hiv_test_date_year.maxLength || !$v.form.hiv_test_date_year.between) && $v.form.hiv_test_date_year.$dirty  ? 'border: 1.5px solid red;' : ''"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
