@@ -239,6 +239,11 @@ const routes = [
     component: () => import("@/views/DueForViralLoad.vue")
   },
   {
+    path: "/tpt_outcomes",
+    name: "TPT Outcomes",
+    component: () => import("@/views/TPTOutcomes.vue")
+  },
+  {
     path: "/vl_coverage",
     name: "VL coverage",
     component: () => import("@/views/VLCoverage.vue")
