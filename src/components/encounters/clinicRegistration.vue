@@ -1410,7 +1410,7 @@ export default {
             this.clinicRegistration.obs[`tpt_drug_${d.name}`] = {
               concept_id: 10603, // TPT Drugs Received
               value_drug: d.drug_id,
-              value_numeric: d.amount_received,
+              value_numeric: parseInt(d.amount_received),
               value_datetime: `${this.form.tpt_start_date_year}-${this.form.tpt_start_date_month}-${this.form.tpt_start_date_day}`
             }
           })
