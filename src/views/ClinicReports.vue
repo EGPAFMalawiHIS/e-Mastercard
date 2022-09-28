@@ -8,9 +8,7 @@
       <!-- Page Content -->
       <div id="page-content-wrapper">
         <top-nav />
-        <!-- Page Content -->
-        
-
+        <!-- Page Content -->  
         <div class="container" id="btn-container">
           <div class="row">
             
@@ -99,12 +97,25 @@
                 </div>
               </div>
             </div>
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/tpt_outcomes')">
+                <div class="card">
+                  <img src="../assets/report-icons/stats.png" class="btn-icon"/>
+                  <p>TPT Outcomes</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/clinic_tx_rtt')">
+                <div class="card">
+                  <img src="../assets/report-icons/restart.png" class="btn-icon" />
+                  <p>TX RTT</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm"></div>
           </div>
-
-        </div>
-
-
-
+        </div>        
         <!-- Page Content end -->
       </div>
     </div>

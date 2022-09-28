@@ -239,6 +239,11 @@ const routes = [
     component: () => import("@/views/DueForViralLoad.vue")
   },
   {
+    path: "/tpt_outcomes",
+    name: "TPT Outcomes",
+    component: () => import("@/views/TPTOutcomes.vue")
+  },
+  {
     path: "/vl_coverage",
     name: "VL coverage",
     component: () => import("@/views/VLCoverage.vue")
@@ -247,6 +252,11 @@ const routes = [
     path: "/sc_arv",
     name: "SC ARV report",
     component: () => import("@/views/SCARVReport.vue")
+  },
+  {
+    path: "/clinic_tx_rtt",
+    name: "Clinic Tx RTT Report",
+    component: () => import("@/views/ClinicTxRTT.vue")
   },
   {
     path: "/cleaning_tools/verification",
