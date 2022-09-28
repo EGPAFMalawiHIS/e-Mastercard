@@ -105,7 +105,14 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm"></div>
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/clinic_tx_rtt')">
+                <div class="card">
+                  <img src="../assets/report-icons/restart.png" class="btn-icon" />
+                  <p>TX RTT</p>
+                </div>
+              </div>
+            </div>
             <div class="col-sm"></div>
           </div>
         </div>        

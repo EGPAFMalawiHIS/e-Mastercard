@@ -254,6 +254,11 @@ const routes = [
     component: () => import("@/views/SCARVReport.vue")
   },
   {
+    path: "/clinic_tx_rtt",
+    name: "Clinic Tx RTT Report",
+    component: () => import("@/views/ClinicTxRTT.vue")
+  },
+  {
     path: "/cleaning_tools/verification",
     name: "Data cleaning verification",
     component: () => import("@/views/cleaning_tools/verification.vue")
