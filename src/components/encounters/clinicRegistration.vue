@@ -1097,7 +1097,6 @@ export default {
           }else{
             this.arvNumberAvailable = true
           }
-          console.log(data)
         })
       });
 
@@ -1115,12 +1114,10 @@ export default {
     followUp() {
       this.setRegistration();
       if (this.form.should_follow_up == "No") {
-        console.log("No");
         this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1066; // No answer
         this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1066; // No answer
         this.agreesToFollowUp = false;
       } else if (this.form.should_follow_up == "Yes") {
-        console.log("Yes");
         this.clinicRegistration.obs.phoneFollowUp.child.value_coded = 1065; // No answer
         this.clinicRegistration.obs.homeFollowUp.child.value_coded = 1065; // No answer
         this.agreesToFollowUp = true;
@@ -1233,14 +1230,12 @@ export default {
             date.setDate(date.getDate() - 14); //two weeks
             date = date.toDateString();
             const weekEstimate = moment(date).format("YYYY-MM-DD");
-            console.log(weekEstimate);
           }
           if (this.arvsTakenTwoWeeksPrior == "No") {
             let date = new Date();
             date.setDate(date.getDate() - 60); // 2 months
             date = date.toDateString();
             const monthEstimated = moment(date).format("YYYY-MM-DD");
-            console.log(monthEstimated);
           }
         }
         if (this.arvsTakenTwoMonthsPrior == "No") {
@@ -1249,7 +1244,6 @@ export default {
           date = date.toDateString();
           const monthEstimated = moment(date).format("YYYY-MM-DD");
           this.arvsTakenTwoWeeksPrior = "Select";
-          console.log(monthEstimated);
         }
       }
     },
@@ -1458,7 +1452,6 @@ export default {
       const testDate = moment(new Date(testDateInput)).format("YYYY-MM-DD");
 
       this.buildForRegistrationGlobalState();
-      console.log("Set Registration");
       let registration = {};
       registration = {
         encounter: this.clinicRegistration,
@@ -1518,7 +1511,6 @@ export default {
 
       if (!this.initialVitalsUnknown && this.form.ever_registered_at_clinic_value == 'Yes' && this.form.received_arv_treatment_before == 'Yes') {
         this.buildVitalsObservations();
-        console.log(this.vitalsEncounter);
         this.$emit("addEncounter", {
           initialVitals: this.vitalsEncounter
         });
@@ -1550,7 +1542,6 @@ export default {
       }
     },
     async enrollPatientIntoHIVProgram() {
-      console.log('Enrolling patient into HIV program...')
 
       const createPatientHIVProgram = () => ApiClient.post(`patients/${this.patientId}/programs`, {
         program_id: 1,
@@ -1574,8 +1565,6 @@ export default {
     },
     getPrefix: async function() {
       this.sitePrefix = await GlobalProperties.getSitePrefix();
-
-      console.log("Site Prefix: " + this.sitePrefix);
     },
     //find site prefix
     saveARVNumber: async function() {
@@ -1591,9 +1580,7 @@ export default {
         identifier_data
       );
       if (response.status === 201 || response.status === 200) {
-        console.log("ARV number OK");
       } else if (response.status === 400) {
-        console.log("ARV number already taken");
       }
     }
   },
