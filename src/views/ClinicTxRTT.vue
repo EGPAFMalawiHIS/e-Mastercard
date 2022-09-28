@@ -26,7 +26,7 @@
             <span
               @click="fetchDrillDown(props.cell_value)"
               :class="props.cell_value.length > 0 ? 'drillable' : ''"
-              >{{ props.cell_value.length }}</span
+              >{{ props.cell_value.length ? props.cell_value.length : 0 }}</span
             >
           </template>
         </vue-bootstrap4-table>
