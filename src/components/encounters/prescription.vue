@@ -55,6 +55,7 @@
 import ApiClient from "../../services/api_client";
 import EventBus from "../../services/event-bus.js";
 import moment from "moment";
+import { uniqBy } from '@/utils/arrays';
 export default {
   props: ["date"],
   data: function() {
@@ -122,19 +123,13 @@ export default {
       )
     },
     getIPT: async function() {
-      await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=INH`).then(
-        res => {
-          res.json().then(ret => {
-            this.IPTRegimens = ret;
-          });
-        }
-      );
+      await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=INH`)
+        .then(res => res.json().then(drugs => this.IPTRegimens = drugs));
     },
     getThreeHp: async function() {
       await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=INH / RFP`).then(
         res => {
           res.json().then(ret => {
-            console.log(ret)
             this.RFPplusINHRegimens = ret;
           })
         }
@@ -197,11 +192,12 @@ export default {
         }
 
       if(this.IPTquantity) {
-        this.IPTRegimens.filter(i =>  (i.frequency === 'Daily (QOD)' 
-          && this.selected3HPOption === '6H') 
-          || (this.selected3HPOption === '3HP (RFP + INH)' 
-          && i.frequency === 'Weekly (QW)'))
-        .forEach(element => {
+        const drugs = uniqBy(this.IPTRegimens.filter(drug =>  {
+          return (this.selected3HPOption === '6H' && drug.frequency === 'Daily (QOD)') 
+            || (this.selected3HPOption === '3HP (RFP + INH)' && drug.frequency === 'Weekly (QW)')
+        }), 'concept_name')
+
+        drugs.forEach(element => {
           this.selectedDrugs.push({
             drug_name: element.drug_name,
             drug_id: element.drug_id,
