@@ -33,7 +33,11 @@
         </select>
       </b-col>
     </b-row>
-    <b-row> 
+    <b-row>
+      <b-col v-if="selected3HPOption">
+        <label for="pyridoxine-quantity">Pyridoxine Quantity</label>
+        <input type="number" class="form-control" id="pyridoxine-quantity" v-model="pyridoxineQuantity" />
+      </b-col>
       <b-col v-if="['6H', '3HP (RFP + INH)'].includes(selected3HPOption)">
         <label for="IPT-quantity">IPT Quantity</label>
         <input type="number" class="form-control" id="IPT-quantity" v-model="IPTquantity" />
@@ -55,6 +59,7 @@
 import ApiClient from "../../services/api_client";
 import EventBus from "../../services/event-bus.js";
 import moment from "moment";
+import { uniqBy } from '@/utils/arrays';
 export default {
   props: ["date"],
   data: function() {
@@ -69,6 +74,7 @@ export default {
       ARVquantity: null,
       CPTquantity: null,
       IPTquantity: null,
+      pyridoxineQuantity: null,
       threeHPquantity: null,
       prescribeARVs: false,
       prescribeCPT: false,
@@ -107,7 +113,7 @@ export default {
       await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=Cotrimoxazole`).then(
         res => {
           res.json().then(ret => {
-            this.CPTRegimens = ret;
+            this.CPTRegimens = uniqBy(ret, 'concept_name');
           });
         }
       );
@@ -122,19 +128,13 @@ export default {
       )
     },
     getIPT: async function() {
-      await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=INH`).then(
-        res => {
-          res.json().then(ret => {
-            this.IPTRegimens = ret;
-          });
-        }
-      );
+      await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=INH`)
+        .then(res => res.json().then(drugs => this.IPTRegimens = uniqBy(drugs, ['concept_name', 'frequency'])));
     },
     getThreeHp: async function() {
       await ApiClient.get(`/programs/1/regimen_extras?weight=${this.weight}&name=INH / RFP`).then(
         res => {
           res.json().then(ret => {
-            console.log(ret)
             this.RFPplusINHRegimens = ret;
           })
         }
@@ -151,27 +151,28 @@ export default {
         EventBus.$emit("earliest-expiry-date", Math.min(...doses));
       }
     },
+    toDrugOrder: function(drug, quantity) {
+      return {
+        quantity,
+        drug_name: drug.drug_name,
+        drug_id: drug.drug_id,
+        units: drug.units,
+        am: drug.am,
+        pm: drug.pm,
+        frequency: drug.frequency
+      }
+    },
     saveEncounter: function() {
       let selectedRegimens = [];
       this.selectedDrugs = [];
       let currentDrugs = this.regimens[this.selectedRegimen];
-      let consultationObs= {
-        
-      }
-      if(this.ARVquantity && this.selectedRegimen) {
+      let consultationObs= {}
 
-      currentDrugs.forEach(element => {
-        this.selectedDrugs.push({
-          drug_name: element.drug_name,
-          drug_id: element.drug_id,
-          units: element.units,
-          am: element.am,
-          pm: element.pm,
-          quantity: this.ARVquantity,
-            frequency: element.frequency
+      if(this.ARVquantity && this.selectedRegimen) {
+        currentDrugs.forEach(element => {
+          this.selectedDrugs.push(this.toDrugOrder(element, this.ARVquantity));
         });
-      });
-          consultationObs.prescribeARV= {
+        consultationObs.prescribeARV= {
           concept_id : 1282,
           value_coded : 1085
         }
@@ -180,79 +181,46 @@ export default {
       if(this.CPTquantity) {
         this.CPTRegimens.filter(c => c.frequency === 'Daily (QOD)')
           .forEach(element => {
-            this.selectedDrugs.push({
-              drug_name: element.drug_name,
-              drug_id: element.drug_id,
-              units: element.units,
-              am: element.am,
-              pm: element.pm,
-              quantity: this.CPTquantity,
-              frequency: element.frequency
-            });
+            this.selectedDrugs.push(this.toDrugOrder(element, this.CPTquantity));
           });
           consultationObs.prescribeCPT= {
             concept_id : 1282,
             value_coded : 916
           }
-        }
-
-      if(this.IPTquantity) {
-        this.IPTRegimens.filter(i =>  (i.frequency === 'Daily (QOD)' 
-          && this.selected3HPOption === '6H') 
-          || (this.selected3HPOption === '3HP (RFP + INH)' 
-          && i.frequency === 'Weekly (QW)'))
-        .forEach(element => {
-          this.selectedDrugs.push({
-            drug_name: element.drug_name,
-            drug_id: element.drug_id,
-            units: element.units,
-            am: element.am,
-            pm: element.pm,
-            quantity: this.IPTquantity,
-            frequency: element.frequency
-          })
-        })
-        consultationObs.prescribeIPT= {
-          concept_id :1282,
-          value_coded : 656
-        }
       }
-
-      if (this.RFPquantity && this.selected3HPOption === "3HP (RFP + INH)") {
-        this.RFPRegimens.filter(r => r.frequency === 'Weekly (QW)')
-        .forEach(element => {
-          this.selectedDrugs.push({
-            drug_name: element.drug_name,
-            drug_id: element.drug_id,
-            units: element.units,
-            am: element.am,
-            pm: element.pm,
-            quantity: this.RFPquantity,
-            frequency: element.frequency
-          });
-        });
-        consultationObs.prescribeRFP= {
-          concept_id :1282,
-          value_coded : 9974 //Rifapentine
+      
+      if(this.selected3HPOption) {
+        const pyridoxine = this.IPTRegimens.find(({concept_name}) => concept_name === 'Pyridoxine')
+        if (pyridoxine && this.pyridoxineQuantity) {
+          this.selectedDrugs.push(this.toDrugOrder(pyridoxine, this.pyridoxineQuantity))
         }
-      }
 
-      if(this.threeHPquantity && this.selected3HPOption === "3HP (INH 300 / RFP 300)") {
-        this.RFPplusINHRegimens.filter(t => t.frequency === 'Weekly (QW)')
-        .forEach(element => {
-          this.selectedDrugs.push({
-            drug_name: element.drug_name,
-            drug_id: element.drug_id,
-            units: element.units,
-            am: element.am,
-            pm: element.pm,
-            quantity: this.threeHPquantity,
-            frequency: element.frequency
-          });
-        });
-        consultationObs.prescribeThreeHP= {
-          concept_id :1282,
-          value_coded : 10565 //Isoniazid/Rifapentine
+        if(this.IPTquantity) {
+          const INH = this.IPTRegimens.find(drug =>  drug.concept_name === "Isoniazid" && (
+            (this.selected3HPOption === '6H' && drug.frequency === 'Daily (QOD)') || 
+            (this.selected3HPOption === '3HP (RFP + INH)' && drug.frequency === 'Weekly (QW)')
+          ))
+          this.selectedDrugs.push(this.toDrugOrder(INH, this.IPTquantity))
+          consultationObs.prescribeIPT= {
+            concept_id :1282,
+            value_coded : 656
+          }
+        }
+
+        if (this.RFPquantity && this.selected3HPOption === "3HP (RFP + INH)") {
+          this.selectedDrugs.push(this.toDrugOrder(this.RFPRegimens[0], this.RFPquantity));
+          consultationObs.prescribeRFP= {
+            concept_id :1282,
+            value_coded : 9974 //Rifapentine
+          }
+        }
+
+        if(this.threeHPquantity && this.selected3HPOption === "3HP (INH 300 / RFP 300)") {
+          this.selectedDrugs.push(this.toDrugOrder(this.RFPplusINHRegimens[0], this.threeHPquantity));
+          consultationObs.prescribeThreeHP= {
+            concept_id :1282,
+            value_coded : 10565 //Isoniazid/Rifapentine
+          }
         }
       }
 
