@@ -34,10 +34,6 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col v-if="selected3HPOption">
-        <label for="pyridoxine-quantity">Pyridoxine Quantity</label>
-        <input type="number" class="form-control" id="pyridoxine-quantity" v-model="pyridoxineQuantity" />
-      </b-col>
       <b-col v-if="['6H', '3HP (RFP + INH)'].includes(selected3HPOption)">
         <label for="IPT-quantity">IPT Quantity</label>
         <input type="number" class="form-control" id="IPT-quantity" v-model="IPTquantity" />
@@ -49,6 +45,10 @@
       <b-col v-if="selected3HPOption === '3HP (INH 300 / RFP 300)'">
         <label for="3HP-quantity">3HP Quantity</label>
         <input type="number" class="form-control" id="IPT-quantity" v-model="threeHPquantity" />
+      </b-col>
+      <b-col v-if="selected3HPOption">
+        <label for="pyridoxine-quantity">Pyridoxine Quantity</label>
+        <input type="number" class="form-control" id="pyridoxine-quantity" v-model="pyridoxineQuantity" />
       </b-col>
     </b-row>
     <p/>
