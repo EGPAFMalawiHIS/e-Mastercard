@@ -45,7 +45,7 @@
         </report-overlay>
       </div>
     </div>
-    <b-modal id="modal-1" :title="`Drill Down Clients`">
+    <b-modal id="modal-1" :title="`Drill Down Clients`" size="xl">
       <!-- btable  -->
       <b-table
         striped
@@ -246,7 +246,6 @@ export default {
       })
     },
     fetchDrillDown(clients) {
-      console.log(clients);
       if (clients.length > 0) {
         this.$bvModal.show("modal-1");
         this.drillClients = clients.map(c => ({
