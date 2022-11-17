@@ -269,9 +269,6 @@ export default {
       currentPage: 1,
       period: null,
       reportLoading: false,
-      APIVersion: sessionStorage.APIVersion,
-      EMCVersion: sessionStorage.EMCVersion,
-      showLoader: false,
       slots: [
         "new_six_h",
         "new_three_p_h",
