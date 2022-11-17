@@ -52,7 +52,6 @@
         hover
         id="my-table"
         :items="drillClients"
-        :fields="columns"
         :per-page="perPage"
         :current-page="currentPage"
       ></b-table>
@@ -74,12 +73,12 @@ import Sidebar from "@/components/SideBar.vue";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import TopNav from "@/components/topNav.vue";
 import VueBootstrap4Table from "vue-bootstrap4-table";
-import moment from "moment";
 import { mapState } from "vuex";
 import { formatGender } from "../utils/str";
 import ReportService, { AGE_GROUPS, GENDERS } from "../services/report_service";
 import { uniq } from '../utils/arrays'
 import HisDate from '../services/date_utils';
+import { exportToCSV } from '../utils/exports';
 
 export default {
   name: "TbPrev",
@@ -122,8 +121,7 @@ export default {
       report.setStartDate(dates[0])
       report.setEndDate(dates[1])
       this.period = report.getDateIntervalPeriod();
-      this.reportTitle = "PEPFAR " + sessionStorage.location_name + " TB PREV report ";
-      this.reportTitle += this.period;
+      this.config.card_title += this.period;
       this.reportLoading = true;
       const data = await report.getTbPrevReport();
       this.reportLoading = false;
@@ -258,44 +256,10 @@ export default {
       }
     },
     onDownload() {
-      let y = null;
-      this.columns.forEach((element) => {
-        y += `"${element.label}",`;
-      });
-      y = y.replace("null", "");
-      this.rows.forEach((element) => {
-        y += "\n";
-        Object.keys(element).forEach((innerElement) => {
-          let value = element[innerElement];
-          if (Array.isArray(element[innerElement])) {
-            value = element[innerElement].length;
-          }
-          y += `"${value}",`;
-        });
-      });
-
-      y += "\n";
-      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")}
-                          Quarter: ${this.startDate} to ${this.endDate}
-                          e-Mastercard Version : ${sessionStorage.EMCVersion}
-                          Site UUID: ${sessionStorage.siteUUID} 
-                          API Version ${sessionStorage.APIVersion}`;
-      for (let index = 0; index < 34; index++) {
-        y += ",";
-      }
-      var csvData = new Blob([y], { type: "text/csv;charset=utf-8;" });
-      //IE11 & Edge
-      if (navigator.msSaveBlob) {
-        navigator.msSaveBlob(csvData, exportFilename);
-      } else {
-        //In FF link must be added to DOM to be clicked
-        var link = document.createElement("a");
-        link.href = window.URL.createObjectURL(csvData);
-        link.setAttribute("download", `${this.reportTitle}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+      exportToCSV(this.columns, this.rows, this.config.card_title, {
+        startDate: this.period.split('-')[0],
+        endDate: this.period.split('-')[1]
+      })
     },
   },
   data: function () {
@@ -303,33 +267,10 @@ export default {
       drillClients: [],
       perPage: 10,
       currentPage: 1,
-      columns: [
-        {
-          key: "arv_number",
-          label: "ARV Number",
-        },
-        {
-          key: "Birthdate",
-          label: "Birthdate",
-        },
-        {
-          key: "gender",
-          label: "Gender",
-        },
-        {
-          key: "tpt_initiation_date",
-          label: "TPT Initiation Date",
-        },
-        {
-          key: "outcome",
-          label: "Outcome",
-        },
-      ],
       period: null,
       reportLoading: false,
       APIVersion: sessionStorage.APIVersion,
       EMCVersion: sessionStorage.EMCVersion,
-      reportTitle: null,
       showLoader: false,
       slots: [
         "new_six_h",
@@ -400,7 +341,7 @@ export default {
         },
       ],
       config: {
-        card_title: `TB Prev`,
+        card_title: `PEPFAR TB PREV Report `,
         show_refresh_button: false,
         show_reset_button: false,
       },
