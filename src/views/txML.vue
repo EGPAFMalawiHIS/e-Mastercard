@@ -102,7 +102,7 @@ export default {
         const data = await report.getPepfarTxMLReport();
         this.reportLoading = false;
         this.buildRows(data);
-        // this.buildTotalMalesRow(data);
+        this.buildTotalMalesRow(data);
         // await this.buildMaternityRows(data, report)
       } catch (e) {
         console.error(e);
@@ -208,6 +208,24 @@ export default {
       }
 
       this.reportLoading = false;
+    },
+    aggregate(data, gender, indicatorIndex){
+      return Object.values(data).reduce((patients, c) => {
+        return c[gender] ? [...c[gender][indicatorIndex], ...patients] : patients
+      }, [])
+    },
+    buildTotalMalesRow(data) {
+      this.rows.push({
+        number: AGE_GROUPS.length * 2 + 1,
+        age_group: 'All',
+        gender: "Male",
+        died: this.aggregate(data, 'M', 0),
+        iit_less_than_3_mo: this.aggregate(data, 'M', 1),
+        iit_3_to_5_mo: this.aggregate(data, 'M', 2),
+        iit_6_plus_mo: this.aggregate(data, 'M', 3),
+        transferred_out: this.aggregate(data, 'M', 4),
+        refused: this.aggregate(data, 'M', 5)
+      })
     },
     onDownload() {
       exportToCSV(this.columns, this.rows, `PEPFAR TX ML report ${this.period}`, {
