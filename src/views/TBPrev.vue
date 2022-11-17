@@ -74,7 +74,6 @@ import ApiClient from "../services/api_client";
 import ReportOverlay from "../components/reports/ReportOverlay";
 import Sidebar from "@/components/SideBar.vue";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
-import DateUtils from "../services/date_utils";
 import TopNav from "@/components/topNav.vue";
 
 import VueBootstrap4Table from "vue-bootstrap4-table";
@@ -121,9 +120,6 @@ export default {
     async fetchDates(dates) {
       // try {
       this.initRows();
-      let group;
-      let min_age;
-      let max_age;
       this.startDate = dates[0];
       this.endDate = dates[1];
       this.reportTitle =
@@ -154,7 +150,6 @@ export default {
     },
 
     buildReportData(data) {
-      let number = 0;
       this.rows = [];
       this.GENDERS.forEach((gender) => {
         this.ageGroups.forEach((age_group, index) => {
@@ -203,22 +198,10 @@ export default {
       var age = results.person.birthdate;
       var gender = results.person.gender;
       var identifier = "";
-      var patient_name =
-        results.person.names[0].given_name +
-        " " +
-        results.person.names[0].family_name;
-
-      var arv_number = results.patient_identifiers.filter((el) => {
-        return el.identifier_type === 4 ? el.identifier : "";
-      });
       try {
         var addressl1 = results.person.addresses[0].city_village;
-        var addressl2 = results.person.addresses[0].address2;
-        var phone_number = results.person.person_attributes[1].value;
       } catch (e) {
         var addressl1 = "";
-        var addressl2 = "";
-        var phone_number = "";
       }
       try {
         for (
