@@ -139,12 +139,12 @@ export default {
     },
     buildReportRows(data) {
       this.rows = [];
+      let number = 1;
       GENDERS.forEach((gender) => {
         AGE_GROUPS.forEach((age_group, index) => {
-          const number = gender === "F" ? index + 1 : index + 12 + 1;
           const constantsData = data[age_group][gender];
           this.rows.push({
-            number,
+            number: number++,
             age_group,
             gender: formatGender(gender),
             new_three_p_h: constantsData["3HP"].started_new_on_art,
@@ -162,7 +162,7 @@ export default {
     },
     buildTotalMalesRow(data){
       this.rows.push({
-        number: AGE_GROUPS.length * 2,
+        number: AGE_GROUPS.length * 2 + 1,
         age_group: 'All',
         gender: "Male",
         new_three_p_h: this.aggregate(data, "M", "3HP", "started_new_on_art"),
@@ -176,7 +176,7 @@ export default {
       })
     },
     async buildMaternityRows(data, report) {
-      let number = AGE_GROUPS.length * 2 + 1;
+      let number = AGE_GROUPS.length * 2 + 2;
       const indicators = [
         'started_new_on_art',
         'started_previously_on_art',
