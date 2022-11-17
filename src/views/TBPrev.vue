@@ -69,8 +69,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import ApiClient from "../services/api_client";
 import ReportOverlay from "../components/reports/ReportOverlay";
 import Sidebar from "@/components/SideBar.vue";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
@@ -81,6 +79,7 @@ import { mapState } from "vuex";
 import { formatGender } from "../utils/str";
 import ReportService, { AGE_GROUPS, GENDERS } from "../services/report_service";
 import { uniq } from '../utils/arrays'
+import HisDate from '../services/date_utils';
 
 export default {
   name: "TbPrev",
@@ -245,58 +244,19 @@ export default {
         comp_prev_three_p_h: fP('FBf', "3HP", "completed_previously_on_art"),
         comp_prev_six_h: fP('FBf', "6H", "completed_previously_on_art"),
       })
-
-      console.log(this.rows)
-  },
+    },
     fetchDrillDown(clients) {
       console.log(clients);
       if (clients.length > 0) {
         this.$bvModal.show("modal-1");
-        this.drillClients = [];
-        clients.forEach((element) => {
-          this.getClient(element.patient_id);
-        });
+        this.drillClients = clients.map(c => ({
+          arv_number: c.arv_number,
+          birthdate: HisDate.localDate(c.birthdate),
+          gender: formatGender(c.gender),
+          tpt_initiation_date: HisDate.localDate(c.tpt_initiation_date),
+          outcome: c.outcome
+        }))
       }
-    },
-    getClient: async function (id) {
-      let url = "patients/" + id;
-
-      const response = await ApiClient.get(url, {}, {});
-
-      if (response.status === 200) {
-        response
-          .json()
-          .then((data) => this.drillClients.push(this.parsePatient(data)));
-      }
-    },
-    parsePatient(results) {
-      var age = results.person.birthdate;
-      var gender = results.person.gender;
-      var identifier = "";
-      try {
-        var addressl1 = results.person.addresses[0].city_village;
-      } catch (e) {
-        var addressl1 = "";
-      }
-      try {
-        for (
-          var index = 0;
-          index < results.patient_identifiers.length;
-          index++
-        ) {
-          if (results.patient_identifiers[index]["identifier_type"] == 4) {
-            identifier = results.patient_identifiers[index]["identifier"];
-          }
-        }
-      } catch (e) {
-        console.log(e);
-      }
-      var toPush = {};
-      toPush.dob = age;
-      toPush.arv_number = identifier;
-      toPush.gender = formatGender(gender);
-      toPush.current_village = addressl1;
-      return toPush;
     },
     onDownload() {
       let y = null;
@@ -350,16 +310,20 @@ export default {
           label: "ARV Number",
         },
         {
-          key: "dob",
-          label: "DOB",
+          key: "Birthdate",
+          label: "Birthdate",
         },
         {
           key: "gender",
           label: "Gender",
         },
         {
-          key: "current_village",
-          label: "Village",
+          key: "tpt_initiation_date",
+          label: "TPT Initiation Date",
+        },
+        {
+          key: "outcome",
+          label: "Outcome",
         },
       ],
       period: null,

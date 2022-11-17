@@ -2,7 +2,7 @@ import moment from 'moment';
 
 export default (() => {
   const ISO_FORMAT = 'YYYY-MM-DD';
-  const LOCAL_FORMAT = 'DD/MM/YYYY';
+  const LOCAL_FORMAT = 'DD/MMM/YYYY';
 
   /**
    * Returns quarter in which date belongs.
