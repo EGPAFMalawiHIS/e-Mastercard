@@ -84,4 +84,8 @@ export default class ReportService {
   async getTbPrevReport() {
     return this.getReport('/programs/1/reports/tb_prev2')
   }
+
+  async getPepfarTxMLReport() {
+    return this.getReport('/tx_ml')
+  }
 }
