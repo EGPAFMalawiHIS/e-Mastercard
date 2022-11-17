@@ -22,3 +22,11 @@ export function formatGender (gender) {
   gender = gender.toLowerCase();
   return gender === "m" || gender === "male" ? "Male" : "Female"
 }
+
+export function parameterizeObjToString(obj) {
+  let str = ''
+  for(const [key, value] of Object.entries(obj)) {
+      str += `${key}=${value}&`
+  }
+  return str
+}
