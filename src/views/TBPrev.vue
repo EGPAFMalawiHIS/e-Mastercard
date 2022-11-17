@@ -75,14 +75,14 @@ import ReportOverlay from "../components/reports/ReportOverlay";
 import Sidebar from "@/components/SideBar.vue";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import TopNav from "@/components/topNav.vue";
-
 import VueBootstrap4Table from "vue-bootstrap4-table";
-
 import moment from "moment";
 import { mapState } from "vuex";
 import { formatGender } from "../utils/str";
+import ReportService, { AGE_GROUPS, GENDERS } from "../services/report_service";
+
 export default {
-  name: "txML",
+  name: "TbPrev",
   components: {
     ReportOverlay,
     "top-nav": TopNav,
@@ -96,15 +96,14 @@ export default {
     },
     initRows: function () {
       this.rows = [];
-      var client_sex = ["F", "M"];
-      let num = 0;
-      client_sex.forEach((element) => {
-        this.ageGroups.forEach((el, index) => {
-          num = num + 1;
+      let number = 0;
+      GENDERS.forEach((gender) => {
+        this.ageGroups.forEach((age_group) => {
+          number = number + 1;
           this.rows.push({
-            number: num,
-            age_group: el,
-            gender: element,
+            gender,
+            number,
+            age_group,
             new_six_h: 0,
             new_three_p_h: 0,
             prev_six_h: 0,
@@ -118,41 +117,23 @@ export default {
       });
     },
     async fetchDates(dates) {
-      // try {
       this.initRows();
-      this.startDate = dates[0];
-      this.endDate = dates[1];
-      this.reportTitle =
-        "PEPFAR " + sessionStorage.location_name + " TB PREV report ";
-      this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
-      this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
+      const report = new ReportService();
+      report.setStartDate(dates[0])
+      report.setEndDate(dates[1])
+      this.period = report.getDateIntervalPeriod();
+      this.reportTitle = "PEPFAR " + sessionStorage.location_name + " TB PREV report ";
+      this.reportTitle += this.period;
       this.reportLoading = true;
-      let url_path =
-        "programs/1/reports/tb_prev2?start_date=" +
-        this.startDate +
-        "&date=" +
-        moment().format("YYYY-MM-DD");
-      url_path += "&end_date=" + this.endDate;
-      console.log(url_path);
-      this.loadData(url_path);
-    },
-    async loadData(url) {
-      await ApiClient.get(url, {}, {}).then((res) => {
-        res.json().then((f) => {
-          if (Object.keys(f).length > 0) {
-            console.log(f);
-            this.buildReportData(f);
-          } else {
-            this.reportLoading = false;
-          }
-        });
-      });
+      const data = await report.getTbPrevReport();
+      this.reportLoading = false;
+      this.buildReportRows(data);
     },
 
-    buildReportData(data) {
+    buildReportRows(data) {
       this.rows = [];
-      this.GENDERS.forEach((gender) => {
-        this.ageGroups.forEach((age_group, index) => {
+      GENDERS.forEach((gender) => {
+        AGE_GROUPS.forEach((age_group, index) => {
           const number = gender === "F" ? index + 1 : index + 12 + 1;
           const constantsData = data[age_group][gender];
           this.rows.push({
@@ -165,13 +146,32 @@ export default {
             prev_six_h: constantsData["6H"].started_previously_on_art,
             comp_new_three_h: constantsData["3HP"].completed_new_on_art,
             comp_new_six_h: constantsData["6H"].completed_new_on_art,
-            comp_prev_three_p_h:
-              constantsData["3HP"].completed_previously_on_art,
+            comp_prev_three_p_h: constantsData["3HP"].completed_previously_on_art,
             comp_prev_six_h: constantsData["6H"].completed_previously_on_art,
           });
         });
       });
       this.reportLoading = false;
+    },
+    aggregate(data, gender, tptType, indicator) {
+      return Object.values(data).reduce((patients, curr) => {
+        return patients.concat(curr[gender][tptType][indicator])
+      }, [])
+    },
+    buildTotalMalesRow(data){
+      this.rows.push({
+        number: AGE_GROUPS.length,
+        age_group: 'All',
+        gender: "Male",
+        new_three_p_h: this.aggregate(data, "M", "3HP", "started_new_on_art"),
+        new_six_h: this.aggregate(data, "M", "6H", "started_new_on_art"),
+        prev_three_p_h: this.aggregate(data, "M", "3HP", "started_previously_on_art"),
+        prev_six_h: this.aggregate(data, "M", "6H", "started_previously_on_art"),
+        comp_new_three_h: this.aggregate(data, "M", "3HP", "completed_new_on_art"),
+        comp_new_six_h: this.aggregate(data, "M", "6H", "completed_new_on_art"),
+        comp_prev_three_p_h: this.aggregate(data, "M", "3HP", "completed_previously_on_art"),
+        comp_prev_six_h: this.aggregate(data, "M", "6H", "completed_previously_on_art"),
+      })
     },
     fetchDrillDown(clients) {
       console.log(clients);
@@ -266,7 +266,6 @@ export default {
   },
   data: function () {
     return {
-      GENDERS: ["F", "M"],
       drillClients: [],
       perPage: 10,
       currentPage: 1,
@@ -288,34 +287,11 @@ export default {
           label: "Village",
         },
       ],
-      startDate: null,
-      endDate: null,
+      period: null,
       reportLoading: false,
       APIVersion: sessionStorage.APIVersion,
       EMCVersion: sessionStorage.EMCVersion,
       reportTitle: null,
-      ageGroups: [
-        '<1 year',
-        '1-4 years', 
-        '5-9 years', 
-        '10-14 years', 
-        '15-19 years', 
-        '20-24 years', 
-        '25-29 years', 
-        '30-34 years', 
-        '35-39 years', 
-        '40-44 years', 
-        '45-49 years', 
-        '50-54 years',
-        '55-59 years',
-        '60-64 years',
-        '65-69 years',
-        '70-74 years',
-        '75-79 years',
-        '80-84 years',
-        '85-89 years',
-        '90 plus years'
-      ],
       showLoader: false,
       slots: [
         "new_six_h",
