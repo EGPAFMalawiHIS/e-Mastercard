@@ -77,6 +77,7 @@ import { mapState } from "vuex";
 import { formatGender } from "../utils/str";
 import ReportService, { AGE_GROUPS, GENDERS } from '../services/report_service';
 import { exportToCSV } from "../utils/exports";
+import date_utils from '../services/date_utils';
 
 export default {
   name: "txML",
@@ -150,7 +151,7 @@ export default {
         console.log(e);
       }
       var toPush = {};
-      toPush.dob = age;
+      toPush.dob = age ? date_utils.localDate(age) : '';
       toPush.arv_number = identifier;
       toPush.gender = formatGender(gender);
       toPush.current_village = addressl1;
