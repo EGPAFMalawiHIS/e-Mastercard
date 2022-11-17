@@ -80,6 +80,7 @@ import moment from "moment";
 import { mapState } from "vuex";
 import { formatGender } from "../utils/str";
 import ReportService, { AGE_GROUPS, GENDERS } from "../services/report_service";
+import { uniq } from '../utils/arrays'
 
 export default {
   name: "TbPrev",
@@ -98,7 +99,7 @@ export default {
       this.rows = [];
       let number = 0;
       GENDERS.forEach((gender) => {
-        this.ageGroups.forEach((age_group) => {
+        AGE_GROUPS.forEach((age_group) => {
           number = number + 1;
           this.rows.push({
             gender,
@@ -128,8 +129,14 @@ export default {
       const data = await report.getTbPrevReport();
       this.reportLoading = false;
       this.buildReportRows(data);
+      this.buildTotalMalesRow(data);
+      await this.buildMaternityRows(data, report)
     },
-
+    aggregate(data, gender, tptType, indicator) {
+      return Object.values(data).reduce((patients, curr) => {
+        return patients.concat(curr[gender][tptType][indicator])
+      }, [])
+    },
     buildReportRows(data) {
       this.rows = [];
       GENDERS.forEach((gender) => {
@@ -153,14 +160,9 @@ export default {
       });
       this.reportLoading = false;
     },
-    aggregate(data, gender, tptType, indicator) {
-      return Object.values(data).reduce((patients, curr) => {
-        return patients.concat(curr[gender][tptType][indicator])
-      }, [])
-    },
     buildTotalMalesRow(data){
       this.rows.push({
-        number: AGE_GROUPS.length,
+        number: AGE_GROUPS.length * 2,
         age_group: 'All',
         gender: "Male",
         new_three_p_h: this.aggregate(data, "M", "3HP", "started_new_on_art"),
@@ -173,6 +175,79 @@ export default {
         comp_prev_six_h: this.aggregate(data, "M", "6H", "completed_previously_on_art"),
       })
     },
+    async buildMaternityRows(data, report) {
+      let number = AGE_GROUPS.length * 2 + 1;
+      const indicators = [
+        'started_new_on_art',
+        'started_previously_on_art',
+        'completed_new_on_art',
+        'completed_previously_on_art'
+      ].reduce((aggregated, indicator) => [
+        ...aggregated,
+        { tpt: '3HP', indicator, patients: this.aggregate(data, 'F', '3HP', indicator) },
+        { tpt: '6H', indicator, patients: this.aggregate(data, 'F', '6H', indicator) }
+      ], [])
+
+      const allFemales = uniq(indicators.reduce((totals, cur) => totals.concat(cur.patients), []).map(p => p.patient_id)) 
+      const maternalStatus = await report.getMaternalStatus(allFemales)
+      const allPregnant = maternalStatus.FBf.concat(maternalStatus.FP)
+
+      const groupBy = (indicator, tpt) => indicators.reduce((all, i) => {
+        return i.indicator === indicator && tpt === i.tpt ? all.concat(i.patients) : all
+      }, [])
+
+      const fP = (femaleGroup, tpt, indicator) => {
+        return groupBy(indicator, tpt).filter((patient) => maternalStatus[femaleGroup].includes(patient.patient_id))
+      }
+
+      const fnP = (tpt, indicator) => {
+        return groupBy(indicator, tpt).filter((patient) => !allPregnant.includes(patient.patient_id))
+      }
+
+      this.rows.push({
+        number: number++,
+        age_group: 'All',
+        gender: "FP",
+        new_three_p_h: fP('FP', "3HP", "started_new_on_art"),
+        new_six_h: fP('FP', "6H", "started_new_on_art"),
+        prev_three_p_h: fP('FP', "3HP", "started_previously_on_art"),
+        prev_six_h: fP('FP', "6H", "started_previously_on_art"),
+        comp_new_three_h: fP('FP', "3HP", "completed_new_on_art"),
+        comp_new_six_h: fP('FP', "6H", "completed_new_on_art"),
+        comp_prev_three_p_h: fP('FP', "3HP", "completed_previously_on_art"),
+        comp_prev_six_h: fP('FP', "6H", "completed_previously_on_art"),
+      })
+
+      this.rows.push({
+        number: number++,
+        age_group: 'All',
+        gender: "FNP",
+        new_three_p_h: fnP("3HP", "started_new_on_art"),
+        new_six_h: fnP("6H", "started_new_on_art"),
+        prev_three_p_h: fnP("3HP", "started_previously_on_art"),
+        prev_six_h: fnP("6H", "started_previously_on_art"),
+        comp_new_three_h: fnP("3HP", "completed_new_on_art"),
+        comp_new_six_h: fnP("6H", "completed_new_on_art"),
+        comp_prev_three_p_h: fnP("3HP", "completed_previously_on_art"),
+        comp_prev_six_h: fnP("6H", "completed_previously_on_art"),
+      })
+
+      this.rows.push({
+        number: number++,
+        age_group: 'All',
+        gender: "FBF",
+        new_three_p_h: fP('FBf', "3HP", "started_new_on_art"),
+        new_six_h: fP('FBf', "6H", "started_new_on_art"),
+        prev_three_p_h: fP('FBf', "3HP", "started_previously_on_art"),
+        prev_six_h: fP('FBf', "6H", "started_previously_on_art"),
+        comp_new_three_h: fP('FBf', "3HP", "completed_new_on_art"),
+        comp_new_six_h: fP('FBf', "6H", "completed_new_on_art"),
+        comp_prev_three_p_h: fP('FBf', "3HP", "completed_previously_on_art"),
+        comp_prev_six_h: fP('FBf', "6H", "completed_previously_on_art"),
+      })
+
+      console.log(this.rows)
+  },
     fetchDrillDown(clients) {
       console.log(clients);
       if (clients.length > 0) {

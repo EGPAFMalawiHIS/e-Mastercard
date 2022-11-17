@@ -13,3 +13,13 @@ export function uniqBy(arr, key) {
     return [uniqueKey, item]
   })).values()]
 }
+
+/**
+ * Get distinct items from an array with possible duplicates
+ * 
+ * @param {Array} arr list of items
+ * @returns list of distinct items
+ */
+export function uniq(arr) {
+  return arr.filter((value, index, self) => self.indexOf(value) === index)
+}

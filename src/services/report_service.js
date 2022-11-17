@@ -75,7 +75,10 @@ export default class ReportService {
   getMaternalStatus(patientIds) {
     const params = { report_definition: 'pepfar' }
     const data = { 'patient_ids': patientIds }
-    return ApiClient.post(`${'/vl_maternal_status'}?${this.buildRequestParams(params)}`, data)
+    return ApiClient
+      .post(`${'/vl_maternal_status'}?${this.buildRequestParams(params)}`, data)
+      .then(res => res.json())
+      .catch(e => console.log(e))
   }
 
   async getTbPrevReport() {
