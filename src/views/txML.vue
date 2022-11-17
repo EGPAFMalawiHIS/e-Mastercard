@@ -78,6 +78,7 @@ import { formatGender } from "../utils/str";
 import ReportService, { AGE_GROUPS, GENDERS } from '../services/report_service';
 import { exportToCSV } from "../utils/exports";
 import date_utils from '../services/date_utils';
+import { uniq } from '../utils/arrays'
 
 export default {
   name: "txML",
@@ -104,7 +105,7 @@ export default {
         this.reportLoading = false;
         this.buildRows(data);
         this.buildTotalMalesRow(data);
-        // await this.buildMaternityRows(data, report)
+        await this.buildMaternityRows(data, report)
       } catch (e) {
         console.error(e);
         this.$router.push({ name: "error", params: { message: e.message } });
@@ -226,6 +227,63 @@ export default {
         iit_6_plus_mo: this.aggregate(data, 'M', 3),
         transferred_out: this.aggregate(data, 'M', 4),
         refused: this.aggregate(data, 'M', 5)
+      })
+    },
+    async buildMaternityRows(data, report) {
+      let counter = AGE_GROUPS.length * 2 + 2;
+      const indicators = [...Array(5).keys()].reduce((aggregated, index) => [
+        ...aggregated, 
+        { indicator: index, data: this.aggregate(data, 'F', index)}
+      ], [])
+      const allFemales = uniq(indicators.reduce((totals, cur) => [...totals, ...cur.data], []).map((id) => id))
+      const maternalStatus = await report.getMaternalStatus(allFemales)
+      const allPregnant = maternalStatus.FBf.concat(maternalStatus.FP)
+      
+      const groupBy = (indicator) => {
+        return indicators.reduce((all, i) => i.indicator === indicator ?all.concat(i.data) : all, [])
+      }
+
+      const fP = (femaleGroup, indicator) => {
+        return groupBy(indicator).filter((patient) => maternalStatus[femaleGroup].includes(patient))
+      }
+
+
+      const fnP = (indicator) => {
+        return groupBy(indicator).filter((patient) => !allPregnant.includes(patient))
+      }
+
+      this.rows.push({
+        number: counter++,
+        age_group: 'All',
+        gender: "FP",
+        died: fP("FP", 0),
+        iit_less_than_3_mo: fP("FP", 1),
+        iit_3_to_5_mo: fP("FP", 2),
+        iit_6_plus_mo: fP("FP", 3),
+        transferred_out: fP("FP", 4),
+        refused: fP("FP", 5)
+      })
+      this.rows.push({
+        number: counter++,
+        age_group: 'All',
+        gender: "FNP",
+        died: fnP(0),
+        iit_less_than_3_mo: fnP(1),
+        iit_3_to_5_mo: fnP(2),
+        iit_6_plus_mo: fnP(3),
+        transferred_out: fnP(4),
+        refused: fnP(5)
+      })
+      this.rows.push({
+        number: counter++,
+        age_group: 'All',
+        gender: "FBF",
+        died: fP("FBf", 0),
+        iit_less_than_3_mo: fP("FBf", 1),
+        iit_3_to_5_mo: fP("FBf", 2),
+        iit_6_plus_mo: fP("FBf", 3),
+        transferred_out: fP("FBf", 4),
+        refused: fP("FBf", 5)
       })
     },
     onDownload() {
