@@ -21,7 +21,7 @@
             <template slot="sort-desc-icon">&#8595;</template>
             <template slot="no-sort-icon">&#8593;&#8595;</template>
             <template v-for="slot in slots" :slot="slot" slot-scope="props">
-              <span @click="drillDown(props.cell_value)" :class="props.cell_value.length > 0 ? 'drillable' : ''">
+              <span @click="drillDown(props.cell_value)" :key="slot" :class="props.cell_value.length > 0 ? 'drillable' : ''">
                 {{ props.cell_value.length }}
               </span>
             </template>
@@ -56,10 +56,10 @@ import Sidebar from "@/components/SideBar.vue";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import TopNav from "@/components/topNav.vue";
 import VueBootstrap4Table from "vue-bootstrap4-table";
-import moment from "moment";
 import { mapState } from "vuex";
 import { exportToCSV } from "../utils/exports";
 import { formatGender } from "../utils/str";
+import ReportService from '../services/report_service';
 
 export default {
   name: "TPTOutcomes",
@@ -71,23 +71,15 @@ export default {
   },
   methods: {
     async fetchDates(dates) {
+      const report = new ReportService();
+      report.setStartDate(dates[0])
+      report.setEndDate(dates[1])
+      this.period = report.getDateIntervalPeriod();
+      this.config.card_title += this.period;
       this.reportLoading = true;
-      this.startDate = dates[0];
-      this.endDate = dates[1];
-      this.config.card_title += " " + moment(dates[0]).format("DDMMMYYYY");
-      this.config.card_title += " - " + moment(dates[1]).format("DDMMMYYYY");
-       let url_path = '/programs/1/reports/tpt_outcome?start_date=' + this.startDate + "&date=" + moment().format('YYYY-MM-DD');
-      url_path += "&end_date=" + this.endDate + "&program_id=1";
-      await this.loadData(url_path);
+      const data = await report.getTptOutcomesReport();
       this.reportLoading = false;
-    },
-    async loadData(url) {
-      await ApiClient.get(url, {}, {}).then((res) => {
-        res.json().then((data) => {
-          this.rows = data.sort((a, b) => a.tpt_type > b.tpt_type ? 1 : 0).map((d, i) => ({number: i, ...d}))
-        });
-      });
-   
+      this.rows = data.sort((a, b) => a.tpt_type > b.tpt_type ? 1 : 0).map((d, i) => ({number: i, ...d}))
     },
     drillDown(clients) {
       if (clients.length > 0) {
@@ -132,23 +124,14 @@ export default {
       toPush.current_village = addressl1;
       return toPush;
     },
-    toExportableFormat(rows){
-      return rows.map(row => {
-        const obj = {}
-        for (const key in row) {
-          obj[key] = Array.isArray(row[key]) ? row[key].length : row[key]
-        }
-        return obj
-      })
-    },
     onDownload() {
       exportToCSV(
         this.columns,
-        this.toExportableFormat(this.rows),
+        this.rows,
         this.config.card_title,
         {
-          startDate: this.startDate,
-          endDate: this.endDate,
+          startDate: this.period.split('-')[0],
+          endDate: this.period.split('-')[1]
         }
       )
     },
@@ -158,8 +141,7 @@ export default {
       drillClients: [],
       perPage: 10,
       currentPage: 1,
-      startDate: null,
-      endDate: null,
+      period: null,
       reportLoading: false,
       slots: [
         'started_tpt',
@@ -236,7 +218,7 @@ export default {
         },
       ],
       config: {
-        card_title: `TPT Outcomes`,
+        card_title: `TPT Outcomes Report `,
         show_refresh_button: false,
         show_reset_button: false,
       },

@@ -92,4 +92,8 @@ export default class ReportService {
   async getPepfarTxRttReport(){
     return this.getReport('/tx_rtt')
   }
+
+  async getTptOutcomesReport(){
+    return this.getReport('/programs/1/reports/tpt_outcome')
+  }
 }
