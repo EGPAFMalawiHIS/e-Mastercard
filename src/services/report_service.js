@@ -88,4 +88,8 @@ export default class ReportService {
   async getPepfarTxMLReport() {
     return this.getReport('/tx_ml')
   }
+
+  async getPepfarTxRttReport(){
+    return this.getReport('/tx_rtt')
+  }
 }
