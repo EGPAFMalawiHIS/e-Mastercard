@@ -94,7 +94,7 @@ export default {
         report.setEndDate(dates[1])
         this.period = report.getDateIntervalPeriod();
         this.reportLoading = true;
-        const data = await report.getPepfarTxMLReport();
+        const data = await report.getPepfarTxRttReport();
         this.reportLoading = false;
         this.buildRows(data);
         this.buildTotalMalesRow();
