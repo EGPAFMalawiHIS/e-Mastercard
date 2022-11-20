@@ -85,7 +85,7 @@ export default {
           slot_name: "birthdate",
         },
         {
-          label: "Start Date",
+          label: "ART Start Date",
           name: "art_start_date",
           slot_name: "start_date",
         },
@@ -94,7 +94,7 @@ export default {
           name: "current_weight",
         },
         {
-          label: "Regimen",
+          label: "Curr. Reg",
           name: "current_regimen",
         },
         {
@@ -103,7 +103,7 @@ export default {
           slot_name: "medication",
         },
         {
-          label: "Dispensed Date",
+          label: "Curr. Reg Dispensed",
           name: "dispensed_date",
           slot_name: "dispensed_date",
         },
