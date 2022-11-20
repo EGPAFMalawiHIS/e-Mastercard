@@ -113,6 +113,14 @@
                 </div>
               </div>
             </div>
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/clinic_retention_report')">
+                <div class="card">
+                  <img src="../assets/report-icons/restart.png" class="btn-icon" />
+                  <p>Retention</p>
+                </div>
+              </div>
+            </div>
             <div class="col-sm"></div>
           </div>
         </div>        

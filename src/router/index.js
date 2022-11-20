@@ -259,6 +259,11 @@ const routes = [
     component: () => import("@/views/ClinicTxRTT.vue")
   },
   {
+    path: '/clinic_retention_report',
+    name: "Clinic Retention Report",
+    component: () => import('@/views/ClinicRetention.vue')
+  },
+  {
     path: "/cleaning_tools/verification",
     name: "Data cleaning verification",
     component: () => import("@/views/cleaning_tools/verification.vue")

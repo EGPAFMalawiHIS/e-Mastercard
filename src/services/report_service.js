@@ -96,4 +96,8 @@ export default class ReportService {
   async getTptOutcomesReport(){
     return this.getReport('/programs/1/reports/tpt_outcome')
   }
+
+  getClientRentention() {
+    return this.getReport(`/programs/1/reports/retention`)
+  }
 }
