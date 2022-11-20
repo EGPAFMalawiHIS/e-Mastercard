@@ -100,4 +100,8 @@ export default class ReportService {
   getClientRentention() {
     return this.getReport(`/programs/1/reports/retention`)
   }
+
+  getViralLoadResults(range) {
+    return this.getReport(`/programs/${this.programID}/reports/high_vl_patients`, { range })
+  }
 }

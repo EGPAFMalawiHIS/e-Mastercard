@@ -264,6 +264,11 @@ const routes = [
     component: () => import('@/views/ClinicRetention.vue')
   },
   {
+    path: '/clinic_vl_report',
+    name: "Clinic vl report",
+    component: () => import("@/views/ClinicViralLoad.vue")
+   },
+  {
     path: "/cleaning_tools/verification",
     name: "Data cleaning verification",
     component: () => import("@/views/cleaning_tools/verification.vue")

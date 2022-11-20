@@ -121,6 +121,14 @@
                 </div>
               </div>
             </div>
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/clinic_vl_report')">
+                <div class="card">
+                  <img src="../assets/report-icons/vl.png" class="btn-icon" />
+                  <p>Viral Load</p>
+                </div>
+              </div>
+            </div>
             <div class="col-sm"></div>
           </div>
         </div>        
