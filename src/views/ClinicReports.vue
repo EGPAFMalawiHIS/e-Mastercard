@@ -116,8 +116,18 @@
             <div class="col-sm">
               <div class="btn-container" @click="redirect('/clinic_retention_report')">
                 <div class="card">
-                  <img src="../assets/report-icons/restart.png" class="btn-icon" />
+                  <img src="../assets/report-icons/retention.png" class="btn-icon" />
                   <p>Retention</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/clinic_vl_report')">
+                <div class="card">
+                  <img src="../assets/report-icons/defaulter-list.png" class="btn-icon" />
+                  <p>Other Outcomes</p>
                 </div>
               </div>
             </div>
@@ -129,10 +139,17 @@
                 </div>
               </div>
             </div>
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/clinic_vl_report')">
+                <div class="card">
+                  <img src="../assets/report-icons/lab-results.png" class="btn-icon" />
+                  <p>Lab Results</p>
+                </div>
+              </div>
+            </div>
             <div class="col-sm"></div>
           </div>
         </div>        
-        <!-- Page Content end -->
       </div>
     </div>
 
