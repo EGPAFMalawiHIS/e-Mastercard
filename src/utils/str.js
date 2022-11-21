@@ -19,6 +19,7 @@ export function sanitize(str) {
 }
 
 export function formatGender (gender) {
+  if(gender.match(/fb|fbf|fnp/i)) return gender.toUpperCase();
   gender = gender.toLowerCase();
   return gender === "m" || gender === "male" ? "Male" : "Female"
 }
