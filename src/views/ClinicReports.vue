@@ -124,7 +124,7 @@
           </div>
           <div class="row">
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/clinic_vl_report')">
+              <div class="btn-container" @click="redirect('/clinic_other_outcomes')">
                 <div class="card">
                   <img src="../assets/report-icons/defaulter-list.png" class="btn-icon" />
                   <p>Other Outcomes</p>

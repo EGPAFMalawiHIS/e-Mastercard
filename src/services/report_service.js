@@ -104,4 +104,8 @@ export default class ReportService {
   getViralLoadResults(range) {
     return this.getReport(`/programs/${this.programID}/reports/high_vl_patients`, { range })
   }
+
+  getOtherOutcome(outcome) {
+    return this.getReport('patient_outcome_list', { outcome })
+  }
 }

@@ -272,6 +272,11 @@ const routes = [
     path: "/cleaning_tools/verification",
     name: "Data cleaning verification",
     component: () => import("@/views/cleaning_tools/verification.vue")
+  },
+  {
+    path: '/clinic_other_outcomes',
+    name: 'Clinic Other Outcomes',
+    component: () => import("@/views/OtherOutcomes.vue")
   }
 ]
 
