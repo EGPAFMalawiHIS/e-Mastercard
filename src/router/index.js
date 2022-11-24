@@ -277,6 +277,11 @@ const routes = [
     path: '/clinic_other_outcomes',
     name: 'Clinic Other Outcomes',
     component: () => import("@/views/OtherOutcomes.vue")
+  },
+  {
+    path: '/clinic_lab_results_report',
+    name: 'Clinic Lab Results',
+    component: () => import("@/views/ClinicLabResults.vue")
   }
 ]
 

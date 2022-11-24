@@ -140,7 +140,7 @@
               </div>
             </div>
             <div class="col-sm">
-              <div class="btn-container" @click="redirect('/clinic_vl_report')">
+              <div class="btn-container" @click="redirect('/clinic_lab_results_report')">
                 <div class="card">
                   <img src="../assets/report-icons/lab-results.png" class="btn-icon" />
                   <p>Lab Results</p>

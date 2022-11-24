@@ -405,7 +405,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .drillable {
   color: blue;
   text-decoration: underline;

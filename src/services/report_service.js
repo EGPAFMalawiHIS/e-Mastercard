@@ -45,6 +45,10 @@ export default class ReportService {
     this.startDate = date;
   }
 
+  setProgramID(id) {
+    this.programID = id;
+  }
+
   setEndDate(date) {
     this.endDate = date;
   }
@@ -107,5 +111,13 @@ export default class ReportService {
 
   getOtherOutcome(outcome) {
     return this.getReport('patient_outcome_list', { outcome })
+  }
+
+  getSamplesDrawnReport() {
+    return this.getReport('samples_drawn')
+  }
+  
+  getLabResultsReport() {
+      return this.getReport(`lab_test_results`)
   }
 }
