@@ -134,7 +134,7 @@
               </div>
             </div>
             <div class="form-row">
-              <div class="form-group col-md-6 input-column">
+              <div class="form-group col-md-6 input-column" v-if="isMilitarySite">
                 <label class="input-label" for="occupation">Occupation (*)</label>
                 <select
                   v-model="$v.form.occupation.$model"
@@ -1331,7 +1331,7 @@ export default {
     this.initileWizard();
     GlobalPropertiesService
       .getProp(Properties.MILITARY_SITE)
-      .then(prop => this.isMilitarySite = prop[Properties.MILITARY_SITE])
+      .then(prop => this.isMilitarySite = prop[Properties.MILITARY_SITE]  === 'true')
   }
 };
 </script> 
