@@ -37,6 +37,15 @@
           </option>
         </select>
       </div>
+
+      <div class="col-4" v-if="isMilitarySite">
+        <select id="occupation" v-model="occupation">
+          <option selected disabled hidden value="">Filter by occupation</option>
+          <option>All</option>
+          <option>Civilian</option>
+          <option>Military</option>
+        </select>
+      </div>
       
       <div class="col-4">
         <div class="row">
@@ -70,12 +79,15 @@
 import DatePick from "vue-date-pick";
 import "vue-date-pick/dist/vueDatePick.css";
 import fecha from 'fecha';
+import global_properties from '../services/global_properties';
 export default {
   data: function () {
     return {
       quarters: [],
       startDate: "",
       endDate: "",
+      occupation: "",
+      isMilitarySite: false,
       format: "YYYY-MM-DD",
       qtr: "Select cohort quarter"
     };
@@ -94,13 +106,20 @@ export default {
     formatDate(dateObj, format) {
         return fecha.format(dateObj, format);
     },
-    selectQuarter: function (e) {
+    selectQuarter: function (regenerate) {
       //this.$refs.myid.disabled=true;
-      let qtr = quarters.value ? [quarters.value, e, this.startDate, this.endDate] : [];
-      //let qtr = (quarters.value ? quarters.value : null);
-        qtr[2] =  this.startDate;
-        qtr[3] =  this.endDate;
-      this.onSubmit(qtr);
+      // let qtr = quarters.value ? { quarter: quarters.value, regenerate, :this.startDate, this.endDate} : [];
+      // qtr.push(occupation || "All")
+      //   qtr[2] =  this.startDate;
+      //   qtr[3] =  this.endDate;
+
+      this.onSubmit({
+        regenerate,
+        quarter: quarters.value,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        occupation: this.occupation || "All"
+      });
     },
     enableBTN: function () {
       this.$refs.myid.disabled = false;
@@ -166,6 +185,7 @@ export default {
   },
   mounted() {
     this.loadQuarters();
+    global_properties.isMilitarySite().then(v => this.isMilitarySite = v)
   },
 };
 // loadQuarters();

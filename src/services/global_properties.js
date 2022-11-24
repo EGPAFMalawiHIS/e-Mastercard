@@ -28,5 +28,9 @@ export default (() => {
   async function getSiteUUID() {
     return (await getProp(Properties.SITE_UUID))[Properties.SITE_UUID];
   }
-  return {getSitePrefix, getSiteUUID, getProp, setProp};
+
+  async function isMilitarySite() {
+    return (await getProp(Properties.MILITARY_SITE))[Properties.MILITARY_SITE] === 'true'
+  }
+  return {getSitePrefix, getSiteUUID, getProp, setProp, isMilitarySite};
 })();
