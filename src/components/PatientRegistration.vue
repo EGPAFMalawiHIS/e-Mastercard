@@ -143,7 +143,7 @@
                   class="form-control"
                   v-bind:style="(!$v.form.occupation.required || !$v.form.occupation.filterOption) && $v.form.occupation.$dirty ? 'border: 1.5px solid red;' : ''"
                 >
-                  <option disabled>Select Occupation</option>
+                  <option value="" disabled>Select Occupation</option>
                   <option value="Military">Military</option>
                   <option value="Civilian">Civilian</option>
                 </select>
@@ -652,7 +652,7 @@ export default {
         guardian_phone_number: "",
         home_village: "Select Home Village",
         land_mark: "Select Landmark",
-        occupation: "Select Occupation",
+        occupation: "",
       },
       isMilitarySite: false,
       Date: new Date(),
