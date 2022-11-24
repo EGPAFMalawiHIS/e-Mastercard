@@ -41,6 +41,16 @@
             </div>
           </div>
         </div>
+        <div class="col-md-3" v-if="isMilitarySite">
+          <div class="row" @click="$bvModal.show('patient-info-modal')">
+            <div class="col-md-6">
+              <p>Occupation</p>
+            </div>
+            <div class="col-md-6 information editable">
+              <p>{{occupation}}</p>
+            </div>
+          </div>
+        </div>
         <div class="col-md-3">
           <div class="row" @click="$bvModal.show('patient-info-modal')">
             <div class="col-md-6">
@@ -54,10 +64,20 @@
         <div class="col-md-3">
           <div class="row">
             <div class="col-md-6">
-              <p>Initial Weight and height</p>
+              <p>Initial Weight (kg)</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{initialWeight}}kg and {{initialHeight}}cm</p>
+              <p>{{initialWeight}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-6">
+              <p>Initial height (cm)</p>
+            </div>
+            <div class="col-md-6 information">
+              <p>{{initialHeight}}</p>
             </div>
           </div>
         </div>
@@ -125,10 +145,20 @@
         <div class="col-md-3">
           <div class="row">
             <div class="col-md-6">
-              <p>Date and Place of HIV Test</p>
+              <p>Date of HIV Test</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{dateOfHIVTest}} {{placeOfHIVTest}}</p>
+              <p>{{dateOfHIVTest}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-6">
+              <p>Place of HIV Test</p>
+            </div>
+            <div class="col-md-6 information">
+              <p>{{placeOfHIVTest}}</p>
             </div>
           </div>
         </div>
@@ -260,6 +290,15 @@
             :options="[{ text: 'Male', value: 'M' }, { text: 'Female', value: 'F' }]"
             v-model="updatedSex"
           ></b-form-select>
+          <template v-if="isMilitarySite">
+            <label for="input-occupation">Occupation</label>
+            <b-form-select
+              id="inline-form-custom-select-pref"
+              class="mb-2 mr-sm-2 mb-sm-0"
+              :options="[{ text: 'Military', value: 'Military' }, { text: 'Civilian', value: 'Civilian' }]"
+              v-model="updatedOccupation"
+            ></b-form-select>
+          </template>
           <label for="example-datepicker">Date of birth</label>
           <b-form-datepicker id="example-datepicker" class="mb-2" v-model="updatedDOB"></b-form-datepicker>
 
@@ -307,9 +346,12 @@ import GlobalProperties from "@/services/global_properties";
 import {conditions} from "../services/staging_condition_service.js";
 import moment from "moment";
 import date_utils from '../services/date_utils';
+import GlobalPropertiesService, { Properties } from '../services/global_properties';
+
 export default {
   data: function() {
     return {
+      isMilitarySite: false,
       arvNumber: null,
       arv_num: null,
       name: null,
@@ -319,6 +361,8 @@ export default {
       sex: null,
       updatedDOB: null,
       updatedSex: null,
+      occupation: null,
+      updatedOccupation: null,
       dob: null,
       initialWeight: null,
       initialHeight: null,
@@ -330,7 +374,6 @@ export default {
       ti: null,
       location: null,
       landmark: null,
-      occupation: null,
       nameOfGuardian: null,
       dateOfHIVTest: null,
       placeOfHIVTest: null,
@@ -703,6 +746,9 @@ export default {
       if (this.updatedSex !== this.sex) {
         params.gender = this.updatedSex;
       }
+      if (this.updatedOccupation !== this.ocupation) {
+        params.occupation = this.updatedOccupation;
+      }
       if (this.updatedPhoneNumber !== this.phoneNumber) {
         if(!this.numberState) {
           errors.push("fix phone number");
@@ -731,6 +777,9 @@ export default {
           }
           if (this.updatedSex !== this.sex) {
             this.sex = this.updatedSex;
+          }
+          if(this.updatedOccupation !== this.occupation) {
+            this.occupation = this.updatedOccupation;
           }
           if (this.updatedPhoneNumber !== this.phoneNumber) {
             this.phoneNumber = this.updatedPhoneNumber;
@@ -946,6 +995,7 @@ export default {
         19
       );
       this.occupation = this.getAtribute(patient.person.person_attributes, 13);
+      this.updatedOccupation = this.getAtribute(patient.person.person_attributes, 13);
       this.phoneNumber = this.getAtribute(patient.person.person_attributes, 12);
       this.updatedPhoneNumber = this.getAtribute(
         patient.person.person_attributes,
@@ -963,7 +1013,10 @@ export default {
       };
       this.$store.commit("setPatient", personObj);
     });
-    
+    GlobalPropertiesService
+      .getProp(Properties.MILITARY_SITE)
+      .then(prop => this.isMilitarySite = prop[Properties.MILITARY_SITE]  === 'true')
+
     this.getGuardian();
     this.getStartDate();
     EventBus.$on('reload-first-visits', payload => {
