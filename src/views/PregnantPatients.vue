@@ -24,6 +24,9 @@
             <template slot="birthdate" slot-scope="props">
               {{ moment(props.cell_value).format("DD/MMM/YYYY") }}
             </template>
+            <template slot="gender" slot-scope="props">
+              {{ formatGender(props.cell_value) }}
+            </template>
             <template slot="patient_id" slot-scope="props">
               <button
                 type="button"
