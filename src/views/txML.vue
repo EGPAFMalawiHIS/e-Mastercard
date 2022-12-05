@@ -36,7 +36,7 @@
         </report-overlay>
       </div>
     </div>
-    <b-modal id="modal-1" :title="`Drill Down Clients`">
+    <b-modal id="modal-1" :title="`Drill Down Clients`" size="xl">
       <!-- btable  -->
       <b-table
         striped
@@ -71,14 +71,15 @@ import ApiClient from "../services/api_client";
 import ReportOverlay from "../components/reports/ReportOverlay";
 import Sidebar from "@/components/SideBar.vue";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
-import DateUtils from "../services/date_utils";
 import TopNav from "@/components/topNav.vue";
-
 import VueBootstrap4Table from "vue-bootstrap4-table";
-
-import moment from "moment";
 import { mapState } from "vuex";
 import { formatGender } from "../utils/str";
+import ReportService, { AGE_GROUPS, GENDERS } from '../services/report_service';
+import { exportToCSV } from "../utils/exports";
+import date_utils from '../services/date_utils';
+import { uniq } from '../utils/arrays'
+
 export default {
   name: "txML",
   components: {
@@ -95,38 +96,26 @@ export default {
     async fetchDates(dates) {
       this.rows = [];
       try {
-        this.startDate = dates[0];
-        this.endDate = dates[1];
-        this.reportTitle =
-          "PEPFAR " + sessionStorage.location_name + " TX ML report ";
-        this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
-        this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
+        const report = new ReportService();
+        report.setStartDate(dates[0])
+        report.setEndDate(dates[1])
+        this.period = report.getDateIntervalPeriod();
         this.reportLoading = true;
-        await this.loadXLdata();
+        const data = await report.getPepfarTxMLReport();
+        this.reportLoading = false;
+        this.buildRows(data);
+        this.buildTotalMalesRow(data);
+        await this.buildMaternityRows(data, report)
       } catch (e) {
         console.error(e);
-        this.router.push({ name: "error", params: { message: e.message } });
-      }
-    },
-    loadXLdata: async function () {
-      let url = "tx_ml?date=" + moment().format("YYYY-MM-DD");
-      url += "&start_date=" + this.startDate;
-      url += "&end_date=" + this.endDate;
-      url += "&program_id=1";
-
-      const response = await ApiClient.get(url);
-
-      if (response.status === 200) {
-        this.loadGroupData(await response.json());
+        this.$router.push({ name: "error", params: { message: e.message } });
       }
     },
     fetchDrillDown(clients) {
       if (clients.length > 0) {
         this.$bvModal.show("modal-1");
         this.drillClients = [];
-        clients.forEach((element) => {
-          this.getClient(element);
-        });
+        clients.forEach((id) => this.getClient(id));
       }
     },
     getClient: async function (id) {
@@ -144,22 +133,10 @@ export default {
       var age = results.person.birthdate;
       var gender = results.person.gender;
       var identifier = "";
-      var patient_name =
-        results.person.names[0].given_name +
-        " " +
-        results.person.names[0].family_name;
-
-      var arv_number = results.patient_identifiers.filter((el) => {
-        return el.identifier_type === 4 ? el.identifier : "";
-      });
       try {
         var addressl1 = results.person.addresses[0].city_village;
-        var addressl2 = results.person.addresses[0].address2;
-        var phone_number = results.person.person_attributes[1].value;
       } catch (e) {
         var addressl1 = "";
-        var addressl2 = "";
-        var phone_number = "";
       }
       try {
         for (
@@ -175,59 +152,52 @@ export default {
         console.log(e);
       }
       var toPush = {};
-      toPush.dob = age;
+      toPush.dob = age ? date_utils.localDate(age) : '';
       toPush.arv_number = identifier;
       toPush.gender = formatGender(gender);
       toPush.current_village = addressl1;
       return toPush;
     },
     hasRow(age_group, gender) {
-
       return this.rows.filter((element) => { element.age_group === age_group && element.gender === gender } ).length > 0;
     },
-    loadGroupData(data) {
+    buildRows(data) {
       let counter = 1;
-      let report_gender = ["F", "M"];
-      let set_age_groups = this.ageGroups;
-
-      for (let j = 0; j < report_gender.length; j++) {
-        for (let i = 0; i < set_age_groups.length; i++) {
-          let age_group = set_age_groups[i];
+      for (const gender of GENDERS) {
+        for (const age_group of AGE_GROUPS) {
           if (data.hasOwnProperty(age_group)) {
-            let gender = data[age_group];
-            let sex = report_gender[j];
-              if (gender.hasOwnProperty(sex) && !this.hasRow(age_group, sex)) {
-
-                let numbers = gender[sex];
-                this.rows.push({
-                  number: counter++,
-                  age_group: age_group,
-                  gender: formatGender(sex),
-                  died: numbers[0],
-                  iit_less_than_3_mo: numbers[1],
-                  iit_3_to_5_mo: numbers[2],
-                  iit_6_plus_mo: numbers[3],
-                  transferred_out: numbers[4],
-                  refused: numbers[5]
-                });
-              } else {
-                this.rows.push({
-                  number: counter++,
-                  age_group: set_age_groups[i],
-                  gender: formatGender(report_gender[j]),
-                  died: 0,
-                  iit_less_than_3_mo: 0,
-                  iit_3_to_5_mo: 0,
-                  iit_6_plus_mo: 0,
-                  transferred_out: 0,
-                  refused: 0
-                });
-              }
+            let groupData = data[age_group];
+            if (groupData.hasOwnProperty(gender) && !this.hasRow(age_group, gender)) {
+              let numbers = groupData[gender];
+              this.rows.push({
+                number: counter++,
+                age_group: age_group,
+                gender: formatGender(gender),
+                died: numbers[0],
+                iit_less_than_3_mo: numbers[1],
+                iit_3_to_5_mo: numbers[2],
+                iit_6_plus_mo: numbers[3],
+                transferred_out: numbers[4],
+                refused: numbers[5]
+              });
+            } else {
+              this.rows.push({
+                age_group,
+                number: counter++,
+                gender: formatGender(gender),
+                died: 0,
+                iit_less_than_3_mo: 0,
+                iit_3_to_5_mo: 0,
+                iit_6_plus_mo: 0,
+                transferred_out: 0,
+                refused: 0
+              });
+            }
           } else {
             this.rows.push({
+              age_group,
               number: counter++,
-              age_group: set_age_groups[i],
-              gender: formatGender(report_gender[j]),
+              gender: formatGender(gender),
               died: 0,
               iit_less_than_3_mo: 0,
               iit_3_to_5_mo: 0,
@@ -241,45 +211,86 @@ export default {
 
       this.reportLoading = false;
     },
-    onDownload() {
-      let y = null;
-      this.columns.forEach((element) => {
-        y += `"${element.label}",`;
-      });
-      y = y.replace("null", "");
-      this.rows.forEach((element) => {
-        y += "\n";
-        Object.keys(element).forEach((innerElement) => {
-          let value = element[innerElement];
-          if (Array.isArray(element[innerElement])) {
-            value = element[innerElement].length;
-          }
-          y += `"${value}",`;
-        });
-      });
+    aggregate(data, gender, indicatorIndex){
+      return Object.values(data).reduce((patients, c) => {
+        return c[gender] ? [...c[gender][indicatorIndex], ...patients] : patients
+      }, [])
+    },
+    buildTotalMalesRow(data) {
+      this.rows.push({
+        number: AGE_GROUPS.length * 2 + 1,
+        age_group: 'All',
+        gender: "Male",
+        died: this.aggregate(data, 'M', 0),
+        iit_less_than_3_mo: this.aggregate(data, 'M', 1),
+        iit_3_to_5_mo: this.aggregate(data, 'M', 2),
+        iit_6_plus_mo: this.aggregate(data, 'M', 3),
+        transferred_out: this.aggregate(data, 'M', 4),
+        refused: this.aggregate(data, 'M', 5)
+      })
+    },
+    async buildMaternityRows(data, report) {
+      let counter = AGE_GROUPS.length * 2 + 2;
+      const indicators = [...Array(5).keys()].reduce((aggregated, index) => [
+        ...aggregated, 
+        { indicator: index, data: this.aggregate(data, 'F', index)}
+      ], [])
+      const allFemales = uniq(indicators.reduce((totals, cur) => [...totals, ...cur.data], []).map((id) => id))
+      const maternalStatus = await report.getMaternalStatus(allFemales)
+      const allPregnant = maternalStatus.FBf.concat(maternalStatus.FP)
+      
+      const groupBy = (indicator) => {
+        return indicators.reduce((all, i) => i.indicator === indicator ?all.concat(i.data) : all, [])
+      }
 
-      y += "\n";
-      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")}
-                          Quarter: ${this.startDate} to ${this.endDate}
-                          e-Mastercard Version : ${sessionStorage.EMCVersion} 
-                          Site UUID: ${sessionStorage.siteUUID} 
-                          API Version ${sessionStorage.APIVersion}`;
-      for (let index = 0; index < 34; index++) {
-        y += ",";
+      const fP = (femaleGroup, indicator) => {
+        return groupBy(indicator).filter((patient) => maternalStatus[femaleGroup].includes(patient))
       }
-      var csvData = new Blob([y], { type: "text/csv;charset=utf-8;" });
-      //IE11 & Edge
-      if (navigator.msSaveBlob) {
-        navigator.msSaveBlob(csvData, exportFilename);
-      } else {
-        //In FF link must be added to DOM to be clicked
-        var link = document.createElement("a");
-        link.href = window.URL.createObjectURL(csvData);
-        link.setAttribute("download", `${this.reportTitle}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+
+
+      const fnP = (indicator) => {
+        return groupBy(indicator).filter((patient) => !allPregnant.includes(patient))
       }
+
+      this.rows.push({
+        number: counter++,
+        age_group: 'All',
+        gender: "FP",
+        died: fP("FP", 0),
+        iit_less_than_3_mo: fP("FP", 1),
+        iit_3_to_5_mo: fP("FP", 2),
+        iit_6_plus_mo: fP("FP", 3),
+        transferred_out: fP("FP", 4),
+        refused: fP("FP", 5)
+      })
+      this.rows.push({
+        number: counter++,
+        age_group: 'All',
+        gender: "FNP",
+        died: fnP(0),
+        iit_less_than_3_mo: fnP(1),
+        iit_3_to_5_mo: fnP(2),
+        iit_6_plus_mo: fnP(3),
+        transferred_out: fnP(4),
+        refused: fnP(5)
+      })
+      this.rows.push({
+        number: counter++,
+        age_group: 'All',
+        gender: "FBF",
+        died: fP("FBf", 0),
+        iit_less_than_3_mo: fP("FBf", 1),
+        iit_3_to_5_mo: fP("FBf", 2),
+        iit_6_plus_mo: fP("FBf", 3),
+        transferred_out: fP("FBf", 4),
+        refused: fP("FBf", 5)
+      })
+    },
+    onDownload() {
+      exportToCSV(this.columns, this.rows, `PEPFAR TX ML report ${this.period}`, {
+        startDate: this.period.split('-')[0],
+        endDate: this.period.split('-')[1]
+      })
     },
   },
   data: function () {
@@ -305,35 +316,8 @@ export default {
           label: "Village",
         },
       ],
-      startDate: null,
-      endDate: null,
+      period: null,
       reportLoading: false,
-      APIVersion: sessionStorage.APIVersion,
-      EMCVersion: sessionStorage.EMCVersion,
-      reportTitle: null,
-      ageGroups: [
-        '<1 year',
-        '1-4 years', 
-        '5-9 years', 
-        '10-14 years', 
-        '15-19 years', 
-        '20-24 years', 
-        '25-29 years', 
-        '30-34 years', 
-        '35-39 years', 
-        '40-44 years', 
-        '45-49 years', 
-        '50-54 years',
-        '55-59 years',
-        '60-64 years',
-        '65-69 years',
-        '70-74 years',
-        '75-79 years',
-        '80-84 years',
-        '85-89 years',
-        '90 plus years'
-      ],
-      showLoader: false,
       slots: [
         "died",
         "iit_less_than_3_mo",
@@ -421,7 +405,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .drillable {
   color: blue;
   text-decoration: underline;

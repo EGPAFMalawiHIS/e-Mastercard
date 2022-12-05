@@ -19,6 +19,15 @@ export function sanitize(str) {
 }
 
 export function formatGender (gender) {
+  if(gender.match(/fb|fbf|fnp/i)) return gender.toUpperCase();
   gender = gender.toLowerCase();
   return gender === "m" || gender === "male" ? "Male" : "Female"
+}
+
+export function parameterizeObjToString(obj) {
+  let str = ''
+  for(const [key, value] of Object.entries(obj)) {
+      str += `${key}=${value}&`
+  }
+  return str
 }

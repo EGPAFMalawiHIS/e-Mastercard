@@ -45,14 +45,13 @@
         </report-overlay>
       </div>
     </div>
-    <b-modal id="modal-1" :title="`Drill Down Clients`">
+    <b-modal id="modal-1" :title="`Drill Down Clients`" size="xl">
       <!-- btable  -->
       <b-table
         striped
         hover
         id="my-table"
         :items="drillClients"
-        :fields="columns"
         :per-page="perPage"
         :current-page="currentPage"
       ></b-table>
@@ -69,21 +68,20 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import ApiClient from "../services/api_client";
 import ReportOverlay from "../components/reports/ReportOverlay";
 import Sidebar from "@/components/SideBar.vue";
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
-import DateUtils from "../services/date_utils";
 import TopNav from "@/components/topNav.vue";
-
 import VueBootstrap4Table from "vue-bootstrap4-table";
-
-import moment from "moment";
 import { mapState } from "vuex";
 import { formatGender } from "../utils/str";
+import ReportService, { AGE_GROUPS, GENDERS } from "../services/report_service";
+import { uniq } from '../utils/arrays'
+import HisDate from '../services/date_utils';
+import { exportToCSV } from '../utils/exports';
+
 export default {
-  name: "txML",
+  name: "TbPrev",
   components: {
     ReportOverlay,
     "top-nav": TopNav,
@@ -97,15 +95,14 @@ export default {
     },
     initRows: function () {
       this.rows = [];
-      var client_sex = ["F", "M"];
-      let num = 0;
-      client_sex.forEach((element) => {
-        this.ageGroups.forEach((el, index) => {
-          num = num + 1;
+      let number = 0;
+      GENDERS.forEach((gender) => {
+        AGE_GROUPS.forEach((age_group) => {
+          number = number + 1;
           this.rows.push({
-            number: num,
-            age_group: el,
-            gender: element,
+            gender,
+            number,
+            age_group,
             new_six_h: 0,
             new_three_p_h: 0,
             prev_six_h: 0,
@@ -119,49 +116,32 @@ export default {
       });
     },
     async fetchDates(dates) {
-      // try {
       this.initRows();
-      let group;
-      let min_age;
-      let max_age;
-      this.startDate = dates[0];
-      this.endDate = dates[1];
-      this.reportTitle =
-        "PEPFAR " + sessionStorage.location_name + " TB PREV report ";
-      this.reportTitle += moment(dates[0]).format("DDMMMYYYY");
-      this.reportTitle += " - " + moment(dates[1]).format("DDMMMYYYY");
+      const report = new ReportService();
+      report.setStartDate(dates[0])
+      report.setEndDate(dates[1])
+      this.period = report.getDateIntervalPeriod();
+      this.config.card_title += this.period;
       this.reportLoading = true;
-      let url_path =
-        "programs/1/reports/tb_prev2?start_date=" +
-        this.startDate +
-        "&date=" +
-        moment().format("YYYY-MM-DD");
-      url_path += "&end_date=" + this.endDate;
-      console.log(url_path);
-      this.loadData(url_path);
+      const data = await report.getTbPrevReport();
+      this.reportLoading = false;
+      this.buildReportRows(data);
+      this.buildTotalMalesRow(data);
+      await this.buildMaternityRows(data, report)
     },
-    async loadData(url) {
-      await ApiClient.get(url, {}, {}).then((res) => {
-        res.json().then((f) => {
-          if (Object.keys(f).length > 0) {
-            console.log(f);
-            this.buildReportData(f);
-          } else {
-            this.reportLoading = false;
-          }
-        });
-      });
+    aggregate(data, gender, tptType, indicator) {
+      return Object.values(data).reduce((patients, curr) => {
+        return patients.concat(curr[gender][tptType][indicator])
+      }, [])
     },
-
-    buildReportData(data) {
-      let number = 0;
+    buildReportRows(data) {
       this.rows = [];
-      this.GENDERS.forEach((gender) => {
-        this.ageGroups.forEach((age_group, index) => {
-          const number = gender === "F" ? index + 1 : index + 12 + 1;
+      let number = 1;
+      GENDERS.forEach((gender) => {
+        AGE_GROUPS.forEach((age_group, index) => {
           const constantsData = data[age_group][gender];
           this.rows.push({
-            number,
+            number: number++,
             age_group,
             gender: formatGender(gender),
             new_three_p_h: constantsData["3HP"].started_new_on_art,
@@ -170,170 +150,125 @@ export default {
             prev_six_h: constantsData["6H"].started_previously_on_art,
             comp_new_three_h: constantsData["3HP"].completed_new_on_art,
             comp_new_six_h: constantsData["6H"].completed_new_on_art,
-            comp_prev_three_p_h:
-              constantsData["3HP"].completed_previously_on_art,
+            comp_prev_three_p_h: constantsData["3HP"].completed_previously_on_art,
             comp_prev_six_h: constantsData["6H"].completed_previously_on_art,
           });
         });
       });
       this.reportLoading = false;
     },
+    buildTotalMalesRow(data){
+      this.rows.push({
+        number: AGE_GROUPS.length * 2 + 1,
+        age_group: 'All',
+        gender: "Male",
+        new_three_p_h: this.aggregate(data, "M", "3HP", "started_new_on_art"),
+        new_six_h: this.aggregate(data, "M", "6H", "started_new_on_art"),
+        prev_three_p_h: this.aggregate(data, "M", "3HP", "started_previously_on_art"),
+        prev_six_h: this.aggregate(data, "M", "6H", "started_previously_on_art"),
+        comp_new_three_h: this.aggregate(data, "M", "3HP", "completed_new_on_art"),
+        comp_new_six_h: this.aggregate(data, "M", "6H", "completed_new_on_art"),
+        comp_prev_three_p_h: this.aggregate(data, "M", "3HP", "completed_previously_on_art"),
+        comp_prev_six_h: this.aggregate(data, "M", "6H", "completed_previously_on_art"),
+      })
+    },
+    async buildMaternityRows(data, report) {
+      let number = AGE_GROUPS.length * 2 + 2;
+      const indicators = [
+        'started_new_on_art',
+        'started_previously_on_art',
+        'completed_new_on_art',
+        'completed_previously_on_art'
+      ].reduce((aggregated, indicator) => [
+        ...aggregated,
+        { tpt: '3HP', indicator, patients: this.aggregate(data, 'F', '3HP', indicator) },
+        { tpt: '6H', indicator, patients: this.aggregate(data, 'F', '6H', indicator) }
+      ], [])
+
+      const allFemales = uniq(indicators.reduce((totals, cur) => totals.concat(cur.patients), []).map(p => p.patient_id)) 
+      const maternalStatus = await report.getMaternalStatus(allFemales)
+      const allPregnant = maternalStatus.FBf.concat(maternalStatus.FP)
+
+      const groupBy = (indicator, tpt) => indicators.reduce((all, i) => {
+        return i.indicator === indicator && tpt === i.tpt ? all.concat(i.patients) : all
+      }, [])
+
+      const fP = (femaleGroup, tpt, indicator) => {
+        return groupBy(indicator, tpt).filter((patient) => maternalStatus[femaleGroup].includes(patient.patient_id))
+      }
+
+      const fnP = (tpt, indicator) => {
+        return groupBy(indicator, tpt).filter((patient) => !allPregnant.includes(patient.patient_id))
+      }
+
+      this.rows.push({
+        number: number++,
+        age_group: 'All',
+        gender: "FP",
+        new_three_p_h: fP('FP', "3HP", "started_new_on_art"),
+        new_six_h: fP('FP', "6H", "started_new_on_art"),
+        prev_three_p_h: fP('FP', "3HP", "started_previously_on_art"),
+        prev_six_h: fP('FP', "6H", "started_previously_on_art"),
+        comp_new_three_h: fP('FP', "3HP", "completed_new_on_art"),
+        comp_new_six_h: fP('FP', "6H", "completed_new_on_art"),
+        comp_prev_three_p_h: fP('FP', "3HP", "completed_previously_on_art"),
+        comp_prev_six_h: fP('FP', "6H", "completed_previously_on_art"),
+      })
+
+      this.rows.push({
+        number: number++,
+        age_group: 'All',
+        gender: "FNP",
+        new_three_p_h: fnP("3HP", "started_new_on_art"),
+        new_six_h: fnP("6H", "started_new_on_art"),
+        prev_three_p_h: fnP("3HP", "started_previously_on_art"),
+        prev_six_h: fnP("6H", "started_previously_on_art"),
+        comp_new_three_h: fnP("3HP", "completed_new_on_art"),
+        comp_new_six_h: fnP("6H", "completed_new_on_art"),
+        comp_prev_three_p_h: fnP("3HP", "completed_previously_on_art"),
+        comp_prev_six_h: fnP("6H", "completed_previously_on_art"),
+      })
+
+      this.rows.push({
+        number: number++,
+        age_group: 'All',
+        gender: "FBF",
+        new_three_p_h: fP('FBf', "3HP", "started_new_on_art"),
+        new_six_h: fP('FBf', "6H", "started_new_on_art"),
+        prev_three_p_h: fP('FBf', "3HP", "started_previously_on_art"),
+        prev_six_h: fP('FBf', "6H", "started_previously_on_art"),
+        comp_new_three_h: fP('FBf', "3HP", "completed_new_on_art"),
+        comp_new_six_h: fP('FBf', "6H", "completed_new_on_art"),
+        comp_prev_three_p_h: fP('FBf', "3HP", "completed_previously_on_art"),
+        comp_prev_six_h: fP('FBf', "6H", "completed_previously_on_art"),
+      })
+    },
     fetchDrillDown(clients) {
-      console.log(clients);
       if (clients.length > 0) {
         this.$bvModal.show("modal-1");
-        this.drillClients = [];
-        clients.forEach((element) => {
-          this.getClient(element.patient_id);
-        });
+        this.drillClients = clients.map(c => ({
+          arv_number: c.arv_number,
+          birthdate: HisDate.localDate(c.birthdate),
+          gender: formatGender(c.gender),
+          tpt_initiation_date: HisDate.localDate(c.tpt_initiation_date),
+          outcome: c.outcome
+        }))
       }
-    },
-    getClient: async function (id) {
-      let url = "patients/" + id;
-
-      const response = await ApiClient.get(url, {}, {});
-
-      if (response.status === 200) {
-        response
-          .json()
-          .then((data) => this.drillClients.push(this.parsePatient(data)));
-      }
-    },
-    parsePatient(results) {
-      var age = results.person.birthdate;
-      var gender = results.person.gender;
-      var identifier = "";
-      var patient_name =
-        results.person.names[0].given_name +
-        " " +
-        results.person.names[0].family_name;
-
-      var arv_number = results.patient_identifiers.filter((el) => {
-        return el.identifier_type === 4 ? el.identifier : "";
-      });
-      try {
-        var addressl1 = results.person.addresses[0].city_village;
-        var addressl2 = results.person.addresses[0].address2;
-        var phone_number = results.person.person_attributes[1].value;
-      } catch (e) {
-        var addressl1 = "";
-        var addressl2 = "";
-        var phone_number = "";
-      }
-      try {
-        for (
-          var index = 0;
-          index < results.patient_identifiers.length;
-          index++
-        ) {
-          if (results.patient_identifiers[index]["identifier_type"] == 4) {
-            identifier = results.patient_identifiers[index]["identifier"];
-          }
-        }
-      } catch (e) {
-        console.log(e);
-      }
-      var toPush = {};
-      toPush.dob = age;
-      toPush.arv_number = identifier;
-      toPush.gender = formatGender(gender);
-      toPush.current_village = addressl1;
-      return toPush;
     },
     onDownload() {
-      let y = null;
-      this.columns.forEach((element) => {
-        y += `"${element.label}",`;
-      });
-      y = y.replace("null", "");
-      this.rows.forEach((element) => {
-        y += "\n";
-        Object.keys(element).forEach((innerElement) => {
-          let value = element[innerElement];
-          if (Array.isArray(element[innerElement])) {
-            value = element[innerElement].length;
-          }
-          y += `"${value}",`;
-        });
-      });
-
-      y += "\n";
-      y += `Date Created:  ${moment().format("YYYY-MM-DD:h:m:s")}
-                          Quarter: ${this.startDate} to ${this.endDate}
-                          e-Mastercard Version : ${sessionStorage.EMCVersion}
-                          Site UUID: ${sessionStorage.siteUUID} 
-                          API Version ${sessionStorage.APIVersion}`;
-      for (let index = 0; index < 34; index++) {
-        y += ",";
-      }
-      var csvData = new Blob([y], { type: "text/csv;charset=utf-8;" });
-      //IE11 & Edge
-      if (navigator.msSaveBlob) {
-        navigator.msSaveBlob(csvData, exportFilename);
-      } else {
-        //In FF link must be added to DOM to be clicked
-        var link = document.createElement("a");
-        link.href = window.URL.createObjectURL(csvData);
-        link.setAttribute("download", `${this.reportTitle}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+      exportToCSV(this.columns, this.rows, this.config.card_title, {
+        startDate: this.period.split('-')[0],
+        endDate: this.period.split('-')[1]
+      })
     },
   },
   data: function () {
     return {
-      GENDERS: ["F", "M"],
       drillClients: [],
       perPage: 10,
       currentPage: 1,
-      columns: [
-        {
-          key: "arv_number",
-          label: "ARV Number",
-        },
-        {
-          key: "dob",
-          label: "DOB",
-        },
-        {
-          key: "gender",
-          label: "Gender",
-        },
-        {
-          key: "current_village",
-          label: "Village",
-        },
-      ],
-      startDate: null,
-      endDate: null,
+      period: null,
       reportLoading: false,
-      APIVersion: sessionStorage.APIVersion,
-      EMCVersion: sessionStorage.EMCVersion,
-      reportTitle: null,
-      ageGroups: [
-        '<1 year',
-        '1-4 years', 
-        '5-9 years', 
-        '10-14 years', 
-        '15-19 years', 
-        '20-24 years', 
-        '25-29 years', 
-        '30-34 years', 
-        '35-39 years', 
-        '40-44 years', 
-        '45-49 years', 
-        '50-54 years',
-        '55-59 years',
-        '60-64 years',
-        '65-69 years',
-        '70-74 years',
-        '75-79 years',
-        '80-84 years',
-        '85-89 years',
-        '90 plus years'
-      ],
-      showLoader: false,
       slots: [
         "new_six_h",
         "new_three_p_h",
@@ -403,7 +338,7 @@ export default {
         },
       ],
       config: {
-        card_title: `TB Prev`,
+        card_title: `PEPFAR TB PREV Report `,
         show_refresh_button: false,
         show_reset_button: false,
       },

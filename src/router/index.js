@@ -259,9 +259,29 @@ const routes = [
     component: () => import("@/views/ClinicTxRTT.vue")
   },
   {
+    path: '/clinic_retention_report',
+    name: "Clinic Retention Report",
+    component: () => import('@/views/ClinicRetention.vue')
+  },
+  {
+    path: '/clinic_vl_report',
+    name: "Clinic vl report",
+    component: () => import("@/views/ClinicViralLoad.vue")
+   },
+  {
     path: "/cleaning_tools/verification",
     name: "Data cleaning verification",
     component: () => import("@/views/cleaning_tools/verification.vue")
+  },
+  {
+    path: '/clinic_other_outcomes',
+    name: 'Clinic Other Outcomes',
+    component: () => import("@/views/OtherOutcomes.vue")
+  },
+  {
+    path: '/clinic_lab_results_report',
+    name: 'Clinic Lab Results',
+    component: () => import("@/views/ClinicLabResults.vue")
   }
 ]
 

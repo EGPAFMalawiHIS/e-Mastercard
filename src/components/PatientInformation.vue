@@ -54,30 +54,30 @@
         <div class="col-md-3">
           <div class="row">
             <div class="col-md-6">
-              <p>Initial Weight</p>
+              <p>Initial Weight and height</p>
             </div>
             <div class="col-md-6 information">
-              <p>{{initialWeight}}</p>
+              <p>{{initialWeight}}kg and {{initialHeight}}cm</p>
             </div>
           </div>
         </div>
         <div class="col-md-3">
           <div class="row">
             <div class="col-md-6">
-              <p>Initial Height</p>
-            </div>
-            <div class="col-md-6 information">
-              <p>{{initialHeight}}</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="row">
-            <div class="col-md-6">
-              <p>BMI</p>
+              <p>Initial BMI</p>
             </div>
             <div class="col-md-6 information">
               <p>{{bmi}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-6">
+              <p>Latest VL Result</p>
+            </div>
+            <div class="col-md-6 information">
+              <p>{{latestVLResult}}</p>
             </div>
           </div>
         </div>
@@ -306,6 +306,7 @@ import EventBus from "../services/event-bus.js";
 import GlobalProperties from "@/services/global_properties";
 import {conditions} from "../services/staging_condition_service.js";
 import moment from "moment";
+import date_utils from '../services/date_utils';
 export default {
   data: function() {
     return {
@@ -325,6 +326,7 @@ export default {
       pregnant: null,
       breastfeeding:  null,
       bmi: null,
+      latestVLResult: null,
       ti: null,
       location: null,
       landmark: null,
@@ -891,6 +893,22 @@ export default {
       let observations = await ApiClient.get(url);
       return await observations.json();
     },
+    async setLatestVLResult (){
+      ApiClient
+        .get(`/lab/orders?patient_id=${this.patientID}`)
+        .then(res => res.json())
+        .then(orders => {
+          const results = orders.reduce((rs, order) => {
+            const r = order.tests.filter(t => t.name.match(/hiv/i) && t.result && t.result.length).map(t => t.result);
+            return rs.concat(r.reduce((a, c) => a.concat(c), []));
+          }, [])
+          .sort((a, b) => new Date(a.date) > new Date(b.date) ? -1 : 1);
+          this.latestVLResult = !results.length 
+            ? '' 
+            : `${results[0].value_modifier}${results[0].value} (${date_utils.localDate(results[0].date)})`;
+        })
+        .catch(e => console.log(e))
+    },
     /**
      * Clear all cached patient data in global state.
      */
@@ -904,6 +922,7 @@ export default {
     this.getPrefix();
     this.clearStore(); 
     this.patientID = this.$route.params.id;
+    this.setLatestVLResult();
     this.getPatient().then(patient => {
       this.name = `${patient["person"].names[0].given_name} ${patient.person.names[0].family_name}`;
       this.firstName = patient["person"].names[0].given_name;

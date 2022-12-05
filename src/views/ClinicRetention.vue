@@ -59,10 +59,11 @@ import VueBootstrap4Table from "vue-bootstrap4-table";
 import { mapState } from "vuex";
 import { exportToCSV } from "../utils/exports";
 import { formatGender } from "../utils/str";
-import ReportService from '../services/report_service';
+import ReportService, { AGE_GROUPS, GENDERS } from '../services/report_service';
+import date_utils from '../services/date_utils';
 
 export default {
-  name: "TPTOutcomes",
+  name: "ClinicRetention",
   components: {
     "top-nav": TopNav,
     "side-bar": Sidebar,
@@ -77,9 +78,37 @@ export default {
       this.period = report.getDateIntervalPeriod();
       this.config.card_title += this.period;
       this.reportLoading = true;
-      const data = await report.getTptOutcomesReport();
+      const data = await report.getClientRentention();
       this.reportLoading = false;
-      this.rows = data.sort((a, b) => a.tpt_type > b.tpt_type ? 1 : 0).map((d, i) => ({number: i, ...d}))
+      this.buildTableRows(data);
+    },
+    buildTableRows(data) {
+      let index = 1;
+      for (const gender of GENDERS) {
+        for(const age_group of AGE_GROUPS) {
+          const getValue = (month, prop) =>  {
+            try{
+              return data[month][prop]
+                .filter(p => p.gender === gender && p.age_group === age_group)
+                .map(p => p.patient_id);
+            } catch (e) {
+              console.log(e)
+              return 0
+            }
+          }
+          this.rows.push({
+            age_group,
+            index: index++,
+            gender: formatGender(gender),
+            'initiated_one_month': getValue(1, 'all'),
+            'completed_one_month': getValue(1, 'retained'),
+            'initiated_three_months': getValue(3, 'all'),
+            'completed_three_months': getValue(3, 'retained'),
+            'initiated_six_months': getValue(6, 'all'),
+            'completed_six_months': getValue(6, 'retained'),
+          })
+        }
+      }
     },
     drillDown(clients) {
       if (clients.length > 0) {
@@ -117,12 +146,13 @@ export default {
       } catch (e) {
         console.log(e);
       }
-      var toPush = {};
-      toPush.dob = age;
-      toPush.arv_number = identifier;
-      toPush.gender = formatGender(gender)
-      toPush.current_village = addressl1;
-      return toPush;
+     
+      return {
+        arv_number: identifier,
+        birthdate: date_utils.localDate(age),
+        gender: formatGender(gender),
+        current_village: addressl1,
+      };
     },
     onDownload() {
       exportToCSV(
@@ -144,22 +174,19 @@ export default {
       period: null,
       reportLoading: false,
       slots: [
-        'started_tpt',
-        'completed_tpt', 
-        'not_completed_tpt', 
-        'died', 
-        'stopped', 
-        'defaulted', 
-        'transfer_out', 
-        'confirmed_tb',
-        'pregnant'
+        'initiated_one_month',
+        'completed_one_month',
+        'initiated_three_months',
+        'completed_three_months',
+        'initiated_six_months',
+        'completed_six_months'
       ],
       rows: [],
       columns: [
         {
           label: "#",
-          name: "number",
-          sort: true,
+          name: "index",
+          sort: true
         },
         {
           label: "Age Group",
@@ -167,58 +194,43 @@ export default {
           sort: true,
         },
         {
-          label: "TPT Type",
-          name: "tpt_type",
+          label: "Gender",
+          name: "gender",
           sort: true,
         },
         {
-          label: "Started TPT",
-          name: "started_tpt",
-          slot_name: "started_tpt",
+          label: "Initiated one month",
+          name: "initiated_one_month",
+          slot_name: "initiated_one_month",
         },
         {
-          label: "Completed TPT",
-          name: "completed_tpt",
-          slot_name: "completed_tpt",
+          label: "Completed one month",
+          name: "completed_one_month",
+          slot_name: "completed_one_month",
         },
         {
-          label: "Not completed TPT",
-          name: "not_completed_tpt",
-          slot_name: "not_completed_tpt",
+          label: "Initiated three months",
+          name: "initiated_three_months",
+          slot_name: "initiated_three_months",
         },
         {
-          label: "Died",
-          name: "died",
-          slot_name: "died",
+          label: "Completed three months",
+          name: "completed_three_months",
+          slot_name: "completed_three_months",
         },
         {
-          label: "Defaulted",
-          name: "defaulted",
-          slot_name: "defaulted",
+          label: "Initiated six months",
+          name: "initiated_six_months",
+          slot_name: "initiated_six_months",
         },
         {
-          label: "Stopped ART",
-          name: "stopped",
-          slot_name: "stopped",
-        },
-        {
-          label: "Transfered Out",
-          name: "transfer_out",
-          slot_name: "transfer_out",
-        },
-        {
-          label: "Confirmed TB",
-          name: "confirmed_tb",
-          slot_name: "confirmed_tb",
-        },
-        {
-          label: "Pregnant",
-          name: "pregnant",
-          slot_name: "pregnant",
+          label: "Completed six months",
+          name: "completed_six_months",
+          slot_name: "completed_six_months",
         },
       ],
       config: {
-        card_title: `TPT Outcomes Report `,
+        card_title: `Clinic Retention Report `,
         show_refresh_button: false,
         show_reset_button: false,
       },
