@@ -20,7 +20,7 @@
     "fecha": "^4.1.0",
     "highcharts": "^8.2.0",
     "highcharts-vue": "^1.3.5",
-    "i": "^0.3.6",
+    "i": "^0.3.7",
     "is-obj": "^2.0.0",
     "jquery": "^3.5.1",
     "jquery-validation": "^1.19.1",
