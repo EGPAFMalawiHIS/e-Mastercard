@@ -969,7 +969,10 @@ export default {
     EventBus.$on('reload-first-visits', payload => {
       this.getStartDate();
     });
-   
+   EventBus.$on('reload-latest-vl', async () => {
+    console.log("reloading vl latest result")
+    await this.setLatestVLResult()
+   });
   },
   computed: {
     initialAge() {
