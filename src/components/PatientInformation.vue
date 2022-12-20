@@ -970,7 +970,6 @@ export default {
       this.getStartDate();
     });
    EventBus.$on('reload-latest-vl', async () => {
-    console.log("reloading vl latest result")
     await this.setLatestVLResult()
    });
   },
