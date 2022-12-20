@@ -258,6 +258,7 @@ export default {
             position: "top-right", 
             duration : 2000
           });
+          EventBus.$emit('reload-latest-vl');
           this.$root.$emit('bv::hide::modal', 'viral-load-modal', '#btnShow')
           return
         }
