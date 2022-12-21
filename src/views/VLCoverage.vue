@@ -141,7 +141,7 @@ export default {
     fetchDrillDown(clients) {
       if (clients.length > 0) {
         this.$bvModal.show("modal-1");
-        this.drillClients = clients;
+        this.drillClients = clients.map(c => ({...c, gender: formatGender(c.gender)}));
       }
     },
     onDownload() {
