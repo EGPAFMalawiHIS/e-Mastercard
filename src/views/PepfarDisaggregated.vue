@@ -118,7 +118,7 @@
       </div>
 
       <!-- Page Content end -->
-      <b-modal id="modal-1" :title="`Drill Down Clients`">
+      <b-modal id="modal-1" :title="`Drill Down Clients`" size="xl">
         <!-- btable  -->
         <b-table
           striped
