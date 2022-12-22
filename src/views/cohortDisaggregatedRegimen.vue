@@ -538,7 +538,7 @@ export default {
       var toPush = {};
       toPush.dob = age;
       toPush.arv_number = identifier;
-      toPush.gender = gender;
+      toPush.gender = formatGender(gender);
       toPush.current_village = addressl1;
       return toPush;
     },
