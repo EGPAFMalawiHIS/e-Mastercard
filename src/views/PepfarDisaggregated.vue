@@ -43,6 +43,41 @@
                     <th class="disaggregated-numbers">TX curr (receiving ART)</th>
                     <th class="disaggregated-numbers">TX curr (received IPT)</th>
                     <th class="disaggregated-numbers">TX curr (screened for TB)</th>
+                    <th class="disaggregated-numbers">0A</th>
+                    <th class="disaggregated-numbers">2A</th>
+                    <th class="disaggregated-numbers">4A</th>
+                    <th class="disaggregated-numbers">5A</th>
+                    <th class="disaggregated-numbers">6A</th>
+                    <th class="disaggregated-numbers">7A</th>
+                    <th class="disaggregated-numbers">8A</th>
+                    <th class="disaggregated-numbers">9A</th>
+                    <th class="disaggregated-numbers">10A</th>
+                    <th class="disaggregated-numbers">11A</th>
+                    <th class="disaggregated-numbers">12A</th>
+                    <th class="disaggregated-numbers">13A</th>
+                    <th class="disaggregated-numbers">14A</th>
+                    <th class="disaggregated-numbers">15A</th>
+                    <th class="disaggregated-numbers">16A</th>
+                    <th class="disaggregated-numbers">17A</th>
+                    <th class="disaggregated-numbers">0P</th>
+                    <th class="disaggregated-numbers">2P</th>
+                    <th class="disaggregated-numbers">4PP</th>
+                    <th class="disaggregated-numbers">4PA</th>
+                    <th class="disaggregated-numbers">9PP</th>
+                    <th class="disaggregated-numbers">9PA</th>
+                    <th class="disaggregated-numbers">11PP</th>
+                    <th class="disaggregated-numbers">11PA</th>
+                    <th class="disaggregated-numbers">12PP</th>
+                    <th class="disaggregated-numbers">12PA</th>
+                    <th class="disaggregated-numbers">14PP</th>
+                    <th class="disaggregated-numbers">14PA</th>
+                    <th class="disaggregated-numbers">15PP</th>
+                    <th class="disaggregated-numbers">15PA</th>
+                    <th class="disaggregated-numbers">16P</th>
+                    <th class="disaggregated-numbers">17PP</th>
+                    <th class="disaggregated-numbers">17PA</th>
+                    <th class="disaggregated-numbers">Unknown</th>
+                    <th class="disaggregated-numbers">Total (regimen)</th>
                   </tr>
                 </thead>
                 <tbody ref="tableBody">
@@ -59,6 +94,9 @@
                       >
                         {{ patientData[i][s][j].length }}
                       </td>
+                      <td>
+                        {{ getTotal(i, s) }}
+                      </td>
                     </tr>
                   </template>
                   <tr v-for="(i, index) in Object.keys(allClients)" :key="'all' + index">
@@ -67,6 +105,9 @@
                     <td>{{ i }}</td>
                     <td v-for="(j, k) in Object.keys(allClients[i])" :key="k">
                       {{ allClients[i][j].length }}
+                    </td>
+                    <td>
+                      {{ getTotalClientsByKey(i) }}
                     </td>
                   </tr>
                 </tbody>
@@ -116,6 +157,40 @@ const keyList = {
   tx_curr: [],
   tx_curr_ipt: [],
   tx_curr_screened_tb: [],
+  "0A": [],
+  "2A": [],
+  "4A": [],
+  "5A": [],
+  "6A": [],
+  "7A": [],
+  "8A": [],
+  "9A": [],
+  "10A": [],
+  "11A": [],
+  "12A": [],
+  "13A": [],
+  "14A": [],
+  "15A": [],
+  "16A": [],
+  "17A": [],
+  "0P": [],
+  "2P": [],
+  "4PP": [],
+  "4PA": [],
+  "9PP": [],
+  "9PA": [],
+  "11PP": [],
+  "11PA": [],
+  "12PA": [],
+  "12PP": [],
+  "14PP": [],
+  "14PA": [],
+  "15PP": [],
+  "15PA": [],
+  "16P": [],
+  "17PP": [],
+  "17PA": [],
+  "N/A": [],
 };
 
 export default {
@@ -136,9 +211,6 @@ export default {
       this.reportLoading = true;
       this.reportSelected = true;
       this.initializeReport();
-      // this.allMales();
-
-      // this.getAllFemale("Pregnant");
     },
     printCSV() {
       let y = null;
@@ -187,10 +259,7 @@ export default {
       }
     },
     initDataTable() {
-      let start_date = moment(this.startDate).format("DD/MMM/YYYY");
-      let end_date = moment(this.endDate).format("DD/MMM/YYYY");
-      this.report_title =
-        "PEPFAR " + sessionStorage.location_name + " cohort disaggregated report ";
+      this.report_title = "PEPFAR " + sessionStorage.location_name + " cohort disaggregated report ";
       this.report_title += moment(this.startDate).format("DDMMMYYYY");
       this.report_title += " - " + moment(this.endDate).format("DDMMMYYYY");
 
@@ -232,12 +301,6 @@ export default {
           },
         ],
       });
-    },
-    checkResult(data) {},
-    datatableEnable(info) {
-      this.formatedData = [];
-      for (let patient_id in info) {
-      }
     },
     fetchDrillDown(gender, age_group, key) {
       let clients = this.patientData[age_group][gender][key];
@@ -281,8 +344,6 @@ export default {
       }
     },
     addData(data) {
-      let female_row;
-      let male_row;
       for (let age_group in data) {
         let gender = data[age_group];
         for (let sex in gender) {
@@ -366,6 +427,11 @@ export default {
         });
 
         if (this.givenIPT.length < 1) {
+          ["female", "male"].forEach((element) => {
+            Object.keys(this.patientData).forEach((innerElement) => {
+              this.getRegimenInfo(element, innerElement);
+            });
+          });
           this.reportLoading = false;
           this.allMales();
         } else {
@@ -428,20 +494,10 @@ export default {
       var age = results.person.birthdate;
       var gender = results.person.gender;
       var identifier = "";
-      var patient_name =
-        results.person.names[0].given_name + " " + results.person.names[0].family_name;
-
-      var arv_number = results.patient_identifiers.filter((el) => {
-        return el.identifier_type === 4 ? el.identifier : "";
-      });
       try {
         var addressl1 = results.person.addresses[0].city_village;
-        var addressl2 = results.person.addresses[0].address2;
-        var phone_number = results.person.person_attributes[1].value;
       } catch (e) {
         var addressl1 = "";
-        var addressl2 = "";
-        var phone_number = "";
       }
       try {
         for (var index = 0; index < results.patient_identifiers.length; index++) {
@@ -474,11 +530,13 @@ export default {
             this.allClients["FP"]["tx_curr_ipt"] = tx_given_ipt;
             this.allClients["FP"]["tx_curr_screened_tb"] = tx_screened_for_tb;
             this.getAllFemale("Breastfeeding");
+            this.getRegimenInfo("FP", "All", true);
           } else {
             this.allClients["Fbf"]["tx_new"] = tx_new;
             this.allClients["Fbf"]["tx_curr"] = tx_curr;
             this.allClients["Fbf"]["tx_curr_ipt"] = tx_given_ipt;
             this.allClients["Fbf"]["tx_curr_screened_tb"] = tx_screened_for_tb;
+            this.getRegimenInfo("Fbf", "All", true);
             this.loadFPdata("pregnant", "screened_for_tb");
           }
         }
@@ -532,6 +590,9 @@ export default {
       }
     },
     addAllFemaleRow() {
+      ["Fbf", "FP"].forEach((el) => {
+        this.getRegimenInfo(el, null, true);
+      });
       Object.keys(this.allClients["male"]).forEach((element) => {
         const j = this.getTotalByKey("male", element);
         this.allClients["male"][element] = j;
@@ -548,6 +609,20 @@ export default {
         });
         this.allClients["FNP"][ele] = jj;
       });
+    },
+    getRegimenInfo: async function (gender, age_group, allPats) {
+      let url = "disaggregated_regimen_distribution";
+      url += "?date=" + moment().format("YYYY-MM-DD");
+      url += "&start_date=" + this.startDate;
+      url += "&end_date=" + this.endDate;
+      url += "&gender=" + gender;
+      url += "&age_group=" + age_group;
+      url += "&program_id=1";
+
+      const response = await ApiClient.get(url, {}, {});
+      if (response.status === 200) {
+        response.json().then((data) => this.addRegimen(data, gender, age_group, allPats));
+      }
     },
     getTotal(age_group, gender) {
       let total = 0;
@@ -585,6 +660,15 @@ export default {
         }
       });
       return total;
+    },
+    addRegimen(data, gender, age_group, allPats) {
+      for (let regimen in data) {
+        if (allPats) {
+          this.allClients[gender][regimen] = data[regimen];
+        } else {
+          this.patientData[age_group][gender][regimen] = data[regimen];
+        }
+      }
     },
   },
   computed: {
