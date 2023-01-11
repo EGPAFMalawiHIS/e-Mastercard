@@ -26,7 +26,7 @@
           <template slot="birthdate" slot-scope="props">
             <b>{{ props.cell_value ? moment(props.cell_value).format("DD/MMM/YYYY") : "" }}</b>
           </template>
-          <template slot="start_date" slot-scope="props">
+          <template slot="outcome_date" slot-scope="props">
             <b>{{ props.cell_value ? moment(props.cell_value).format("DD/MMM/YYYY") : "" }}</b>
           </template>
           <template slot="gender" slot-scope="{ cell_value }">
@@ -91,7 +91,7 @@ export default {
         { label: "Last Name", name: "family_name", exportable: false, sort: true },
         { label: "date of Birth", name: "birthdate", slot_name: "birthdate" },
         { label: "Gender", name: "gender", slot_name: "gender" },
-        { label: "Outcome Date", name: "start_date", slot_name: "start_date" },
+        { label: "Outcome Date", name: "outcome_date", slot_name: "outcome_date" },
         (/transfer/i.test(this.outcome) ? { label: "To Location", name: "transferred_out_to" }: null),
         { label: "Action", name: "patient_id", slot_name: "patient_id", exportable: false },
       ].filter(Boolean)
