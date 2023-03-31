@@ -104,6 +104,12 @@ export default {
           // sort: true
         },
         {
+          label: "Appointment Date",
+          name: "appointment_date",
+          slot_name: "appointment_date",
+          // sort: true
+        },
+        {
           label: "Defaulter date",
           name: "defaulter_date",
           slot_name: "defaulter_date",
