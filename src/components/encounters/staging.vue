@@ -284,6 +284,7 @@ export default {
         }
       },
       encounterDatetime: null,
+      beforeCD4cuttoff: false,
       stageValue: [],
       stateFourValue: [],
       stateThreeValue: [],
@@ -604,6 +605,11 @@ export default {
           .sort();
       } else if (this.person.gender === "F") {
         data = Object.keys(this.REASON_FOR_ART).sort();
+      }
+      if(this.beforeCD4cuttoff) {
+        data = data.filter(reason => {
+          return !reason.toLowerCase().includes('cd4')
+        })
       }
       return data;
     },
@@ -937,6 +943,10 @@ export default {
       this.$store.commit("setStaging", staging);
     },
     initialize() {
+
+      const visitDate = this.$store.state.registration.registration.initial_visit_date;
+      const beforeCutoff = moment(visitDate).isBefore("2014-04-01");
+      this.beforeCD4cuttoff = beforeCutoff;
       // prevent false submission
       if (!this.cdCountAvailable) {
         this.form.cd4_count_modifier = "Modifier"
