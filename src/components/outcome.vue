@@ -9,10 +9,10 @@
     <programs></programs>
     <br />
     <div class="row">
-      <div class="col">
+      <div class="col-5">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
-            <span class="input-group-text" id="height">Outcome </span>
+            <span class="input-group-text" id="height">Outcome</span>
           </div>
           <select
             class="form-control"
@@ -34,7 +34,7 @@
           </select>
         </div>
       </div>
-      <div class="col">
+      <div class="col-5">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text">Outcome Date</span>
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <div class="col" v-if="state.name === 'Patient transferred out'">
+      <div class="col-5" v-if="state.name === 'Patient transferred out'">
         <div class="form-group">
           <v-select
             :options="locations"
@@ -57,7 +57,27 @@
           ></v-select>
         </div>
       </div>
-      <div class="col">
+      <div class="col-5" v-if="state.name === 'Patient transferred out'">
+        <div class="form-group">
+          <v-select
+            v-model="transferOutReason"
+            :options="transferOutReasons"
+            placeholder="Reason for Transferring out"
+          ></v-select>
+        </div>
+      </div>
+      <div class="col-7" v-if="state.name === 'Patient transferred out' && transferOutReason === 'Other'">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Other reason for transfer out</span>
+          </div>
+          <b-input
+            v-model="otherTransferOutReason"
+            placeholder="Other reason for transfer out"
+          ></b-input>
+        </div>
+      </div>
+      <div class="col-2">
         <button @click="postOutcome" class="btn btn-primary">Submit</button>
       </div>
     </div>
@@ -136,6 +156,19 @@ export default {
       voiding: false,
       enrollDate: null,
       programs: [],
+      otherTransferOutReason: "",
+      transferOutReason: "",
+      transferOutReasons: [
+        'Workplace transfer/lost job-related reasons',
+        'Relocation to another place/home village',
+        'Transport due to long distance',
+        'School',
+        'Business',
+        'Marriage',
+        'Unknown',
+        'Clinic not helping',
+        'Other'
+      ]
     };
   },
   methods: {
@@ -196,7 +229,9 @@ export default {
         outcomeData.location_id = this.location;
         if (this.location == null) {
           this.errors.push("Location is required");
-        } else {
+        } else if (!this.transferOutReason || (this.transferOutReason === "Other" && !this.otherTransferOutReason)) {
+          this.errors.push("Reason for transfer out is required")
+        } else  {
           let patientID = this.$route.params.id;
           const encounter = await EncounterService.createEncounter(
             patientID,
@@ -213,6 +248,10 @@ export default {
                   value_coded: this.location,
                   concept_id: 3003,
                 },
+                {
+                  value_text: this.transferOutReason !== 'Other' ? this.transferOutReason : this.otherTransferOutReason,
+                  concept_id: 3004,
+                }
               ],
             };
             const response = await ApiClient.post("observations", enc);
