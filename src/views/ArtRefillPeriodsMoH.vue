@@ -265,7 +265,42 @@ export default {
         ]
       }, [0, 0, 0]))
     },
-    renderTable() {
+    async getMaternalStatus(patientIds) {
+      let url = "vl_maternal_status?&program_id=1"
+      url += "&start_date=" + this.startDate
+      url += '&end_date=' + this.endDate
+      url += '&date=' + moment().format("YYYY-MM-DD")
+      url += '&report_definition=pepfar'
+      return ApiClient.post(url, { 'patient_ids': patientIds })
+        .then(response => response.json())
+    },
+    reducer(column, gender){
+      return this.tableRows.reduce((acc, curr) => curr.gender === gender ? acc.concat(curr[column]) : acc, [])
+    },
+    async buildAllFemaleRows(){
+      const columns = ['less_3_mo', 'between_3_5_mo', 'above_5_mo']
+      const categories = ['FP', 'FNP', 'FBf']
+      const allFemales = columns.map(column => this.reducer(column, 'Female'))
+        .reduce((a, c) => a.concat(c), [])
+        .filter((value, index, self) => self.indexOf(value) === index)
+      const maternalStatus = await this.getMaternalStatus(allFemales)
+      const allFp = maternalStatus.FBf.concat(maternalStatus.FP)
+
+      const buildColumn = (column, category) => this.reducer(column, "Female").filter((id) => (category === 'FNP') 
+        ? !allFp.includes(id)
+        : maternalStatus[category].includes(id)
+      ).length
+
+      let index = 42;
+      const rows = [];
+      for (const category of categories) {
+        const row = [index++, category, "All"]
+        columns.forEach(column => row.push(buildColumn(column, category)))
+        rows.push(row)
+      }
+      return rows;
+    },
+    async renderTable() {
       const table = jQuery('#cohort-clients').DataTable();
       table.clear();
 
@@ -291,7 +326,8 @@ export default {
           row.above_5_mo.length
         ]))
       table.row.add(this.buildTotalMalesRow())
-
+      const femaleTotals = await this.buildAllFemaleRows()
+      femaleTotals.forEach(row => table.row.add(row))
       table.draw();
     },
     validateDateRange([startDate, endDate]) {
