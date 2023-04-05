@@ -4,10 +4,35 @@
       <div id="page-content-wrapper">
          <top-nav />
         <!-- Page Content -->
-        <div id="main-container" class="col-12 table-col">
-           <sdPicker :onSubmit="fetchData"></sdPicker>
-           <!--div id="chart-container" style="margin-top:50px; width: 100%; height: 90%;"-->
-           <highcharts :options="chartOptions" style="width: 100%;"></highcharts>
+        <div id="main-container">
+          <div class="row">
+            <div class="col-md-12 mb-4">
+              <sdPicker :onSubmit="fetchData"></sdPicker>
+            </div>
+            <div class="col-lg-3">
+              <b-card header="Statistics Summary" class="text-left mx-2">
+                <b-list-group class="m-0">
+                  <b-list-group-item class="d-flex justify-content-between align-items-center">
+                    <span>Total Attendance:</span>
+                    <b-badge pill variant="primary" href="#">{{ totalAttendance.length }}</b-badge>
+                  </b-list-group-item>
+                  <b-list-group-item class="d-flex justify-content-between align-items-center">
+                    <span>Patient visit:</span>
+                    <b-badge pill variant="primary" href="#">{{ patientVisits.length }}</b-badge>
+                  </b-list-group-item>
+                  <b-list-group-item class="d-flex justify-content-between align-items-center">
+                    <span>Guardian visit:</span>
+                    <b-badge pill variant="primary" href="#">{{ guardianVisits.length }}</b-badge>
+                  </b-list-group-item>
+                </b-list-group>
+              </b-card>
+            </div>
+            <div class="col-lg-9">
+              <b-card class="mr-2">
+                <highcharts :options="chartOptions" style="width: 100%;"></highcharts>
+              </b-card>
+            </div>
+          </div>
         </div>
       </div>
       <!-- Page Content end -->
@@ -51,77 +76,47 @@ export default {
       }else{
       }
     },
-    checkResult(visits){
-      for(let visit_date in visits){
-        this.visit_dates.push(visit_date);
-      }
-      this.visit_dates = this.visit_dates.sort();
-      let visit_dates = this.visit_dates;
-
-      let patient_visit_type_hash = {};
-      let guardian_visit_type_hash = {};
-      let patient_guardian_visit_type_hash = {};
-
-      for(var i = 0; i < visit_dates.length; i++){
-        patient_visit_type_hash[visit_dates[i]] = 0;
-        guardian_visit_type_hash[visit_dates[i]] = 0;
-        patient_guardian_visit_type_hash[visit_dates[i]] = 0;
-
-        for(let visit_date in visits){
-          if(visit_date != visit_dates[i])
-            continue;
-
-          let data = visits[visit_date];
-
-          for(let patient_id in data) {
-
-            if(visits[visit_date][patient_id].guardian_present == true
-              && visits[visit_date][patient_id].patient_present == true) {
-                patient_guardian_visit_type_hash[visit_dates[i]] += 1;
-                continue;
-            }
-
-            if(visits[visit_date][patient_id].patient_present == true)
-              patient_visit_type_hash[visit_dates[i]] += 1;
-
-            if(visits[visit_date][patient_id].guardian_present == true)
-              guardian_visit_type_hash[visit_dates[i]] += 1;
-
-          }
-
-        }
-      }
-      this.sortReadyForRendering(patient_visit_type_hash, guardian_visit_type_hash,
-      patient_guardian_visit_type_hash);
-
-      this.chartOptions = {
-        series: [{
-          name: "Patient present",
-          data: this.sorted_data_patients
-        }, {
-          name: "Guardian present",
-          data: this.sorted_data_guardians
-        }, {
-          name: "Both patient and guardian present",
-          data: this.sorted_data_both_patient_guardians
-        }]
-      }
-
-
+    updateChart (seriesData) {
+      this.chartOptions.series = [
+        { name: "Patient present",  data: seriesData.patientsOnly }, 
+        { name: "Guardian present",  data: seriesData.guardiansOnly },
+        { name: "Both patient and guardian present", data: seriesData.both }
+      ]
     },
-    sortReadyForRendering(patients, guardians, both_patient_and_guardian){
-       let visit_dates = this.visit_dates;
-
-       for(let i = 0; i < visit_dates.length; i++){
-        this.sorted_data_patients.push([new Date(visit_dates[i]).getTime(),
-          patients[visit_dates[i]]]);
-
-        this.sorted_data_guardians.push([new Date(visit_dates[i]).getTime(),
-          guardians[visit_dates[i]]]);
-
-        this.sorted_data_both_patient_guardians.push([new Date(visit_dates[i]).getTime(),
-          both_patient_and_guardian[visit_dates[i]]]);
+    buildSummaryData (patients, guardians, both) {
+      this.patientVisits = Object.values(patients).reduce((acc, curr) => acc.concat(curr), [])
+      this.guardianVisits = Object.values(guardians).reduce((acc, curr) => acc.concat(curr), [])
+      this.totalAttendance = [
+        ...this.patientVisits,
+        ...this.guardianVisits,
+        ...Object.values(both).reduce((acc, curr) => acc.concat(curr), [])
+      ];
+    },
+    checkResult(visits){
+      let patientsOnly = {};
+      let guardiansOnly = {};
+      let bothPatientsAndGuardians = {};
+      let seriesData = {
+        patientsOnly: [],
+        guardiansOnly: [],
+        both: []
       }
+
+      for(let date in visits){
+        patientsOnly[date] = [];
+        guardiansOnly[date] = [];
+        bothPatientsAndGuardians[date] = [];
+        Object.entries(visits[date]).forEach(([patientId, {guardian_present, patient_present}]) => {
+          if(guardian_present && patient_present) bothPatientsAndGuardians[date].push(patientId)
+          else if (patient_present) patientsOnly[date].push(patientId)
+          else if (guardian_present) guardiansOnly[date].push(patientId)
+        })
+        seriesData.patientsOnly.push([new Date(date).getTime(), patientsOnly[date].length])
+        seriesData.guardiansOnly.push([new Date(date).getTime(), guardiansOnly[date].length])
+        seriesData.both.push([new Date(date).getTime(), bothPatientsAndGuardians[date].length])
+      }
+      this.updateChart(seriesData);
+      this.buildSummaryData(patientsOnly, guardiansOnly, bothPatientsAndGuardians);
     },
     redraw(){
     }
@@ -130,10 +125,9 @@ export default {
     return {
       page_title: 'Visit stats',
       reportLoading: false,
-      sorted_data_patients: [],
-      sorted_data_guardians: [],
-      sorted_data_both_patient_guardians: [],
-      visit_dates: [],
+      patientVisits: [],
+      guardianVisits: [],
+      totalAttendance: [],
       chartOptions: {
         chart: {
           zoomType: 'x'
