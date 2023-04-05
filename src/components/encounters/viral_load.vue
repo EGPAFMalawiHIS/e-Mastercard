@@ -176,7 +176,9 @@ export default {
         'Targeted': 3280, 
         'Confirmatory': 1345, 
         'Stat': 6368, 
-        'Repeat / Missing': 9144
+        'Repeat / Missing': 9144,
+        'Follow up after Low Level Viremia': 10609,
+        'Follow up after High Viral Load': 10610
       },
       specimens: {
         'Blood': 8612, 
