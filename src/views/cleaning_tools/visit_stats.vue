@@ -8,40 +8,22 @@
            <sdPicker :onSubmit="fetchData"></sdPicker>
            <!--div id="chart-container" style="margin-top:50px; width: 100%; height: 90%;"-->
            <highcharts :options="chartOptions" style="width: 100%;"></highcharts>
-           </div>
         </div>
-        <!-- Page Content end -->
+      </div>
+      <!-- Page Content end -->
     </div>
-  </div>
 </template>
-
-<style scope>
-
-</style>
-
 <script type="text/javascript" src="../../../src/assets/HighCharts/highcharts.js"></script>
 <script type="text/javascript" src="../../../src/assets/HighCharts/highcharts-vue.min.js"></script>
-
 
 <script>
 // @ is an alias to /src
 import TopNav from "@/components/topNav.vue";
 import Sidebar from "@/components/SideBar.vue";
-
 import ApiClient from "../../services/api_client";
 import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
-import jQuery from 'jquery'
-
 import {Chart} from 'highcharts-vue'
-
-
-/*require("@/assets/HighCharts/code/highcharts.js");
-require("@/assets/HighCharts/code/modules/data.js");
-require("@/assets/HighCharts/code/modules/exporting.js");
-require("@/assets/HighCharts/code/modules/export-data.js");
-require("@/assets/HighCharts/code/modules/accessibility.js");*/
-
 
 export default {
   name: "cleaning_tools",
@@ -140,8 +122,6 @@ export default {
         this.sorted_data_both_patient_guardians.push([new Date(visit_dates[i]).getTime(),
           both_patient_and_guardian[visit_dates[i]]]);
       }
-      //document.getElementById('spinner').style = 'display: none;';
-      //document.getElementById('report-cover').style = 'display: none;'
     },
     redraw(){
     }
@@ -202,23 +182,6 @@ export default {
             }
           }
         },
-        /*allowPointSelect: true,
-        point: {
-          events:{
-            click: ({e}) => { 
-              try {
-                let valueDescription = e.target.accessibility.valueDescription;
-                //showClients(e.target.series.name,
-                //e.target.accessibility.valiceDescription);
-                console.log(valueDescription)
-              }catch(x){
-                let show_message = `Something went wrong. 
-                Please try changing the date parameters or <b>Zooming in</b>.`;
-                console.log(show_message);
-              }
-            }
-          }
-        },*/
         area: {
           fillColor: {
             linearGradient: {
@@ -226,11 +189,7 @@ export default {
               y1: 0,
               x2: 0,
               y2: 1
-            }/*,
-            stops: [
-              [0, this.highcharts.getOptions().colors[0]],
-              [1, this.highcharts.color(this.highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-            ]*/
+            }
           },
           marker: {
             radius: 2
