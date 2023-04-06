@@ -68,7 +68,7 @@ import ApiClient from "../../services/api_client";
 import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import {Chart} from 'highcharts-vue'
-import { parse } from 'fecha';
+import { formatGender } from '../../utils/str';
 
 export default {
   name: "cleaning_tools",
@@ -127,9 +127,9 @@ export default {
         guardiansOnly[date] = [];
         bothPatientsAndGuardians[date] = [];
         Object.entries(visits[date]).forEach(([patientId, {guardian_present, patient_present}]) => {
-          if(guardian_present && patient_present) bothPatientsAndGuardians[date].push(patientId)
-          else if (patient_present) patientsOnly[date].push(patientId)
-          else if (guardian_present) guardiansOnly[date].push(patientId)
+          if(guardian_present && patient_present) bothPatientsAndGuardians[date].push({patientId, date})
+          else if (patient_present) patientsOnly[date].push({patientId, date})
+          else if (guardian_present) guardiansOnly[date].push({patientId, date})
         })
         seriesData.patientsOnly.push([new Date(date).getTime(), patientsOnly[date].length])
         seriesData.guardiansOnly.push([new Date(date).getTime(), guardiansOnly[date].length])
@@ -144,6 +144,9 @@ export default {
       const arvNumber = patientIdentifiers.find(id => id.identifier_type == 4)
       return arvNumber ? arvNumber.identifier : ""
     },
+    toDateString (date) {
+      return moment(date).format("YYYY/MMM/DD");
+    },
     getPatientDetails (patientId) {
       return ApiClient.get(`patients/${patientId}`, {}, {})
         .then(async (res) => {
@@ -153,8 +156,8 @@ export default {
               arv_number: this.getARVNumber(patient.patient_identifiers),
               first_name: patient.person?.names[0]?.given_name,
               last_name: patient.person?.names[0]?.family_name,
-              birthdate: patient.person?.birthdate,
-              gender: patient.person?.gender,
+              birthdate: this.toDateString(patient.person?.birthdate),
+              gender: formatGender(patient.person?.gender),
             }
           }
           return null
@@ -164,9 +167,9 @@ export default {
       if(patients.length) {
         this.$bvModal.show("modal-1");
         this.drillClients = [];
-        patients.forEach(async (patientId) => {
+        patients.forEach(async ({patientId, date}) => {
           const patient = await this.getPatientDetails(patientId)
-          if(patient) this.drillClients.push(patient)
+          if(patient) this.drillClients.push({...patient, visit_date: this.toDateString(date) })
         });
       }
     }
