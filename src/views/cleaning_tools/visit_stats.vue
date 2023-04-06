@@ -145,7 +145,7 @@ export default {
       return arvNumber ? arvNumber.identifier : ""
     },
     toDateString (date) {
-      return moment(date).format("YYYY/MMM/DD");
+      return moment(date).format("DD/MMM/YYYY");
     },
     getPatientDetails (patientId) {
       return ApiClient.get(`patients/${patientId}`, {}, {})
