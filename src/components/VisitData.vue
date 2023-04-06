@@ -26,7 +26,11 @@
           <td>{{visit.pregnant}}</td>
           <td>{{visit.breastfeeding}}</td>
           <td>{{visit.tbStatus}}</td>
-          <td>{{visit.sideEffects}}</td>
+          <td>
+            <button style="width:100%" class="btn btn-primary" @click="drillSideEffects(visit)"> 
+              {{visit.sideEffects.length ? "Yes" : "No"}}
+            </button>
+          </td>
           <td>
             <button style="width:100%" class="btn btn-primary" @click="loadVisitDrugs(visit)"> 
               {{visit.ARTRegimen}} ({{visit.dispensed}})
@@ -66,6 +70,11 @@
         </tr>
       </table>
     </b-modal>
+    <b-modal id="side-effects" :title="`Side Effects on ${moment(selectedVisit.visitDate).format('DD/MMM/YYYY')}`" size="lg">
+      <b-list-group flush>
+        <b-list-group-item v-for="sideEffect in selectedVisit.sideEffects" :key="sideEffect">{{ sideEffect }}</b-list-group-item>
+      </b-list-group>
+    </b-modal>
   </div>
 </template>
 
@@ -86,7 +95,7 @@ export default {
         givenTo: null,
         weight: null,
         height: null,
-        sideEffects: null,
+        sideEffects: [],
         ARTRegimen: null,
         nextAppointment: null,
         viralLoad: null,
@@ -148,6 +157,12 @@ export default {
     };
   },
   methods: {
+    drillSideEffects (visit) {
+      if(visit.sideEffects.length) {
+        this.selectedVisit = visit;
+        this.$bvModal.show('side-effects')
+      }
+    },
     getVisits: async function() {
       // let temp = [];
       await ApiClient.get(`/patients/${this.$route.params.id}/visits?program_id=1&include_defaulter_dates=true`).then(
@@ -298,19 +313,13 @@ export default {
           element.givenTo = el.visit_by;
           tempob.givenTo = el.visit_by;
           tempob.viralLoad = el.viral_load;
+          tempob.sideEffects = el.side_effects;
+          element.sideEffects = el.side_effects;
           if(el.pills_dispensed.length > 0) {
                 element.dispensed = el.pills_dispensed[0][1];            
                 tempob.dispensed = el.pills_dispensed[0][1];            
               }
 
-        })
-        this.getObs({conceptID: 7755}, element).then(el=> {
-          let sideEffects = el.filter(function(curr, index) {
-            return el[index].children[0].value_coded == 1065;
-          }).length;
-          sideEffects = sideEffects === 0 ? "No" : "Yes";
-          element.sideEffects = sideEffects;
-          tempob.sideEffects = sideEffects;
         })
         this.getObs({conceptID: 6131, params: "value_coded=1065"}, element).then(el=> {
           if(el.length > 0) {
