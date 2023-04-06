@@ -14,15 +14,15 @@
                 <b-list-group class="m-0">
                   <b-list-group-item class="d-flex justify-content-between align-items-center">
                     <span>Total Attendance:</span>
-                    <b-badge pill variant="primary" href="#" @click="onSummaryDrill(totalAttendance)">{{ totalAttendance.length }}</b-badge>
+                    <b-badge pill variant="primary" href="#" @click="onSummaryDrill(totalAttendance, 'Total attendance')">{{ totalAttendance.length }}</b-badge>
                   </b-list-group-item>
                   <b-list-group-item class="d-flex justify-content-between align-items-center">
                     <span>Patient visit:</span>
-                    <b-badge pill variant="primary" href="#" @click="onSummaryDrill(totalAttendance)">{{ patientVisits.length }}</b-badge>
+                    <b-badge pill variant="primary" href="#" @click="onSummaryDrill(totalAttendance, 'Total patient visits')">{{ patientVisits.length }}</b-badge>
                   </b-list-group-item>
                   <b-list-group-item class="d-flex justify-content-between align-items-center">
                     <span>Guardian visit:</span>
-                    <b-badge pill variant="primary" href="#" @click="onSummaryDrill(totalAttendance)">{{ guardianVisits.length }}</b-badge>
+                    <b-badge pill variant="primary" href="#" @click="onSummaryDrill(totalAttendance, 'Guardian visits')">{{ guardianVisits.length }}</b-badge>
                   </b-list-group-item>
                 </b-list-group>
               </b-card>
@@ -163,8 +163,9 @@ export default {
           return null
         })
     },
-    onSummaryDrill (patients) {
+    onSummaryDrill (patients, title = "Drill Down Clients") {
       if(patients.length) {
+        this.drillTitle = title
         this.$bvModal.show("modal-1");
         this.drillClients = [];
         patients.forEach(async ({patientId, date}) => {
@@ -177,7 +178,7 @@ export default {
   data () {
     return {
       page_title: 'Visit stats',
-      drillTitle: 'Drill Down Clients',
+      drillTitle: '',
       reportLoading: false,
       perPage: 10,
       currentPage: 1,
