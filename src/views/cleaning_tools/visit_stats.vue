@@ -14,15 +14,15 @@
                 <b-list-group class="m-0">
                   <b-list-group-item class="d-flex justify-content-between align-items-center">
                     <span>Total Attendance:</span>
-                    <b-badge pill variant="primary" href="#">{{ totalAttendance.length }}</b-badge>
+                    <b-badge pill variant="primary" href="#" @click="onSummaryDrill(totalAttendance)">{{ totalAttendance.length }}</b-badge>
                   </b-list-group-item>
                   <b-list-group-item class="d-flex justify-content-between align-items-center">
                     <span>Patient visit:</span>
-                    <b-badge pill variant="primary" href="#">{{ patientVisits.length }}</b-badge>
+                    <b-badge pill variant="primary" href="#" @click="onSummaryDrill(totalAttendance)">{{ patientVisits.length }}</b-badge>
                   </b-list-group-item>
                   <b-list-group-item class="d-flex justify-content-between align-items-center">
                     <span>Guardian visit:</span>
-                    <b-badge pill variant="primary" href="#">{{ guardianVisits.length }}</b-badge>
+                    <b-badge pill variant="primary" href="#" @click="onSummaryDrill(totalAttendance)">{{ guardianVisits.length }}</b-badge>
                   </b-list-group-item>
                 </b-list-group>
               </b-card>
@@ -35,6 +35,25 @@
           </div>
         </div>
       </div>
+      <b-modal id="modal-1" :title="drillTitle" size="xl">
+        <!-- btable  -->
+        <b-table
+          striped
+          hover
+          id="my-table"
+          :items="drillClients"
+          :per-page="perPage"
+          :current-page="currentPage"
+        ></b-table>
+        <b-pagination
+          v-model="currentPage"
+          :per-page="perPage"
+          :total-rows="drillClients.length"
+          aria-controls="my-table"
+        ></b-pagination>
+
+        <p class="mt-3">Current Page: {{ currentPage }}</p>
+      </b-modal>
       <!-- Page Content end -->
     </div>
 </template>
@@ -49,6 +68,7 @@ import ApiClient from "../../services/api_client";
 import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import {Chart} from 'highcharts-vue'
+import { parse } from 'fecha';
 
 export default {
   name: "cleaning_tools",
@@ -119,12 +139,46 @@ export default {
       this.buildSummaryData(patientsOnly, guardiansOnly, bothPatientsAndGuardians);
     },
     redraw(){
+    },
+    getARVNumber (patientIdentifiers = []) {
+      const arvNumber = patientIdentifiers.find(id => id.identifier_type == 4)
+      return arvNumber ? arvNumber.identifier : ""
+    },
+    getPatientDetails (patientId) {
+      return ApiClient.get(`patients/${patientId}`, {}, {})
+        .then(async (res) => {
+          if (res.status === 200) {
+            const patient = await res.json()
+            return {
+              arv_number: this.getARVNumber(patient.patient_identifiers),
+              first_name: patient.person?.names[0]?.given_name,
+              last_name: patient.person?.names[0]?.family_name,
+              birthdate: patient.person?.birthdate,
+              gender: patient.person?.gender,
+            }
+          }
+          return null
+        })
+    },
+    onSummaryDrill (patients) {
+      if(patients.length) {
+        this.$bvModal.show("modal-1");
+        this.drillClients = [];
+        patients.forEach(async (patientId) => {
+          const patient = await this.getPatientDetails(patientId)
+          if(patient) this.drillClients.push(patient)
+        });
+      }
     }
   },
   data () {
     return {
       page_title: 'Visit stats',
+      drillTitle: 'Drill Down Clients',
       reportLoading: false,
+      perPage: 10,
+      currentPage: 1,
+      drillClients: [],
       patientVisits: [],
       guardianVisits: [],
       totalAttendance: [],
