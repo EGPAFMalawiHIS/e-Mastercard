@@ -36,7 +36,13 @@
         :items="drillClients"
         :per-page="perPage"
         :current-page="currentPage"
-      ></b-table>
+      >
+        <template #cell(actions)="{ value }">
+          <button type="button" class="btn btn-primary" @click="redirect(value)" >
+            show
+          </button>
+        </template>
+      </b-table>
       <b-pagination
         v-model="currentPage"
         :per-page="perPage"
@@ -199,10 +205,13 @@ export default {
         clients.forEach(async (id) => {
           const patient = await PatientService.parsePatient(id);
           if (patient) {
-            this.drillClients.push(patient)
+            this.drillClients.push({ ...patient, actions: id })
           }
         });
       }
+    },
+    redirect(id) {
+      this.$router.push(`/patient/mastercard/${id}`);
     },
   },
   components: {
