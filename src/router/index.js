@@ -98,6 +98,11 @@ const routes = [
     component: () => import("../views/TBPrev.vue")
   },
   {
+    path: "/moh_tpt_cohort",
+    name: "TPT Cohort Report",
+    component: () => import("../views/TPTCohort.vue")
+  },
+  {
     path: "/patient_registration",
     name: "patient_registration",
     component: () => import("../views/PatientRegistration.vue")

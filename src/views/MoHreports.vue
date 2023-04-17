@@ -85,13 +85,13 @@
                 </div>
               </div>
             </div>
-<div class="col-sm">
-              <!--div class="btn-container" @click="redirect">
+            <div class="col-sm">
+              <div class="btn-container" @click="redirect('/moh_tpt_cohort')">
                 <div class="card">
                   <img src="../assets/report-icons/cohort.png" class="btn-icon"/>
-                  <p>IPT (usage)</p>
+                  <p>TPT Cohort</p>
                 </div>
-              </div-->
+              </div>
             </div>
 
           </div>
