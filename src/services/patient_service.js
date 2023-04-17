@@ -1,3 +1,5 @@
+import moment from 'moment';
+import { formatGender } from '../utils/str';
 import ApiClient from './api_client';
 import GlobalProperties from "@/services/global_properties";
 
@@ -56,6 +58,19 @@ export default (() => {
       resolve({ status: 200 });
     })
   }
+
+  async function parsePatient (patientId) {
+    const res = await ApiClient.get(`/patients/${patientId}`);
+    if (res.status === 200) {
+      const patient = await res.json();
+      return {
+        arvNumber: patient.patient_identifiers.find(id => id.identifier_type === 4)?.identifier || '',
+        gender: formatGender(patient.person?.gender),
+        birthdate: moment(patient.person?.birthdate).format("DD/MMM/YYYY"),
+        address: patient.person?.addresses[0]?.city_village || ""
+      };
+    }
+  }
   
   function objectToRequestParams(object) {
     return Object.entries(object).reduce((accum, [field, value]) => {
@@ -88,5 +103,5 @@ export default (() => {
     return personOBJ;
   }
   
-  return {searchPatients, searchPatientsByARVNumber, searchPatientsByNameAndGender, voidPatient};
+  return {searchPatients, searchPatientsByARVNumber, searchPatientsByNameAndGender, voidPatient, parsePatient};
 })();

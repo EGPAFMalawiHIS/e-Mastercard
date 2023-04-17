@@ -85,6 +85,10 @@ export default class ReportService {
       .catch(e => console.log(e))
   }
 
+  getMoHTptCohortReport() {
+    return this.getReport('moh_tpt');
+  }
+
   async getTbPrevReport() {
     return this.getReport('/programs/1/reports/tb_prev2')
   }
@@ -118,6 +122,6 @@ export default class ReportService {
   }
   
   getLabResultsReport() {
-      return this.getReport(`lab_test_results`)
+    return this.getReport(`lab_test_results`)
   }
 }
