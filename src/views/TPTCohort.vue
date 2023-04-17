@@ -20,9 +20,6 @@
           <template slot="sort-asc-icon">&#8593;</template>
           <template slot="sort-desc-icon">&#8595;</template>
           <template slot="no-sort-icon">&#8593;&#8595;</template>
-          <template slot="gender" slot-scope="{ cell_value }">
-            {{ formatGender(cell_value) }}
-          </template>
           <template v-for="slot in slots" :slot="slot" slot-scope="props">
             <span @click="drillDown(props.cell_value)" :key="slot" :class="props.cell_value.length > 0 ? 'drillable' : ''">
               {{ props.cell_value.length }}
@@ -89,7 +86,6 @@ export default {
         {
           label: "Gender",
           name: "gender",
-          slot_name: "gender",
         },
         {
           label: "Initiated ART",
@@ -166,9 +162,6 @@ export default {
     };
   },
   methods: {
-    formatGender(g) {
-      return formatGender(g);
-    },
     fetchDates: async function (dates) {
       this.rows = [];
       this.startDate = dates[0];
@@ -191,7 +184,7 @@ export default {
     getIndexData(data) {
       return data.sort((row1, row2) => row1.gender > row2.gender ? 1 :
         row1.gender < row2.gender ? -1 : 0
-      ).map((d, i) => ({ index: i + 1, ...d }))
+      ).map((d, i) => ({ index: i + 1, ...d, gender: formatGender(d.gender) }))
     },
     onDownload() {
       exportToCSV(this.columns, this.rows, this.config.card_title, {
