@@ -126,26 +126,13 @@ export default {
   },
   computed: {
     ...mapState(['location']),
-    reportTitle() {
-      if (this.startDate && this.endDate) {
-        const formatDate = date => moment(date).format('dddd, Do of MMM YYYY');
-
-        return `${this.location.name} TX CURR MMD between ${formatDate(this.startDate)} and ${formatDate(this.endDate)} `;
-      } else {
-        return `${this.location.name} TX CURR MMD`;
-      }
-    }
   },
   methods: {
     fetchDates(dates) {
       if (!this.validateDateRange(dates)) return;
-
       this.startDate = dates[0];
       this.endDate = dates[1];
-
       this.reportLoading = true;
-
-
       this.report_title = 'MoH ' + sessionStorage.location_name + ' TX CURR MMD report ';
       this.report_title += moment(dates[0]).format('DDMMMYYYY');
       this.report_title += " - " + moment(dates[1]).format('DDMMMYYYY');
@@ -153,7 +140,6 @@ export default {
       this.fetchData();
     },
     fetchData: async function() {
-      let group;
       let min_age;
       let max_age;
       if(this.reportingGroups.length > 0){
@@ -179,24 +165,6 @@ export default {
       }else{
         //setTimeout(() => this.fetchData(), 5000);
       }
-    },
-    addLink(age_group, gender, count, column_num){
-      console.log(age_group + " --- " + gender);
-      let span = document.createElement("span");
-      let a = document.createElement("a");
-      a.setAttribute("href", "#");
-      //a.setAttribute("data-target", "#myModal");
-      //a.setAttribute("data-toggle","modal");
-      a.setAttribute("age-group", age_group);
-      a.setAttribute("gender", gender);
-      a.setAttribute("column_number", column_num);
-      a.setAttribute("click", "showPoPBox('" + age_group + "');");
-      a.innerHTML = count;
-      span.appendChild(a);
-      return span.innerHTML;
-    },
-    showPoPBox(age_group){
-      console.log(age_group);
     },
     initDataTable(data){
       this.dTable = jQuery("#cohort-clients").dataTable({
@@ -257,67 +225,19 @@ export default {
       ];
       this.tableRows = [];
     },
+    getValue (data, gender, comperator) {
+      return Object.entries(data[gender])
+        .filter(([_id, {prescribed_days}]) => comperator(prescribed_days))
+        .map(([id, _details]) => id)
+    },
     addRow(data){
-  /* ................................................................ */
-      var client_sex = ["Female", "Male"];
-      var ageGroups = this.reportingGroups;
-
-      for(let i = 0; i < client_sex.length; i++){
-        let gender = client_sex[i];
-        if(this.column_3[gender] == undefined){
-          this.column_3[gender] = {};
-          this.column_3[gender][ageGroups[0]] = 0;
-        }else if(this.column_3[gender][ageGroups[0]] == undefined){
-          this.column_3[gender][ageGroups[0]] = 0;
-        }
-        
-        if(this.column_4[gender] == undefined){
-          this.column_4[gender] = {};
-          this.column_4[gender][ageGroups[0]] = 0;
-        }else if(this.column_4[gender][ageGroups[0]] == undefined){
-          this.column_4[gender][ageGroups[0]] = 0;
-        }
-
-        if(this.column_5[gender] == undefined){
-          this.column_5[gender] = {};
-          this.column_5[gender][ageGroups[0]] = 0;
-        }else if(this.column_5[gender][ageGroups[0]] == undefined){
-          this.column_5[gender][ageGroups[0]] = 0;
-        }
-            
-        for(let g in data){
-          if(g != client_sex[i])
-            continue;
-            
-          let patient_ids = data[gender];
-          for(let patinet_id in patient_ids){ 
-            let info =  data[gender][patinet_id];
-            let prescribed_days = info.prescribed_days;
-            
-            if(prescribed_days < 90)
-              this.column_3[gender][ageGroups[0]]  += 1
-
-            if(prescribed_days >= 90 && prescribed_days <= 150)
-              this.column_4[gender][ageGroups[0]]  += 1
-
-            if(prescribed_days > 150)
-              this.column_5[gender][ageGroups[0]]  += 1
-
-          }
-        }
-
-        //let gender = client_sex[i];
-        this.tableRows.push([ ageGroups[0], gender,  
-          this.column_3[gender][ageGroups[0]], 
-          this.column_4[gender][ageGroups[0]], 
-          this.column_5[gender][ageGroups[0]] 
-        ]);
-
-      }
-  /* ................................................................ */
-
-
-
+      ["Female", "Male"].forEach(gender => this.tableRows.push({
+        gender,
+        age_group: this.reportingGroups[0],
+        less_3_mo: gender in data ? this.getValue(data, gender, (month) => month < 90) : [],
+        between_3_5_mo: gender in data ? this.getValue(data, gender, (month) => month >= 90 && month <= 150) : [],
+        above_5_mo: gender in data ? this.getValue(data, gender, (month) => month > 150) : []
+      }))
       this.reportingGroups.shift();
     },
     setMinMaxAges(group){
@@ -335,7 +255,52 @@ export default {
 
       return min && max ? [min, max] : undefined
     },
-    renderTable() {
+    buildTotalMalesRow () {
+      return [41, "All", "Male"].concat(this.tableRows.reduce((acc, curr) => {
+        if(curr.gender === "Female") return acc;
+        return [
+          acc[0] + curr.less_3_mo.length,
+          acc[1] + curr.between_3_5_mo.length,
+          acc[2] + curr.above_5_mo.length
+        ]
+      }, [0, 0, 0]))
+    },
+    async getMaternalStatus(patientIds) {
+      let url = "vl_maternal_status?&program_id=1"
+      url += "&start_date=" + this.startDate
+      url += '&end_date=' + this.endDate
+      url += '&date=' + moment().format("YYYY-MM-DD")
+      url += '&report_definition=pepfar'
+      return ApiClient.post(url, { 'patient_ids': patientIds })
+        .then(response => response.json())
+    },
+    reducer(column, gender){
+      return this.tableRows.reduce((acc, curr) => curr.gender === gender ? acc.concat(curr[column]) : acc, [])
+    },
+    async buildAllFemaleRows(){
+      const columns = ['less_3_mo', 'between_3_5_mo', 'above_5_mo']
+      const categories = ['FP', 'FNP', 'FBf']
+      const allFemales = columns.map(column => this.reducer(column, 'Female'))
+        .reduce((a, c) => a.concat(c), [])
+        .filter((value, index, self) => self.indexOf(value) === index)
+      const maternalStatus = await this.getMaternalStatus(allFemales)
+      const allFp = maternalStatus.FBf.concat(maternalStatus.FP)
+
+      const buildColumn = (column, category) => this.reducer(column, "Female").filter((id) => (category === 'FNP') 
+        ? !allFp.includes(id)
+        : maternalStatus[category].includes(id)
+      ).length
+
+      let index = 42;
+      const rows = [];
+      for (const category of categories) {
+        const row = [index++, category, "All"]
+        columns.forEach(column => row.push(buildColumn(column, category)))
+        rows.push(row)
+      }
+      return rows;
+    },
+    async renderTable() {
       const table = jQuery('#cohort-clients').DataTable();
       table.clear();
 
@@ -350,23 +315,19 @@ export default {
           footer: true
         });
       });
-
-      let gender = ["Female", "Male"];
-      let counter = 1;
-      let rowData = this.tableRows;
-
-      for(let g = 0; g < gender.length; g++){
-        for(let i = 0; i < rowData.length; i++){
-          if(gender[g] != rowData[i][1])
-            continue;
-
-          table.row.add([ 
-            counter++, rowData[i][0], rowData[i][1], 
-            rowData[i][2], rowData[i][3], rowData[i][4]
-          ]);    
-        }
-      }
-
+      this.tableRows
+        .sort((row1, row2) => row1.gender > row2.gender ? 1 : -1)
+        .forEach((row, index) => table.row.add([
+          index + 1,
+          row.age_group,
+          row.gender,
+          row.less_3_mo.length,
+          row.between_3_5_mo.length,
+          row.above_5_mo.length
+        ]))
+      table.row.add(this.buildTotalMalesRow())
+      const femaleTotals = await this.buildAllFemaleRows()
+      femaleTotals.forEach(row => table.row.add(row))
       table.draw();
     },
     validateDateRange([startDate, endDate]) {
