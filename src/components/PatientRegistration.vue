@@ -134,7 +134,21 @@
               </div>
             </div>
             <div class="form-row">
-              <div class="form-group col-md-12 input-column">
+              <div class="form-group col-md-6 input-column" v-if="isMilitarySite">
+                <label class="input-label" for="occupation">Occupation (*)</label>
+                <select
+                  v-model="$v.form.occupation.$model"
+                  id="patient-occupation"
+                  name="patient-occupation"
+                  class="form-control"
+                  v-bind:style="(!$v.form.occupation.required || !$v.form.occupation.filterOption) && $v.form.occupation.$dirty ? 'border: 1.5px solid red;' : ''"
+                >
+                  <option value="" disabled>Select Occupation</option>
+                  <option value="Military">Military</option>
+                  <option value="Civilian">Civilian</option>
+                </select>
+              </div>
+              <div class="form-group input-column" :class="isMilitarySite ? 'col-md-6' : 'col-md-12'">
                 <label class="input-label" for="firstNameInput">
                   Cellphone Number (*)
                   <span
@@ -368,6 +382,10 @@
                       <th scope="row">Gender</th>
                       <td>{{form.gender}}</td>
                     </tr>
+                    <tr v-if="isMilitarySite">
+                      <th scope="row">Occupation</th>
+                      <td>{{form.occupation}}</td>
+                    </tr>
                     <tr>
                       <th scope="row">Cellphone</th>
                       <td>{{form.phone_number}}</td>
@@ -461,6 +479,7 @@ import {
   sameAs,
   between
 } from "vuelidate/lib/validators";
+import GlobalPropertiesService, { Properties } from '../services/global_properties';
 const nameRegex = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
 const phoneRegex = /^(\+?265|0)(((88|99|98)\d{7})|(1\d{6})|(2\d{8})|(31\d{8}))$/;
 // TODO: Replace all fetch calls with ApiClient.[get|post|delete]
@@ -584,6 +603,13 @@ export default {
           }
         },
 
+        occupation: {
+          required: requiredIf(() => this.isMilitarySite),
+          filterOption(occupation) {
+            return !/Select Occupation/.test(occupation);
+          }
+        },
+
         home_village: {
           required: requiredIf(() => this.homeVillageSelection),
           filterOption(home_village) {
@@ -625,8 +651,10 @@ export default {
         guardian_last_name: "",
         guardian_phone_number: "",
         home_village: "Select Home Village",
-        land_mark: "Select Landmark"
+        land_mark: "Select Landmark",
+        occupation: "",
       },
+      isMilitarySite: false,
       Date: new Date(),
       config: {
         api_base_url: `${Config.apiProtocol}://${Config.apiURL}:${Config.apiPort}/api/${ApiClient.config.apiVersion}`,
@@ -1014,7 +1042,7 @@ export default {
         current_village: !this.locationOther ? this.form.home_village.code : this.form.other_location_name, //CONFIRM IF THIS IS WORKING
         landmark: `${!this.locationOther ? this.form.home_village.code : this.form.other_location_name} near ${LANDMARK}`,
         cell_phone_number: this.form.phone_number,
-        occupation: null,
+        occupation: this.isMilitarySite ? this.form.occupation : null,
         relationship: this.registerGuardian ? "Yes" : "No",
         patient_type: null,
         facility_name: null
@@ -1297,10 +1325,13 @@ export default {
   },
   created() {
     this.fetchRelationships();
-    this.fetchVillages();
+    this.fetchVillages();    
   },
   mounted() {
     this.initileWizard();
+    GlobalPropertiesService
+      .getProp(Properties.MILITARY_SITE)
+      .then(prop => this.isMilitarySite = prop[Properties.MILITARY_SITE]  === 'true')
   }
 };
 </script> 

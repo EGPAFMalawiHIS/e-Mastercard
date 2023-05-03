@@ -85,25 +85,24 @@ export default {
       this.$refs.rep.onDownload();
     },
     fetchData: async function(report_parameters) {
-      if(!report_parameters)
-        return;
-
-      let qtr = report_parameters[0];
-      let regenerate = report_parameters[1];
-      this.quarter = qtr;
+      if(!report_parameters) return;
+      const { quarter, regenerate, startDate, endDate, occupation } = report_parameters
+      let qtr = quarter;
+      // let regenerate = report_parameters[1];
+      this.quarter = quarter;
       this.reportData = qtr;
-      if(report_parameters[2] !== "" && report_parameters[3] !== ""){
-        qtr = "Cohort-" + report_parameters[2] + "-" + report_parameters[3];
-        qtr += "&start_date="  + report_parameters[2];
-        qtr += "&end_date="  + report_parameters[3];
+      if(startDate && endDate ){
+        qtr = "Cohort-" + startDate + "-" + endDate;
+        qtr += "&start_date="  + startDate;
+        qtr += "&end_date="  + endDate;
         this.quarter = "Custom";
-        this.reportData = `Custom ${moment(report_parameters[2]).format("DD/MMM/YYYY")}-${moment(report_parameters[3]).format("DD/MMM/YYYY")}`
+        this.reportData = `Custom ${moment(startDate).format("DD/MMM/YYYY")}-${moment(endDate).format("DD/MMM/YYYY")}`
       }else if(qtr == 'Select cohort quarter') {
         return
       }
       this.reportSelected = true;
       this.reportLoading = true;
-      const response = await ApiClient.get("programs/1/reports/cohort?name=" + qtr + "&regenerate=" + regenerate, {}, {});
+      const response = await ApiClient.get("programs/1/reports/cohort?name=" + qtr + "&regenerate=" + regenerate + "&occupation=" + occupation, {}, {});
 
       if (response.status === 200) {
         //response.json.then(function(data) { this.checkResult(data.values) });

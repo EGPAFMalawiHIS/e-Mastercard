@@ -50,6 +50,7 @@ import moment from 'moment';
 import StartAndEndDatePicker from "@/components/StartAndEndDatePicker.vue";
 import VueBootstrap4Table from "vue-bootstrap4-table";
 import { exportToCSV } from "../utils/exports";
+import { formatGender } from "../utils/str";
 
 export default {
   name: "reports",
@@ -61,6 +62,7 @@ export default {
   },
   data: function() {
     return {
+      formatGender,
       startDate: '',
       endDate: '',
       showLoader: false,
@@ -88,6 +90,7 @@ export default {
         {
           label: "Gender",
           name: "gender",
+          slot_name: "gender",
           sort: true
         },
         {

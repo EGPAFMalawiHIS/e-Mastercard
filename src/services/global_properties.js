@@ -1,24 +1,36 @@
 import ApiClient from "./api_client";
+
+export const Properties = {
+  MILITARY_SITE: 'military_site',
+    HEALTH_CENTER_ID: 'current_health_center_id',
+    SITE_PREFIX: 'site_prefix',
+    SITE_UUID: 'site_uuid',
+}
+
 export default (() => {
+  async function getProp(property) {
+    return ApiClient
+      .get(`global_properties?property=${property}`)
+      .then(res => res.json())
+      .catch(e => console.error(e))
+  }
+
+  async function setProp(property, property_value) {
+    return ApiClient
+      .post(`/global_properties`, { property, property_value })
+      .then(res => res.json())
+      .catch(e => console.error(e))
+  }
+
   async function getSitePrefix() {
-    let prefix = await ApiClient.get(
-      "global_properties?property=site_prefix"
-    );
-    if(prefix.status === 404) {
-      alert("Site prefix not set, set it in settings/ site_prefix");
-    }
-    let result = await prefix.json();
-    return result.site_prefix;
+    return (await getProp(Properties.SITE_PREFIX))[Properties.SITE_PREFIX];
   }
   async function getSiteUUID() {
-    let uuid = await ApiClient.get(
-      "global_properties?property=site_uuid"
-    );
-    if(uuid.status === 404) {
-      alert("Site UUID not set, set it in settings/ site_uuid");
-    }
-    let result = await uuid.json();
-    return result.site_uuid;
+    return (await getProp(Properties.SITE_UUID))[Properties.SITE_UUID];
   }
-  return {getSitePrefix, getSiteUUID};
+
+  async function isMilitarySite() {
+    return (await getProp(Properties.MILITARY_SITE))[Properties.MILITARY_SITE] === 'true'
+  }
+  return {getSitePrefix, getSiteUUID, getProp, setProp, isMilitarySite};
 })();
